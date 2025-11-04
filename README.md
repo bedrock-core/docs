@@ -1,6 +1,8 @@
-# Website
+# @bedrock-core/docs
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+Documentation for @bedrock-core, built using [Docusaurus](https://docusaurus.io/).
+
+Available in <https://bedrock-core.drav.dev>
 
 ## Installation
 
