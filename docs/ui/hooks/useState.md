@@ -14,8 +14,22 @@ import { useState } from '@bedrock-core/ui';
 ## Signature
 
 ```tsx
-function useState<T>(initialState: T): [T, (newState: T) => void]
+function useState<T>(initial: T | (() => T)): [T, (v: T | ((prev: T) => T)) => void]
 ```
+
+### Parameters
+
+#### `initial`
+- Type: `T | (() => T)` (generic)
+- Description: The initial value for the state variable, or a function that returns the initial value (lazy initialization)
+
+### Returns
+
+An array with two elements:
+
+1. **Current state value** (`T`) - The current value of the state
+2. **State setter function** (`(value: T | ((prev: T) => T)) => void`) - Function to update the state. Can accept a new value directly or a function that receives the previous state and returns the new state
+
 
 ## Usage
 
@@ -40,52 +54,7 @@ function Counter() {
 }
 ```
 
-## Parameters
-
-### `initialState`
-- Type: `T` (generic)
-- Description: The initial value for the state variable
-
-## Returns
-
-An array with two elements:
-
-1. **Current state value** (`T`) - The current value of the state
-2. **State setter function** (`(newState: T) => void`) - Function to update the state
-
 ## Examples
-
-### Counter
-
-```tsx
-function Counter() {
-  const [count, setCount] = useState(0);
-  
-  return (
-    <Panel width={300} height={200}>
-      <Text x={10} y={10} width={280} height={30} value={`Count: ${count}`} />
-      <Button 
-        x={10} y={50} width={130} height={40}
-        onPress={() => setCount(count + 1)}
-      >
-        <Text x={10} y={10} width={110} height={20} value="Increment" />
-      </Button>
-      <Button 
-        x={150} y={50} width={130} height={40}
-        onPress={() => setCount(count - 1)}
-      >
-        <Text x={10} y={10} width={110} height={20} value="Decrement" />
-      </Button>
-      <Button 
-        x={10} y={100} width={270} height={40}
-        onPress={() => setCount(0)}
-      >
-        <Text x={10} y={10} width={250} height={20} value="Reset" />
-      </Button>
-    </Panel>
-  );
-}
-```
 
 ### Toggle
 

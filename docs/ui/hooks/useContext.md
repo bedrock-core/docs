@@ -17,6 +17,16 @@ import { useContext, createContext } from '@bedrock-core/ui';
 function useContext<T>(context: Context<T>): T
 ```
 
+### Parameters
+
+#### `context`
+- Type: `Context<T>`
+- Description: The context object created by `createContext()`
+
+### Returns
+
+The current context value for the given context. The value is determined by the nearest `<Context>` above the component in the tree.
+
 ## Usage
 
 ```tsx
@@ -41,16 +51,6 @@ function ThemedComponent() {
   );
 }
 ```
-
-## Parameters
-
-### `context`
-- Type: `Context<T>`
-- Description: The context object created by `createContext()`
-
-## Returns
-
-The current context value for the given context. The value is determined by the nearest `<Context>` above the component in the tree.
 
 ## Examples
 

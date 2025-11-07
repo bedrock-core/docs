@@ -17,6 +17,15 @@ import { useExit } from '@bedrock-core/ui';
 function useExit(): () => void;
 ```
 
+### Parameters
+
+None
+
+### Returns
+
+- Type: `() => void`
+- Description: A function that closes the UI when called
+
 ## Usage
 
 ```tsx
@@ -36,15 +45,6 @@ function CloseButton() {
   );
 }
 ```
-
-## Parameters
-
-None
-
-## Returns
-
-- Type: `() => void`
-- Description: A function that closes the UI when called
 
 ## Examples
 

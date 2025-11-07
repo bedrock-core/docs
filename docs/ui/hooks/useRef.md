@@ -17,6 +17,17 @@ import { useRef } from '@bedrock-core/ui';
 function useRef<T>(initialValue: T): { current: T }
 ```
 
+### Parameters
+
+#### `initialValue`
+- Type: `T` (generic)
+- Description: The initial value for the ref's `current` property
+
+### Returns
+
+A ref object with a single property:
+- `current` - The current value (mutable)
+
 ## Usage
 
 ```tsx
@@ -52,17 +63,6 @@ function Timer() {
   );
 }
 ```
-
-## Parameters
-
-### `initialValue`
-- Type: `T` (generic)
-- Description: The initial value for the ref's `current` property
-
-## Returns
-
-A ref object with a single property:
-- `current` - The current value (mutable)
 
 ## Key Characteristics
 
@@ -203,42 +203,6 @@ function FirstExecutionDetector() {
 }
 ```
 
-### Store Callback Without Stale Closures
-
-```tsx
-function EventHandler() {
-  const [count, setCount] = useState(0);
-  const countRef = useRef(count);
-  
-  // Keep ref in sync with state
-  useEffect(() => {
-    countRef.current = count;
-  }, [count]);
-  
-  useEffect(() => {
-    const handler = () => {
-      // Access latest count without re-subscribing
-      console.log('Current count:', countRef.current);
-    };
-    
-    world.afterEvents.playerSpawn.subscribe(handler);
-    return () => world.afterEvents.playerSpawn.unsubscribe(handler);
-  }, []); // Empty deps - handler closure won't be stale
-  
-  return (
-    <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${count}`} />
-      <Button 
-        x={10} y={50} width={200} height={40}
-        onPress={() => setCount(count + 1)}
-      >
-        <Text x={10} y={10} width={180} height={20} value="Increment" />
-      </Button>
-    </>
-  );
-}
-```
-
 ### Store Complex Object
 
 ```tsx
@@ -318,38 +282,6 @@ const countRef = useRef(0);
 countRef.current = 1; // No re-executions
 ```
 
-## Common Use Cases
-
-### 1. **Storing Timers/Intervals**
-```tsx
-const timerRef = useRef<number | null>(null);
-timerRef.current = setTimeout(() => {}, 1000);
-```
-
-### 2. **Tracking Previous Values**
-```tsx
-const prevValueRef = useRef(value);
-useEffect(() => {
-  prevValueRef.current = value;
-}, [value]);
-```
-
-### 3. **Avoiding Stale Closures**
-```tsx
-const latestValueRef = useRef(value);
-latestValueRef.current = value; // Always up-to-date
-```
-
-### 4. **Caching Computed Values**
-```tsx
-const cacheRef = useRef(new Map());
-```
-
-### 5. **Tracking Component Lifecycle**
-```tsx
-const isMountedRef = useRef(false);
-```
-
 ## Best Practices
 
 ### When to Use useRef
@@ -358,12 +290,11 @@ const isMountedRef = useRef(false);
 - Storing timer/interval IDs for cleanup
 - Tracking previous values
 - Caching computed values
-- Storing mutable data that doesn't affect rendering
+- Storing mutable data that doesn't affect execution
 - Avoiding stale closures in event handlers
 
 ❌ **Don't use useRef when:**
-- The value should trigger a re-render (use `useState`)
-- The value is used in JSX rendering (use `useState`)
+- The value should trigger a re-execution (use `useState`)
 - You need to trigger effects when value changes (use `useState`)
 
 ### Mutation Guidelines

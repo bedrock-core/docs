@@ -14,8 +14,22 @@ import { useEffect } from '@bedrock-core/ui';
 ## Signature
 
 ```tsx
-function useEffect(effect: () => void | (() => void), deps?: any[]): void
+function useEffect(effect: () => (() => void)| void, deps?: any[]): void
 ```
+
+### Parameters
+
+#### `effect`
+- Type: `() => (() => void) | void`
+- Description: Function that contains the side effect logic. Can optionally return a cleanup function.
+
+#### `deps` (optional)
+- Type: `any[]`
+- Description: Dependency array. Effect runs when dependencies change. Omit for every execution, empty array `[]` for mount only.
+
+### Returns
+
+`void`
 
 ## Usage
 
@@ -37,20 +51,6 @@ function Timer() {
   return <Text x={10} y={10} value={`Time: ${seconds}s`} />;
 }
 ```
-
-## Parameters
-
-### `effect`
-- Type: `() => void | (() => void)`
-- Description: Function that contains the side effect logic. Can optionally return a cleanup function.
-
-### `deps` (optional)
-- Type: `any[]`
-- Description: Dependency array. Effect runs when dependencies change. Omit for every execution, empty array `[]` for mount only.
-
-## Returns
-
-`void`
 
 ## Dependency Array Behavior
 
@@ -243,38 +243,6 @@ function DependentEffects() {
       <Text x={10} y={10} width={300} height={30} value={user?.name || 'Loading...'} />
       {posts.map((post, i) => (
         <Text key={i} x={10} y={40 + i * 30} width={300} height={30} value={post} />
-      ))}
-    </>
-  );
-}
-```
-
-### Debounced Effect
-
-```tsx
-import { system } from '@minecraft/server';
-
-function DebouncedSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState([]);
-  
-  useEffect(() => {
-    const timeoutId = system.runTimeout(() => {
-      if (searchTerm) {
-        console.log(`Searching for: ${searchTerm}`);
-        // Perform search
-        setResults([`Result for ${searchTerm}`]);
-      }
-    }, 10); // Wait 10 ticks (~0.5 seconds) after user stops typing
-    
-    return () => system.clearRun(timeoutId);
-  }, [searchTerm]);
-  
-  return (
-    <>
-      <Text x={10} y={10} width={300} height={30} value={`Search: ${searchTerm}`} />
-      {results.map((result, i) => (
-        <Text key={i} x={10} y={40 + i * 30} width={300} height={30} value={result} />
       ))}
     </>
   );

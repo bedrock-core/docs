@@ -20,6 +20,23 @@ function useReducer<S, A>(
 ): [S, (action: A) => void]
 ```
 
+### Parameters
+
+#### `reducer`
+- Type: `(state: S, action: A) => S`
+- Description: Function that takes current state and an action, returns new state
+
+#### `initialState`
+- Type: `S`
+- Description: The initial state value
+
+### Returns
+
+An array with two elements:
+
+1. **Current state** (`S`) - The current state value
+2. **Dispatch function** (`(action: A) => void`) - Function to dispatch actions
+
 ## Usage
 
 ```tsx
@@ -61,23 +78,6 @@ function Counter() {
   );
 }
 ```
-
-## Parameters
-
-### `reducer`
-- Type: `(state: S, action: A) => S`
-- Description: Function that takes current state and an action, returns new state
-
-### `initialState`
-- Type: `S`
-- Description: The initial state value
-
-## Returns
-
-An array with two elements:
-
-1. **Current state** (`S`) - The current state value
-2. **Dispatch function** (`(action: A) => void`) - Function to dispatch actions
 
 ## When to Use useReducer
 
