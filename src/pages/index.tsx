@@ -24,7 +24,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/ui/intro">
+            to="/docs/ui/get-started/overview">
             Start using @bedrock-core/ui
           </Link>
         </div>

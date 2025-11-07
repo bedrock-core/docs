@@ -1,0 +1,11 @@
+{
+  "position": 3,
+  "label": "Hooks",
+  "key": "hooks",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "hooks"
+  }
+}
