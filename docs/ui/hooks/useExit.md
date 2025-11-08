@@ -40,7 +40,7 @@ function CloseButton() {
       height={40}
       onPress={() => exit()}
     >
-      <Text x={10} y={10} width={180} height={20} value="Close UI" />
+      <Text x={10} y={10} width={180} height={20}>Close UI</Text>
     </Button>
   );
 }
@@ -62,7 +62,7 @@ function CloseUI() {
       height={40}
       onPress={exit}
     >
-      <Text x={10} y={10} width={180} height={20} value="Close" />
+      <Text x={10} y={10} width={180} height={20}>Close</Text>
     </Button>
   );
 }
@@ -77,7 +77,7 @@ function ConditionalClose() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Saved: ${isSaved ? 'Yes' : 'No'}`} />
+      <Text x={10} y={10} width={300} height={30}>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
       <Button 
         x={10} 
         y={50}
@@ -85,7 +85,7 @@ function ConditionalClose() {
         height={40}
         onPress={() => setIsSaved(true)}
       >
-        <Text x={10} y={10} width={80} height={20} value="Save" />
+        <Text x={10} y={10} width={80} height={20}>Save</Text>
       </Button>
       <Button 
         x={120} 
@@ -98,7 +98,7 @@ function ConditionalClose() {
           }
         }}
       >
-        <Text x={10} y={10} width={80} height={20} value="Exit" />
+        <Text x={10} y={10} width={80} height={20}>Exit</Text>
       </Button>
     </>
   );

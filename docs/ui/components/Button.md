@@ -21,7 +21,7 @@ import { Button } from '@bedrock-core/ui';
   height={40}
   onPress={() => console.log('Button clicked!')}
 >
-  <Text x={10} y={10} width={180} height={20} value="Click Me" />
+  <Text x={10} y={10} width={180} height={20}>Click Me</Text>
 </Button>
 ```
 
@@ -55,7 +55,7 @@ Button inherits all standard [control props](./control-props.md).
   height={40}
   onPress={() => console.log('Clicked')}
 >
-  <Text x={10} y={10} width={180} height={20} value="Click Me" />
+  <Text x={10} y={10} width={180} height={20}>Click Me</Text>
 </Button>
 ```
 
@@ -73,7 +73,7 @@ function ToggleButton() {
       height={40}
       onPress={() => setIsActive(!isActive)}
     >
-      <Text x={10} y={10} width={180} height={20} value={isActive ? 'Active' : 'Inactive'} />
+      <Text x={10} y={10} width={180} height={20}>{isActive ? 'Active' : 'Inactive'}</Text>
     </Button>
   );
 }
@@ -89,7 +89,7 @@ function ToggleButton() {
   height={40}
   enabled={false}
 >
-  <Text x={10} y={10} width={180} height={20} value="Disabled" />
+  <Text x={10} y={10} width={180} height={20}>Disabled</Text>
 </Button>
 ```
 

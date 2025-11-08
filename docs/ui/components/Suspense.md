@@ -14,24 +14,24 @@ import { Suspense } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Suspense fallback={<Text x={10} y={10} width={200} height={20} value="Loading..." />}>
+<Suspense fallback={<Text x={10} y={10} width={200} height={20}>Loading...</Text>}>
   <AsyncContent />
 </Suspense>
 ```
 
 ## Props
 
-### `fallback`
+#### `fallback`
 - Type: `JSX.Element`
 - Default: `undefined`
 - Description: Fallback UI to show while waiting for children to resolve their state
 
-### `awaitTimeout`
+#### `awaitTimeout`
 - Type: `number`
 - Default: `20` (ticks)
 - Description: Maximum time in ticks to wait for child state resolution. After timeout, shows main UI regardless of state resolution status.
 
-### `children`
+#### `children`
 - Type: `JSX.Node`
 - Required: Yes
 - Description: Child nodes to be wrapped by the Suspense boundary
@@ -55,7 +55,7 @@ function App() {
   return (
     <Panel x={0} y={0} width={400} height={300}>
       <Suspense 
-        fallback={<Text x={10} y={10} width={200} height={20} value="Loading data..." />}
+        fallback={<Text x={10} y={10} width={200} height={20}>Loading data...</Text>}
         awaitTimeout={20}
       >
         <DataDisplay />
@@ -71,11 +71,11 @@ function App() {
 function Dashboard() {
   return (
     <Panel x={0} y={0} width={600} height={500}>
-      <Text x={10} y={10} width={200} height={30} value="Dashboard" />
+      <Text x={10} y={10} width={200} height={30}>Dashboard</Text>
       
       {/* User info section */}
       <Suspense 
-        fallback={<Text x={10} y={50} width={200} height={20} value="Loading user..." />}
+        fallback={<Text x={10} y={50} width={200} height={20}>Loading user...</Text>}
         awaitTimeout={20}
       >
         <UserProfile />
@@ -83,7 +83,7 @@ function Dashboard() {
       
       {/* Stats section */}
       <Suspense 
-        fallback={<Text x={10} y={200} width={200} height={20} value="Loading stats..." />}
+        fallback={<Text x={10} y={200} width={200} height={20}>Loading stats...</Text>}
         awaitTimeout={20}
       >
         <Statistics />
@@ -99,19 +99,19 @@ function Dashboard() {
 function App() {
   return (
     <Suspense 
-      fallback={<Text x={10} y={10} width={200} height={20} value="Loading app..." />}
+      fallback={<Text x={10} y={10} width={200} height={20}>Loading app...</Text>}
       awaitTimeout={20}
     >
       <Panel x={0} y={0} width={600} height={400}>
         <Suspense 
-          fallback={<Text x={10} y={10} width={200} height={20} value="Loading header..." />}
+          fallback={<Text x={10} y={10} width={200} height={20}>Loading header...</Text>}
           awaitTimeout={15}
         >
           <Header />
         </Suspense>
         
         <Suspense 
-          fallback={<Text x={10} y={100} width={200} height={20} value="Loading content..." />}
+          fallback={<Text x={10} y={100} width={200} height={20}>Loading content...</Text>}
           awaitTimeout={15}
         >
           <MainContent />
@@ -130,13 +130,13 @@ function SafeContent() {
   
   if (error) {
     return (
-      <Text x={10} y={10} width={300} height={20} value={`Error: ${error}`} />
+      <Text x={10} y={10} width={300} height={20}>{`Error: ${error}`}</Text>
     );
   }
   
   return (
     <Suspense 
-      fallback={<Text x={10} y={10} width={200} height={20} value="Loading..." />}
+      fallback={<Text x={10} y={10} width={200} height={20}>Loading...</Text>}
       awaitTimeout={20}
     >
       <AsyncData onError={setError} />

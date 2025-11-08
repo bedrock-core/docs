@@ -36,9 +36,9 @@ function PlayerInfo() {
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value={`Name: ${player.name}`} />
-      <Text x={10} y={40} width={380} height={30} value={`Health: ${player.getComponent('health')?.currentValue}`} />
-      <Text x={10} y={70} width={380} height={30} value={`Level: ${player.level}`} />
+      <Text x={10} y={10} width={380} height={30}>{`Name: ${player.name}`}</Text>
+      <Text x={10} y={40} width={380} height={30}>{`Health: ${player.getComponent('health')?.currentValue}`}</Text>
+      <Text x={10} y={70} width={380} height={30}>{`Level: ${player.level}`}</Text>
     </Panel>
   );
 }
@@ -55,12 +55,12 @@ function StatsDisplay() {
   
   return (
     <Panel width={400} height={400}>
-      <Text x={10} y={10} width={380} height={30} value="Player Stats" />
+      <Text x={10} y={10} width={380} height={30}>Player Stats</Text>
       
-      <Text x={10} y={50} width={380} height={30} value={`Name: ${player.name}`} />
-      <Text x={10} y={80} width={380} height={30} value={`Health: ${healthComp?.currentValue}/${healthComp?.effectiveMax}`} />
-      <Text x={10} y={110} width={380} height={30} value={`Level: ${player.level}`} />
-      <Text x={10} y={140} width={380} height={30} value={`Position: ${Math.floor(player.location.x)}, ${Math.floor(player.location.y)}, ${Math.floor(player.location.z)}`} />
+      <Text x={10} y={50} width={380} height={30}>{`Name: ${player.name}`}</Text>
+      <Text x={10} y={80} width={380} height={30}>{`Health: ${healthComp?.currentValue}/${healthComp?.effectiveMax}`}</Text>
+      <Text x={10} y={110} width={380} height={30}>{`Level: ${player.level}`}</Text>
+      <Text x={10} y={140} width={380} height={30}>{`Position: ${Math.floor(player.location.x)}, ${Math.floor(player.location.y)}, ${Math.floor(player.location.z)}`}</Text>
     </Panel>
   );
 }
@@ -76,19 +76,19 @@ function AdminPanel() {
   if (!isAdmin) {
     return (
       <Panel width={300} height={100}>
-        <Text x={10} y={10} width={280} height={30} value="Access Denied" />
+        <Text x={10} y={10} width={280} height={30}>Access Denied</Text>
       </Panel>
     );
   }
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value="Admin Panel" />
+      <Text x={10} y={10} width={380} height={30}>Admin Panel</Text>
       <Button x={10} y={50} width={380} height={40}>
-        <Text x={10} y={10} width={360} height={20} value="Manage Players" />
+        <Text x={10} y={10} width={360} height={20}>Manage Players</Text>
       </Button>
       <Button x={10} y={100} width={380} height={40}>
-        <Text x={10} y={10} width={360} height={20} value="Server Settings" />
+        <Text x={10} y={10} width={360} height={20}>Server Settings</Text>
       </Button>
     </Panel>
   );
@@ -115,11 +115,11 @@ function HealthDisplay() {
   const health = player.getComponent('health');
   
   if (!health) {
-    return <Text x={10} y={10} width={300} height={30} value="Health unavailable" />;
+    return <Text x={10} y={10} width={300} height={30}>Health unavailable</Text>;
   }
   
   return (
-    <Text x={10} y={10} width={300} height={30} value={`Health: ${health.currentValue}/${health.effectiveMax}`} />
+    <Text x={10} y={10} width={300} height={30}>{`Health: ${health.currentValue}/${health.effectiveMax}`}</Text>
   );
 }
 ```

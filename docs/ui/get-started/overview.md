@@ -44,10 +44,10 @@ import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 function WelcomeScreen() {
   return (
     <Panel width={300} height={200}>
-      <Text x={10} y={10} width={280} height={20} value={'Welcome to Bedrock UI!'} />
+      <Text x={10} y={10} width={280} height={20}>Welcome to Bedrock UI!</Text>
 
       <Button x={10} y={50} width={280} height={40}>
-        <Text x={10} y={10} width={260} height={20} value={'Click Me'} />
+        <Text x={10} y={10} width={260} height={20}>Click Me</Text>
       </Button>
     </Panel>
   );

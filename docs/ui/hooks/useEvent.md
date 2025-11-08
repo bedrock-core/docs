@@ -64,7 +64,7 @@ function EventListener() {
   );
   
   return (
-    <Text x={10} y={10} width={300} height={30} value={`Last event: ${lastEvent}`} />
+    <Text x={10} y={10} width={300} height={30}>{`Last event: ${lastEvent}`}</Text>
   );
 }
 ```
@@ -89,9 +89,9 @@ function PlayerJoinNotification() {
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value="Recent Joins" />
+      <Text x={10} y={10} width={380} height={30}>Recent Joins</Text>
       {recentPlayers.map((name, index) => (
-        <Text key={index} x={10} y={50 + index * 30} width={380} height={30} value={name} />
+        <Text key={index} x={10} y={50 + index * 30} width={380} height={30}>{name}</Text>
       ))}
     </Panel>
   );
@@ -118,8 +118,8 @@ function ItemUseTracker() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Item uses: ${useCount}`} />
-      <Text x={10} y={40} width={300} height={30} value={`Last used: ${lastItem}`} />
+      <Text x={10} y={10} width={300} height={30}>{`Item uses: ${useCount}`}</Text>
+      <Text x={10} y={40} width={300} height={30}>{`Last used: ${lastItem}`}</Text>
     </>
   );
 }
@@ -150,9 +150,9 @@ function MultiEventTracker() {
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value="Event Log" />
+      <Text x={10} y={10} width={380} height={30}>Event Log</Text>
       {eventLog.map((log, index) => (
-        <Text key={index} x={10} y={50 + index * 30} width={380} height={30} value={log} />
+        <Text key={index} x={10} y={50 + index * 30} width={380} height={30}>{log}</Text>
       ))}
     </Panel>
   );

@@ -52,12 +52,12 @@ function Timer() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${count}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
       <Button x={10} y={50} width={120} height={40} onPress={startTimer}>
-        <Text x={10} y={10} width={100} height={20} value="Start" />
+        <Text x={10} y={10} width={100} height={20}>Start</Text>
       </Button>
       <Button x={140} y={50} width={120} height={40} onPress={stopTimer}>
-        <Text x={10} y={10} width={100} height={20} value="Stop" />
+        <Text x={10} y={10} width={100} height={20}>Stop</Text>
       </Button>
     </>
   );
@@ -85,13 +85,13 @@ function PreviousValue() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Current: ${count}`} />
-      <Text x={10} y={40} width={200} height={30} value={`Previous: ${prevCountRef.current}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Current: ${count}`}</Text>
+      <Text x={10} y={40} width={200} height={30}>{`Previous: ${prevCountRef.current}`}</Text>
       <Button 
         x={10} y={80} width={200} height={40}
         onPress={() => setCount(count + 1)}
       >
-        <Text x={10} y={10} width={180} height={20} value="Increment" />
+        <Text x={10} y={10} width={180} height={20}>Increment</Text>
       </Button>
     </>
   );
@@ -126,12 +126,12 @@ function DelayedMessage() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={message || 'No message'} />
+      <Text x={10} y={10} width={300} height={30}>{message || 'No message'}</Text>
       <Button x={10} y={50} width={180} height={40} onPress={scheduleMessage}>
-        <Text x={10} y={10} width={160} height={20} value="Schedule Message" />
+        <Text x={10} y={10} width={160} height={20}>Schedule Message</Text>
       </Button>
       <Button x={200} y={50} width={180} height={40} onPress={cancelMessage}>
-        <Text x={10} y={10} width={160} height={20} value="Cancel" />
+        <Text x={10} y={10} width={160} height={20}>Cancel</Text>
       </Button>
     </>
   );
@@ -150,13 +150,13 @@ function ExecutionCounter() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`State: ${state}`} />
-      <Text x={10} y={40} width={200} height={30} value={`Executions: ${executionCount.current}`} />
+      <Text x={10} y={10} width={200} height={30}>{`State: ${state}`}</Text>
+      <Text x={10} y={40} width={200} height={30}>{`Executions: ${executionCount.current}`}</Text>
       <Button 
         x={10} y={80} width={200} height={40}
         onPress={() => setState(state + 1)}
       >
-        <Text x={10} y={10} width={180} height={20} value="Update State" />
+        <Text x={10} y={10} width={180} height={20}>Update State</Text>
       </Button>
     </>
   );
@@ -199,7 +199,7 @@ function FirstExecutionDetector() {
     }
   });
   
-  return <Text x={10} y={10} width={300} height={30} value="Check console" />;
+  return <Text x={10} y={10} width={300} height={30}>Check console</Text>;
 }
 ```
 

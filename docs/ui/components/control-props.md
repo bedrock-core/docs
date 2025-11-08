@@ -56,8 +56,9 @@ Common layout and styling properties shared by all components.
   y={100}
   width={200}
   height={30}
-  value="Positioned text"
-/>
+>
+  Positioned text
+</Text>
 ```
 
 ### Visibility Control
@@ -66,7 +67,7 @@ Common layout and styling properties shared by all components.
 function ConditionalUI({ showButton }) {
   return (
     <>
-      <Text x={10} y={10} value="Some text" />
+      <Text x={10} y={10}>Some text</Text>
       <Button 
         x={10} 
         y={50}
@@ -74,7 +75,7 @@ function ConditionalUI({ showButton }) {
         height={40}
         visible={showButton}
       >
-        <Text value="Optional Button" />
+        <Text>Optional Button</Text>
       </Button>
     </>
   );
@@ -91,7 +92,7 @@ function ConditionalUI({ showButton }) {
   height={40}
   enabled={false}
 >
-  <Text value="Disabled Button" />
+  <Text>Disabled Button</Text>
 </Button>
 ```
 
@@ -101,10 +102,10 @@ function ConditionalUI({ showButton }) {
 <>
   <Panel x={0} y={100} width={200} height={100}>
     {/* Relative positioning - positioned from parent origin */}
-    <Text x={10} y={10} width={180} height={30} position="relative" value="Relative position" />
+    <Text x={10} y={10} width={180} height={30} position="relative">Relative position</Text>
 
     {/* Absolute positioning - positioned from screen origin */}
-    <Text x={10} y={10} width={180} height={30} position="absolute" value="Absolute position" />
+    <Text x={10} y={10} width={180} height={30} position="absolute">Absolute position</Text>
   </Panel>
 </>
 ```

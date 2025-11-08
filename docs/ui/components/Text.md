@@ -14,18 +14,18 @@ import { Text } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Text x={10} y={10} width={200} height={20} value="Hello, Minecraft!" />
+<Text x={10} y={10} width={200} height={20}>Hello, Minecraft!</Text>
 ```
 
 ## Props
 
 ### Component-Specific Props
 
-#### `value`
+#### `children`
 - Type: `string`
 - Required: Yes
 - Description: The text content to display
-- Constrains: Max length is 80 characters, prefer to use translations strings when possible
+- Constraints: Max length is 80 characters, prefer to use translation strings when possible
 
 ### Control Props
 
@@ -36,16 +36,16 @@ Text inherits all standard [control props](./control-props.md).
 ### Basic Text
 
 ```tsx
-<Text x={0} y={0} width={200} height={20} value="Simple text" />
+<Text x={0} y={0} width={200} height={20}>Simple text</Text>
 ```
 
 ### Multi-line Layout
 
 ```tsx
 <>
-  <Text x={10} y={10} width={300} height={30} value="§b§1Title" />
-  <Text x={10} y={40} width={300} height={25} value="§2Subtitle text" />
-  <Text x={10} y={70} width={300} height={40} value="Body content goes here" />
+  <Text x={10} y={10} width={300} height={30}>§b§1Title</Text>
+  <Text x={10} y={40} width={300} height={25}>§2Subtitle text</Text>
+  <Text x={10} y={70} width={300} height={40}>Body content goes here</Text>
 </>
 ```
 
@@ -57,7 +57,7 @@ function Counter() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${count}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
       <Button 
         x={10} 
         y={50} 
@@ -65,7 +65,7 @@ function Counter() {
         height={40}
         onPress={() => setCount(count + 1)}
       >
-        <Text x={10} y={10} width={180} height={20} value="Increment" />
+        <Text x={10} y={10} width={180} height={20}>Increment</Text>
       </Button>
     </>
   );

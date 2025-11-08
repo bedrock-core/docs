@@ -18,8 +18,8 @@ import { Fragment } from '@bedrock-core/ui';
 
 ```tsx
 <Fragment>
-  <Text x={10} y={10} width={200} height={20} value="First element" />
-  <Text x={10} y={40} width={200} height={20} value="Second element" />
+  <Text x={10} y={10} width={200} height={20}>First element</Text>
+  <Text x={10} y={40} width={200} height={20}>Second element</Text>
 </Fragment>
 ```
 
@@ -27,8 +27,8 @@ import { Fragment } from '@bedrock-core/ui';
 
 ```tsx
 <>
-  <Text x={10} y={10} width={200} height={20} value="First element" />
-  <Text x={10} y={40} width={200} height={20} value="Second element" />
+  <Text x={10} y={10} width={200} height={20}>First element</Text>
+  <Text x={10} y={40} width={200} height={20}>Second element</Text>
 </>
 ```
 
@@ -49,8 +49,8 @@ Components must return a single root element. Use Fragment to return multiple si
 function Header() {
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value="Welcome" />
-      <Text x={10} y={50} width={300} height={25} value="Subtitle text" />
+      <Text x={10} y={10} width={300} height={30}>Welcome</Text>
+      <Text x={10} y={50} width={300} height={25}>Subtitle text</Text>
     </>
   );
 }
@@ -65,8 +65,8 @@ Fragment prevents unnecessary `Panel` wrappers when you don't need visual groupi
 function MyComponent() {
   return (
     <Panel x={0} y={0} width={300} height={200}>
-      <Text x={10} y={10} width={280} height={20} value="First" />
-      <Text x={10} y={40} width={280} height={20} value="Second" />
+      <Text x={10} y={10} width={280} height={20}>First</Text>
+      <Text x={10} y={40} width={280} height={20}>Second</Text>
     </Panel>
   );
 }
@@ -75,8 +75,8 @@ function MyComponent() {
 function MyComponent() {
   return (
     <>
-      <Text x={10} y={10} width={280} height={20} value="First" />
-      <Text x={10} y={40} width={280} height={20} value="Second" />
+      <Text x={10} y={10} width={280} height={20}>First</Text>
+      <Text x={10} y={40} width={280} height={20}>Second</Text>
     </>
   );
 }
@@ -88,11 +88,11 @@ function MyComponent() {
 function ConditionalContent({ showDetails }) {
   return (
     <>
-      <Text x={10} y={10} width={300} height={20} value="Always visible" />
+      <Text x={10} y={10} width={300} height={20}>Always visible</Text>
       {showDetails && (
         <>
-          <Text x={10} y={40} width={300} height={20} value="Detail 1" />
-          <Text x={10} y={70} width={300} height={20} value="Detail 2" />
+          <Text x={10} y={40} width={300} height={20}>Detail 1</Text>
+          <Text x={10} y={70} width={300} height={20}>Detail 2</Text>
         </>
       )}
     </>
@@ -108,8 +108,8 @@ function ItemList({ items }) {
     <>
       {items.map((item, index) => (
         <Fragment key={item.id}>
-          <Text x={10} y={10 + (index * 30)} width={300} height={20} value={item.name} />
-          <Text x={10} y={30 + (index * 30)} width={300} height={15} value={item.description} />
+          <Text x={10} y={10 + (index * 30)} width={300} height={20}>{item.name}</Text>
+          <Text x={10} y={30 + (index * 30)} width={300} height={15}>{item.description}</Text>
         </Fragment>
       ))}
     </>
@@ -125,16 +125,16 @@ function ItemList({ items }) {
 function StatusDisplay({ isOnline }) {
   return (
     <>
-      <Text x={10} y={10} width={60} height={20} value="Status:" />
+      <Text x={10} y={10} width={60} height={20}>Status:</Text>
       {isOnline ? (
         <>
-          <Text x={70} y={10} width={100} height={20} value="§2Online" />
-          <Text x={10} y={40} width={300} height={20} value="Connected users: 5" />
+          <Text x={70} y={10} width={100} height={20}>§2Online</Text>
+          <Text x={10} y={40} width={300} height={20}>Connected users: 5</Text>
         </>
       ) : (
         <>
-          <Text x={70} y={10} width={100} height={20} value="§cOffline" />
-          <Text x={10} y={40} width={300} height={20} value="Reconnecting..." />
+          <Text x={70} y={10} width={100} height={20}>§cOffline</Text>
+          <Text x={10} y={40} width={300} height={20}>Reconnecting...</Text>
         </>
       )}
     </>

@@ -17,7 +17,7 @@ import { Panel } from '@bedrock-core/ui';
 function Example() {
   return (
     <Panel width={300} height={200}>
-      <Text x={10} y={10} width={280} height={30} value="Content inside panel" />
+      <Text x={10} y={10} width={280} height={30}>Content inside panel</Text>
     </Panel>
   );
 }
@@ -42,7 +42,7 @@ Panel inherits all standard [control props](./control-props.md)
 
 ```tsx
 <Panel width={400} height={300}>
-  <Text x={10} y={10} width={380} height={30} value="Simple panel content" />
+  <Text x={10} y={10} width={380} height={30}>Simple panel content</Text>
 </Panel>
 ```
 
@@ -56,7 +56,7 @@ Panel inherits all standard [control props](./control-props.md)
     width={580} 
     height={100}
   >
-    <Text x={10} y={10} width={560} height={30} value="Nested Panel Header" />
+    <Text x={10} y={10} width={560} height={30}>Nested Panel Header</Text>
   </Panel>
   
   <Panel 
@@ -65,7 +65,7 @@ Panel inherits all standard [control props](./control-props.md)
     width={580} 
     height={350}
   >
-    <Text x={10} y={10} width={560} height={30} value="Nested Panel Content" />
+    <Text x={10} y={10} width={560} height={30}>Nested Panel Content</Text>
   </Panel>
 </Panel>
 ```

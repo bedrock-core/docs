@@ -39,7 +39,7 @@ function Counter() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${count}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
       <Button 
         x={10} 
         y={50}
@@ -47,7 +47,7 @@ function Counter() {
         height={40}
         onPress={() => setCount(count + 1)}
       >
-        <Text x={10} y={10} width={130} height={20} value="Increment" />
+        <Text x={10} y={10} width={130} height={20}>Increment</Text>
       </Button>
     </>
   );
@@ -70,7 +70,7 @@ function Toggle() {
       height={40}
       onPress={() => setIsOn(!isOn)}
     >
-      <Text x={10} y={10} width={180} height={20} value={isOn ? 'ON' : 'OFF'} />
+      <Text x={10} y={10} width={180} height={20}>{isOn ? 'ON' : 'OFF'}</Text>
     </Button>
   );
 }
@@ -86,9 +86,9 @@ function MultiState() {
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value={`Count: ${count}`} />
-      <Text x={10} y={40} width={380} height={30} value={`Name: ${name}`} />
-      <Text x={10} y={70} width={380} height={30} value={`Active: ${isActive ? 'Yes' : 'No'}`} />
+      <Text x={10} y={10} width={380} height={30}>{`Count: ${count}`}</Text>
+      <Text x={10} y={40} width={380} height={30}>{`Name: ${name}`}</Text>
+      <Text x={10} y={70} width={380} height={30}>{`Active: ${isActive ? 'Yes' : 'No'}`}</Text>
       
       <Button 
         x={10} y={110} width={380} height={40}
@@ -97,7 +97,7 @@ function MultiState() {
           setIsActive(true);
         }}
       >
-        <Text x={10} y={10} width={360} height={20} value="Update Multiple States" />
+        <Text x={10} y={10} width={360} height={20}>Update Multiple States</Text>
       </Button>
     </Panel>
   );
@@ -130,15 +130,15 @@ function StatsDisplay() {
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value={`Health: ${stats.health}`} />
-      <Text x={10} y={40} width={380} height={30} value={`Mana: ${stats.mana}`} />
-      <Text x={10} y={70} width={380} height={30} value={`Level: ${stats.level}`} />
+      <Text x={10} y={10} width={380} height={30}>{`Health: ${stats.health}`}</Text>
+      <Text x={10} y={40} width={380} height={30}>{`Mana: ${stats.mana}`}</Text>
+      <Text x={10} y={70} width={380} height={30}>{`Level: ${stats.level}`}</Text>
       
       <Button x={10} y={110} width={180} height={40} onPress={heal}>
-        <Text x={10} y={10} width={160} height={20} value="Heal (+10)" />
+        <Text x={10} y={10} width={160} height={20}>Heal (+10)</Text>
       </Button>
       <Button x={200} y={110} width={180} height={40} onPress={levelUp}>
-        <Text x={10} y={10} width={160} height={20} value="Level Up" />
+        <Text x={10} y={10} width={160} height={20}>Level Up</Text>
       </Button>
     </Panel>
   );
@@ -162,7 +162,7 @@ function TodoList() {
   return (
     <Panel width={400} height={400}>
       {todos.map((todo, index) => (
-        <Text key={index} x={10} y={10 + (index * 30)} width={380} height={30} value={`${index + 1}. ${todo}`} />
+        <Text key={index} x={10} y={10 + (index * 30)} width={380} height={30}>{`${index + 1}. ${todo}`}</Text>
       ))}
       
       <Button 
@@ -172,7 +172,7 @@ function TodoList() {
         height={40}
         onPress={addTodo}
       >
-        <Text x={10} y={10} width={160} height={20} value="Add Todo" />
+        <Text x={10} y={10} width={160} height={20}>Add Todo</Text>
       </Button>
       <Button 
         x={200} 
@@ -182,7 +182,7 @@ function TodoList() {
         onPress={removeLast}
         enabled={todos.length > 0}
       >
-        <Text x={10} y={10} width={160} height={20} value="Remove Last" />
+        <Text x={10} y={10} width={160} height={20}>Remove Last</Text>
       </Button>
     </Panel>
   );
@@ -296,7 +296,7 @@ function ControlledToggle() {
       enabled={isEnabled}
       onPress={() => setIsEnabled(!isEnabled)}
     >
-      <Text x={10} y={10} width={180} height={20} value={isEnabled ? 'Enabled' : 'Disabled'} />
+      <Text x={10} y={10} width={180} height={20}>{isEnabled ? 'Enabled' : 'Disabled'}</Text>
     </Button>
   );
 }

@@ -64,15 +64,15 @@ function Counter() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${state.count}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Count: ${state.count}`}</Text>
       <Button x={10} y={50} width={120} height={40} onPress={() => dispatch({ type: 'increment' })}>
-        <Text x={10} y={10} width={100} height={20} value="+" />
+        <Text x={10} y={10} width={100} height={20}>+</Text>
       </Button>
       <Button x={140} y={50} width={120} height={40} onPress={() => dispatch({ type: 'decrement' })}>
-        <Text x={10} y={10} width={100} height={20} value="-" />
+        <Text x={10} y={10} width={100} height={20}>-</Text>
       </Button>
       <Button x={270} y={50} width={120} height={40} onPress={() => dispatch({ type: 'reset' })}>
-        <Text x={10} y={10} width={100} height={20} value="Reset" />
+        <Text x={10} y={10} width={100} height={20}>Reset</Text>
       </Button>
     </>
   );
@@ -151,18 +151,18 @@ function TodoApp() {
         x={10} y={10} width={380} height={40}
         onPress={() => dispatch({ type: 'add', text: 'New task' })}
       >
-        <Text x={10} y={10} width={360} height={20} value="Add Todo" />
+        <Text x={10} y={10} width={360} height={20}>Add Todo</Text>
       </Button>
       
       {state.todos.map((todo, index) => (
-        <Text key={todo.id} x={10} y={60 + index * 30} width={380} height={20} value={`${todo.completed ? '✓' : '○'} ${todo.text}`} />
+        <Text key={todo.id} x={10} y={60 + index * 30} width={380} height={20}>{`${todo.completed ? '✓' : '○'} ${todo.text}`}</Text>
       ))}
       
       <Button 
         x={10} y={400} width={380} height={40}
         onPress={() => dispatch({ type: 'clear' })}
       >
-        <Text x={10} y={10} width={360} height={20} value="Clear All" />
+        <Text x={10} y={10} width={360} height={20}>Clear All</Text>
       </Button>
     </Panel>
   );

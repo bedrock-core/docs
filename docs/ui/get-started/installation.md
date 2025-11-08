@@ -95,8 +95,9 @@ const HelloWorld = (
       height={30}
       x={25}
       y={25}
-      value="Hello from @bedrock-core/ui!"
-    />
+    >
+      Hello from @bedrock-core/ui!
+    </Text>
   </Panel>
 );
 

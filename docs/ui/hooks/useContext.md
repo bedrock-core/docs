@@ -55,7 +55,7 @@ function ThemedComponent() {
   const theme = useContext(ThemeContext);
   
   return (
-    <Text x={10} y={10} width={300} height={30} value={`Color: ${theme.color}, Size: ${theme.fontSize}`} />
+    <Text x={10} y={10} width={300} height={30}>{`Color: ${theme.color}, Size: ${theme.fontSize}`}</Text>
   );
 }
 ```
@@ -90,7 +90,7 @@ function ThemedText() {
   const theme = useContext(ThemeContext);
   
   return (
-    <Text x={10} y={10} width={380} height={30} value={`Primary: ${theme.primaryColor}`} />
+    <Text x={10} y={10} width={380} height={30}>{`Primary: ${theme.primaryColor}`}</Text>
   );
 }
 
@@ -99,7 +99,7 @@ function ThemedButton() {
   
   return (
     <Button x={10} y={50} width={380} height={40} onPress={() => {}}>
-      <Text x={10} y={10} width={360} height={20} value="Styled Button" />
+      <Text x={10} y={10} width={360} height={20}>Styled Button</Text>
     </Button>
   );
 }
@@ -134,13 +134,13 @@ function Dashboard() {
   const user = useContext(UserContext);
   
   if (!user) {
-    return <Text x={10} y={10} width={300} height={30} value="Not logged in" />;
+    return <Text x={10} y={10} width={300} height={30}>Not logged in</Text>;
   }
   
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value={`Welcome, ${user.name}!`} />
-      <Text x={10} y={50} width={380} height={30} value={`Role: ${user.role}`} />
+      <Text x={10} y={10} width={380} height={30}>{`Welcome, ${user.name}!`}</Text>
+      <Text x={10} y={50} width={380} height={30}>{`Role: ${user.role}`}</Text>
     </Panel>
   );
 }
@@ -186,12 +186,12 @@ function VolumeControl() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Volume: ${settings.volume}%`} />
+      <Text x={10} y={10} width={300} height={30}>{`Volume: ${settings.volume}%`}</Text>
       <Button x={10} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}>
-        <Text x={10} y={10} width={160} height={20} value="Volume +" />
+        <Text x={10} y={10} width={160} height={20}>Volume +</Text>
       </Button>
       <Button x={200} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}>
-        <Text x={10} y={10} width={160} height={20} value="Volume -" />
+        <Text x={10} y={10} width={160} height={20}>Volume -</Text>
       </Button>
     </>
   );

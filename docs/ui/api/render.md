@@ -37,7 +37,7 @@ import { world } from '@minecraft/server';
 function WelcomeScreen() {
   return (
     <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30} value="Hello, Minecraft!" />
+      <Text x={10} y={10} width={380} height={30}>Hello, Minecraft!</Text>
     </Panel>
   );
 }

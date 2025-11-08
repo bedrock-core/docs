@@ -48,7 +48,7 @@ function Timer() {
     return () => system.clearRun(runId);
   }, []); // Empty deps = run once on mount
   
-  return <Text x={10} y={10} value={`Time: ${seconds}s`} />;
+  return <Text x={10} y={10}>{`Time: ${seconds}s`}</Text>;
 }
 ```
 
@@ -74,7 +74,7 @@ function DataLoader() {
     setData('Loaded data');
   }, []); // Empty array = run once
   
-  return <Text x={10} y={10} width={300} height={30} value={data || 'Loading...'} />;
+  return <Text x={10} y={10} width={300} height={30}>{data || 'Loading...'}</Text>;
 }
 ```
 
@@ -95,9 +95,9 @@ function SearchResults() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Search: ${query}`} />
+      <Text x={10} y={10} width={300} height={30}>{`Search: ${query}`}</Text>
       {results.map((result, i) => (
-        <Text key={i} x={10} y={40 + i * 30} width={300} height={30} value={result} />
+        <Text key={i} x={10} y={40 + i * 30} width={300} height={30}>{result}</Text>
       ))}
     </>
   );
@@ -121,7 +121,7 @@ function EventListener() {
     };
   }, []);
   
-  return <Text x={10} y={10} width={300} height={30} value="Timeout scheduled..." />;
+  return <Text x={10} y={10} width={300} height={30}>Timeout scheduled...</Text>;
 }
 ```
 
@@ -149,8 +149,8 @@ function MultiEffect() {
   
   return (
     <>
-      <Text x={10} y={10} width={200} height={30} value={`Count: ${count}`} />
-      <Text x={10} y={40} width={200} height={30} value={`Name: ${name}`} />
+      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
+      <Text x={10} y={40} width={200} height={30}>{`Name: ${name}`}</Text>
     </>
   );
 }
@@ -175,7 +175,7 @@ function Countdown() {
   }, [timeLeft]);
   
   return (
-    <Text x={10} y={10} width={200} height={30} value={`Time Left: ${timeLeft}s`} />
+    <Text x={10} y={10} width={200} height={30}>{`Time Left: ${timeLeft}s`}</Text>
   );
 }
 ```
@@ -202,13 +202,13 @@ function PlayerStats() {
   }, []); // Load once on mount
   
   if (loading) {
-    return <Text x={10} y={10} width={300} height={30} value="Loading stats..." />;
+    return <Text x={10} y={10} width={300} height={30}>Loading stats...</Text>;
   }
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Health: ${stats?.health}`} />
-      <Text x={10} y={40} width={300} height={30} value={`Level: ${stats?.level}`} />
+      <Text x={10} y={10} width={300} height={30}>{`Health: ${stats?.health}`}</Text>
+      <Text x={10} y={40} width={300} height={30}>{`Level: ${stats?.level}`}</Text>
     </>
   );
 }
@@ -240,9 +240,9 @@ function DependentEffects() {
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={user?.name || 'Loading...'} />
+      <Text x={10} y={10} width={300} height={30}>{user?.name || 'Loading...'}</Text>
       {posts.map((post, i) => (
-        <Text key={i} x={10} y={40 + i * 30} width={300} height={30} value={post} />
+        <Text key={i} x={10} y={40 + i * 30} width={300} height={30}>{post}</Text>
       ))}
     </>
   );
