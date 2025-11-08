@@ -51,9 +51,6 @@ const config: Config = {
         path: 'docs/server',
         routeBasePath: 'docs/server',
         sidebarPath: './sidebars.ts',
-        editUrl: ({ docPath }) => {
-          return `https://github.com/bedrock-core/server/docs/${docPath}`;
-        },
       },
     ],
     [
@@ -63,9 +60,6 @@ const config: Config = {
         path: 'docs/ui',
         routeBasePath: 'docs/ui',
         sidebarPath: './sidebars.ts',
-        editUrl: ({ docPath }) => {
-          return `https://github.com/bedrock-core/ui/docs/${docPath}`;
-        },
       },
     ],
   ],
