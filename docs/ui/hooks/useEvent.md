@@ -14,14 +14,14 @@ import { useEvent } from '@bedrock-core/ui';
 ## Signature
 
 ```tsx
-function useEvent<T, O = Record<string, unknown>>(
+function useEvent<T, O>(
   signal: { 
-    subscribe(cb: (e: T) => void, options?: O): (e: T) => void
-    unsubscribe(cb: (e: T) => void): void 
+    subscribe(callback: (event: T) => void, options?: O): (event: T) => void
+    unsubscribe(callback: (event: T) => void): void 
   },
   callback: (event: T) => void,
   options?: O,
-  deps?: readonly unknown[]
+  deps?: any[]
 ): void
 ```
 
@@ -36,12 +36,12 @@ function useEvent<T, O = Record<string, unknown>>(
 - Description: The callback function that will be called when the event is emitted
 
 #### `options` (optional)
-- Type: `O` (generic, defaults to `Record<string, unknown>`)
+- Type: `O` (generic)
 - Description: Additional options to pass to the subscribe method
 
 #### `deps` (optional)
-- Type: `readonly unknown[]`
-- Description: Dependency array. If provided, the hook will re-subscribe when dependencies change. If omitted, dependencies will automatically include signal, callback, and options
+- Type: `any[]`
+- Description: Dependency array. If provided, the hook will re-subscribe when dependencies change.
 
 ### Returns
 
@@ -164,45 +164,34 @@ function MultiEventTracker() {
 ### Manage Dependencies Correctly
 
 ```tsx
-// ✅ Good - provide explicit dependencies
+// ✅ Good - include dependencies used inside the callback
 function EventHandler() {
   const player = usePlayer();
   
   useEvent(
-    signal,
+    world.afterEvents.entityHealthChanged,
     (event) => {
-      // Use player
+      // Using player inside - add to deps
+      if (event.entity.id === player.id) {
+        handleHealthChange(event);
+      }
     },
-    undefined
+    undefined,
     [player]
   );
 }
 
-// ⚠️ Caution - hook manages dependencies automatically if not provided
+// ✅ Good - no external dependencies needed
 function EventHandler() {
-  useEvent(signal, (event) => {
-    // Hook will auto-include callback in dependencies
-  });
+  useEvent(
+    world.afterEvents.playerJoin,
+    (event) => {
+      // No external dependencies used
+      console.log(`${event.playerName} joined`);
+    }
+    // deps not needed
+  );
 }
-```
-
-### Type Event Payloads
-
-```tsx
-// ✅ Good - typed event
-interface PlayerJoinEvent {
-  player: Player;
-  timestamp: number;
-}
-
-useEvent<PlayerJoinEvent>(signal, (event) => {
-  // event is properly typed
-});
-
-// ❌ Less ideal - untyped
-useEvent(signal, (event) => {
-  // event is 'any' type
-});
 ```
 
 ### Avoid Heavy Operations in Handlers
@@ -218,39 +207,4 @@ useEvent(signal, (event) => {
   const result = expensiveOperation(event.data);
   setData(result);
 });
-```
-
-## Common Patterns
-
-### Event Counter
-
-```tsx
-const [count, setCount] = useState(0);
-
-useEvent(signal, () => setCount(c => c + 1));
-```
-
-### Latest Event Value
-
-```tsx
-const [latest, setLatest] = useState<T | null>(null);
-
-useEvent<T>(signal, (event) => setLatest(event));
-```
-
-### Event with Options
-
-```tsx
-interface EventOptions {
-  debounce?: number;
-  throttle?: number;
-}
-
-useEvent<T, EventOptions>(
-  signal,
-  (event) => {
-    // Handle event
-  },
-  { debounce: 300 } // Pass options
-);
 ```

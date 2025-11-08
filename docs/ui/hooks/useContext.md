@@ -1,6 +1,7 @@
 ---
 sidebar_position: 4
 ---
+
 # useContext
 
 Access context values from Context Providers.
@@ -8,7 +9,7 @@ Access context values from Context Providers.
 ## Import
 
 ```tsx
-import { useContext, createContext } from '@bedrock-core/ui';
+import { useContext } from '@bedrock-core/ui';
 ```
 
 ## Signature
@@ -30,24 +31,31 @@ The current context value for the given context. The value is determined by the 
 ## Usage
 
 ```tsx
-// Create context
-const ThemeContext = createContext({ color: '§1' });
+import { createContext, useContext } from '@bedrock-core/ui';
 
-// Provider component
+interface Theme {
+  color: string;
+  fontSize: number;
+}
+
+const ThemeContext = createContext<Theme>({
+  color: '#ffffff',
+  fontSize: 14
+});
+
 function App() {
   return (
-    <ThemeContext value={{ color: '§2' }}>
+    <ThemeContext value={{ color: '#3498db', fontSize: 16 }}>
       <ThemedComponent />
     </ThemeContext>
   );
 }
 
-// Consumer component
 function ThemedComponent() {
   const theme = useContext(ThemeContext);
   
   return (
-    <Text x={10} y={10} width={200} height={30} value={`${theme.color}Themed Text`} />
+    <Text x={10} y={10} width={300} height={30} value={`Color: ${theme.color}, Size: ${theme.fontSize}`} />
   );
 }
 ```
@@ -63,38 +71,18 @@ interface Theme {
 }
 
 const ThemeContext = createContext<Theme>({
-  primaryColor: '§f',
-  backgroundColor: '§0'
+  primaryColor: '#ffffff',
+  backgroundColor: '#000000'
 });
 
 function App() {
-  const darkTheme: Theme = {
-    primaryColor: '§b',
-    backgroundColor: '§0'
-  };
-  
   return (
-    <ThemeContext value={darkTheme}>
+    <ThemeContext value={{ primaryColor: '#3498db', backgroundColor: '#2c3e50' }}>
       <Panel width={400} height={300}>
-        <ThemedButton />
         <ThemedText />
+        <ThemedButton />
       </Panel>
     </ThemeContext>
-  );
-}
-
-function ThemedButton() {
-  const theme = useContext(ThemeContext);
-  
-  return (
-    <Button 
-      x={10} 
-      y={10}
-      width={200}
-      height={40}
-    >
-      <Text x={10} y={10} width={180} height={20} value={`${theme.backgroundColor}Themed Button`} />
-    </Button>
   );
 }
 
@@ -102,13 +90,17 @@ function ThemedText() {
   const theme = useContext(ThemeContext);
   
   return (
-    <Text 
-      x={10} 
-      y={70}
-      width={200}
-      height={30}
-      value={`${theme.primaryColor}Themed Text`}
-    />
+    <Text x={10} y={10} width={380} height={30} value={`Primary: ${theme.primaryColor}`} />
+  );
+}
+
+function ThemedButton() {
+  const theme = useContext(ThemeContext);
+  
+  return (
+    <Button x={10} y={50} width={380} height={40} onPress={() => {}}>
+      <Text x={10} y={10} width={360} height={20} value="Styled Button" />
+    </Button>
   );
 }
 ```
@@ -119,7 +111,7 @@ function ThemedText() {
 interface User {
   id: string;
   name: string;
-  isAdmin: boolean;
+  role: 'admin' | 'user';
 }
 
 const UserContext = createContext<User | null>(null);
@@ -128,7 +120,7 @@ function App() {
   const currentUser: User = {
     id: '123',
     name: 'Steve',
-    isAdmin: true
+    role: 'admin'
   };
   
   return (
@@ -142,171 +134,66 @@ function Dashboard() {
   const user = useContext(UserContext);
   
   if (!user) {
-    return <Text x={10} y={10} width={200} height={30} value="Please log in" />;
+    return <Text x={10} y={10} width={300} height={30} value="Not logged in" />;
   }
   
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30} value={`Welcome, ${user.name}!`} />
-      {user.isAdmin && (
-        <Button x={10} y={50} width={200} height={40}>
-          <Text x={10} y={10} width={180} height={20} value="Admin Panel" />
-        </Button>
-      )}
-    </>
+    <Panel width={400} height={300}>
+      <Text x={10} y={10} width={380} height={30} value={`Welcome, ${user.name}!`} />
+      <Text x={10} y={50} width={380} height={30} value={`Role: ${user.role}`} />
+    </Panel>
   );
 }
 ```
 
-### Multiple Contexts
-
-```tsx
-const ThemeContext = createContext({ color: '#fff' });
-const UserContext = createContext({ name: 'Guest' });
-const LanguageContext = createContext({ lang: 'en' });
-
-function App() {
-  return (
-    <ThemeContext value={{ color: '#3498db' }}>
-      <UserContext value={{ name: 'Steve' }}>
-        <LanguageContext value={{ lang: 'es' }}>
-          <MultiContextComponent />
-        </LanguageContext>
-      </UserContext>
-    </ThemeContext>
-  );
-}
-
-function MultiContextComponent() {
-  const theme = useContext(ThemeContext);
-  const user = useContext(UserContext);
-  const language = useContext(LanguageContext);
-  
-  const greeting = language.lang === 'es' ? 'Hola' : 'Hello';
-  
-  return (
-    <Text x={10} y={10} width={300} height={30} value={`${greeting}, ${user.name}!`} />
-  );
-}
-```
-
-### Nested Providers
-
-```tsx
-const CountContext = createContext(0);
-
-function App() {
-  return (
-    <CountContext value={1}>
-      <Text x={10} y={10} width={300} height={30} value={`Count: ${useContext(CountContext)}`} />
-      
-      <CountContext value={2}>
-        <Text x={10} y={40} width={300} height={30} value={`Count: ${useContext(CountContext)}`} />
-        
-        <CountContext value={3}>
-          <Text x={10} y={70} width={300} height={30} value={`Count: ${useContext(CountContext)}`} />
-        </CountContext>
-      </CountContext>
-    </CountContext>
-  );
-}
-```
-
-### Context with State
+### Settings Context with Updates
 
 ```tsx
 interface Settings {
   volume: number;
-  setVolume: (v: number) => void;
+  brightness: number;
 }
 
-const SettingsContext = createContext<Settings>({
-  volume: 50,
-  setVolume: () => {}
+interface SettingsContextValue {
+  settings: Settings;
+  updateSettings: (partial: Partial<Settings>) => void;
+}
+
+const SettingsContext = createContext<SettingsContextValue>({
+  settings: { volume: 50, brightness: 80 },
+  updateSettings: () => {}
 });
 
-function SettingsProvider({ children }) {
-  const [volume, setVolume] = useState(50);
+function SettingsProvider({ children }: { children: JSX.Element }) {
+  const [settings, setSettings] = useState<Settings>({
+    volume: 50,
+    brightness: 80
+  });
+  
+  const updateSettings = (partial: Partial<Settings>) => {
+    setSettings(prev => ({ ...prev, ...partial }));
+  };
   
   return (
-    <SettingsContext value={{ volume, setVolume }}>
+    <SettingsContext value={{ settings, updateSettings }}>
       {children}
     </SettingsContext>
   );
 }
 
 function VolumeControl() {
-  const { volume, setVolume } = useContext(SettingsContext);
+  const { settings, updateSettings } = useContext(SettingsContext);
   
   return (
     <>
-      <Text x={10} y={10} width={300} height={30} value={`Volume: ${volume}%`} />
-      <Button 
-        x={10} y={50} width={120} height={40}
-        onPress={() => setVolume(Math.min(volume + 10, 100))}
-      >
-        <Text x={10} y={10} width={100} height={20} value="Increase" />
+      <Text x={10} y={10} width={300} height={30} value={`Volume: ${settings.volume}%`} />
+      <Button x={10} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}>
+        <Text x={10} y={10} width={160} height={20} value="Volume +" />
       </Button>
-      <Button 
-        x={140} y={50} width={120} height={40}
-        onPress={() => setVolume(Math.max(volume - 10, 0))}
-      >
-        <Text x={10} y={10} width={100} height={20} value="Decrease" />
+      <Button x={200} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}>
+        <Text x={10} y={10} width={160} height={20} value="Volume -" />
       </Button>
     </>
-  );
-}
-
-function App() {
-  return (
-    <SettingsProvider>
-      <Panel width={400} height={300}>
-        <VolumeControl />
-      </Panel>
-    </SettingsProvider>
-  );
-}
-```
-
-### Custom Hook with Context
-
-```tsx
-const AuthContext = createContext<{ isLoggedIn: boolean; login: () => void } | null>(null);
-
-// Custom hook
-function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-}
-
-function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
-  const login = () => setIsLoggedIn(true);
-  
-  return (
-    <AuthContext value={{ isLoggedIn, login }}>
-      {children}
-    </AuthContext>
-  );
-}
-
-function LoginButton() {
-  const { isLoggedIn, login } = useAuth();
-  
-  return (
-    <Button 
-      x={10} y={10}
-      width={200}
-      height={40}
-      enabled={!isLoggedIn}
-      onPress={login}
-    >
-      <Text x={10} y={10} width={180} height={20} value={isLoggedIn ? '§aLogged In' : '§cLogin'} />
-    </Button>
   );
 }
 ```
@@ -322,7 +209,7 @@ const ThemeContext = createContext({
   fontSize: 14
 });
 
-// ❌ Less ideal - no defaults
+// ❌ Less ideal
 const ThemeContext = createContext(null);
 ```
 
@@ -340,22 +227,6 @@ function useTheme() {
 
 // Usage
 const theme = useTheme();
-```
-
-### Split Large Contexts
-
-```tsx
-// ✅ Good - separate concerns
-const ThemeContext = createContext({});
-const UserContext = createContext({});
-
-// ❌ Less ideal - too much in one context
-const AppContext = createContext({
-  theme: {},
-  user: {},
-  settings: {},
-  // ... everything
-});
 ```
 
 ### Type Safety
@@ -378,14 +249,14 @@ const SettingsContext = createContext<AppSettings>({
 ### Provider Composition
 
 ```tsx
-function AppProviders({ children }) {
+function AppProviders({ children }: { children: JSX.Element }) {
   return (
     <ThemeProvider>
-      <UserProvider>
+      <AuthProvider>
         <SettingsProvider>
           {children}
         </SettingsProvider>
-      </UserProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

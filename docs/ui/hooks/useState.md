@@ -14,7 +14,7 @@ import { useState } from '@bedrock-core/ui';
 ## Signature
 
 ```tsx
-function useState<T>(initial: T | (() => T)): [T, (v: T | ((prev: T) => T)) => void]
+function useState<T>(initial: T | (() => T)): [T, (value: T | ((prev: T) => T)) => void]
 ```
 
 ### Parameters

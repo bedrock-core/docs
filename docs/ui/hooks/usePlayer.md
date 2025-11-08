@@ -30,7 +30,6 @@ None
 
 ```tsx
 import { usePlayer } from '@bedrock-core/ui';
-import type { Player } from '@minecraft/server';
 
 function PlayerInfo() {
   const player = usePlayer();
