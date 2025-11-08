@@ -25,7 +25,7 @@ import { Text } from '@bedrock-core/ui';
 - Type: `string`
 - Required: Yes
 - Description: The text content to display
-- Constrains: Max length is 32 characters, prefer to use translations strings when possible
+- Constrains: Max length is 80 characters, prefer to use translations strings when possible
 
 ### Control Props
 
@@ -81,5 +81,5 @@ function Counter() {
 ## Limitations
 
 - Single line of text per component (no automatic line wrapping yet)
-- Maximum text length determined by serialization protocol (32 bytes)
+- Maximum text length determined by serialization protocol (80 bytes)
 

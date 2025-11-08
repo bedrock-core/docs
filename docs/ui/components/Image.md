@@ -138,4 +138,4 @@ Usage:
 ## Limitations
 
 - Animated textures (flipbook) not yet supported (not event tested)
-- Maximum texture length determined by serialization protocol (32 bytes)
+- Maximum texture length determined by serialization protocol (80 bytes)
