@@ -15,7 +15,7 @@ Learn how to install `@bedrock-core/ui` for your Minecraft Bedrock addon project
 The fastest way to get started is using our CLI tool to scaffold a complete project:
 
 ```bash
-npx @bedrock-core/cli
+npx @bedrock-core/ui
 ```
 
 This will create a new addon with:
