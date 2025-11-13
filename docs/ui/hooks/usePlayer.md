@@ -133,7 +133,3 @@ const [playerState, setPlayerState] = useState(usePlayer());
 // ✅ Good - use player directly
 const player = usePlayer();
 ```
-
-## Limitations
-
-- Player data is a snapshot at render time

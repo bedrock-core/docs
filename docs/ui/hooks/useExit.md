@@ -105,7 +105,35 @@ function ConditionalClose() {
 }
 ```
 
+### Conditional Exit in an Effect
 
-## Limitations
+Use `useExit` inside an effect to react to a state change and close the UI automatically when a condition becomes true.
 
-- Currently only works inside a button callback
+```tsx
+function ExitAfterSave() {
+  const exit = useExit();
+  const [isSaved, setIsSaved] = useState(false);
+
+  // When isSaved flips to true, exit the UI
+  useEffect(() => {
+    if (isSaved) {
+      exit();
+    }
+  }, [isSaved, exit]);
+
+  return (
+    <>
+      <Text x={10} y={10} width={300} height={30}>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
+      <Button 
+        x={10} 
+        y={50}
+        width={200}
+        height={40}
+        onPress={() => setIsSaved(true)}
+      >
+        <Text x={10} y={10} width={180} height={20}>Save and Close</Text>
+      </Button>
+    </>
+  );
+}
+```

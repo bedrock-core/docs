@@ -36,6 +36,13 @@ yarn build            # Build the addon
 yarn watch            # Watch for changes and redeploy
 ```
 
+Install companion resource pack:
+
+```txt
+Open the core-ui-v*.mcpack to add it to your game
+```
+
+
 ## Manual Installation
 
 If you're adding to an existing project, install the package:
