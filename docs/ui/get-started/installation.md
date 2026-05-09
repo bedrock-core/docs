@@ -118,7 +118,7 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 ```
 
 ## Next Steps
-- [Components](../components) - Built-in components that you can use in your JSX
-- [Hooks](../hooks) - Add state and effects to your components
-- [API](../api) - APIs that are useful for defining components
+- [Components](../components/components.md) - Built-in components that you can use in your JSX
+- [Hooks](../hooks/hooks.md) - Add state and effects to your components
+- [API](../api/api.md) - APIs that are useful for defining components
 

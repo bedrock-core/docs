@@ -29,5 +29,5 @@ State and effects management for your components.
 
 ## Next Steps
 
-- [Components](../components) - Built-in components that you can use in your JSX
-- [API](../api) - APIs that are useful for defining components
+- [Components](../components/components.md) - Built-in components that you can use in your JSX
+- [API](../api/api.md) - APIs that are useful for defining components

@@ -22,5 +22,5 @@ See [Control Props](./control-props.md) for detailed documentation and examples.
 
 ## Next Steps
 
-- [Hooks](../hooks) - Add state and effects to your components
-- [API](../api) - APIs that are useful for defining components
+- [Hooks](../hooks/hooks.md) - Add state and effects to your components
+- [API](../api/api.md) - APIs that are useful for defining components

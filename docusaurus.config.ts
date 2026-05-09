@@ -62,6 +62,17 @@ const config: Config = {
         sidebarPath: './sidebars.ts',
       },
     ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: [
+          {
+            to: 'https://discord.gg/xq9JpJ3',
+            from: ['/discord'],
+          },
+        ],
+      },
+    ],
   ],
 
   themeConfig: {
@@ -92,7 +103,7 @@ const config: Config = {
         },
         {
           label: 'Discord',
-          href: 'https://bedrocktweaks.net/discord',
+          href: 'https://bedrock-core.drav.dev/discord',
           position: 'right',
         },
         {
