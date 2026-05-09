@@ -31,16 +31,10 @@ None
 ```tsx
 function CloseButton() {
   const exit = useExit();
-  
+
   return (
-    <Button 
-      x={10} 
-      y={10}
-      width={200}
-      height={40}
-      onPress={() => exit()}
-    >
-      <Text x={10} y={10} width={180} height={20}>Close UI</Text>
+    <Button onPress={() => exit()}>
+      <Text>{'Close UI'}</Text>
     </Button>
   );
 }
@@ -53,16 +47,10 @@ function CloseButton() {
 ```tsx
 function CloseUI() {
   const exit = useExit();
-  
+
   return (
-    <Button 
-      x={10} 
-      y={10}
-      width={200}
-      height={40}
-      onPress={exit}
-    >
-      <Text x={10} y={10} width={180} height={20}>Close</Text>
+    <Button onPress={exit}>
+      <Text>{'Close'}</Text>
     </Button>
   );
 }
@@ -74,33 +62,26 @@ function CloseUI() {
 function ConditionalClose() {
   const exit = useExit();
   const [isSaved, setIsSaved] = useState(false);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
-      <Button 
-        x={10} 
-        y={50}
-        width={100}
-        height={40}
-        onPress={() => setIsSaved(true)}
-      >
-        <Text x={10} y={10} width={80} height={20}>Save</Text>
-      </Button>
-      <Button 
-        x={120} 
-        y={50}
-        width={100}
-        height={40}
-        onPress={() => {
-          if (isSaved) {
-            exit();
-          }
-        }}
-      >
-        <Text x={10} y={10} width={80} height={20}>Exit</Text>
-      </Button>
-    </>
+    <Panel padding={10} gap={8}>
+      <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button flex={1} onPress={() => setIsSaved(true)}>
+          <Text>{'Save'}</Text>
+        </Button>
+        <Button
+          flex={1}
+          onPress={() => {
+            if (isSaved) {
+              exit();
+            }
+          }}
+        >
+          <Text>{'Exit'}</Text>
+        </Button>
+      </Panel>
+    </Panel>
   );
 }
 ```
@@ -122,18 +103,12 @@ function ExitAfterSave() {
   }, [isSaved, exit]);
 
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
-      <Button 
-        x={10} 
-        y={50}
-        width={200}
-        height={40}
-        onPress={() => setIsSaved(true)}
-      >
-        <Text x={10} y={10} width={180} height={20}>Save and Close</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
+      <Button onPress={() => setIsSaved(true)}>
+        <Text>{'Save and Close'}</Text>
       </Button>
-    </>
+    </Panel>
   );
 }
 ```

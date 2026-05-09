@@ -36,20 +36,14 @@ An array with two elements:
 ```tsx
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
-      <Button 
-        x={10} 
-        y={50}
-        width={150}
-        height={40}
-        onPress={() => setCount(count + 1)}
-      >
-        <Text x={10} y={10} width={130} height={20}>Increment</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{`Count: ${count}`}</Text>
+      <Button onPress={() => setCount(count + 1)}>
+        <Text>{'Increment'}</Text>
       </Button>
-    </>
+    </Panel>
   );
 }
 ```
@@ -61,16 +55,10 @@ function Counter() {
 ```tsx
 function Toggle() {
   const [isOn, setIsOn] = useState(false);
-  
+
   return (
-    <Button 
-      x={10} 
-      y={10}
-      width={200}
-      height={40}
-      onPress={() => setIsOn(!isOn)}
-    >
-      <Text x={10} y={10} width={180} height={20}>{isOn ? 'ON' : 'OFF'}</Text>
+    <Button onPress={() => setIsOn(!isOn)}>
+      <Text>{isOn ? '§aON' : '§7OFF'}</Text>
     </Button>
   );
 }
@@ -83,21 +71,19 @@ function MultiState() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState('Player');
   const [isActive, setIsActive] = useState(false);
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>{`Count: ${count}`}</Text>
-      <Text x={10} y={40} width={380} height={30}>{`Name: ${name}`}</Text>
-      <Text x={10} y={70} width={380} height={30}>{`Active: ${isActive ? 'Yes' : 'No'}`}</Text>
-      
-      <Button 
-        x={10} y={110} width={380} height={40}
+    <Panel padding={10} gap={8}>
+      <Text>{`Count: ${count}`}</Text>
+      <Text>{`Name: ${name}`}</Text>
+      <Text>{`Active: ${isActive ? 'Yes' : 'No'}`}</Text>
+      <Button
         onPress={() => {
           setCount(count + 1);
           setIsActive(true);
         }}
       >
-        <Text x={10} y={10} width={360} height={20}>Update Multiple States</Text>
+        <Text>{'Update Multiple States'}</Text>
       </Button>
     </Panel>
   );
@@ -117,29 +103,30 @@ function StatsDisplay() {
   const [stats, setStats] = useState<PlayerStats>({
     health: 100,
     mana: 50,
-    level: 1
+    level: 1,
   });
-  
-  const heal = () => {
+
+  const heal = (): void => {
     setStats({ ...stats, health: Math.min(stats.health + 10, 100) });
   };
-  
-  const levelUp = () => {
+
+  const levelUp = (): void => {
     setStats({ ...stats, level: stats.level + 1 });
   };
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>{`Health: ${stats.health}`}</Text>
-      <Text x={10} y={40} width={380} height={30}>{`Mana: ${stats.mana}`}</Text>
-      <Text x={10} y={70} width={380} height={30}>{`Level: ${stats.level}`}</Text>
-      
-      <Button x={10} y={110} width={180} height={40} onPress={heal}>
-        <Text x={10} y={10} width={160} height={20}>Heal (+10)</Text>
-      </Button>
-      <Button x={200} y={110} width={180} height={40} onPress={levelUp}>
-        <Text x={10} y={10} width={160} height={20}>Level Up</Text>
-      </Button>
+    <Panel padding={10} gap={8}>
+      <Text>{`Health: ${stats.health}`}</Text>
+      <Text>{`Mana: ${stats.mana}`}</Text>
+      <Text>{`Level: ${stats.level}`}</Text>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button flex={1} onPress={heal}>
+          <Text>{'Heal (+10)'}</Text>
+        </Button>
+        <Button flex={1} onPress={levelUp}>
+          <Text>{'Level Up'}</Text>
+        </Button>
+      </Panel>
     </Panel>
   );
 }
@@ -150,40 +137,28 @@ function StatsDisplay() {
 ```tsx
 function TodoList() {
   const [todos, setTodos] = useState<string[]>(['First task']);
-  
-  const addTodo = () => {
+
+  const addTodo = (): void => {
     setTodos([...todos, `Task ${todos.length + 1}`]);
   };
-  
-  const removeLast = () => {
+
+  const removeLast = (): void => {
     setTodos(todos.slice(0, -1));
   };
-  
+
   return (
-    <Panel width={400} height={400}>
+    <Panel padding={10} gap={4}>
       {todos.map((todo, index) => (
-        <Text key={index} x={10} y={10 + (index * 30)} width={380} height={30}>{`${index + 1}. ${todo}`}</Text>
+        <Text key={index}>{`${index + 1}. ${todo}`}</Text>
       ))}
-      
-      <Button 
-        x={10} 
-        y={300} 
-        width={180} 
-        height={40}
-        onPress={addTodo}
-      >
-        <Text x={10} y={10} width={160} height={20}>Add Todo</Text>
-      </Button>
-      <Button 
-        x={200} 
-        y={300} 
-        width={180} 
-        height={40}
-        onPress={removeLast}
-        enabled={todos.length > 0}
-      >
-        <Text x={10} y={10} width={160} height={20}>Remove Last</Text>
-      </Button>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button flex={1} onPress={addTodo}>
+          <Text>{'Add Todo'}</Text>
+        </Button>
+        <Button flex={1} onPress={removeLast} enabled={todos.length > 0}>
+          <Text>{'Remove Last'}</Text>
+        </Button>
+      </Panel>
     </Panel>
   );
 }
@@ -242,7 +217,7 @@ function MyComponent() {
 }
 
 // ❌ Wrong - conditional hook
-function MyComponent({ condition }) {
+function MyComponent({ condition }: { condition: boolean }) {
   if (condition) {
     const [count, setCount] = useState(0); // Error!
   }
@@ -270,16 +245,18 @@ function MyComponent() {
 function FilteredList() {
   const [items] = useState(['Apple', 'Banana', 'Cherry']);
   const [filter, setFilter] = useState('');
-  
+
   // Derive filtered list from state
-  const filteredItems = items.filter(item => 
+  const filteredItems = items.filter(item =>
     item.toLowerCase().includes(filter.toLowerCase())
   );
-  
+
   return (
-    <>
-      {/* UI using filteredItems */}
-    </>
+    <Panel padding={10} gap={4}>
+      {filteredItems.map((item, index) => (
+        <Text key={index}>{item}</Text>
+      ))}
+    </Panel>
   );
 }
 ```
@@ -289,14 +266,13 @@ function FilteredList() {
 ```tsx
 function ControlledToggle() {
   const [isEnabled, setIsEnabled] = useState(false);
-  
+
   return (
     <Button
-      x={10} y={10} width={200} height={40}
       enabled={isEnabled}
       onPress={() => setIsEnabled(!isEnabled)}
     >
-      <Text x={10} y={10} width={180} height={20}>{isEnabled ? 'Enabled' : 'Disabled'}</Text>
+      <Text>{isEnabled ? 'Enabled' : 'Disabled'}</Text>
     </Button>
   );
 }

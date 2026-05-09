@@ -33,12 +33,12 @@ import { usePlayer } from '@bedrock-core/ui';
 
 function PlayerInfo() {
   const player = usePlayer();
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>{`Name: ${player.name}`}</Text>
-      <Text x={10} y={40} width={380} height={30}>{`Health: ${player.getComponent('health')?.currentValue}`}</Text>
-      <Text x={10} y={70} width={380} height={30}>{`Level: ${player.level}`}</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{`Name: ${player.name}`}</Text>
+      <Text>{`Health: ${player.getComponent('health')?.currentValue}`}</Text>
+      <Text>{`Level: ${player.level}`}</Text>
     </Panel>
   );
 }
@@ -52,15 +52,14 @@ function PlayerInfo() {
 function StatsDisplay() {
   const player = usePlayer();
   const healthComp = player.getComponent('health');
-  
+
   return (
-    <Panel width={400} height={400}>
-      <Text x={10} y={10} width={380} height={30}>Player Stats</Text>
-      
-      <Text x={10} y={50} width={380} height={30}>{`Name: ${player.name}`}</Text>
-      <Text x={10} y={80} width={380} height={30}>{`Health: ${healthComp?.currentValue}/${healthComp?.effectiveMax}`}</Text>
-      <Text x={10} y={110} width={380} height={30}>{`Level: ${player.level}`}</Text>
-      <Text x={10} y={140} width={380} height={30}>{`Position: ${Math.floor(player.location.x)}, ${Math.floor(player.location.y)}, ${Math.floor(player.location.z)}`}</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{'§lPlayer Stats'}</Text>
+      <Text>{`Name: ${player.name}`}</Text>
+      <Text>{`Health: ${healthComp?.currentValue}/${healthComp?.effectiveMax}`}</Text>
+      <Text>{`Level: ${player.level}`}</Text>
+      <Text>{`Position: ${Math.floor(player.location.x)}, ${Math.floor(player.location.y)}, ${Math.floor(player.location.z)}`}</Text>
     </Panel>
   );
 }
@@ -72,23 +71,23 @@ function StatsDisplay() {
 function AdminPanel() {
   const player = usePlayer();
   const isAdmin = player.commandPermissionLevel === CommandPermissionLevel.Admin;
-  
+
   if (!isAdmin) {
     return (
-      <Panel width={300} height={100}>
-        <Text x={10} y={10} width={280} height={30}>Access Denied</Text>
+      <Panel padding={10}>
+        <Text>{'§cAccess Denied'}</Text>
       </Panel>
     );
   }
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>Admin Panel</Text>
-      <Button x={10} y={50} width={380} height={40}>
-        <Text x={10} y={10} width={360} height={20}>Manage Players</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{'§lAdmin Panel'}</Text>
+      <Button>
+        <Text>{'Manage Players'}</Text>
       </Button>
-      <Button x={10} y={100} width={380} height={40}>
-        <Text x={10} y={10} width={360} height={20}>Server Settings</Text>
+      <Button>
+        <Text>{'Server Settings'}</Text>
       </Button>
     </Panel>
   );
@@ -113,13 +112,19 @@ function AdminPanel() {
 function HealthDisplay() {
   const player = usePlayer();
   const health = player.getComponent('health');
-  
+
   if (!health) {
-    return <Text x={10} y={10} width={300} height={30}>Health unavailable</Text>;
+    return (
+      <Panel padding={10}>
+        <Text>{'Health unavailable'}</Text>
+      </Panel>
+    );
   }
-  
+
   return (
-    <Text x={10} y={10} width={300} height={30}>{`Health: ${health.currentValue}/${health.effectiveMax}`}</Text>
+    <Panel padding={10}>
+      <Text>{`Health: ${health.currentValue}/${health.effectiveMax}`}</Text>
+    </Panel>
   );
 }
 ```

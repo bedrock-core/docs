@@ -36,30 +36,32 @@ import { system } from '@minecraft/server';
 function Timer() {
   const intervalRef = useRef<number | null>(null);
   const [count, setCount] = useState(0);
-  
-  const startTimer = () => {
+
+  const startTimer = (): void => {
     intervalRef.current = system.runInterval(() => {
       setCount(c => c + 1);
     }, 20); // Runs every 20 ticks (1 second)
   };
-  
-  const stopTimer = () => {
+
+  const stopTimer = (): void => {
     if (intervalRef.current !== null) {
       system.clearRun(intervalRef.current);
       intervalRef.current = null;
     }
   };
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
-      <Button x={10} y={50} width={120} height={40} onPress={startTimer}>
-        <Text x={10} y={10} width={100} height={20}>Start</Text>
-      </Button>
-      <Button x={140} y={50} width={120} height={40} onPress={stopTimer}>
-        <Text x={10} y={10} width={100} height={20}>Stop</Text>
-      </Button>
-    </>
+    <Panel padding={10} gap={8}>
+      <Text>{`Count: ${count}`}</Text>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button flex={1} onPress={startTimer}>
+          <Text>{'Start'}</Text>
+        </Button>
+        <Button flex={1} onPress={stopTimer}>
+          <Text>{'Stop'}</Text>
+        </Button>
+      </Panel>
+    </Panel>
   );
 }
 ```
@@ -78,22 +80,19 @@ function Timer() {
 function PreviousValue() {
   const [count, setCount] = useState(0);
   const prevCountRef = useRef(0);
-  
+
   useEffect(() => {
     prevCountRef.current = count;
   }, [count]);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`Current: ${count}`}</Text>
-      <Text x={10} y={40} width={200} height={30}>{`Previous: ${prevCountRef.current}`}</Text>
-      <Button 
-        x={10} y={80} width={200} height={40}
-        onPress={() => setCount(count + 1)}
-      >
-        <Text x={10} y={10} width={180} height={20}>Increment</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{`Current: ${count}`}</Text>
+      <Text>{`Previous: ${prevCountRef.current}`}</Text>
+      <Button onPress={() => setCount(count + 1)}>
+        <Text>{'Increment'}</Text>
       </Button>
-    </>
+    </Panel>
   );
 }
 ```
@@ -104,36 +103,37 @@ function PreviousValue() {
 function DelayedMessage() {
   const [message, setMessage] = useState('');
   const timeoutRef = useRef<number | null>(null);
-  
-  const scheduleMessage = () => {
-    // Clear any existing timeout
+
+  const scheduleMessage = (): void => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       setMessage('Hello after 2 seconds!');
     }, 2000);
   };
-  
-  const cancelMessage = () => {
+
+  const cancelMessage = (): void => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
       setMessage('Cancelled');
     }
   };
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{message || 'No message'}</Text>
-      <Button x={10} y={50} width={180} height={40} onPress={scheduleMessage}>
-        <Text x={10} y={10} width={160} height={20}>Schedule Message</Text>
-      </Button>
-      <Button x={200} y={50} width={180} height={40} onPress={cancelMessage}>
-        <Text x={10} y={10} width={160} height={20}>Cancel</Text>
-      </Button>
-    </>
+    <Panel padding={10} gap={8}>
+      <Text>{message || 'No message'}</Text>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button flex={1} onPress={scheduleMessage}>
+          <Text>{'Schedule'}</Text>
+        </Button>
+        <Button flex={1} onPress={cancelMessage}>
+          <Text>{'Cancel'}</Text>
+        </Button>
+      </Panel>
+    </Panel>
   );
 }
 ```
@@ -144,43 +144,19 @@ function DelayedMessage() {
 function ExecutionCounter() {
   const executionCount = useRef(0);
   const [state, setState] = useState(0);
-  
+
   // Increment on every execution (doesn't cause re-executions)
   executionCount.current += 1;
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`State: ${state}`}</Text>
-      <Text x={10} y={40} width={200} height={30}>{`Executions: ${executionCount.current}`}</Text>
-      <Button 
-        x={10} y={80} width={200} height={40}
-        onPress={() => setState(state + 1)}
-      >
-        <Text x={10} y={10} width={180} height={20}>Update State</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{`State: ${state}`}</Text>
+      <Text>{`Executions: ${executionCount.current}`}</Text>
+      <Button onPress={() => setState(state + 1)}>
+        <Text>{'Update State'}</Text>
       </Button>
-    </>
+    </Panel>
   );
-}
-```
-
-### Cache Expensive Computation Result
-
-```tsx
-function ExpensiveComponent({ data }) {
-  const cacheRef = useRef<Map<string, any>>(new Map());
-  
-  const getProcessedData = (key: string) => {
-    if (cacheRef.current.has(key)) {
-      return cacheRef.current.get(key);
-    }
-    
-    // Expensive computation
-    const result = expensiveOperation(data, key);
-    cacheRef.current.set(key, result);
-    return result;
-  };
-  
-  return <Text x={10} y={10}>{getProcessedData('key1')}</Text>;
 }
 ```
 
@@ -189,7 +165,7 @@ function ExpensiveComponent({ data }) {
 ```tsx
 function FirstExecutionDetector() {
   const isFirstExecution = useRef(true);
-  
+
   useEffect(() => {
     if (isFirstExecution.current) {
       console.log('First execution!');
@@ -198,66 +174,11 @@ function FirstExecutionDetector() {
       console.log('Subsequent execution');
     }
   });
-  
-  return <Text x={10} y={10} width={300} height={30}>Check console</Text>;
-}
-```
 
-### Store Complex Object
-
-```tsx
-interface PlayerData {
-  id: string;
-  name: string;
-  lastSeen: number;
-}
-
-function PlayerTracker() {
-  const playerDataRef = useRef<Map<string, PlayerData>>(new Map());
-  
-  const addPlayer = (player: Player) => {
-    playerDataRef.current.set(player.id, {
-      id: player.id,
-      name: player.name,
-      lastSeen: Date.now()
-    });
-  };
-  
-  const getPlayer = (id: string) => {
-    return playerDataRef.current.get(id);
-  };
-  
-  return <Text x={10} y={10}>Tracking {playerDataRef.current.size} players</Text>;
-}
-```
-
-### Debounce with Ref
-
-```tsx
-function DebouncedInput() {
-  const [value, setValue] = useState('');
-  const [debouncedValue, setDebouncedValue] = useState('');
-  const debounceTimerRef = useRef<number | null>(null);
-  
-  const handleChange = (newValue: string) => {
-    setValue(newValue);
-    
-    // Clear previous timer
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    // Set new timer
-    debounceTimerRef.current = setTimeout(() => {
-      setDebouncedValue(newValue);
-    }, 500);
-  };
-  
   return (
-    <>
-      <Text x={10} y={10}>Value: {value}</Text>
-      <Text x={10} y={40}>Debounced: {debouncedValue}</Text>
-    </>
+    <Panel padding={10}>
+      <Text>{'Check console'}</Text>
+    </Panel>
   );
 }
 ```
@@ -336,7 +257,7 @@ const resourceRef = useRef<Resource | null>(null);
 
 useEffect(() => {
   resourceRef.current = createResource();
-  
+
   return () => {
     resourceRef.current?.cleanup();
     resourceRef.current = null;

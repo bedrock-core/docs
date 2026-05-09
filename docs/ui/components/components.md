@@ -15,7 +15,7 @@ This is a list of the built-in components that you can use in your JSX.
 
 ## Control Props
 
-All components support (and currently [v0.2.0] require some) [**Control Props**](./control-props.md) for layout and visibility control.
+All components support [**Control Props**](./control-props.md) for layout and visibility control, including both manual `x`/`y` positioning and flexbox props.
 
 See [Control Props](./control-props.md) for detailed documentation and examples.
 

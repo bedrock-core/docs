@@ -9,7 +9,7 @@ A logical grouping component that doesn't render any visual container.
 
 ```tsx
 import { Fragment } from '@bedrock-core/ui';
-// Or use the shorthand syntax: <>...</> no need for import
+// Or use the shorthand syntax: <>...</> — no import needed
 ```
 
 ## Usage
@@ -18,8 +18,8 @@ import { Fragment } from '@bedrock-core/ui';
 
 ```tsx
 <Fragment>
-  <Text x={10} y={10} width={200} height={20}>First element</Text>
-  <Text x={10} y={40} width={200} height={20}>Second element</Text>
+  <Text>{'First element'}</Text>
+  <Text>{'Second element'}</Text>
 </Fragment>
 ```
 
@@ -27,8 +27,8 @@ import { Fragment } from '@bedrock-core/ui';
 
 ```tsx
 <>
-  <Text x={10} y={10} width={200} height={20}>First element</Text>
-  <Text x={10} y={40} width={200} height={20}>Second element</Text>
+  <Text>{'First element'}</Text>
+  <Text>{'Second element'}</Text>
 </>
 ```
 
@@ -36,8 +36,7 @@ import { Fragment } from '@bedrock-core/ui';
 
 #### `children`
 - Type: `JSX.Node`
-- Default: `undefined`
-- Description: The children components inside the panel
+- Description: The children components inside the fragment.
 
 ## When to Use Fragment
 
@@ -49,8 +48,8 @@ Components must return a single root element. Use Fragment to return multiple si
 function Header() {
   return (
     <>
-      <Text x={10} y={10} width={300} height={30}>Welcome</Text>
-      <Text x={10} y={50} width={300} height={25}>Subtitle text</Text>
+      <Text>{'§lWelcome'}</Text>
+      <Text>{'Subtitle text'}</Text>
     </>
   );
 }
@@ -58,25 +57,25 @@ function Header() {
 
 ### Avoiding Unnecessary Nesting
 
-Fragment prevents unnecessary `Panel` wrappers when you don't need visual grouping:
+Fragment prevents an extra `Panel` wrapper when you don't need a visual container or extra spacing/padding:
 
 ```tsx
-// ❌ Unnecessary Panel
+// ❌ Unnecessary Panel — adds layout overhead you don't need
 function MyComponent() {
   return (
-    <Panel x={0} y={0} width={300} height={200}>
-      <Text x={10} y={10} width={280} height={20}>First</Text>
-      <Text x={10} y={40} width={280} height={20}>Second</Text>
+    <Panel>
+      <Text>{'First'}</Text>
+      <Text>{'Second'}</Text>
     </Panel>
   );
 }
 
-// ✅ Use Fragment instead
+// ✅ Use Fragment when the surrounding panel already arranges the children
 function MyComponent() {
   return (
     <>
-      <Text x={10} y={10} width={280} height={20}>First</Text>
-      <Text x={10} y={40} width={280} height={20}>Second</Text>
+      <Text>{'First'}</Text>
+      <Text>{'Second'}</Text>
     </>
   );
 }
@@ -85,14 +84,14 @@ function MyComponent() {
 ### Conditional Rendering
 
 ```tsx
-function ConditionalContent({ showDetails }) {
+function ConditionalContent({ showDetails }: { showDetails: boolean }) {
   return (
     <>
-      <Text x={10} y={10} width={300} height={20}>Always visible</Text>
+      <Text>{'Always visible'}</Text>
       {showDetails && (
         <>
-          <Text x={10} y={40} width={300} height={20}>Detail 1</Text>
-          <Text x={10} y={70} width={300} height={20}>Detail 2</Text>
+          <Text>{'Detail 1'}</Text>
+          <Text>{'Detail 2'}</Text>
         </>
       )}
     </>
@@ -103,13 +102,13 @@ function ConditionalContent({ showDetails }) {
 ### List Rendering
 
 ```tsx
-function ItemList({ items }) {
+function ItemList({ items }: { items: { id: number; name: string; description: string }[] }) {
   return (
     <>
-      {items.map((item, index) => (
+      {items.map(item => (
         <Fragment key={item.id}>
-          <Text x={10} y={10 + (index * 30)} width={300} height={20}>{item.name}</Text>
-          <Text x={10} y={30 + (index * 30)} width={300} height={15}>{item.description}</Text>
+          <Text>{item.name}</Text>
+          <Text>{`§7${item.description}`}</Text>
         </Fragment>
       ))}
     </>
@@ -122,19 +121,19 @@ function ItemList({ items }) {
 ### Dynamic Content Groups
 
 ```tsx
-function StatusDisplay({ isOnline }) {
+function StatusDisplay({ isOnline }: { isOnline: boolean }) {
   return (
     <>
-      <Text x={10} y={10} width={60} height={20}>Status:</Text>
+      <Text>{'Status:'}</Text>
       {isOnline ? (
         <>
-          <Text x={70} y={10} width={100} height={20}>§2Online</Text>
-          <Text x={10} y={40} width={300} height={20}>Connected users: 5</Text>
+          <Text>{'§2Online'}</Text>
+          <Text>{'Connected users: 5'}</Text>
         </>
       ) : (
         <>
-          <Text x={70} y={10} width={100} height={20}>§cOffline</Text>
-          <Text x={10} y={40} width={300} height={20}>Reconnecting...</Text>
+          <Text>{'§cOffline'}</Text>
+          <Text>{'Reconnecting...'}</Text>
         </>
       )}
     </>
@@ -144,16 +143,17 @@ function StatusDisplay({ isOnline }) {
 
 ## Best Practices
 
-- **Prefer shorthand syntax** (`<>...</>`) for better readability
-- Use Fragment when you need to return multiple elements from a component
-- Don't use Fragment when you need visual grouping or positioning (use `Panel` instead)
-- Fragment doesn't affect layout or positioning of child elements
+- **Prefer the shorthand syntax** (`<>...</>`) for readability.
+- Use Fragment when you need to return multiple elements from a component.
+- Don't use Fragment when you need a visual container or its own flex layout (use `Panel` instead).
+- Fragment participates in the parent's flex flow — its children are lifted into the parent's layout.
 
 ## Fragment vs Panel
 
 | Aspect | Fragment | Panel |
 |--------|----------|-------|
 | Visual rendering | None | Visible container |
-| Control props | Not supported | Supported |
-| Use case | Logical grouping | Visual container |
+| Layout props | Not supported | Supported |
+| Flex container | No (children lifted into parent flow) | Yes |
+| Use case | Logical grouping | Visual container with its own layout |
 | JSON-UI | Not serialized | Serialized |

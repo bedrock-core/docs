@@ -29,7 +29,7 @@ function useEvent<T, O>(
 
 #### `signal`
 - Type: Signal object with `subscribe()` and `unsubscribe()` methods
-- Description: The event signal to subscribe to. Signals are typically found in Minecraft's `world.afterEvents` or `world.beforeEvents` objects (e.g., `world.afterEvents.playerJoin`, `world.afterEvents.buttonPush`). 
+- Description: The event signal to subscribe to. Signals are typically found in Minecraft's `world.afterEvents` or `world.beforeEvents` objects (e.g., `world.afterEvents.playerJoin`, `world.afterEvents.buttonPush`).
 
 #### `callback`
 - Type: `(event: T) => void`
@@ -55,16 +55,18 @@ import { useEvent } from '@bedrock-core/ui';
 
 function EventListener() {
   const [lastEvent, setLastEvent] = useState('None');
-  
+
   useEvent(
     world.afterEvents.playerJoin,
     (event) => {
       setLastEvent(event.playerName);
     }
   );
-  
+
   return (
-    <Text x={10} y={10} width={300} height={30}>{`Last event: ${lastEvent}`}</Text>
+    <Panel padding={10}>
+      <Text>{`Last event: ${lastEvent}`}</Text>
+    </Panel>
   );
 }
 ```
@@ -79,19 +81,19 @@ import { useEvent } from '@bedrock-core/ui';
 
 function PlayerJoinNotification() {
   const [recentPlayers, setRecentPlayers] = useState<string[]>([]);
-  
+
   useEvent(
     world.afterEvents.playerJoin,
     (event) => {
       setRecentPlayers(prev => [...prev, event.playerName].slice(-5));
     }
   );
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>Recent Joins</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{'§lRecent Joins'}</Text>
       {recentPlayers.map((name, index) => (
-        <Text key={index} x={10} y={50 + index * 30} width={380} height={30}>{name}</Text>
+        <Text key={index}>{name}</Text>
       ))}
     </Panel>
   );
@@ -107,7 +109,7 @@ import { useEvent } from '@bedrock-core/ui';
 function ItemUseTracker() {
   const [useCount, setUseCount] = useState(0);
   const [lastItem, setLastItem] = useState('None');
-  
+
   useEvent(
     world.afterEvents.itemUse,
     (event) => {
@@ -115,12 +117,12 @@ function ItemUseTracker() {
       setLastItem(event.itemStack.typeId);
     }
   );
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Item uses: ${useCount}`}</Text>
-      <Text x={10} y={40} width={300} height={30}>{`Last used: ${lastItem}`}</Text>
-    </>
+    <Panel padding={10} gap={4}>
+      <Text>{`Item uses: ${useCount}`}</Text>
+      <Text>{`Last used: ${lastItem}`}</Text>
+    </Panel>
   );
 }
 ```
@@ -133,26 +135,26 @@ import { useEvent } from '@bedrock-core/ui';
 
 function MultiEventTracker() {
   const [eventLog, setEventLog] = useState<string[]>([]);
-  
+
   useEvent(
     world.afterEvents.playerJoin,
     (event) => {
       setEventLog(prev => [...prev, `${event.playerName} joined`].slice(-5));
     }
   );
-  
+
   useEvent(
     world.afterEvents.playerLeave,
     (event) => {
       setEventLog(prev => [...prev, `${event.playerName} left`].slice(-5));
     }
   );
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>Event Log</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{'§lEvent Log'}</Text>
       {eventLog.map((log, index) => (
-        <Text key={index} x={10} y={50 + index * 30} width={380} height={30}>{log}</Text>
+        <Text key={index}>{log}</Text>
       ))}
     </Panel>
   );
@@ -167,7 +169,7 @@ function MultiEventTracker() {
 // ✅ Good - include dependencies used inside the callback
 function EventHandler() {
   const player = usePlayer();
-  
+
   useEvent(
     world.afterEvents.entityHealthChanged,
     (event) => {

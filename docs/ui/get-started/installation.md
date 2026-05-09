@@ -96,15 +96,8 @@ import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
 const HelloWorld = (
-  <Panel width={300} height={200} x={50} y={50}>
-    <Text 
-      width={250}
-      height={30}
-      x={25}
-      y={25}
-    >
-      Hello from @bedrock-core/ui!
-    </Text>
+  <Panel padding={20}>
+    <Text>{'Hello from @bedrock-core/ui!'}</Text>
   </Panel>
 );
 
@@ -121,4 +114,3 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 - [Components](../components/components.md) - Built-in components that you can use in your JSX
 - [Hooks](../hooks/hooks.md) - Add state and effects to your components
 - [API](../api/api.md) - APIs that are useful for defining components
-

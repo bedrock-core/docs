@@ -11,14 +11,14 @@ import { render } from '@bedrock-core/ui';
 ## Signature
 
 ```tsx
-function render(root: JSX.Element, player: Player): void
+function render(root: FunctionComponent | JSX.Element, player: Player): void
 ```
 
 ### Parameters
 
 #### `root`
-- Type: `JSX.Element`
-- Description: The root component to render
+- Type: `FunctionComponent | JSX.Element`
+- Description: The root component or element to render
 
 #### `player`
 - Type: `Player` (from `@minecraft/server`)
@@ -36,8 +36,8 @@ import { world } from '@minecraft/server';
 
 function WelcomeScreen() {
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>Hello, Minecraft!</Text>
+    <Panel padding={10}>
+      <Text>{'Hello, Minecraft!'}</Text>
     </Panel>
   );
 }
@@ -47,7 +47,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 // Render it to a player
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(<WelcomeScreen />, source);
+    render(WelcomeScreen, source);
   }
 });
 ```

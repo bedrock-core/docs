@@ -40,7 +40,7 @@ interface Theme {
 
 const ThemeContext = createContext<Theme>({
   color: '#ffffff',
-  fontSize: 14
+  fontSize: 14,
 });
 
 function App() {
@@ -53,9 +53,11 @@ function App() {
 
 function ThemedComponent() {
   const theme = useContext(ThemeContext);
-  
+
   return (
-    <Text x={10} y={10} width={300} height={30}>{`Color: ${theme.color}, Size: ${theme.fontSize}`}</Text>
+    <Panel padding={10}>
+      <Text>{`Color: ${theme.color}, Size: ${theme.fontSize}`}</Text>
+    </Panel>
   );
 }
 ```
@@ -72,13 +74,13 @@ interface Theme {
 
 const ThemeContext = createContext<Theme>({
   primaryColor: '#ffffff',
-  backgroundColor: '#000000'
+  backgroundColor: '#000000',
 });
 
 function App() {
   return (
     <ThemeContext value={{ primaryColor: '#3498db', backgroundColor: '#2c3e50' }}>
-      <Panel width={400} height={300}>
+      <Panel padding={10} gap={8}>
         <ThemedText />
         <ThemedButton />
       </Panel>
@@ -88,18 +90,18 @@ function App() {
 
 function ThemedText() {
   const theme = useContext(ThemeContext);
-  
+
   return (
-    <Text x={10} y={10} width={380} height={30}>{`Primary: ${theme.primaryColor}`}</Text>
+    <Text>{`Primary: ${theme.primaryColor}`}</Text>
   );
 }
 
 function ThemedButton() {
   const theme = useContext(ThemeContext);
-  
+
   return (
-    <Button x={10} y={50} width={380} height={40} onPress={() => {}}>
-      <Text x={10} y={10} width={360} height={20}>Styled Button</Text>
+    <Button onPress={() => {}}>
+      <Text>{'Styled Button'}</Text>
     </Button>
   );
 }
@@ -118,10 +120,10 @@ const AuthContext = createContext<User | null>(null);
 
 function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<User | null>(null);
-  
-  const login = (newUser: User) => setUser(newUser);
-  const logout = () => setUser(null);
-  
+
+  const login = (newUser: User): void => setUser(newUser);
+  const logout = (): void => setUser(null);
+
   return (
     <AuthContext value={user}>
       {children}
@@ -131,15 +133,19 @@ function AuthProvider({ children }: { children: JSX.Element }) {
 
 function Dashboard() {
   const user = useContext(AuthContext);
-  
+
   if (!user) {
-    return <Text x={10} y={10} width={300} height={30}>Not logged in</Text>;
+    return (
+      <Panel padding={10}>
+        <Text>{'Not logged in'}</Text>
+      </Panel>
+    );
   }
-  
+
   return (
-    <Panel width={400} height={300}>
-      <Text x={10} y={10} width={380} height={30}>{`Welcome, ${user.name}!`}</Text>
-      <Text x={10} y={50} width={380} height={30}>{`Role: ${user.role}`}</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{`Welcome, ${user.name}!`}</Text>
+      <Text>{`Role: ${user.role}`}</Text>
     </Panel>
   );
 }
@@ -160,19 +166,19 @@ interface SettingsContextValue {
 
 const SettingsContext = createContext<SettingsContextValue>({
   settings: { volume: 50, brightness: 80 },
-  updateSettings: () => {}
+  updateSettings: () => {},
 });
 
 function SettingsProvider({ children }: { children: JSX.Element }) {
   const [settings, setSettings] = useState<Settings>({
     volume: 50,
-    brightness: 80
+    brightness: 80,
   });
-  
-  const updateSettings = (partial: Partial<Settings>) => {
+
+  const updateSettings = (partial: Partial<Settings>): void => {
     setSettings(prev => ({ ...prev, ...partial }));
   };
-  
+
   return (
     <SettingsContext value={{ settings, updateSettings }}>
       {children}
@@ -182,17 +188,25 @@ function SettingsProvider({ children }: { children: JSX.Element }) {
 
 function VolumeControl() {
   const { settings, updateSettings } = useContext(SettingsContext);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Volume: ${settings.volume}%`}</Text>
-      <Button x={10} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}>
-        <Text x={10} y={10} width={160} height={20}>Volume +</Text>
-      </Button>
-      <Button x={200} y={50} width={180} height={40} onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}>
-        <Text x={10} y={10} width={160} height={20}>Volume -</Text>
-      </Button>
-    </>
+    <Panel padding={10} gap={8}>
+      <Text>{`Volume: ${settings.volume}%`}</Text>
+      <Panel flexDirection={'row'} gap={8}>
+        <Button
+          flex={1}
+          onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}
+        >
+          <Text>{'Volume +'}</Text>
+        </Button>
+        <Button
+          flex={1}
+          onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}
+        >
+          <Text>{'Volume -'}</Text>
+        </Button>
+      </Panel>
+    </Panel>
   );
 }
 ```
@@ -205,7 +219,7 @@ function VolumeControl() {
 // ✅ Good - meaningful default values
 const ThemeContext = createContext({
   color: '#000000',
-  fontSize: 14
+  fontSize: 14,
 });
 
 // ❌ Less ideal
@@ -223,7 +237,7 @@ interface Theme {
 
 const ThemeContext = createContext<Theme>({
   color: '#000000',
-  fontSize: 14
+  fontSize: 14,
 });
 ```
 
@@ -233,7 +247,7 @@ const ThemeContext = createContext<Theme>({
 // ✅ Good - dedicated provider
 function ThemeProvider({ children }: { children: JSX.Element }) {
   const [theme, setTheme] = useState(defaultTheme);
-  
+
   return (
     <ThemeContext value={theme}>
       {children}
@@ -250,4 +264,3 @@ const ThemeContext = createContext({});
 const AuthContext = createContext({});
 const SettingsContext = createContext({});
 ```
-

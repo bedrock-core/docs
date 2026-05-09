@@ -14,8 +14,10 @@ import { Text } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Text x={10} y={10} width={200} height={20}>Hello, Minecraft!</Text>
+<Text>{'Hello, Minecraft!'}</Text>
 ```
+
+`Text` is sized intrinsically from its content. Place it inside a `Panel` and use the panel's `gap`/`padding`/`flexDirection` to control layout.
 
 ## Props
 
@@ -25,7 +27,11 @@ import { Text } from '@bedrock-core/ui';
 - Type: `string`
 - Required: Yes
 - Description: The text content to display
-- Constraints: Max length is 80 characters, prefer to use translation strings when possible
+- Constraints: Max length is 80 characters — prefer translation keys for long copy.
+
+#### `font`
+- Type: `'mojangles' | 'minecraft-ten'`
+- Description: Optional font selection.
 
 ### Control Props
 
@@ -36,17 +42,17 @@ Text inherits all standard [control props](./control-props.md).
 ### Basic Text
 
 ```tsx
-<Text x={0} y={0} width={200} height={20}>Simple text</Text>
+<Text>{'Simple text'}</Text>
 ```
 
 ### Multi-line Layout
 
 ```tsx
-<>
-  <Text x={10} y={10} width={300} height={30}>§b§1Title</Text>
-  <Text x={10} y={40} width={300} height={25}>§2Subtitle text</Text>
-  <Text x={10} y={70} width={300} height={40}>Body content goes here</Text>
-</>
+<Panel padding={10} gap={6}>
+  <Text>{'§b§lTitle'}</Text>
+  <Text>{'§2Subtitle text'}</Text>
+  <Text>{'Body content goes here'}</Text>
+</Panel>
 ```
 
 ### Dynamic Text with State
@@ -54,32 +60,25 @@ Text inherits all standard [control props](./control-props.md).
 ```tsx
 function Counter() {
   const [count, setCount] = useState(0);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
-      <Button 
-        x={10} 
-        y={50} 
-        width={200} 
-        height={40}
-        onPress={() => setCount(count + 1)}
-      >
-        <Text x={10} y={10} width={180} height={20}>Increment</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{`Count: ${count}`}</Text>
+      <Button onPress={() => setCount(count + 1)}>
+        <Text>{'Increment'}</Text>
       </Button>
-    </>
+    </Panel>
   );
 }
 ```
 
 ## Best Practices
 
-- Position text with adequate padding from container edges
-- Keep text concise to fit within serialization limits or prefer to use translation keys when possible
-- Use formatting codes for styling https://minecraft.wiki/w/Formatting_codes
+- Don't hardcode `width`/`height` — let `Text` size to its content and rely on the parent panel's `gap`/`padding`.
+- Keep strings concise to fit within the serialization limit, or use translation keys for longer copy.
+- Use Minecraft formatting codes for styling: https://minecraft.wiki/w/Formatting_codes
 
 ## Limitations
 
-- Single line of text per component (no automatic line wrapping yet)
-- Maximum text length determined by serialization protocol (80 bytes)
-
+- Single line of text per component (no automatic line wrapping yet).
+- Maximum text length determined by serialization protocol (80 bytes).

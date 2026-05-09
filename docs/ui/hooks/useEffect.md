@@ -38,17 +38,21 @@ import { system } from '@minecraft/server';
 
 function Timer() {
   const [seconds, setSeconds] = useState(0);
-  
+
   useEffect(() => {
     const runId = system.runInterval(() => {
       setSeconds(s => s + 1);
     }, 20); // Runs every 20 ticks (1 second)
-    
+
     // Cleanup function
     return () => system.clearRun(runId);
   }, []); // Empty deps = run once on mount
-  
-  return <Text x={10} y={10}>{`Time: ${seconds}s`}</Text>;
+
+  return (
+    <Panel padding={10}>
+      <Text>{`Time: ${seconds}s`}</Text>
+    </Panel>
+  );
 }
 ```
 
@@ -67,14 +71,17 @@ function Timer() {
 ```tsx
 function DataLoader() {
   const [data, setData] = useState(null);
-  
+
   useEffect(() => {
     console.log('Component mounted, loading data...');
-    // Load data logic here
     setData('Loaded data');
   }, []); // Empty array = run once
-  
-  return <Text x={10} y={10} width={300} height={30}>{data || 'Loading...'}</Text>;
+
+  return (
+    <Panel padding={10}>
+      <Text>{data || 'Loading...'}</Text>
+    </Panel>
+  );
 }
 ```
 
@@ -84,22 +91,21 @@ function DataLoader() {
 function SearchResults() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  
+
   useEffect(() => {
     if (query.length > 0) {
       console.log(`Searching for: ${query}`);
-      // Perform search
       setResults([`Result for ${query}`]);
     }
   }, [query]); // Runs when query changes
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Search: ${query}`}</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{`Search: ${query}`}</Text>
       {results.map((result, i) => (
-        <Text key={i} x={10} y={40 + i * 30} width={300} height={30}>{result}</Text>
+        <Text key={i}>{result}</Text>
       ))}
-    </>
+    </Panel>
   );
 }
 ```
@@ -114,14 +120,18 @@ function EventListener() {
     const runId = system.runTimeout(() => {
       console.log('Timeout executed');
     }, 100); // Execute after 100 ticks (~5 seconds)
-    
+
     // Cleanup: cancel timeout when component unmounts
     return () => {
       system.clearRun(runId);
     };
   }, []);
-  
-  return <Text x={10} y={10} width={300} height={30}>Timeout scheduled...</Text>;
+
+  return (
+    <Panel padding={10}>
+      <Text>{'Timeout scheduled...'}</Text>
+    </Panel>
+  );
 }
 ```
 
@@ -131,27 +141,27 @@ function EventListener() {
 function MultiEffect() {
   const [count, setCount] = useState(0);
   const [name, setName] = useState('Player');
-  
+
   // Effect 1: Log count changes
   useEffect(() => {
     console.log(`Count changed to: ${count}`);
   }, [count]);
-  
+
   // Effect 2: Log name changes
   useEffect(() => {
     console.log(`Name changed to: ${name}`);
   }, [name]);
-  
+
   // Effect 3: Run on every execution
   useEffect(() => {
     console.log('Component executed');
   });
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={200} height={30}>{`Count: ${count}`}</Text>
-      <Text x={10} y={40} width={200} height={30}>{`Name: ${name}`}</Text>
-    </>
+    <Panel padding={10} gap={4}>
+      <Text>{`Count: ${count}`}</Text>
+      <Text>{`Name: ${name}`}</Text>
+    </Panel>
   );
 }
 ```
@@ -163,19 +173,21 @@ import { system } from '@minecraft/server';
 
 function Countdown() {
   const [timeLeft, setTimeLeft] = useState(60);
-  
+
   useEffect(() => {
     if (timeLeft <= 0) return;
-    
+
     const runId = system.runInterval(() => {
       setTimeLeft(timeLeft - 1);
     }, 20); // Runs every 20 ticks (1 second)
-    
+
     return () => system.clearRun(runId);
   }, [timeLeft]);
-  
+
   return (
-    <Text x={10} y={10} width={200} height={30}>{`Time Left: ${timeLeft}s`}</Text>
+    <Panel padding={10}>
+      <Text>{`Time Left: ${timeLeft}s`}</Text>
+    </Panel>
   );
 }
 ```
@@ -187,29 +199,32 @@ function PlayerStats() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const player = usePlayer();
-  
+
   useEffect(() => {
-    // Simulate async data fetch
     setLoading(true);
-    
+
     setTimeout(() => {
       setStats({
         health: player.health,
-        level: player.level
+        level: player.level,
       });
       setLoading(false);
     }, 1000);
   }, []); // Load once on mount
-  
+
   if (loading) {
-    return <Text x={10} y={10} width={300} height={30}>Loading stats...</Text>;
+    return (
+      <Panel padding={10}>
+        <Text>{'Loading stats...'}</Text>
+      </Panel>
+    );
   }
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{`Health: ${stats?.health}`}</Text>
-      <Text x={10} y={40} width={300} height={30}>{`Level: ${stats?.level}`}</Text>
-    </>
+    <Panel padding={10} gap={4}>
+      <Text>{`Health: ${stats?.health}`}</Text>
+      <Text>{`Level: ${stats?.level}`}</Text>
+    </Panel>
   );
 }
 ```
@@ -221,30 +236,28 @@ function DependentEffects() {
   const [userId, setUserId] = useState(1);
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
-  
+
   // Effect 1: Load user when userId changes
   useEffect(() => {
     console.log(`Loading user ${userId}...`);
-    // Fetch user data
     setUser({ id: userId, name: `User ${userId}` });
   }, [userId]);
-  
+
   // Effect 2: Load posts when user changes
   useEffect(() => {
     if (user) {
       console.log(`Loading posts for ${user.name}...`);
-      // Fetch posts
       setPosts([`Post 1 by ${user.name}`]);
     }
   }, [user]);
-  
+
   return (
-    <>
-      <Text x={10} y={10} width={300} height={30}>{user?.name || 'Loading...'}</Text>
+    <Panel padding={10} gap={4}>
+      <Text>{user?.name || 'Loading...'}</Text>
       {posts.map((post, i) => (
-        <Text key={i} x={10} y={40 + i * 30} width={300} height={30}>{post}</Text>
+        <Text key={i}>{post}</Text>
       ))}
-    </>
+    </Panel>
   );
 }
 ```

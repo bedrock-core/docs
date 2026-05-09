@@ -3,7 +3,7 @@ sidebar_position: 2
 ---
 # Panel
 
-A container component for organizing and grouping other UI elements.
+A flex container for organizing and grouping other UI elements.
 
 ## Import
 
@@ -16,8 +16,8 @@ import { Panel } from '@bedrock-core/ui';
 ```tsx
 function Example() {
   return (
-    <Panel width={300} height={200}>
-      <Text x={10} y={10} width={280} height={30}>Content inside panel</Text>
+    <Panel padding={10} gap={6}>
+      <Text>{'Content inside panel'}</Text>
     </Panel>
   );
 }
@@ -29,48 +29,78 @@ function Example() {
 
 #### `children`
 - Type: `JSX.Node`
-- Default: `undefined`
 - Description: The children components inside the panel
 
 ### Control Props
 
-Panel inherits all standard [control props](./control-props.md)
+Panel inherits all standard [control props](./control-props.md), including the full set of flex container properties (`flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding`, …) and flex item properties (`flex`, `flexGrow`, `flexShrink`, …).
 
 ## Examples
 
-### Basic Panel
+### Vertical stack (default)
 
 ```tsx
-<Panel width={400} height={300}>
-  <Text x={10} y={10} width={380} height={30}>Simple panel content</Text>
+<Panel padding={10} gap={6}>
+  <Text>{'First line'}</Text>
+  <Text>{'Second line'}</Text>
+  <Text>{'Third line'}</Text>
 </Panel>
 ```
 
-### Nested Panels
+### Horizontal row
 
 ```tsx
-<Panel width={600} height={500}>
-  <Panel 
-    x={10}
-    y={10}
-    width={580} 
-    height={100}
-  >
-    <Text x={10} y={10} width={560} height={30}>Nested Panel Header</Text>
+<Panel flexDirection={'row'} padding={10} gap={8}>
+  <Button flex={1}>
+    <Text>{'Cancel'}</Text>
+  </Button>
+  <Button flex={1}>
+    <Text>{'Confirm'}</Text>
+  </Button>
+</Panel>
+```
+
+### Nested layout
+
+```tsx
+<Panel padding={10} gap={10}>
+  <Panel padding={6} gap={4}>
+    <Text>{'§lHeader'}</Text>
+    <Text>{'Subtitle'}</Text>
   </Panel>
-  
-  <Panel 
-    x={10}
-    y={130}
-    width={580} 
-    height={350}
-  >
-    <Text x={10} y={10} width={560} height={30}>Nested Panel Content</Text>
+
+  <Panel flexDirection={'row'} gap={6}>
+    <Panel flex={1} padding={6}>
+      <Text>{'Left column'}</Text>
+    </Panel>
+    <Panel flex={1} padding={6}>
+      <Text>{'Right column'}</Text>
+    </Panel>
+  </Panel>
+</Panel>
+```
+
+### Centered content
+
+```tsx
+<Panel width={320} height={200} justifyContent={'center'} alignItems={'center'}>
+  <Text>{'Centered'}</Text>
+</Panel>
+```
+
+### Overlay with absolute positioning
+
+```tsx
+<Panel width={300} height={120}>
+  <Text>{'Main content'}</Text>
+  <Panel position={'absolute'} top={4} right={4}>
+    <Text>{'✕'}</Text>
   </Panel>
 </Panel>
 ```
 
 ## Best Practices
 
-- Use panels as containers to organize related UI elements
-- Position child elements relative to the panel's origin (top-left corner)
+- Compose layouts by nesting panels with `flexDirection`, `gap`, and `padding` — let the engine compute positions and sizes.
+- Reach for `position={'absolute'}` only for overlays / pinned UI that must escape the flex flow.
+- Use `flex` (or `flexGrow`) on children to share remaining space along the main axis.

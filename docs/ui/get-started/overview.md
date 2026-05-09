@@ -29,6 +29,7 @@ The multiple attempts we made with this resulted in poor player interaction as c
 
 So it was decided to keep the logic executing in the background and present to the player a snapshot of the UI, and only update it on player input.
 
+
 **TLDR**: UI logic keeps running in background but we only update player presented ui when they press a button.
 
 ## Your First UI
@@ -43,11 +44,11 @@ import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 // Create a simple UI component
 function WelcomeScreen() {
   return (
-    <Panel width={300} height={200}>
-      <Text x={10} y={10} width={280} height={20}>Welcome to Bedrock UI!</Text>
+    <Panel padding={10} gap={8}>
+      <Text>{'Welcome to Bedrock UI!'}</Text>
 
-      <Button x={10} y={50} width={280} height={40}>
-        <Text x={10} y={10} width={260} height={20}>Click Me</Text>
+      <Button onPress={() => console.log('clicked')}>
+        <Text>{'Click Me'}</Text>
       </Button>
     </Panel>
   );
