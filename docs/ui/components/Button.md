@@ -33,6 +33,20 @@ Buttons are sized intrinsically from their content plus the button's built-in pa
 - Type: `JSX.Node`
 - Description: Child components — typically a `Text` (label) or `Image` (icon).
 
+#### `backgroundHover`
+- Type: `string`
+- Description: Texture path used while the player hovers over the button.
+
+#### `backgroundPressed`
+- Type: `string`
+- Description: Texture path used while the button is being pressed.
+
+#### `backgroundLocked`
+- Type: `string`
+- Description: Texture path used when the button is disabled (`enabled={false}`).
+
+Combine these with `background` (from control props) to fully texture the button across every state. This is the foundation that [`@bedrock-core/ore-styled`'s `Button`](../ore-styled/Button.md) builds on top of.
+
 ### Control Props
 
 Button inherits all standard [control props](./control-props.md).
@@ -87,6 +101,20 @@ function ToggleButton() {
 ```tsx
 <Button onPress={() => console.log('clicked icon')}>
   <Image width={32} height={32} texture={'textures/items/diamond'} />
+</Button>
+```
+
+### Fully Themed Button
+
+```tsx
+<Button
+  background={'textures/ui/button_default'}
+  backgroundHover={'textures/ui/button_hover'}
+  backgroundPressed={'textures/ui/button_pressed'}
+  backgroundLocked={'textures/ui/button_locked'}
+  onPress={() => console.log('themed')}
+>
+  <Text>{'Themed'}</Text>
 </Button>
 ```
 

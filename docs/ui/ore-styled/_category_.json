@@ -1,0 +1,11 @@
+{
+  "position": 5,
+  "label": "ore-styled",
+  "key": "ore-styled",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "ore-styled"
+  }
+}

@@ -16,6 +16,18 @@
   }
 }
 
+.heroTitle {
+  margin-bottom: 1rem;
+}
+
+.heroLogo {
+  display: block;
+  margin: 0 auto;
+  max-width: min(560px, 80%);
+  height: auto;
+  image-rendering: pixelated;
+}
+
 .buttons {
   display: flex;
   align-items: center;

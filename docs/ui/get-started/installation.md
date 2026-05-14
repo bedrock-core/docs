@@ -26,6 +26,12 @@ This will create a new addon with:
 - ✅ Companion resource pack included
 - ✅ Working example to get started
 
+During the prompts the CLI will ask:
+
+> Include `@bedrock-core/ore-styled`? (recommended — prebuilt Ore-UI styled components)
+
+We **recommend answering yes**: it adds the themed [`ore-styled`](../ore-styled/ore-styled.md) component layer (Button variants, Card, Checkbox, Toggle, Radio, ToggleButton, Divider) along with its companion resource pack. Pick "no" if you'd rather style every primitive yourself — you can always add it later via the manual instructions below.
+
 After generation:
 
 ```bash
@@ -73,6 +79,20 @@ pack.mcaddon
 └── core-ui-vx.y.z.mcpack   (companion resource pack from releases)
 ```
 
+### Optional: ore-styled
+
+[`@bedrock-core/ore-styled`](../ore-styled/ore-styled.md) is a themed component layer that pairs with `@bedrock-core/ui` to give you vanilla-Minecraft-styled buttons, cards, checkboxes, and more. It's entirely optional — skip this section if you'd rather hand-style each primitive yourself.
+
+```bash
+yarn add @bedrock-core/ore-styled
+```
+
+Then import from `@bedrock-core/ore-styled` instead of `@bedrock-core/ui` whenever you want a themed variant:
+
+```tsx
+import { Button, Card } from '@bedrock-core/ore-styled';
+```
+
 ## TypeScript Configuration
 
 Add JSX support to your `tsconfig.json`:
@@ -112,5 +132,6 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 
 ## Next Steps
 - [Components](../components/components.md) - Built-in components that you can use in your JSX
+- [ore-styled](../ore-styled/ore-styled.md) - Themed component layer with vanilla Minecraft textures (optional)
 - [Hooks](../hooks/hooks.md) - Add state and effects to your components
 - [API](../api/api.md) - APIs that are useful for defining components

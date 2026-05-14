@@ -84,7 +84,7 @@ const config: Config = {
       title: '@bedrock-core/',
       logo: {
         alt: '@bedrock-core logo',
-        src: 'img/logo.svg',
+        src: 'img/logo/icon.png',
       },
       items: [
         {

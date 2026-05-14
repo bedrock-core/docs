@@ -25,13 +25,34 @@ import { Text } from '@bedrock-core/ui';
 
 #### `children`
 - Type: `string`
-- Required: Yes
-- Description: The text content to display
-- Constraints: Max length is 80 characters — prefer translation keys for long copy.
+- Required: One of `children` or `localizationKey` must be provided.
+- Description: Raw text content to display.
+- Constraints: Max 80 UTF-8 bytes — use `localizationKey` for longer copy.
 
 #### `font`
-- Type: `'mojangles' | 'minecraft-ten'`
-- Description: Optional font selection.
+- Type: `'mojangles' | 'minecraftTen'`
+- Description: Optional font selection. Defaults to `'mojangles'`.
+
+#### `scale`
+- Type: `number`
+- Default: `1.0`
+- Description: Scale multiplier relative to the standard "normal" glyph size. Values below `1.0` produce smaller text; values above `1.0` produce larger text.
+
+#### `localizationKey`
+- Type: `string`
+- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter to be installed and a `TranslationKeysContext` provided at the root of the UI. Takes priority over `children` when both are present.
+
+#### `wordBreak`
+- Type: `'normal' | 'break-word'`
+- Description: When set to `'break-word'`, text automatically wraps at word boundaries (with hyphens for mid-word breaks). Width comes from the container — no explicit `maxWidth` needed.
+
+#### `overflow`
+- Type: `'ellipsis'`
+- Description: When set, text that overflows its container is truncated with `…`.
+
+#### `maxLines`
+- Type: `number`
+- Description: Limit rendered text to N lines. The last line is always ellipsized when content overflows.
 
 ### Control Props
 
@@ -72,13 +93,37 @@ function Counter() {
 }
 ```
 
+### Localized Text
+
+```tsx
+<TranslationKeysContext value={translationKeys}>
+  <Text localizationKey={'ui.myscreen.title'} />
+</TranslationKeysContext>
+```
+
+### Wrapped & Truncated Text
+
+```tsx
+<Panel width={120} padding={6}>
+  <Text wordBreak={'break-word'} maxLines={3} overflow={'ellipsis'}>
+    {'This long string will wrap at word boundaries and ellipsize after three lines.'}
+  </Text>
+</Panel>
+```
+
+### Scaled Heading
+
+```tsx
+<Text font={'minecraftTen'} scale={1.5}>{'§eBig Title'}</Text>
+```
+
 ## Best Practices
 
 - Don't hardcode `width`/`height` — let `Text` size to its content and rely on the parent panel's `gap`/`padding`.
-- Keep strings concise to fit within the serialization limit, or use translation keys for longer copy.
+- Keep raw strings under 80 UTF-8 bytes; reach for `localizationKey` once copy gets longer or needs translating.
 - Use Minecraft formatting codes for styling: https://minecraft.wiki/w/Formatting_codes
 
 ## Limitations
 
-- Single line of text per component (no automatic line wrapping yet).
-- Maximum text length determined by serialization protocol (80 bytes).
+- Raw `children` is capped at 80 UTF-8 bytes by the serialization protocol — use `localizationKey` to bypass it.
+- Word wrapping is opt-in via `wordBreak={'break-word'}`; by default a `Text` renders on a single line.

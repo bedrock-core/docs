@@ -15,6 +15,8 @@ Get up and running with `@bedrock-core/ui` in minutes.
 
 `@bedrock-core/ui` is a React-like UI framework for Minecraft Bedrock Edition that enables you to create rich, interactive user interfaces using JSX syntax. It serializes your UI components into a protocol and renders them using JSON UI with the companion Resource Pack.
 
+For a pre-themed component set that matches vanilla Minecraft's look (buttons, cards, checkboxes, toggles, …), see the [`@bedrock-core/ore-styled`](../ore-styled/ore-styled.md) layer. It's optional — pick it up when you want batteries-included visuals, skip it when you'd rather style every primitive yourself.
+
 ## Learn React first
 
 If you're new to React, we strongly recommend starting with the official React tutorial:
@@ -75,5 +77,6 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 
 - [Installation](./installation.md) - Set up the framework in your project
 - [Components](../components) - Built-in components that you can use in your JSX
+- [ore-styled](../ore-styled) - Themed component layer with vanilla Minecraft textures (optional)
 - [Hooks](../hooks) - Add state and effects to your components
 - [API](../api) - APIs that are useful for defining components
