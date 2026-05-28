@@ -1,0 +1,11 @@
+{
+  "position": 4,
+  "label": "flexbox",
+  "key": "flexbox",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "flexbox"
+  }
+}
