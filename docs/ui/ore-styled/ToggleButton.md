@@ -70,7 +70,7 @@ The group lays its items out in a row with negative gap so the button edges butt
 
 ### Control Props
 
-Both `ToggleButtonGroup` and `ToggleButtonItem` inherit all standard [control props](../components/control-props.md).
+Both `ToggleButtonGroup` and `ToggleButtonItem` inherit all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 

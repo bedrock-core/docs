@@ -15,7 +15,7 @@ Learn how to install `@bedrock-core/ui` for your Minecraft Bedrock addon project
 The fastest way to get started is using our CLI tool to scaffold a complete project:
 
 ```bash
-npx @bedrock-core/ui
+npx @bedrock-core/cli
 ```
 
 This will create a new addon with:
@@ -25,12 +25,6 @@ This will create a new addon with:
 - ✅ Regolith build configuration
 - ✅ Companion resource pack included
 - ✅ Working example to get started
-
-During the prompts the CLI will ask:
-
-> Include `@bedrock-core/ore-styled`? (recommended — prebuilt Ore-UI styled components)
-
-We **recommend answering yes**: it adds the themed [`ore-styled`](../ore-styled/ore-styled.md) component layer (Button variants, Card, Checkbox, Toggle, Radio, ToggleButton, Divider) along with its companion resource pack. Pick "no" if you'd rather style every primitive yourself — you can always add it later via the manual instructions below.
 
 After generation:
 
@@ -83,11 +77,13 @@ pack.mcaddon
 
 [`@bedrock-core/ore-styled`](../ore-styled/ore-styled.md) is a themed component layer that pairs with `@bedrock-core/ui` to give you vanilla-Minecraft-styled buttons, cards, checkboxes, and more. It's entirely optional — skip this section if you'd rather hand-style each primitive yourself.
 
+If you installed `@bedrock-core/ui`, `ore-styled` is already included — no separate install needed. If you're on a minimal install (`@bedrock-core/ui-runtime` only), add it explicitly:
+
 ```bash
 yarn add @bedrock-core/ore-styled
 ```
 
-Then import from `@bedrock-core/ore-styled` instead of `@bedrock-core/ui` whenever you want a themed variant:
+Then import from `@bedrock-core/ore-styled` whenever you want a themed variant:
 
 ```tsx
 import { Button, Card } from '@bedrock-core/ore-styled';
@@ -131,7 +127,7 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 ```
 
 ## Next Steps
-- [Components](../components/components.md) - Built-in components that you can use in your JSX
+- [Components](../ui-runtime/components/components.md) - Built-in components that you can use in your JSX
 - [ore-styled](../ore-styled/ore-styled.md) - Themed component layer with vanilla Minecraft textures (optional)
-- [Hooks](../hooks/hooks.md) - Add state and effects to your components
-- [API](../api/api.md) - APIs that are useful for defining components
+- [Hooks](../ui-runtime/hooks/hooks.md) - Add state and effects to your components
+- [API](../ui-runtime/api/api.md) - APIs that are useful for defining components

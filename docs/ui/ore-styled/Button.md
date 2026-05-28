@@ -3,7 +3,7 @@ sidebar_position: 2
 ---
 # Button
 
-Themed button with six visual variants. Built on top of the [`Button`](../components/Button.md) primitive and the [theme](./theme.md) token map.
+Themed button with six visual variants. Built on top of the [`Button`](../ui-runtime/components/Button.md) primitive and the [theme](./theme.md) token map.
 
 ![Button](/img/ore-styled/Button.png)
 
@@ -47,7 +47,7 @@ When `children` is a string the button automatically wraps it in a `Text` styled
 
 ### Control Props
 
-Button inherits all standard [control props](../components/control-props.md).
+Button inherits all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 

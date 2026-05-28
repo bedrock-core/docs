@@ -76,7 +76,7 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 ## Next Steps
 
 - [Installation](./installation.md) - Set up the framework in your project
-- [Components](../components) - Built-in components that you can use in your JSX
+- [Components](../ui-runtime/components) - Built-in components that you can use in your JSX
 - [ore-styled](../ore-styled) - Themed component layer with vanilla Minecraft textures (optional)
-- [Hooks](../hooks) - Add state and effects to your components
-- [API](../api) - APIs that are useful for defining components
+- [Hooks](../ui-runtime/hooks) - Add state and effects to your components
+- [API](../ui-runtime/api) - APIs that are useful for defining components

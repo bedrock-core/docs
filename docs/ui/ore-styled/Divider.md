@@ -41,7 +41,7 @@ The divider stretches along the cross-axis of its parent. Inside a column `Panel
 
 ### Control Props
 
-Divider inherits all standard [control props](../components/control-props.md).
+Divider inherits all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 

@@ -68,7 +68,7 @@ import { RadioGroup, Radio } from '@bedrock-core/ore-styled';
 
 ### Control Props
 
-Both `RadioGroup` and `Radio` inherit all standard [control props](../components/control-props.md).
+Both `RadioGroup` and `Radio` inherit all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 

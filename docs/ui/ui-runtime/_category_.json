@@ -1,11 +1,11 @@
 {
   "position": 2,
-  "label": "Components",
-  "key": "components",
+  "label": "ui-runtime",
+  "key": "ui-runtime",
   "collapsible": true,
   "collapsed": true,
   "link": {
     "type": "doc",
-    "id": "components"
+    "id": "intro"
   }
 }

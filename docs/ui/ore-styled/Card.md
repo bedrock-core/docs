@@ -3,7 +3,7 @@ sidebar_position: 3
 ---
 # Card
 
-Themed container that wraps the [`Panel`](../components/Panel.md) primitive with the standard Minecraft card background, padding, and gap. Use it to group related content into a single visual unit.
+Themed container that wraps the [`Panel`](../ui-runtime/components/Panel.md) primitive with the standard Minecraft card background, padding, and gap. Use it to group related content into a single visual unit.
 
 ![Card](/img/ore-styled/Card.png)
 
@@ -34,7 +34,7 @@ Cards lay their children out as a column with the theme's standard `gap`. Overri
 
 ### Control Props
 
-Card inherits all standard [control props](../components/control-props.md). Use them to size the card, override the default padding, or change the flex direction.
+Card inherits all standard [control props](../ui-runtime/components/control-props.md). Use them to size the card, override the default padding, or change the flex direction.
 
 ## Examples
 

@@ -43,7 +43,7 @@ import { Toggle } from '@bedrock-core/ore-styled';
 
 ### Control Props
 
-Toggle inherits all standard [control props](../components/control-props.md).
+Toggle inherits all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 

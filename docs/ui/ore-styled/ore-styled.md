@@ -3,7 +3,7 @@ sidebar_position: 1
 ---
 # ore-styled
 
-`@bedrock-core/ore-styled` is a themed component layer built on top of the [`@bedrock-core/ui`](../components/components.md) primitives. Every component renders with authentic Minecraft textures shipped through the `@bedrock-core/ore-styled` resource pack, so your UI matches the vanilla look out of the box.
+`@bedrock-core/ore-styled` is a themed component layer built on top of the [`@bedrock-core/ui`](../ui-runtime/components/components.md) primitives. Every component renders with authentic Minecraft textures shipped through the `@bedrock-core/ore-styled` resource pack, so your UI matches the vanilla look out of the box.
 
 ## Install
 

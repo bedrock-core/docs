@@ -45,7 +45,7 @@ Buttons are sized intrinsically from their content plus the button's built-in pa
 - Type: `string`
 - Description: Texture path used when the button is disabled (`enabled={false}`).
 
-Combine these with `background` (from control props) to fully texture the button across every state. This is the foundation that [`@bedrock-core/ore-styled`'s `Button`](../ore-styled/Button.md) builds on top of.
+Combine these with `background` (from control props) to fully texture the button across every state. This is the foundation that [`@bedrock-core/ore-styled`'s `Button`](../../ore-styled/Button.md) builds on top of.
 
 ### Control Props
 

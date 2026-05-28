@@ -47,7 +47,7 @@ import { Checkbox } from '@bedrock-core/ore-styled';
 
 ### Control Props
 
-Checkbox inherits all standard [control props](../components/control-props.md).
+Checkbox inherits all standard [control props](../ui-runtime/components/control-props.md).
 
 ## Examples
 
