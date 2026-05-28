@@ -1,0 +1,11 @@
+{
+  "position": 5,
+  "label": "navigation",
+  "key": "navigation",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "navigation"
+  }
+}

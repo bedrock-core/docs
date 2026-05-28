@@ -25,6 +25,12 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
+  markdown: {
+    mdx1Compat: {
+      admonitions: true,
+    },
+  },
+
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -44,6 +50,7 @@ const config: Config = {
   ],
 
   plugins: [
+    'docusaurus-plugin-llms',
     [
       '@docusaurus/plugin-content-docs',
       {
