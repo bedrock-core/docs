@@ -107,7 +107,7 @@ Add JSX support to your `tsconfig.json`:
 Test your installation with a simple render:
 
 ```tsx
-import { render, Panel, Text } from '@bedrock-core/ui';
+import { render, Screen, Panel, Text } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
@@ -121,7 +121,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(HelloWorld, source);
+    render(HelloWorld, source, Screen.Scroll);
   }
 });
 ```

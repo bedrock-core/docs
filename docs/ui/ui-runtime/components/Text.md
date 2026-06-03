@@ -40,7 +40,16 @@ import { Text } from '@bedrock-core/ui';
 
 #### `localizationKey`
 - Type: `string`
-- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter to be installed and a `TranslationKeysContext` provided at the root of the UI. Takes priority over `children` when both are present.
+- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter to be installed — once installed, the runtime seeds the context automatically; Takes priority over `children` when both are present.
+
+:::note Translation Keys filter required
+`localizationKey` requires the [`translation-keys` Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/translation-keys). Install it and configure the tsconfig path alias — after that, `localizationKey` just works everywhere with no extra setup in your component code.
+
+The easiest way to get started with the filter already configured is to scaffold your project with the **CLI**:
+```bash
+npx @bedrock-core/cli
+```
+:::
 
 #### `wordBreak`
 - Type: `'normal' | 'break-word'`

@@ -39,7 +39,7 @@ So it was decided to keep the logic executing in the background and present to t
 Here's a simple example to get you started:
 
 ```tsx
-import { render, Panel, Text, Button } from '@bedrock-core/ui';
+import { render, Screen, Panel, Text, Button } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
@@ -61,7 +61,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 // Render it to a player
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(WelcomeScreen, source);
+    render(WelcomeScreen, source, Screen.Scroll);
   }
 });
 ```

@@ -68,6 +68,8 @@ function StatsDisplay() {
 ### Check Player Permissions
 
 ```tsx
+import { CommandPermissionLevel } from '@minecraft/server';
+
 function AdminPanel() {
   const player = usePlayer();
   const isAdmin = player.commandPermissionLevel === CommandPermissionLevel.Admin;

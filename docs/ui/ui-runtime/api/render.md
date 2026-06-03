@@ -5,13 +5,13 @@ Display a UI component tree to a player.
 ## Import
 
 ```tsx
-import { render } from '@bedrock-core/ui';
+import { render, Screen } from '@bedrock-core/ui';
 ```
 
 ## Signature
 
 ```tsx
-function render(root: FunctionComponent | JSX.Element, player: Player): void
+function render(root: FunctionComponent | JSX.Element, player: Player, screen: ScreenDescriptor): void
 ```
 
 ### Parameters
@@ -24,6 +24,28 @@ function render(root: FunctionComponent | JSX.Element, player: Player): void
 - Type: `Player` (from `@minecraft/server`)
 - Description: The player who will see the UI
 
+#### `screen`
+- Type: `ScreenDescriptor`
+- Description: Which RP screen layout to activate. This is the **baseline** for the whole render — it sets the JSON UI layout (and whether [`ItemRenderer`](../components/ItemRenderer.md) is permitted). Pass one of the built-in descriptors:
+  - `Screen.Scroll` — default scrolling form (no item rendering).
+  - `Screen.Fixed` — single non-scrolling page where items render inline with controls.
+
+  A component deeper in the tree can override the baseline for one build with the [`useSetScreen`](../hooks/useSetScreen.md) hook — this is how a single `render()` call can switch layouts as you navigate.
+
+**`Screen` type:**
+
+```ts
+interface ScreenDescriptor {
+  readonly type: 'scroll' | 'fixed';
+  readonly allowsItems: boolean;
+}
+
+const Screen = {
+  Scroll: { type: 'scroll', allowsItems: false },
+  Fixed:  { type: 'fixed',  allowsItems: true  },
+} as const;
+```
+
 ### Returns
 
 `void`
@@ -31,7 +53,7 @@ function render(root: FunctionComponent | JSX.Element, player: Player): void
 ## Usage
 
 ```tsx
-import { render, Panel, Text } from '@bedrock-core/ui';
+import { render, Screen, Panel, Text } from '@bedrock-core/ui';
 import { world } from '@minecraft/server';
 
 function WelcomeScreen() {
@@ -47,7 +69,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 // Render it to a player
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(WelcomeScreen, source);
+    render(WelcomeScreen, source, Screen.Scroll);
   }
 });
 ```

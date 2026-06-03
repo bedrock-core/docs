@@ -16,7 +16,7 @@ You also need the matching `@bedrock-core/ore-styled` resource pack installed in
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider, ItemSlot, ItemContainer, EquipmentSlots } from '@bedrock-core/ore-styled';
 ```
 
 ## Components
@@ -28,6 +28,9 @@ import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, T
 - [**`<RadioGroup>` / `<Radio>`**](./Radio.md) — single-choice radio set.
 - [**`<ToggleButtonGroup>` / `<ToggleButtonItem>`**](./ToggleButton.md) — segmented button group with single selection.
 - [**`<Divider>`**](./Divider.md) — horizontal or vertical divider line in three variants.
+- [**`<ItemSlot>`**](./ItemSlot.md) — single inventory slot with item or overlay texture.
+- [**`<ItemContainer>`**](./ItemContainer.md) — grid of `ItemSlot`s covering a `Container`'s slots.
+- [**`<EquipmentSlots>`**](./EquipmentSlots.md) — helmet → boots + offhand column with silhouette overlays.
 
 ## Theme
 
