@@ -15,8 +15,6 @@ import { ItemRenderer } from '@bedrock-core/ui';
 
 ```tsx
 function ItemCard({ item }: { item: ItemStack }) {
-  useSetScreen(Screen.Fixed);
-
   return (
     <Panel padding={4} gap={4} flexDirection="row">
       <ItemRenderer item={item} width={24} height={24} />
@@ -41,8 +39,6 @@ function ItemCard({ item }: { item: ItemStack }) {
 
 ## Requirements
 
-`ItemRenderer` requires a screen with `allowsItems: true`. Use `Screen.Fixed` — either pass it to `render()` or call [`useSetScreen(Screen.Fixed)`](../hooks/useSetScreen.md) inside the component. If the active screen does not allow items, an `ItemAuxError` is thrown.
-
 The item aux map is seeded automatically by the runtime from the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) — no wrapping needed. If the filter is not installed and the generated JSON is missing, an `ItemAuxError` is thrown.
 
 :::note item-aux filter required
@@ -58,7 +54,6 @@ npx @bedrock-core/cli
 
 ```tsx
 function HeldItem({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const item = player.getComponent('inventory')?.container?.getItem(player.selectedSlotIndex);
 
   if (!item) return null;
@@ -71,8 +66,6 @@ function HeldItem({ player }: { player: Player }) {
 
 ```tsx
 function ItemCard({ item }: { item: ItemStack }) {
-  useSetScreen(Screen.Fixed);
-
   return (
     <Panel padding={4} gap={4} flexDirection="row">
       <ItemRenderer item={item} width={24} height={24} />
@@ -91,4 +84,4 @@ function ItemCard({ item }: { item: ItemStack }) {
 - [`useSetScreen`](../hooks/useSetScreen.md) — override the screen layout per build
 - [`useScreen`](../hooks/useScreen.md) — read the current screen descriptor
 - [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) — generates the aux ID map
-- [`render`](../api/render.md) — where the `Screen.Fixed` baseline is set
+- [`render`](../api/render.md) — where the screen baseline is set

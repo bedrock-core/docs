@@ -12,8 +12,8 @@ Core functions and utilities for building and displaying UI.
 
 ## Screen Descriptors
 
-- `Screen.Scroll` — Default scrolling form layout. No item rendering.
-- `Screen.Fixed` — Single non-scrolling page. Enables [`ItemRenderer`](../components/ItemRenderer.md).
+- `Screen.Scroll` — Default scrolling form layout; scrolls with the view.
+- `Screen.Fixed` — Single non-scrolling page.
 
 ## Next Steps
 

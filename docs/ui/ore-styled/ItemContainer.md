@@ -56,7 +56,7 @@ Total width is calculated automatically as `columns × theme.components.itemSlot
 
 ## Requirements
 
-Requires a `Screen.Fixed` screen (via [`useSetScreen`](../ui-runtime/hooks/useSetScreen.md) or passed to `render()`) and the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) to be installed — the runtime seeds the aux map automatically.
+Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) to be installed — the runtime seeds the aux map automatically.
 
 ## Examples
 

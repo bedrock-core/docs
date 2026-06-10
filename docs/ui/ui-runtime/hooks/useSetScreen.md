@@ -36,10 +36,10 @@ function useSetScreen(screen: ScreenDescriptor): void
 - The hook applies per-build (each press of a button triggers a new build). It does not persist across builds.
 - Navigators must **never** call `useSetScreen`. It is the screen component's own responsibility.
 
-The intended pattern is a screen component that requires item rendering declaring its own layout requirement:
+The intended pattern is a screen component declaring its own layout requirement:
 
 ```tsx
-function MyItemScreen() {
+function MyFixedScreen() {
   useSetScreen(Screen.Fixed);
   return <ItemRenderer item={stack} />;
 }
@@ -47,10 +47,10 @@ function MyItemScreen() {
 
 ## Screen Descriptors
 
-| Descriptor | `type` | `allowsItems` | Description |
-|------------|--------|---------------|-------------|
-| `Screen.Scroll` | `'scroll'` | `false` | Default scrolling form layout. No item rendering. |
-| `Screen.Fixed` | `'fixed'` | `true` | Single non-scrolling page. Enables [`ItemRenderer`](../components/ItemRenderer.md). |
+| Descriptor | `type` | Description |
+|------------|--------|-------------|
+| `Screen.Scroll` | `'scroll'` | Default scrolling form layout. |
+| `Screen.Fixed` | `'fixed'` | Single non-scrolling page. |
 
 ## Usage
 
@@ -64,7 +64,7 @@ interface ItemDetailProps {
 }
 
 function ItemDetail({ item }: ItemDetailProps) {
-  // Declare that this screen requires the fixed layout (enables item rendering)
+  // Declare that this screen uses the fixed (non-scrolling) layout
   useSetScreen(Screen.Fixed);
 
   return (
@@ -79,4 +79,4 @@ function ItemDetail({ item }: ItemDetailProps) {
 ## See Also
 
 - [`render`](../api/render.md) — the `screen` baseline parameter
-- [`ItemRenderer`](../components/ItemRenderer.md) — component that requires `Screen.Fixed`
+- [`ItemRenderer`](../components/ItemRenderer.md) — renders item icons

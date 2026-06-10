@@ -26,9 +26,9 @@ function render(root: FunctionComponent | JSX.Element, player: Player, screen: S
 
 #### `screen`
 - Type: `ScreenDescriptor`
-- Description: Which RP screen layout to activate. This is the **baseline** for the whole render — it sets the JSON UI layout (and whether [`ItemRenderer`](../components/ItemRenderer.md) is permitted). Pass one of the built-in descriptors:
-  - `Screen.Scroll` — default scrolling form (no item rendering).
-  - `Screen.Fixed` — single non-scrolling page where items render inline with controls.
+- Description: Which RP screen layout to activate. This is the **baseline** for the whole render — it sets the JSON UI layout. Pass one of the built-in descriptors:
+  - `Screen.Scroll` — default scrolling form.
+  - `Screen.Fixed` — single non-scrolling page.
 
   A component deeper in the tree can override the baseline for one build with the [`useSetScreen`](../hooks/useSetScreen.md) hook — this is how a single `render()` call can switch layouts as you navigate.
 
@@ -37,12 +37,11 @@ function render(root: FunctionComponent | JSX.Element, player: Player, screen: S
 ```ts
 interface ScreenDescriptor {
   readonly type: 'scroll' | 'fixed';
-  readonly allowsItems: boolean;
 }
 
 const Screen = {
-  Scroll: { type: 'scroll', allowsItems: false },
-  Fixed:  { type: 'fixed',  allowsItems: true  },
+  Scroll: { type: 'scroll' },
+  Fixed:  { type: 'fixed' },
 } as const;
 ```
 

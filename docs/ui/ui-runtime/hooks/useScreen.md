@@ -43,14 +43,14 @@ function ScreenBadge() {
 ### Conditional rendering based on screen type
 
 ```tsx
-function MaybeItem({ item }: { item: ItemStack }) {
+function LayoutHint() {
   const screen = useScreen();
 
-  if (!screen.allowsItems) {
-    return <Text>{'Item rendering not available'}</Text>;
+  if (screen.type === 'scroll') {
+    return <Text>{'Scroll down to see more'}</Text>;
   }
 
-  return <ItemRenderer item={item} />;
+  return <Text>{'Everything fits on one page'}</Text>;
 }
 ```
 
