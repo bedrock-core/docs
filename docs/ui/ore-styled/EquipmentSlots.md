@@ -3,24 +3,38 @@ sidebar_position: 10
 ---
 # EquipmentSlots
 
+:::danger Experimental — Multi-Addon Worlds Not Supported
+**This API is experimental and may change or be removed.**
+
+In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `EquipmentSlots` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
+
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+:::
+
 Renders a vertical column of equipment slots (helmet, chestplate, leggings, boots, offhand) with silhouette overlay textures for empty slots.
 
 ## Import
 
 ```tsx
 import { EquipmentSlots } from '@bedrock-core/ore-styled';
+import { ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
 ```
 
 ## Usage
 
 ```tsx
+const myMap: ItemAuxMap = { 'minecraft:diamond_helmet': 327680, /* ... */ };
+
 function ArmorDisplay({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const equippable = player.getComponent('equippable');
 
   if (!equippable) return null;
 
-  return <EquipmentSlots equippable={equippable} />;
+  return (
+    <ItemAuxContext value={myMap}>
+      <EquipmentSlots equippable={equippable} />
+    </ItemAuxContext>
+  );
 }
 ```
 
@@ -41,7 +55,7 @@ Renders five [`ItemSlot`](./ItemSlot.md) components stacked vertically: **Head �
 
 ## Requirements
 
-Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) to be installed — the runtime seeds the aux map automatically.
+Requires an `ItemAuxContext` wrapping the component tree — no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 
 ## Examples
 
@@ -49,16 +63,17 @@ Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith
 
 ```tsx
 function ArmorDisplay({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const equippable = player.getComponent('equippable');
 
   if (!equippable) return null;
 
   return (
-    <Panel flexDirection="row" padding={8} gap={8}>
-      <EquipmentSlots equippable={equippable} />
-      <Text>{player.name}</Text>
-    </Panel>
+    <ItemAuxContext value={myMap}>
+      <Panel flexDirection="row" padding={8} gap={8}>
+        <EquipmentSlots equippable={equippable} />
+        <Text>{player.name}</Text>
+      </Panel>
+    </ItemAuxContext>
   );
 }
 ```

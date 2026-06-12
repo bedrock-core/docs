@@ -3,24 +3,38 @@ sidebar_position: 9
 ---
 # ItemContainer
 
+:::danger Experimental — Multi-Addon Worlds Not Supported
+**This API is experimental and may change or be removed.**
+
+In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `ItemContainer` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
+
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+:::
+
 Renders a grid of [`ItemSlot`](./ItemSlot.md) components covering a `Container`'s slots.
 
 ## Import
 
 ```tsx
 import { ItemContainer } from '@bedrock-core/ore-styled';
+import { ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
 ```
 
 ## Usage
 
 ```tsx
+const myMap: ItemAuxMap = { 'minecraft:stone': 65536, /* ... */ };
+
 function InventoryScreen({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const container = player.getComponent('inventory')?.container;
 
   if (!container) return null;
 
-  return <ItemContainer container={container} />;
+  return (
+    <ItemAuxContext value={myMap}>
+      <ItemContainer container={container} />
+    </ItemAuxContext>
+  );
 }
 ```
 
@@ -56,7 +70,7 @@ Total width is calculated automatically as `columns × theme.components.itemSlot
 
 ## Requirements
 
-Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) to be installed — the runtime seeds the aux map automatically.
+Requires an `ItemAuxContext` wrapping the component tree — no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 
 ## Examples
 
@@ -64,12 +78,15 @@ Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith
 
 ```tsx
 function InventoryScreen({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const container = player.getComponent('inventory')?.container;
 
   if (!container) return null;
 
-  return <ItemContainer container={container} />;
+  return (
+    <ItemAuxContext value={myMap}>
+      <ItemContainer container={container} />
+    </ItemAuxContext>
+  );
 }
 ```
 

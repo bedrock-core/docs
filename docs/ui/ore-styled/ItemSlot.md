@@ -3,27 +3,39 @@ sidebar_position: 8
 ---
 # ItemSlot
 
+:::danger Experimental — Multi-Addon Worlds Not Supported
+**This API is experimental and may change or be removed.**
+
+In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `ItemSlot` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
+
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+:::
+
 A single inventory slot that renders an item icon or optional overlay texture.
 
 ## Import
 
 ```tsx
 import { ItemSlot } from '@bedrock-core/ore-styled';
+import { ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
 ```
 
 ## Usage
 
 ```tsx
+const myMap: ItemAuxMap = { 'minecraft:stone': 65536, /* ... */ };
+
 function HotBar({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const inventory = player.getComponent('inventory')?.container;
 
   return (
-    <Panel flexDirection="row" gap={2}>
-      {Array.from({ length: 9 }, (_, i) => (
-        <ItemSlot slot={inventory?.getSlot(i)} />
-      ))}
-    </Panel>
+    <ItemAuxContext value={myMap}>
+      <Panel flexDirection="row" gap={2}>
+        {Array.from({ length: 9 }, (_, i) => (
+          <ItemSlot slot={inventory?.getSlot(i)} />
+        ))}
+      </Panel>
+    </ItemAuxContext>
   );
 }
 ```
@@ -50,7 +62,7 @@ Default size is 18 × 18 px (from `theme.components.itemSlot.size`). Pass explic
 
 ## Requirements
 
-Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) to be installed — the runtime seeds the aux map automatically.
+Requires an `ItemAuxContext` wrapping the component tree — no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 
 ## Examples
 
@@ -58,15 +70,16 @@ Requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith
 
 ```tsx
 function HotBar({ player }: { player: Player }) {
-  useSetScreen(Screen.Fixed);
   const container = player.getComponent('inventory')?.container;
 
   return (
-    <Panel flexDirection="row" gap={2}>
-      {Array.from({ length: 9 }, (_, i) => (
-        <ItemSlot slot={container?.getSlot(i)} />
-      ))}
-    </Panel>
+    <ItemAuxContext value={myMap}>
+      <Panel flexDirection="row" gap={2}>
+        {Array.from({ length: 9 }, (_, i) => (
+          <ItemSlot slot={container?.getSlot(i)} />
+        ))}
+      </Panel>
+    </ItemAuxContext>
   );
 }
 ```

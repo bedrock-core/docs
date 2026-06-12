@@ -3,17 +3,35 @@ sidebar_position: 7
 ---
 # ItemRenderer
 
+:::danger Experimental — Multi-Addon Worlds Not Supported
+**This API is experimental and may change or be removed.**
+
+In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `ItemRenderer` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
+
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [ItemAuxContext](#requirements) below.
+:::
+
 Render an item icon inside a UI layout.
 
 ## Import
 
 ```tsx
-import { ItemRenderer } from '@bedrock-core/ui';
+import { ItemRenderer, ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
 ```
 
 ## Usage
 
 ```tsx
+const myMap: ItemAuxMap = { 'minecraft:stone': 65536, /* ... */ };
+
+function MyScreen(): JSX.Element {
+  return (
+    <ItemAuxContext value={myMap}>
+      <ItemCard item={someItem} />
+    </ItemAuxContext>
+  );
+}
+
 function ItemCard({ item }: { item: ItemStack }) {
   return (
     <Panel padding={4} gap={4} flexDirection="row">
@@ -39,14 +57,23 @@ function ItemCard({ item }: { item: ItemStack }) {
 
 ## Requirements
 
-The item aux map is seeded automatically by the runtime from the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) — no wrapping needed. If the filter is not installed and the generated JSON is missing, an `ItemAuxError` is thrown.
+You **must** wrap any component tree containing `ItemRenderer` with `ItemAuxContext` and supply your own `ItemAuxMap`. If no provider is present, `ItemAuxError` is thrown at render time.
 
-:::note item-aux filter required
-`ItemRenderer` requires the [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux). The easiest way to get started with it already configured is to scaffold your project with the **CLI**:
-```bash
-npx @bedrock-core/cli
+```tsx
+import { ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
+
+const myMap: ItemAuxMap = {
+  'minecraft:apple': 262144,   // raw_id 4 << 16
+  'minecraft:stone': 65536,    // raw_id 1 << 16
+  // ... build this map for your specific world / addon setup
+};
+
+render(player, (
+  <ItemAuxContext value={myMap}>
+    <MyScreen />
+  </ItemAuxContext>
+));
 ```
-:::
 
 ## Examples
 
@@ -77,11 +104,10 @@ function ItemCard({ item }: { item: ItemStack }) {
 
 ## How It Works
 
-`ItemRenderer` reads the Aux ID for the given `ItemStack` from `ItemAuxContext` (populated by the `item-aux` Regolith filter at build time) and serializes it as a native `item-id-aux` JSON UI binding. The Resource Pack resolves the aux value to the correct item texture.
+`ItemRenderer` reads the Aux ID for the given `ItemStack` from `ItemAuxContext` and serializes it as a native `item-id-aux` JSON UI binding. The Resource Pack resolves the aux value to the correct item texture. The aux value is computed as `raw_id << 16` (plus 32768 for enchanted items).
 
 ## See Also
 
 - [`useSetScreen`](../hooks/useSetScreen.md) — override the screen layout per build
 - [`useScreen`](../hooks/useScreen.md) — read the current screen descriptor
-- [item-aux Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/item-aux) — generates the aux ID map
 - [`render`](../api/render.md) — where the screen baseline is set
