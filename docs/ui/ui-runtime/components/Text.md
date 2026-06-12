@@ -40,10 +40,21 @@ import { Text } from '@bedrock-core/ui';
 
 #### `localizationKey`
 - Type: `string`
-- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter to be installed — once installed, the runtime seeds the context automatically; Takes priority over `children` when both are present.
+- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter and a `TranslationKeysContext` provider at the root of your UI. Takes priority over `children` when both are present.
 
 :::note Translation Keys filter required
-`localizationKey` requires the [`translation-keys` Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/translation-keys). Install it and configure the tsconfig path alias — after that, `localizationKey` just works everywhere with no extra setup in your component code.
+`localizationKey` requires the [`translation-keys` Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/translation-keys). Install it, configure the tsconfig path alias, and provide the generated keys at your UI root:
+
+```tsx
+import translationKeys from '@bedrock-core/generated/translation-keys';
+import { TranslationKeysContext } from '@bedrock-core/ui';
+
+<TranslationKeysContext value={translationKeys}>
+  <App />
+</TranslationKeysContext>
+```
+
+Using `localizationKey` without the provider throws a `TranslationKeysError` at render time. Projects that don't use `localizationKey` don't need the filter.
 
 The easiest way to get started with the filter already configured is to scaffold your project with the **CLI**:
 ```bash
@@ -105,6 +116,9 @@ function Counter() {
 ### Localized Text
 
 ```tsx
+import translationKeys from '@bedrock-core/generated/translation-keys';
+import { TranslationKeysContext } from '@bedrock-core/ui';
+
 <TranslationKeysContext value={translationKeys}>
   <Text localizationKey={'ui.myscreen.title'} />
 </TranslationKeysContext>
