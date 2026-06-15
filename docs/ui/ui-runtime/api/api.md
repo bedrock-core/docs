@@ -16,8 +16,7 @@ Core functions and utilities for building and displaying UI.
 
 ## Screen Descriptors
 
-- `Screen.Scroll` — Default scrolling form layout; scrolls with the view.
-- `Screen.Fixed` — Single non-scrolling page.
+- `Screen.Scroll` — Default scrolling form layout; scrolls when content overflows and shows no scrollbar when it fits. (Currently the only built-in screen type; the descriptor system is kept for future types.)
 
 ## Next Steps
 

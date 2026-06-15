@@ -39,18 +39,19 @@ function useSetScreen(screen: ScreenDescriptor): void
 The intended pattern is a screen component declaring its own layout requirement:
 
 ```tsx
-function MyFixedScreen() {
-  useSetScreen(Screen.Fixed);
-  return <ItemRenderer item={stack} />;
+function MyScreen() {
+  useSetScreen(Screen.Scroll);
+  return <Panel>...</Panel>;
 }
 ```
+
+> `Screen.Scroll` is currently the only built-in descriptor (so this hook is effectively a no-op today). The hook and the descriptor system are kept so upcoming screen types can opt in without API changes.
 
 ## Screen Descriptors
 
 | Descriptor | `type` | Description |
 |------------|--------|-------------|
-| `Screen.Scroll` | `'scroll'` | Default scrolling form layout. |
-| `Screen.Fixed` | `'fixed'` | Single non-scrolling page. |
+| `Screen.Scroll` | `'scroll'` | Default scrolling form layout — scrolls on overflow, no scrollbar when content fits. Currently the only built-in type. |
 
 ## Usage
 
@@ -64,8 +65,8 @@ interface ItemDetailProps {
 }
 
 function ItemDetail({ item }: ItemDetailProps) {
-  // Declare that this screen uses the fixed (non-scrolling) layout
-  useSetScreen(Screen.Fixed);
+  // Declare this screen's layout (Scroll is the only type today)
+  useSetScreen(Screen.Scroll);
 
   return (
     <Panel padding={8} gap={4}>

@@ -27,21 +27,19 @@ function render(root: FunctionComponent | JSX.Element, player: Player, screen: S
 #### `screen`
 - Type: `ScreenDescriptor`
 - Description: Which RP screen layout to activate. This is the **baseline** for the whole render — it sets the JSON UI layout. Pass one of the built-in descriptors:
-  - `Screen.Scroll` — default scrolling form.
-  - `Screen.Fixed` — single non-scrolling page.
+  - `Screen.Scroll` — default scrolling form (the only built-in type today; the descriptor system is kept so more screen types can be added later).
 
-  A component deeper in the tree can override the baseline for one build with the [`useSetScreen`](../hooks/useSetScreen.md) hook — this is how a single `render()` call can switch layouts as you navigate.
+  A component deeper in the tree can override the baseline for one build with the [`useSetScreen`](../hooks/useSetScreen.md) hook.
 
 **`Screen` type:**
 
 ```ts
 interface ScreenDescriptor {
-  readonly type: 'scroll' | 'fixed';
+  readonly type: 'scroll';
 }
 
 const Screen = {
   Scroll: { type: 'scroll' },
-  Fixed:  { type: 'fixed' },
 } as const;
 ```
 

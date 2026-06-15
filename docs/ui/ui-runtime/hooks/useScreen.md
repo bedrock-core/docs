@@ -40,17 +40,17 @@ function ScreenBadge() {
 }
 ```
 
-### Conditional rendering based on screen type
+### Reading the screen type
+
+`screen.type` is `'scroll'` today — it's the only built-in screen type. The value is
+exposed so components can branch on it once more screen types are added:
 
 ```tsx
 function LayoutHint() {
   const screen = useScreen();
 
-  if (screen.type === 'scroll') {
-    return <Text>{'Scroll down to see more'}</Text>;
-  }
-
-  return <Text>{'Everything fits on one page'}</Text>;
+  // Future-proofing: branch on screen.type as new types land
+  return <Text>{`Layout: ${screen.type}`}</Text>;
 }
 ```
 
