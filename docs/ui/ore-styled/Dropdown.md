@@ -1,14 +1,16 @@
 ---
-sidebar_position: 8
+sidebar_position: 10
 ---
 # Dropdown
 
-A select field backed by a modal dropdown. Pressing it opens a modal to choose one of a fixed set of options. Supports controlled and uncontrolled usage.
+Select field with a chevron. Pressing it opens a modal to choose one of a fixed set of options. Supports controlled and uncontrolled usage.
+
+![Dropdown](/img/ore-styled/Dropdown.png)
 
 ## Import
 
 ```tsx
-import { Dropdown } from '@bedrock-core/ui';
+import { Dropdown } from '@bedrock-core/ore-styled';
 ```
 
 ## Usage
@@ -22,11 +24,7 @@ import { Dropdown } from '@bedrock-core/ui';
 />
 ```
 
-## How it works
-
-`Dropdown` renders as a [`Button`](./Button.md) whose face shows the current selection. Pressing it opens a single-dropdown `ModalFormData`; on confirm the chosen option is committed (internal state + `onChange`), on cancel nothing changes (`onCancel`). Either way the root form re-presents with the current selection.
-
-The native modal works on item *indices*; `Dropdown` maps the selected index back to the matching `options` entry, so its public API stays value-based like [`Input`](./Input.md).
+Built on top of the [`Dropdown`](../ui-runtime/components/Dropdown.md) primitive and the [theme](./theme.md) token map. The current selection sits on the left with a chevron on the right, inside the Ore-UI field frame; pressing it opens a single-dropdown modal — confirm commits the choice, cancel keeps the current one.
 
 ## Props
 
@@ -53,18 +51,13 @@ The native modal works on item *indices*; `Dropdown` maps the selected index bac
 - Type: `() => void`
 - Description: Called when the player cancels (X / Esc) the modal. The selection is left unchanged.
 
-#### `face`
-- Type: `JSX.Node`
-- Default: a `Text` showing the current selection
-- Description: Overrides the content drawn on the button face. Lets a styled wrapper render its own face (e.g. the value plus a chevron) while reusing this component's modal + state logic. This is how [`@bedrock-core/ore-styled`](../../ore-styled/Dropdown.md) builds its themed `Dropdown`.
-
 ### Modal Field Props
 
-Dropdown inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
+Dropdown inherits all [modal field props](../ui-runtime/components/modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
 
 ### Control Props
 
-Dropdown inherits all standard [control props](./control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
+Dropdown inherits all standard [control props](../ui-runtime/components/control-props.md). Use `enabled={false}` to render the disabled texture (including a dimmed chevron) and make the field inert (no modal opens).
 
 ## Examples
 
@@ -77,6 +70,7 @@ function DifficultySetting() {
   return (
     <Panel flexDirection={'column'} gap={6}>
       <Dropdown
+        width={160}
         label={'Difficulty'}
         options={['Peaceful', 'Easy', 'Normal', 'Hard']}
         value={difficulty}
@@ -103,4 +97,4 @@ function DifficultySetting() {
 
 - Keep `options` stable across renders; deriving it inline from changing data can shift indices unexpectedly.
 - A controlled `value` should always be one of `options` — an unknown value falls back to the first option on the face.
-- For two-state choices use a [`Toggle`](../../ore-styled/Toggle.md) instead of a two-item dropdown.
+- For two-state choices use a [`Toggle`](./Toggle.md) instead of a two-item dropdown.

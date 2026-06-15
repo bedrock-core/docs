@@ -29,6 +29,11 @@ const config: Config = {
     mdx1Compat: {
       admonitions: true,
     },
+    // Warn (don't fail) on not-yet-added screenshots so docs can ship with
+    // placeholder images that are dropped in later.
+    hooks: {
+      onBrokenMarkdownImages: 'warn',
+    },
   },
 
   i18n: {

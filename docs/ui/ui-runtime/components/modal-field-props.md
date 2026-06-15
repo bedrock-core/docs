@@ -32,6 +32,21 @@ Native `ActionFormData` (what this runtime renders to) can't take typed input, s
 - Type: `string`
 - Description: Hover tooltip on the modal control.
 
+## Customizing the face
+
+Each field also accepts a component-specific `face` prop (`JSX.Node`) that overrides what's drawn on the button face — while the component keeps owning the modal flow and value state. This is the seam styled wrappers build on: run the field controlled (`value` + `onChange`) so you know the current value, then pass a `face` node that renders it however you like.
+
+```tsx
+<Input
+  value={name}
+  onChange={setName}
+  background={'textures/ui/my_field'}
+  face={<Text>{`§f${name === '' ? '§7type a name' : name}`}</Text>}
+/>
+```
+
+The themed [`@bedrock-core/ore-styled`](../../ore-styled/ore-styled.md) `Input`, `Dropdown`, and `Slider` are exactly this pattern: the chevron and the slider track/thumb are custom `face` nodes.
+
 ## TypeScript
 
 ```tsx

@@ -52,6 +52,11 @@ This is the unstyled runtime primitive — supply a `background` or compose a st
 - Type: `string`
 - Description: Shown on the button face when the value is empty, and inside the modal text field.
 
+#### `face`
+- Type: `JSX.Node`
+- Default: a `Text` showing the value (or `placeholder` when empty)
+- Description: Overrides the content drawn on the button face. Lets a styled wrapper render its own face (e.g. colored value text) while reusing this component's modal + state logic. This is how [`@bedrock-core/ore-styled`](../../ore-styled/Input.md) builds its themed `Input`.
+
 ### Modal Field Props
 
 Input inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.

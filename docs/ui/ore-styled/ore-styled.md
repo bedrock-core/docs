@@ -16,7 +16,7 @@ You also need the matching `@bedrock-core/ore-styled` resource pack installed in
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider, Input, Dropdown, Slider } from '@bedrock-core/ore-styled';
 ```
 
 ## Components
@@ -28,6 +28,9 @@ import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, T
 - [**`<RadioGroup>` / `<Radio>`**](./Radio.md) — single-choice radio set.
 - [**`<ToggleButtonGroup>` / `<ToggleButtonItem>`**](./ToggleButton.md) — segmented button group with single selection.
 - [**`<Divider>`**](./Divider.md) — horizontal or vertical divider line in three variants.
+- [**`<Input>`**](./Input.md) — single-line text field; pressing it opens the native modal text field.
+- [**`<Dropdown>`**](./Dropdown.md) — select field with a chevron; pressing it opens the native modal dropdown.
+- [**`<Slider>`**](./Slider.md) — field drawn as a track + thumb; pressing it opens the native modal slider.
 
 ## Experimental Components
 

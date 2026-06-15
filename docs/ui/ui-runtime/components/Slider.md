@@ -61,6 +61,11 @@ import { Slider } from '@bedrock-core/ui';
 - Type: `() => void`
 - Description: Called when the player cancels (X / Esc) the modal. The value is left unchanged.
 
+#### `face`
+- Type: `JSX.Node`
+- Default: a `Text` showing the current value
+- Description: Overrides the content drawn on the button face. Lets a styled wrapper render its own face (e.g. a track and thumb positioned by the value) while reusing this component's modal + state logic. This is how [`@bedrock-core/ore-styled`](../../ore-styled/Slider.md) builds its themed `Slider`.
+
 ### Modal Field Props
 
 Slider inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
