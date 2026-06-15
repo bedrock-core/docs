@@ -13,6 +13,14 @@ Built-in JSX components for layout, text, and interactivity.
 - [**`<Image>`**](./Image.md) — display a texture from your resource pack.
 - [**`<Fragment>`**](./Fragment.md) — group multiple children without a wrapper node (`<>...</>`).
 
+## Form Fields
+
+Modal-backed input components. Native `ActionFormData` can't take typed input, so each renders as a `Button` that opens a single-control `ModalFormData` on press. They share [**Modal Field Props**](./modal-field-props.md).
+
+- [**`<Input>`**](./Input.md) — single-line text field.
+- [**`<Dropdown>`**](./Dropdown.md) — select one option from a fixed list.
+- [**`<Slider>`**](./Slider.md) — pick a number within a range.
+
 ## Experimental Components
 
 :::caution
