@@ -109,4 +109,4 @@ function ItemCard({ item }: { item: ItemStack }) {
 ## See Also
 
 - [`render`](../api/render.md) — display a component tree to a player
-- [Custom Scrolls](../api/custom-scrolls.md) — multi-scroll layouts with `<Scroll>`
+- [Scroll](./Scroll.md) — multi-scroll layouts with `<Scroll>`

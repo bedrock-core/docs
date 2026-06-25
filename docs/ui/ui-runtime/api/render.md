@@ -26,7 +26,7 @@ function render(root: FunctionComponent | JSX.Element, player: Player): void
 
 ### Scrolls
 
-Content renders into a single full-screen **root scroll** by default — no extra setup, it scrolls when it overflows the viewport. For multiple independent scroll regions (columns, rows, horizontal strips), compose [`<Scroll>`](../components/Scroll.md) components; see [Custom Scrolls](./custom-scrolls.md).
+Content renders into a single full-screen **root scroll** by default — no extra setup, it scrolls when it overflows the viewport. For multiple independent scroll regions (columns or rows, up to 4), compose [`<Scroll>`](../components/Scroll.md) components.
 
 ### Returns
 
