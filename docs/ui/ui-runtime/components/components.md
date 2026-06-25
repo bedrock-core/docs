@@ -11,6 +11,7 @@ Built-in JSX components for layout, text, and interactivity.
 - [**`<Text>`**](./Text.md) — display text with Minecraft formatting codes, font, and scale.
 - [**`<Button>`**](./Button.md) — interactive button with an `onPress` callback.
 - [**`<Image>`**](./Image.md) — display a texture from your resource pack.
+- [**`<Scroll>`**](./Scroll.md) — independent scroll regions (columns, rows, horizontal strips).
 - [**`<Fragment>`**](./Fragment.md) — group multiple children without a wrapper node (`<>...</>`).
 
 ## Form Fields

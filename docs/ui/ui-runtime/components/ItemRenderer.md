@@ -108,6 +108,5 @@ function ItemCard({ item }: { item: ItemStack }) {
 
 ## See Also
 
-- [`useSetScreen`](../hooks/useSetScreen.md) — override the screen layout per build
-- [`useScreen`](../hooks/useScreen.md) — read the current screen descriptor
-- [`render`](../api/render.md) — where the screen baseline is set
+- [`render`](../api/render.md) — display a component tree to a player
+- [Custom Scrolls](../api/custom-scrolls.md) — multi-scroll layouts with `<Scroll>`

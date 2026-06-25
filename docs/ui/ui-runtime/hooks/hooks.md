@@ -26,8 +26,6 @@ State and effects management for your components.
 
 - [`usePlayer`](./usePlayer.md) - Access the current player who is viewing the UI.
 - [`useEvent`](./useEvent.md) - Subscribe to global Minecraft events within your UI components.
-- [`useScreen`](./useScreen.md) - Read the screen descriptor in effect for the current build.
-- [`useSetScreen`](./useSetScreen.md) - Override the screen descriptor for the current build.
 
 ## Next Steps
 
