@@ -16,21 +16,27 @@ You also need the matching `@bedrock-core/ore-styled` resource pack installed in
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider, Input, Dropdown, Slider } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Toggle, RadioGroup, Radio, ToggleButtonGroup, ToggleButtonItem, Divider, Input, Dropdown, Slider, Form } from '@bedrock-core/ore-styled';
 ```
 
 ## Components
 
-- [**`<Button>`**](./Button.md) — styled button with six variants (`hero`, `primary`, `secondary`, `contrast`, `danger`, `realm`).
-- [**`<Card>`**](./Card.md) — container with the standard panel background, padding, and gap.
+- [**`<Button>`**](./Button.md) — styled button with seven variants (`hero`, `primary`, `secondary`, `contrast`, `danger`, `realm`, `transparent`).
+- [**`<Card>`**](./Card.md) — container with the standard panel background, padding, and gap, in six variants.
 - [**`<Checkbox>`**](./Checkbox.md) — labelled checkbox, controlled or uncontrolled.
 - [**`<Toggle>`**](./Toggle.md) — on/off switch.
 - [**`<RadioGroup>` / `<Radio>`**](./Radio.md) — single-choice radio set.
 - [**`<ToggleButtonGroup>` / `<ToggleButtonItem>`**](./ToggleButton.md) — segmented button group with single selection.
 - [**`<Divider>`**](./Divider.md) — horizontal or vertical divider line in three variants.
-- [**`<Input>`**](./Input.md) — single-line text field; pressing it opens the native modal text field.
-- [**`<Dropdown>`**](./Dropdown.md) — select field with a chevron; pressing it opens the native modal dropdown.
-- [**`<Slider>`**](./Slider.md) — field drawn as a track + thumb; pressing it opens the native modal slider.
+- [**`<Input>`**](./Input.md) — single-line text field; pressing it opens the native modal text field. **Deprecated**, see [`Form.Input`](./FormInput.md).
+- [**`<Dropdown>`**](./Dropdown.md) — select field with a chevron; pressing it opens the native modal dropdown. **Deprecated**, see [`Form.Dropdown`](./FormDropdown.md).
+- [**`<Slider>`**](./Slider.md) — field drawn as a track + thumb; pressing it opens the native modal slider. **Deprecated**, see [`Form.Slider`](./FormSlider.md).
+
+## Form
+
+Atomic modal form — one native `ModalFormData` for the whole screen, all values arriving together on submit. See the [`Form`](./Form.md) page for the full namespace.
+
+- [**`<Form>`**](./Form.md) — the root component, plus its themed field members: `Form.Toggle`, `Form.Checkbox`, `Form.Radio`, `Form.ToggleButton`, `Form.Slider`, `Form.Dropdown`, `Form.Input`, `Form.Button`.
 
 ## Experimental Components
 

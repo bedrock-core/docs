@@ -5,6 +5,10 @@ sidebar_position: 9
 
 A numeric field backed by a modal slider. Pressing it opens a modal to pick a value within a range. Supports controlled and uncontrolled usage.
 
+:::caution Deprecated
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](./FormSlider.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+:::
+
 ## Import
 
 ```tsx

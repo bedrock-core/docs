@@ -3,7 +3,7 @@ sidebar_position: 2
 ---
 # Button
 
-Themed button with six visual variants. Built on top of the [`Button`](../ui-runtime/components/Button.md) primitive and the [theme](./theme.md) token map.
+Themed button with seven visual variants. Built on top of the [`Button`](../ui-runtime/components/Button.md) primitive and the [theme](./theme.md) token map.
 
 ![Button](/img/ore-styled/Button.png)
 
@@ -28,9 +28,9 @@ When `children` is a string the button automatically wraps it in a `Text` styled
 ### Component-Specific Props
 
 #### `variant`
-- Type: `'hero' | 'primary' | 'secondary' | 'contrast' | 'danger' | 'realm'`
+- Type: `'hero' | 'primary' | 'secondary' | 'contrast' | 'danger' | 'realm' | 'transparent'`
 - Default: `'primary'`
-- Description: Selects the texture set and text style applied to the button. `hero` uses the same primary texture but with the `minecraftTen` heading font.
+- Description: Selects the texture set and text style applied to the button. `hero` uses the same primary texture but with the `minecraftTen` heading font. `transparent` has no visible shell — useful for icon-only or inline actions that should blend into the background.
 
 #### `enabled`
 - Type: `boolean`
@@ -61,6 +61,7 @@ Button inherits all standard [control props](../ui-runtime/components/control-pr
   <Button variant={'contrast'} onPress={() => {}}>{'Contrast'}</Button>
   <Button variant={'danger'} onPress={() => {}}>{'Danger'}</Button>
   <Button variant={'realm'} onPress={() => {}}>{'Realm'}</Button>
+  <Button variant={'transparent'} onPress={() => {}}>{'Transparent'}</Button>
 </Panel>
 ```
 
@@ -85,4 +86,5 @@ Button inherits all standard [control props](../ui-runtime/components/control-pr
 - Use `hero` for the single most important CTA on a screen (it picks up the heading font).
 - Reach for `secondary` or `contrast` when stacking multiple actions so the primary call-to-action stays visually dominant.
 - Use `danger` for destructive actions only — players learn to associate the red texture with caution.
+- Use `transparent` when the button needs to occupy a hit-zone without adding visual weight — icon wrappers, inline row actions, header controls.
 - Let the variant pick the color; don't manually prefix string children with `§` codes, the theme does it for you.

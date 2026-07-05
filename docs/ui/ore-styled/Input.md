@@ -5,6 +5,10 @@ sidebar_position: 9
 
 Single-line text field. Pressing it opens a modal to edit the value. Supports controlled and uncontrolled usage.
 
+:::caution Deprecated
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Input`](./FormInput.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+:::
+
 ![Input](/img/ore-styled/Input.png)
 
 ## Import

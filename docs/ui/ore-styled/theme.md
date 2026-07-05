@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 24
 ---
 # Theme
 
@@ -21,6 +21,7 @@ theme = {
   },
   components: {
     button, card, checkbox, divider, radio, toggle, toggleButton,
+    itemSlot, field, dropdown, form, slider,
   },
 }
 ```
@@ -75,11 +76,37 @@ Each entry under `theme.components` holds the textures, sizing, padding, and (wh
 ### `radio`
 - `size`, `gap`, and a full set of `textures` (unselected/selected × default/hover/disabled).
 
+[`Form.Radio`](./FormRadio.md) reuses this same section — there's no separate Form-specific radio theme.
+
 ### `toggle`
 - `width`, `height`, full `textures` set (off/on × default/hover/disabled).
 
 ### `toggleButton`
 - `height`, `paddingX`, `textures` (`normal`, `hover`, `pressed`, `disabled`, `disabledPressed`), and `textStyle.{selected,unselected}`.
+
+[`Form.ToggleButton`](./FormToggleButton.md) reuses this same section — there's no separate Form-specific toggle-button theme.
+
+### `itemSlot`
+- `size`, and `textures`: `slot`/`slotHover`/`slotDisabled` for a single [`ItemSlot`](./ItemSlot.md), plus `equipment.{helmet,chestplate,leggings,boots,shield}` — the empty-slot silhouette textures used by [`EquipmentSlots`](./EquipmentSlots.md).
+
+### `field`
+- `padding: { top, bottom, x }`, `gap`.
+- `textStyle`: `font`, `scale`, and color codes for `value`/`placeholder`/`disabled` text.
+- `textures.{background,backgroundHover,backgroundDisabled}` — the [`Input`](./Input.md) / [`Form.Input`](./FormInput.md) field box.
+
+### `dropdown`
+- `padding: { top, bottom, x }`, `arrow: { width, height }`.
+- `textStyle`: `font`, `scale`, and color codes for `value`/`disabled` text.
+- `textures`: `background`/`backgroundHover`/`backgroundDisabled` (closed box), `arrow`/`arrowDisabled`, and `popup`/`option`/`optionHover`/`optionSelected` — used by [`Dropdown`](./Dropdown.md) / [`Form.Dropdown`](./FormDropdown.md).
+
+### `form`
+- `labelGap` — vertical gap (px) between a field's label and its control.
+- `labelStyle`: `font`, `scale`, `color`, `disabledColor` — the caption style every [`Form.*`](./Form.md) field composes its `label` with, since the underlying modal primitives are label-free.
+
+### `slider`
+- `height`, `trackHeight`, `thumb: { width, height }`.
+- `textStyle`: `font`, `scale`, and color codes for `value`/`disabled` text.
+- `textures`: `track`/`trackDisabled`, `progress`/`progressDisabled`, `thumb`/`thumbHover`/`thumbDisabled` — used by [`Slider`](./Slider.md) / [`Form.Slider`](./FormSlider.md).
 
 ## Types
 

@@ -5,6 +5,10 @@ sidebar_position: 11
 
 Numeric field drawn as a track with a thumb. The thumb shows the value's position along the track; pressing it opens a modal to pick a value within the range. Supports controlled and uncontrolled usage.
 
+:::caution Deprecated
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](./FormSlider.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+:::
+
 ![Slider](/img/ore-styled/Slider.png)
 
 ## Import

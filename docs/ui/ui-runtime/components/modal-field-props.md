@@ -1,7 +1,11 @@
 ---
-sidebar_position: 12
+sidebar_position: 20
 ---
 # Modal Field Props
+
+:::caution Deprecated
+These props belong to the legacy one-modal-per-field components. New [`Form`](./Form.md) fields configure modal chrome differently — there's no per-field `label`/`title`/`body`/`submitLabel`/`tooltip`, since a `Form` has one shared modal and headings are authored as a `Text` node.
+:::
 
 Shared props for the **modal-backed field** components — [`Input`](./Input.md), [`Dropdown`](./Dropdown.md), and [`Slider`](./Slider.md).
 

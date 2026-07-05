@@ -14,7 +14,24 @@ Built-in JSX components for layout, text, and interactivity.
 - [**`<Scroll>`**](./Scroll.md) — independent scroll regions (columns, rows, horizontal strips).
 - [**`<Fragment>`**](./Fragment.md) — group multiple children without a wrapper node (`<>...</>`).
 
-## Form Fields
+## Form
+
+Atomic modal form. `<Form>` renders one native `ModalFormData` — every field is shown at once, and every value arrives together, keyed by `name`, on submit.
+
+- [**`<Form>`**](./Form.md) — the root component; wraps the whole modal.
+- [**`<Form.Toggle>`**](./FormToggle.md) — boolean on/off field.
+- [**`<Form.Slider>`**](./FormSlider.md) — numeric field within a range.
+- [**`<Form.Dropdown>`**](./FormDropdown.md) — select one option from a popup.
+- [**`<Form.InlineSelect>`**](./FormInlineSelect.md) — same selection model as `Form.Dropdown`, rendered inline with no popup.
+- [**`<Form.Option>`**](./FormOption.md) — one selectable entry for `Form.Dropdown` / `Form.InlineSelect`.
+- [**`<Form.Input>`**](./FormInput.md) — single-line text field.
+- [**`<Form.Button>`**](./FormButton.md) — the form's submit/exit action buttons.
+
+## Form Fields (Legacy)
+
+:::note
+`Input`, `Dropdown`, and `Slider` below are the legacy one-modal-per-field pattern — for new screens use [`<Form>`](./Form.md) instead. They're kept for existing screens.
+:::
 
 Modal-backed input components. Native `ActionFormData` can't take typed input, so each renders as a `Button` that opens a single-control `ModalFormData` on press. They share [**Modal Field Props**](./modal-field-props.md).
 
