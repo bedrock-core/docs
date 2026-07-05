@@ -170,6 +170,104 @@ If the runtime's protocol version changes, your decode bindings must be updated 
 match — a mismatched header means your control reads garbage.
 :::
 
+## Modal form controls
+
+Everything above covers the `ActionFormData` backend (`button_router`/`label_router`).
+[`Form`](../components/Form.md) renders through a **second** backend — native
+`ModalFormData` — which has its own typed controls and its own set of writer
+helpers. A decorative custom component (`emitLabel`) works unchanged on both
+backends, since `form.label()` exists on `ActionFormData` and `ModalFormData` alike.
+An *interactive* custom component for use inside a `Form`, though, must emit through
+one of the four modal-only emitters instead of `emitButton` — `ModalFormData` has no
+generic button slot, only four typed ones:
+
+```ts
+import { emitToggle, emitSlider, emitDropdown, emitInput, type Writer } from '@bedrock-core/ui';
+```
+
+#### `emitToggle(payload, form, ctx, name, defaultValue)`
+Emits a `ModalFormData.toggle`. `defaultValue: boolean`.
+
+#### `emitSlider(payload, form, ctx, name, min, max, defaultValue, valueStep)`
+Emits a `ModalFormData.slider`. `valueStep: number | undefined` — pass `undefined`
+for the native default step (`1`).
+
+#### `emitDropdown(payload, form, ctx, name, options, defaultValueIndex)`
+Emits a `ModalFormData.dropdown`. `options: string[]`, `defaultValueIndex: number`.
+The native control returns the selected **index**, not a value — see
+[`Form.Dropdown`](../components/FormDropdown.md)'s result gotcha.
+
+#### `emitInput(payload, form, ctx, name, placeholder, defaultValue)`
+Emits a `ModalFormData.textField`. `placeholder: string`, `defaultValue: string`.
+
+Each takes the same leading `payload, form, ctx` triple as `emitButton`, then the
+native control's own typed arguments directly — not as serialized payload fields.
+Each also records `name` against the control's ordinal (so the presenter can re-key
+`response.formValues[ordinal]` back into `{ name: value }` after submit) before
+making the typed `ModalFormData` call. A modal control writer must still throw a
+`ModalFormError` if `!isModalForm(form)` — see any built-in `Form.*` writer
+(e.g. `FormToggle.ts`) for the guard pattern.
+
+### The `nativeArgs` channel
+
+A modal control's non-primitive or purely-computed data (a dropdown's `options`
+array, a slider's `min`/`max`/`defaultValue`) doesn't need to survive as a decoded
+JSON UI binding — the RP never reads it, only the writer does. Passing it through
+the normal serialized `payload` would cost payload bytes and could shift the
+byte offsets every other field is decoded at. Components route this data instead
+through the writer's 6th argument, `nativeArgs?: Record<string, unknown>` — a
+side channel that's never serialized:
+
+```ts
+export const FormToggle: FunctionComponent<FormToggleProps> = ({ name, defaultValue, ...layout }) => ({
+  type: MODAL_TOGGLE_SLOT_TYPE,
+  props: { ...withControl(layout) /* control-block payload, decoded by the RP */ },
+  nativeArgs: { name, defaultValue: defaultValue ?? false }, // writer-only, never serialized
+});
+```
+
+The writer reads `nativeArgs` directly (`formToggleWriter` in the example above
+reads `nativeArgs.name`/`nativeArgs.defaultValue`) instead of decoding them from
+`props`. Most components never need this — it exists specifically for the built-in
+modal field controls, where a rich prop surface (state backgrounds, geometry,
+per-option styling) would otherwise blow the ≤64-props/≤80-bytes-per-field budget
+described in [Caveats](#caveats). A custom modal control only needs `nativeArgs` if
+it has similarly non-primitive or purely-internal data to pass its writer.
+
+### Dropdown popup architecture
+
+If your custom modal control needs a floating popup (like `Form.Dropdown`'s option
+list), be aware the popup is **not** rendered inside the control's own subtree —
+Bedrock's native dropdown popup box ignores its host's anchors once naively
+hosted, so the built-in dropdown instead renders its popup through a purpose-built
+overlay:
+
+- **`modal_container`**'s `inside_header_panel` is a real control at the modal's
+  content root, *outside* the scroll, holding a `collection_panel` (`popup_overlay`)
+  that generates one `dropdown_popup_router` per form row.
+- **`dropdown_popup_router`** shows itself only when its own row is an open
+  dropdown (gated on the row's decoded `#type` plus the native open/close toggle
+  state) and, when visible, centers a `dropdown_popup_card` on the host's exact
+  center point — so the popup is always form-width and layered above every row,
+  regardless of which cell opened it.
+- The dropdown's own closed-box control (`dropdown_content`) keeps only an
+  **invisible** `input_panel` shield: it owns the native open/close state and the
+  `dropdown_exit` button mappings, but draws nothing (no `"modal": true`, or the
+  shield would swallow all input to the popup rendered outside it).
+- `inline_select.json` deliberately points its own `dropdown_area` at a
+  **nonexistent** control name (`inline_offscreen_area`) — since `inside_header_panel`
+  is now a real host, pointing an inline (non-popup) select there would incorrectly
+  re-host its rows into the popup overlay.
+- The main modal scroll keeps `always_handle_scrolling: false` so mouse wheel input
+  routes by pointer position; the popup's own scroll claims the wheel globally
+  (`$always_handle_scrolling: true`) only while it exists (gated by the router).
+
+Read `packages/resource-pack/packs/RP/ui/core-ui/common/modal_container.json` and
+`.../form_components/dropdown.json` together with `optionPayload.ts` before
+building a custom control that needs similar popup/overlay behavior — the comments
+in those files record several traps (e.g. an `input_panel` backdrop behind the
+popup silently eats all option-row clicks) that are easy to reintroduce.
+
 ## API reference
 
 ```ts
@@ -207,15 +305,25 @@ interface ComponentDescriptor {
 ```ts
 type Writer = (
   payload: string,                                  // serialized props
-  form: ActionFormData,                             // target form
-  ctx: SerializationContext | undefined,            // button-index / callback map
+  form: FormTarget,                                 // ActionFormData or ModalFormData
+  ctx: SerializationContext | undefined,             // button/ordinal index + callback map
   callbacks: Record<string, (...args: unknown[]) => void>, // function props (onPress, …)
   props?: SerializableProps,                        // serialized values, if needed
+  nativeArgs?: Record<string, unknown>,              // writer-only side channel, see below
+  children?: unknown,                                // built children, for writers that read post-layout geometry
 ) => void;
 ```
 
+`form` is `FormTarget = ActionFormData | ModalFormData` — narrow it with
+`isActionForm`/`isModalForm` before calling a backend-specific method. `nativeArgs`
+and `children` are almost always `undefined` for an ActionForm-only component; they
+exist for [modal form controls](#modal-form-controls) that need a side channel for
+non-primitive data or post-layout child geometry (e.g. `Form.Radio` reading each
+`Form.Option`'s computed position).
+
 #### `emitButton` / `emitLabel`
-Slot helpers for writers — see [step 2](#2-write-the-writer).
+Slot helpers for ActionForm writers — see [step 2](#2-write-the-writer). For modal
+form writers, see [`emitToggle`/`emitSlider`/`emitDropdown`/`emitInput`](#modal-form-controls).
 
 ## Caveats
 
