@@ -74,6 +74,11 @@ npx @bedrock-core/cli
 - Type: `number`
 - Description: Limit rendered text to N lines. The last line is always ellipsized when content overflows.
 
+#### `shadow`
+- Type: `boolean`
+- Default: `false`
+- Description: Draw a drop shadow behind the glyphs. Purely visual — it does not affect layout or text metrics.
+
 ### Control Props
 
 Text inherits all standard [control props](./control-props.md).
@@ -138,6 +143,12 @@ import { TranslationKeysContext } from '@bedrock-core/ui';
 
 ```tsx
 <Text font={'minecraftTen'} scale={1.5}>{'§eBig Title'}</Text>
+```
+
+### Text with a Shadow
+
+```tsx
+<Text shadow>{'§eBig Title'}</Text>
 ```
 
 ## Best Practices
