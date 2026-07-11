@@ -31,20 +31,27 @@ A native component spans two packages you control:
 TypeScript (this runtime)                    Resource pack (your JSON UI)
 ─────────────────────────                    ────────────────────────────
 1. component → { type, props }
-2. Writer    → form.button()/label()
+2. Writer    → form.button()/label()/header()
 3. registerComponent(type, …)
         │
-        ▼  serialized payload (fixed-width binary, one form button/label entry)
+        ▼  serialized payload (fixed-width binary, one form entry)
                                              4. a JSON UI control decodes the
                                                 payload, gated on  #type == 'type',
-                                                spliced into button_router / label_router
-                                                via  modifications
+                                                spliced into a router via  modifications
 ```
 
-The runtime renders **everything** through just two ActionForm primitives:
-`form.button()` (routed by `button_router`, interactive) and `form.label()`
-(routed by `label_router`, static). A custom component picks one of those slots
-in its writer, and the matching router on the RP side decodes it.
+The runtime renders **everything** through three ActionForm primitives, each routed
+by the native form factory to its own RP router — engine-level dispatch, the cheapest
+routing available:
+
+- `form.button()` → `button_router` (interactive)
+- `form.label()` → `label_router` (static; hosts the merged `label_cell` that renders
+  every built-in decorative type)
+- `form.header()` → `header_router` (static; the built-in `Image` rides this slot so
+  label cells never pay for an image subtree)
+
+A custom component picks one of those slots in its writer, and the matching router on
+the RP side decodes it.
 
 ## TypeScript side
 
@@ -83,6 +90,10 @@ mapping:
 - `emitButton(payload, form, ctx, callbacks, icon?)` — interactive (button) slot.
   Registers `callbacks.onPress` against the current button index and advances it.
 - `emitLabel(payload, form)` — static (label) slot.
+- `emitHeader(payload, form, ctx)` — static (header) slot: the native factory routes it
+  to `header_router` directly, so your control is the ONLY thing instantiated for the
+  entry (no sibling variants at all). Prefer this slot for a static custom component;
+  on the modal backend it transparently falls back to the label slot.
 
 ```tsx
 import { emitLabel, type Writer } from '@bedrock-core/ui';
@@ -153,16 +164,52 @@ RP side you:
 }
 ```
 
-For a static (`emitLabel`) component, modify `label_router` the same way. The
-inserted control (`mypack.rating`) is the decode panel from steps 1–2 — its
-`#type` gate is what keeps it hidden for every form entry that isn't yours.
+For a static component, modify `label_router` (or `header_router` for `emitHeader`)
+the same way. The inserted control (`mypack.rating`) is the decode panel from steps
+1–2 — its `#type` gate is what keeps it hidden for every form entry that isn't yours.
+Note that in `label_router` your control sits as a **sibling of the merged
+`label_cell`**, which renders for every label-slot entry and already draws the common
+`background` field (`[440]`) via its `cell_bg` leaf — so a custom label-slot component
+gets its `background` prop rendered for free and should NOT decode/draw it again.
 
 The built-in controls are the reference implementation for the decode bindings
 and the router wiring — read them alongside the serializer:
 
-- Decode + `#type` gate pattern: `packages/resource-pack/packs/RP/ui/core-ui/components/*.json`
-- Router shape: `core-ui/common/button_router.json`, `core-ui/common/label_router.json`
+- Decode + `#type` gate pattern: `packages/resource-pack/packs/RP/ui/core-ui/components/text.json`
+  (the merged `label_cell` + `cell_type_frame` gate frames) and `components/image.json`
+- Router shape: `core-ui/common/button_router.json`, `label_router.json`, `header_router.json`
 - Field layout & protocol `VERSION`: [`packages/ui-runtime/src/core/serializer.ts`](https://github.com/bedrock-core/ui/tree/main/packages/ui-runtime)
+
+## Performance rules for custom components
+
+JSON UI cost is dominated by **control instantiation and creation-time binding
+evaluation** — every form entry instantiates each router's whole subtree in every
+mounted scroll-pool slot, and every binding evaluates at least once at screen
+creation. Payload string length is irrelevant (measured in-game: +10KB per element
+changed nothing), and `visible: false` does NOT prevent instantiation. Follow these
+rules, all established with in-game measurements:
+
+1. **Prefer the header slot** (`emitHeader`) for static components: the engine routes
+   the entry straight to your control — zero cost added to every other cell. A control
+   spliced into `label_router`/`button_router` instead is instantiated for EVERY
+   entry of that slot, on every mounted pool slot, whether it matches or not.
+2. **Keep the non-matching cost tiny.** Structure your control as a cheap gate plus
+   self-gating leaves: decode `#type` with `binding_condition: "once"` (~7 bindings),
+   bind `#visible` from it, and put every other decode binding behind
+   `binding_condition: "visible"` — a non-matching entry then pays only the gate.
+3. **`once` and `visible` are safe for anything screen-constant.** The payload never
+   changes while a screen instance is open (each `show()` builds a fresh screen), so
+   decode chains never need default/`always` conditions. Reserve unconditioned
+   bindings for genuinely live engine channels (toggle state, dropdown open state,
+   typed text) — and never condition a binding that a hidden control needs in order
+   to compute its own visibility, or it can never become visible.
+4. **Emit fewer entries.** One element = one engine cell. If a wrapper renders
+   nothing (like a background-less `<Panel>`), don't emit it; if two elements always
+   render together (like a background panel + its text), fold them into one payload
+   and one control. The serializer already does both for the built-ins.
+5. **Don't re-decode what the shared machinery already provides.** In the label slot,
+   the merged `label_cell` draws the common `background` field for every entry;
+   decode only your component-specific fields (at absolute offsets `[1024]+`).
 
 :::caution Keep the protocol in sync
 The payload format is versioned (`PROTOCOL_HEADER` / `VERSION` in `serializer.ts`).
@@ -276,6 +323,7 @@ import {
   getRegisteredTypes,
   emitButton,
   emitLabel,
+  emitHeader,
   type ComponentDescriptor,
   type Writer,
 } from '@bedrock-core/ui';
@@ -321,7 +369,7 @@ exist for [modal form controls](#modal-form-controls) that need a side channel f
 non-primitive data or post-layout child geometry (e.g. `Form.Radio` reading each
 `Form.Option`'s computed position).
 
-#### `emitButton` / `emitLabel`
+#### `emitButton` / `emitLabel` / `emitHeader`
 Slot helpers for ActionForm writers — see [step 2](#2-write-the-writer). For modal
 form writers, see [`emitToggle`/`emitSlider`/`emitDropdown`/`emitInput`](#modal-form-controls).
 
