@@ -1,0 +1,11 @@
+{
+  "position": 3,
+  "label": "sync",
+  "key": "sync",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "sync"
+  }
+}
