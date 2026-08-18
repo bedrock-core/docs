@@ -1,5 +1,5 @@
 ---
-sidebar_position: 14
+sidebar_position: 4
 ---
 # Form.Input
 
@@ -61,11 +61,11 @@ import { Form } from '@bedrock-core/ui';
 - Default: `8` / vertically centered
 - Description: Placeholder position offset (px), same frame as the typed value.
 
-The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](./Button.md); `backgroundPressed` doubles as the focused-field state.
+The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md); `backgroundPressed` doubles as the focused-field state.
 
 ### Control Props
 
-`Form.Input` inherits all standard [control props](./control-props.md).
+`Form.Input` inherits all standard [control props](../control-props.md).
 
 ## Examples
 
@@ -88,4 +88,4 @@ The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocke
 
 - Always provide a `placeholder` — it's the only hint the player gets about what to type.
 - Keep `name` stable across renders; it's the only key you get back on submit.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](../../ore-styled/FormInput.md)'s `Form.Input` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](../../../ore-styled/Form/FormInput.md)'s `Form.Input` over styling this primitive by hand.

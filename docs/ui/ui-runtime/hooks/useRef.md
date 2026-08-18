@@ -97,47 +97,6 @@ function PreviousValue() {
 }
 ```
 
-### Store Timeout/Interval ID
-
-```tsx
-function DelayedMessage() {
-  const [message, setMessage] = useState('');
-  const timeoutRef = useRef<number | null>(null);
-
-  const scheduleMessage = (): void => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      setMessage('Hello after 2 seconds!');
-    }, 2000);
-  };
-
-  const cancelMessage = (): void => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-      setMessage('Cancelled');
-    }
-  };
-
-  return (
-    <Panel padding={10} gap={8}>
-      <Text>{message || 'No message'}</Text>
-      <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} onPress={scheduleMessage}>
-          <Text>{'Schedule'}</Text>
-        </Button>
-        <Button flex={1} onPress={cancelMessage}>
-          <Text>{'Cancel'}</Text>
-        </Button>
-      </Panel>
-    </Panel>
-  );
-}
-```
-
 ### Track Execution Count
 
 ```tsx

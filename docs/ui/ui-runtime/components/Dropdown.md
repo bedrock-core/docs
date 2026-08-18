@@ -6,7 +6,7 @@ sidebar_position: 9
 A select field backed by a modal dropdown. Pressing it opens a modal to choose one of a fixed set of options. Supports controlled and uncontrolled usage.
 
 :::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Dropdown`](./FormDropdown.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Dropdown`](./Form/FormDropdown.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
 :::
 
 ## Import

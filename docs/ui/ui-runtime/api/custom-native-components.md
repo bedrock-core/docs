@@ -41,8 +41,7 @@ TypeScript (this runtime)                    Resource pack (your JSON UI)
 ```
 
 The runtime renders **everything** through three ActionForm primitives, each routed
-by the native form factory to its own RP router — engine-level dispatch, the cheapest
-routing available:
+by the native form factory to its own RP router:
 
 - `form.button()` → `button_router` (interactive)
 - `form.label()` → `label_router` (static; hosts the merged `label_cell` that renders
@@ -89,8 +88,9 @@ mapping:
 
 - `emitButton(payload, form, ctx, callbacks, icon?)` — interactive (button) slot.
   Registers `callbacks.onPress` against the current button index and advances it.
-- `emitLabel(payload, form)` — static (label) slot.
-- `emitHeader(payload, form, ctx)` — static (header) slot: the native factory routes it
+- `emitLabel(payload, form, ctx?)` — static (label) slot. Pass `ctx` through so the
+  modal backend's control index stays in step with the entries it consumes.
+- `emitHeader(payload, form, ctx?)` — static (header) slot: the native factory routes it
   to `header_router` directly, so your control is the ONLY thing instantiated for the
   entry (no sibling variants at all). Prefer this slot for a static custom component;
   on the modal backend it transparently falls back to the label slot.
@@ -99,7 +99,7 @@ mapping:
 import { emitLabel, type Writer } from '@bedrock-core/ui';
 
 const ratingWriter: Writer = (payload, form, ctx, callbacks, props) => {
-  emitLabel(payload, form); // static → label_router
+  emitLabel(payload, form, ctx); // static → label_router
 };
 ```
 
@@ -178,16 +178,15 @@ and the router wiring — read them alongside the serializer:
 - Decode + `#type` gate pattern: `packages/resource-pack/packs/RP/ui/core-ui/components/text.json`
   (the merged `label_cell` + `cell_type_frame` gate frames) and `components/image.json`
 - Router shape: `core-ui/common/button_router.json`, `label_router.json`, `header_router.json`
-- Field layout & protocol `VERSION`: [`packages/ui-runtime/src/core/serializer.ts`](https://github.com/bedrock-core/ui/tree/main/packages/ui-runtime)
+- Field layout & protocol `VERSION`: [`packages/ui-runtime/src/core/serializer.ts`](https://github.com/bedrock-core/ui/blob/main/packages/ui-runtime/src/core/serializer.ts)
 
 ## Performance rules for custom components
 
 JSON UI cost is dominated by **control instantiation and creation-time binding
 evaluation** — every form entry instantiates each router's whole subtree in every
 mounted scroll-pool slot, and every binding evaluates at least once at screen
-creation. Payload string length is irrelevant (measured in-game: +10KB per element
-changed nothing), and `visible: false` does NOT prevent instantiation. Follow these
-rules, all established with in-game measurements:
+creation. Payload string length is irrelevant, and `visible: false` does NOT prevent
+instantiation:
 
 1. **Prefer the header slot** (`emitHeader`) for static components: the engine routes
    the entry straight to your control — zero cost added to every other cell. A control
@@ -220,7 +219,7 @@ match — a mismatched header means your control reads garbage.
 ## Modal form controls
 
 Everything above covers the `ActionFormData` backend (`button_router`/`label_router`).
-[`Form`](../components/Form.md) renders through a **second** backend — native
+[`Form`](../components/Form/Form.md) renders through a **second** backend — native
 `ModalFormData` — which has its own typed controls and its own set of writer
 helpers. A decorative custom component (`emitLabel`) works unchanged on both
 backends, since `form.label()` exists on `ActionFormData` and `ModalFormData` alike.
@@ -242,7 +241,7 @@ for the native default step (`1`).
 #### `emitDropdown(payload, form, ctx, name, options, defaultValueIndex)`
 Emits a `ModalFormData.dropdown`. `options: string[]`, `defaultValueIndex: number`.
 The native control returns the selected **index**, not a value — see
-[`Form.Dropdown`](../components/FormDropdown.md)'s result gotcha.
+[`Form.Dropdown`](../components/Form/FormDropdown.md)'s result gotcha.
 
 #### `emitInput(payload, form, ctx, name, placeholder, defaultValue)`
 Emits a `ModalFormData.textField`. `placeholder: string`, `defaultValue: string`.
@@ -284,10 +283,9 @@ it has similarly non-primitive or purely-internal data to pass its writer.
 ### Dropdown popup architecture
 
 If your custom modal control needs a floating popup (like `Form.Dropdown`'s option
-list), be aware the popup is **not** rendered inside the control's own subtree —
-Bedrock's native dropdown popup box ignores its host's anchors once naively
-hosted, so the built-in dropdown instead renders its popup through a purpose-built
-overlay:
+list), note that the popup is **not** rendered inside the control's own subtree —
+Bedrock's native dropdown popup box ignores its host's anchors, so the built-in
+dropdown renders its popup through a separate overlay:
 
 - **`modal_container`**'s `inside_header_panel` is a real control at the modal's
   content root, *outside* the scroll, holding a `collection_panel` (`popup_overlay`)
@@ -352,7 +350,7 @@ interface ComponentDescriptor {
 #### `Writer`
 ```ts
 type Writer = (
-  payload: string,                                  // serialized props
+  payload: string | RawMessage,                     // serialized props
   form: FormTarget,                                 // ActionFormData or ModalFormData
   ctx: SerializationContext | undefined,             // button/ordinal index + callback map
   callbacks: Record<string, (...args: unknown[]) => void>, // function props (onPress, …)
@@ -361,6 +359,11 @@ type Writer = (
   children?: unknown,                                // built children, for writers that read post-layout geometry
 ) => void;
 ```
+
+`payload` is a plain `string` for the common case. It is a `RawMessage` only when the
+element's last field is a variable-length **tail** carrying a client-resolved message
+(this is how `Text` ships localized copy past the fixed-width field limit) — the emit
+helpers accept both, so a writer that just forwards `payload` needs no special casing.
 
 `form` is `FormTarget = ActionFormData | ModalFormData` — narrow it with
 `isActionForm`/`isModalForm` before calling a backend-specific method. `nativeArgs`

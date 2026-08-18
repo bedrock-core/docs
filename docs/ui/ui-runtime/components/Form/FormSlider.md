@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 3
 ---
 # Form.Slider
 
@@ -76,11 +76,11 @@ import { Form } from '@bedrock-core/ui';
 - Default: `16`
 - Description: Size (px) of the draggable thumb. The interactive hitbox is a fixed 16×16, so keep the visual thumb at the default size unless you've confirmed the mismatch is acceptable.
 
-The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](./Button.md).
+The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
 
 ### Control Props
 
-`Form.Slider` inherits all standard [control props](./control-props.md). Defaults to `width: '100%'` when no explicit sizing is given.
+`Form.Slider` inherits all standard [control props](../control-props.md). Defaults to `width: '100%'` when no explicit sizing is given.
 
 ## Examples
 
@@ -100,4 +100,4 @@ The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLoc
 
 - Keep `step` a clean divisor of `max - min` so every reachable value looks intentional on the track.
 - Don't resize `thumbWidth`/`thumbHeight` far from the 16×16 default — the interactive hitbox stays fixed at 16×16 regardless, so a larger visual thumb can look pressable in places it isn't.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](../../ore-styled/FormSlider.md)'s `Form.Slider` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](../../../ore-styled/Form/FormSlider.md)'s `Form.Slider` over styling this primitive by hand.

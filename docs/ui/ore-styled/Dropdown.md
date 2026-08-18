@@ -6,7 +6,7 @@ sidebar_position: 10
 Select field with a chevron. Pressing it opens a modal to choose one of a fixed set of options. Supports controlled and uncontrolled usage.
 
 :::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Dropdown`](./FormDropdown.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Dropdown`](./Form/FormDropdown.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
 :::
 
 ![Dropdown](/img/ore-styled/Dropdown.png)

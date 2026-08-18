@@ -23,10 +23,10 @@ Throws if called outside a `NavigationContainer` or when there is no active rout
 ## RouteObject
 
 ```ts
-interface RouteObject<TParams> {
+interface RouteObject<TParams = undefined> {
   key: string;    // unique identifier for this stack entry
   name: string;   // route name (e.g. 'Profile')
-  params: TParams // typed params for this route
+  params: TParams extends undefined ? undefined : TParams; // typed params — `undefined` for parameterless routes
 }
 ```
 

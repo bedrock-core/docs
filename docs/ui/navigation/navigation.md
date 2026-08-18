@@ -21,10 +21,11 @@ npm install @bedrock-core/navigation
 The example below wires up a two-screen stack: a `Home` screen that navigates to a `Details` screen and back.
 
 ```tsx
-import { render, Screen } from '@bedrock-core/ui';
+import { render, Panel, Text, Button } from '@bedrock-core/ui';
 import {
   NavigationContainer,
   createStackNavigator,
+  type ScreenProps,
 } from '@bedrock-core/navigation';
 import { world } from '@minecraft/server';
 
@@ -76,7 +77,7 @@ function App() {
 }
 
 world.afterEvents.playerSpawn.subscribe(({ player }) => {
-  render(App, player, Screen.Scroll);
+  render(App, player);
 });
 ```
 

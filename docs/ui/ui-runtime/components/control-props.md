@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 13
 ---
 # Control Props
 
@@ -23,6 +23,10 @@ The library uses a **flexbox-based layout system**. You compose UIs by nesting `
 - Type: `number | Percent`
 - Description: Lower / upper bounds the layout engine will respect when sizing the element.
 
+#### `aspectRatio`
+- Type: `number` (width ÷ height)
+- Description: Derives whichever axis you left auto from the one that is definite. Ignored when both `width` and `height` are set.
+
 ### Positioning
 
 #### `position`
@@ -31,8 +35,8 @@ The library uses a **flexbox-based layout system**. You compose UIs by nesting `
 - Description: `'relative'` participates in flex flow. `'absolute'` is removed from flow and positioned with `top` / `left` / `right` / `bottom` relative to the nearest positioned parent.
 
 #### `top` / `right` / `bottom` / `left`
-- Type: `number | Percent`
-- Description: Edge offsets used when `position={'absolute'}`.
+- Type: `number` (texels)
+- Description: Edge offsets used when `position={'absolute'}`. Setting both `left` and `right` without an explicit `width` stretches the element horizontally; same for `top` + `bottom` and height.
 
 #### `zIndex`
 - Type: `number`
@@ -113,17 +117,28 @@ These apply to a component **as a child** inside a flex container.
 - Type: `number | Percent`
 - Description: Outer spacing in texels or as a percentage of the parent's content-box width.
 
+### Appearance
+
+#### `background`
+- Type: `string` (resource-pack texture path, e.g. `'textures/ui/my_panel'`)
+- Default: none — nothing is drawn behind the element
+- Description: Resource-pack texture drawn behind the element, filling its computed layout box. It sits below the element's own content and its children, so a plain `Panel` can be given a surface without wrapping it in a themed component. Left unset, no background layer is drawn at all.
+
+:::note Stateful surfaces
+Interactive primitives (`Button`, the `Form.*` fields) extend `background` with per-state variants — `backgroundHover`, `backgroundPressed`, `backgroundLocked`. Each falls back to `background`, which itself falls back to the unstyled placeholder texture, so those components always draw *something*. See the individual component pages for the state props they support.
+:::
+
 ### Visibility Props
 
 #### `visible`
 - Type: `boolean`
 - Default: `true`
-- Description: Whether the component is visible. The element still occupies space in the layout. Use `display={'none'}` to remove it from layout entirely.
+- Description: Whether the element is drawn. `false` removes it and its children entirely, but keeps the space it was laid out in. Use `display={'none'}` to remove it from layout too.
 
 #### `enabled`
 - Type: `boolean`
 - Default: `true`
-- Description: Whether the component is enabled and interactive. Cascades to children.
+- Description: Whether the control accepts input. Set per element.
 
 ## Usage Examples
 
@@ -209,15 +224,21 @@ function ConditionalUI({ showButton }: { showButton: boolean }) {
 ## TypeScript
 
 ```tsx
-import type { LayoutProps } from '@bedrock-core/ui';
+import type { ControlProps, LayoutProps } from '@bedrock-core/ui';
 ```
 
-`LayoutProps` extends `FlexStyle` and is available on all built-in components. Individual types are also exported:
+`LayoutProps` carries the flex layout properties; `ControlProps` extends it with `visible`, `enabled`, and `background`. Every built-in component's props type extends `ControlProps`. Individual types are also exported:
 
 ```tsx
 import type {
   FlexDirection, FlexSize, FlexWrap,
   JustifyContent, AlignItems, AlignContent, AlignSelf,
-  Display, Position, Spacing, Percent,
+  Display, Position, Spacing,
 } from '@bedrock-core/ui';
+```
+
+The underlying primitives (`Percent`, `FlexStyle`, …) live in the flexbox entry point:
+
+```tsx
+import type { Percent, FlexStyle } from '@bedrock-core/ui/flexbox';
 ```

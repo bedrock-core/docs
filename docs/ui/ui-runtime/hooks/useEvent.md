@@ -21,7 +21,7 @@ function useEvent<T, O>(
   },
   callback: (event: T) => void,
   options?: O,
-  deps?: any[]
+  deps?: unknown[]
 ): void
 ```
 
@@ -72,33 +72,6 @@ function EventListener() {
 ```
 
 ## Examples
-
-### Player Join Notification
-
-```tsx
-import { world } from '@minecraft/server';
-import { useEvent } from '@bedrock-core/ui';
-
-function PlayerJoinNotification() {
-  const [recentPlayers, setRecentPlayers] = useState<string[]>([]);
-
-  useEvent(
-    world.afterEvents.playerJoin,
-    (event) => {
-      setRecentPlayers(prev => [...prev, event.playerName].slice(-5));
-    }
-  );
-
-  return (
-    <Panel padding={10} gap={4}>
-      <Text>{'§lRecent Joins'}</Text>
-      {recentPlayers.map((name, index) => (
-        <Text key={index}>{name}</Text>
-      ))}
-    </Panel>
-  );
-}
-```
 
 ### Item Use Counter
 

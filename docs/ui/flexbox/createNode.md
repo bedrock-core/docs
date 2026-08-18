@@ -15,7 +15,11 @@ import { createNode } from '@bedrock-core/flexbox';
 ## Signature
 
 ```ts
-function createNode(style?: FlexStyle, children?: LayoutNode[]): LayoutNode
+function createNode(
+  style?: FlexStyle,
+  children?: LayoutNode[],
+  measure?: MeasureFunc,
+): LayoutNode
 ```
 
 ### Parameters
@@ -30,6 +34,10 @@ function createNode(style?: FlexStyle, children?: LayoutNode[]): LayoutNode
 - Default: `[]`
 - Description: Child nodes. Their layout is computed relative to this node's content box.
 
+#### `measure`
+- Type: `MeasureFunc` — `(availableWidth: number) => { width: number; height: number }`
+- Description: Content measure for **leaf** nodes whose intrinsic size depends on the width they are granted (wrapping text is the canonical case: a narrower box means more lines means a taller node). Omit it for nodes sized by their children or by explicit `width`/`height`.
+
 ### Returns
 
 A `LayoutNode` with `layout` zeroed out. Layout values are populated only after `computeLayout()` runs.
@@ -38,8 +46,25 @@ A `LayoutNode` with `layout` zeroed out. Layout values are populated only after 
 interface LayoutNode {
   style: FlexStyle;
   children: LayoutNode[];
-  layout: ComputedLayout; // zeroed until computeLayout() runs
+  layout: ComputedLayout;  // zeroed until computeLayout() runs
+  measure?: MeasureFunc;   // width-dependent content sizing, leaves only
 }
+```
+
+## MeasureFunc
+
+`computeLayout()` calls a node's `measure` twice: first with `Infinity`, then with the width it actually granted — your function must handle both. Explicit `style.width` / `style.height` always win over the measured size, and a `measure` takes precedence over child-derived sizing.
+
+```ts
+import { createNode, type MeasureFunc, type MeasuredSize } from '@bedrock-core/flexbox';
+
+const measureLabel: MeasureFunc = (availableWidth): MeasuredSize => {
+  const lines = wrapToWidth(text, availableWidth);
+
+  return { width: widestLine(lines), height: lines.length * LINE_HEIGHT };
+};
+
+const label = createNode({ flexShrink: 1 }, [], measureLabel);
 ```
 
 ## ComputedLayout
@@ -54,25 +79,6 @@ interface ComputedLayout {
   height: number;  // in texels
   zIndex: number;  // resolved z-order (inherited from parent when not set)
 }
-```
-
-## Usage
-
-```ts
-import { createNode, computeLayout } from '@bedrock-core/flexbox';
-
-const root = createNode(
-  { flexDirection: 'row', gap: 8, padding: 12 },
-  [
-    createNode({ flex: 1 }),  // left column
-    createNode({ flex: 2 }),  // right column — twice as wide
-  ],
-);
-
-computeLayout(root);
-
-const left  = root.children[0].layout; // { x: 12, y: 12, width: 94, ... }
-const right = root.children[1].layout; // { x: 114, y: 12, width: 190, ... }
 ```
 
 ---
@@ -90,6 +96,10 @@ All properties are optional. Defaults mirror CSS flexbox where applicable.
 #### `minWidth` / `maxWidth` / `minHeight` / `maxHeight`
 - Type: `number | Percent`
 - Description: Clamps the resolved size to a lower or upper bound.
+
+#### `aspectRatio`
+- Type: `number` (width ÷ height)
+- Description: Derives the auto axis from the definite one. An explicit `width` drives the height, an explicit `height` drives the width, and with both auto the width drives (the axis the parent or flex growth resolves first). Ignored when both axes are explicit — matching CSS — and when the node has a `measure`, since the measure owns both dimensions there.
 
 ---
 

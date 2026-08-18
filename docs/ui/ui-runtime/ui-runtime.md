@@ -12,9 +12,13 @@ It provides the JSX component primitives, hook system, and the API surface used 
 
 | Section | Description |
 |---|---|
-| [**Components**](./components/components.md) | Primitive building blocks: `Panel`, `Text`, `Button`, `Image`, `Fragment` |
+| [**Components**](./components/components.md) | Primitive building blocks: `Panel`, `Text`, `Button`, `Image`, `Background`, `Scroll`, `Fragment` |
 | [**Hooks**](./hooks/hooks.md) | Reactive state and lifecycle: `useState`, `useEffect`, `useEvent`, `useReducer`, and more |
 | [**API**](./api/api.md) | Top-level functions: `render`, `createContext` |
+
+## Localization
+
+Localized text is not a separate component set: `<Text>` accepts literal and localized children on one channel, and `render()` injects the viewing player's resolver at every root. Bind the typed verbs with [`useTranslation`](./hooks/useTranslation.md), or read the active resolver with [`useTranslationResolver`](./hooks/useTranslationResolver.md) / [`TranslationContext`](./api/TranslationContext.md). The authoring side — bundles, plurals, interpolation, locale resolution — lives in [i18n](../i18n/i18n.md).
 
 ## Experimental APIs
 

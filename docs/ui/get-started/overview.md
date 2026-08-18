@@ -6,16 +6,18 @@ sidebar_position: 1
 Get up and running with `@bedrock-core/ui` in minutes.
 
 
-> ⚠️ Beta Status: Active development. Breaking changes may occur until 1.0.0. Pin exact versions for stability.
->
-> This is not ready for production use.
+:::caution Pre-1.0
+`@bedrock-core/ui` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::
 
 
 ## What is @bedrock-core/ui?
 
-`@bedrock-core/ui` is a React-like UI framework for Minecraft Bedrock Edition that enables you to create rich, interactive user interfaces using JSX syntax. It serializes your UI components into a protocol and renders them using JSON UI with the companion Resource Pack.
+`@bedrock-core/ui` is a React-like UI framework for Minecraft Bedrock Edition that enables you to create rich, interactive user interfaces using JSX syntax. It serializes your UI components into a protocol and renders them using JSON UI with the render pack.
 
 For a pre-themed component set that matches vanilla Minecraft's look (buttons, cards, checkboxes, toggles, …), see the [`@bedrock-core/ore-styled`](../ore-styled/ore-styled.md) layer. It's optional — pick it up when you want batteries-included visuals, skip it when you'd rather style every primitive yourself.
+
+Localization is built in rather than bolted on: `<Text>` takes literal and localized children on the same channel, so one screen serves every language at once. See [i18n](../i18n/i18n.md) for the translation verbs and how player locale is resolved.
 
 ## Learn React first
 
@@ -25,21 +27,16 @@ If you're new to React, we strongly recommend starting with the official React t
 
 ### Differences with React
 
-In Minecraft Bedrock because we use @minecraft/server-ui form api we are not able to mutate the UI directly without closing and displaying a new form.
+`@minecraft/server-ui` forms cannot be mutated while open — updating one means closing it and presenting a new form, which loses cursor/controller focus.
 
-The multiple attempts we made with this resulted in poor player interaction as cursor/controller focus gets lost and there is a delay between form closing and new presentation.
-
-So it was decided to keep the logic executing in the background and present to the player a snapshot of the UI, and only update it on player input.
-
-
-**TLDR**: UI logic keeps running in background but we only update player presented ui when they press a button.
+So your component logic keeps running in the background, but the player only sees a new snapshot of the UI **when they press a button**. A state change on its own does not repaint their screen.
 
 ## Your First UI
 
 Here's a simple example to get you started:
 
 ```tsx
-import { render, Screen, Panel, Text, Button } from '@bedrock-core/ui';
+import { render, Panel, Text, Button } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
@@ -61,7 +58,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 // Render it to a player
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(WelcomeScreen, source, Screen.Scroll);
+    render(WelcomeScreen, source);
   }
 });
 ```
@@ -70,7 +67,7 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 
 1. **Write JSX Components**: Use familiar React-like syntax to define your UI
 2. **Serialization**: The framework converts your component tree into a serialized protocol and injects it into @minecraft/server-ui form components
-3. **JSON UI Decoding**: Resource Pack companion JSON UI files decode the serialized data
+3. **JSON UI Decoding**: The render pack's JSON UI files decode the serialized data
 4. **Rendering**: Players see rich, interactive UIs in Minecraft
 
 ## Next Steps
@@ -80,3 +77,4 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 - [ore-styled](../ore-styled) - Themed component layer with vanilla Minecraft textures (optional)
 - [Hooks](../ui-runtime/hooks) - Add state and effects to your components
 - [API](../ui-runtime/api) - APIs that are useful for defining components
+- [i18n](../i18n/i18n.md) - Localize your UI so each player reads it in their own language

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 12
 ---
 # ItemRenderer
 
@@ -68,12 +68,15 @@ const myMap: ItemAuxMap = {
   // ... build this map for your specific world / addon setup
 };
 
-render(player, (
+render(
   <ItemAuxContext value={myMap}>
     <MyScreen />
-  </ItemAuxContext>
-));
+  </ItemAuxContext>,
+  player,
+);
 ```
+
+An item's aux value is `raw_id << 16`, plus `32768` when the item is enchanted.
 
 ## Examples
 
@@ -88,23 +91,6 @@ function HeldItem({ player }: { player: Player }) {
   return <ItemRenderer item={item} width={32} height={32} />;
 }
 ```
-
-### Item with label
-
-```tsx
-function ItemCard({ item }: { item: ItemStack }) {
-  return (
-    <Panel padding={4} gap={4} flexDirection="row">
-      <ItemRenderer item={item} width={24} height={24} />
-      <Text>{item.typeId}</Text>
-    </Panel>
-  );
-}
-```
-
-## How It Works
-
-`ItemRenderer` reads the Aux ID for the given `ItemStack` from `ItemAuxContext` and serializes it as a native `item-id-aux` JSON UI binding. The Resource Pack resolves the aux value to the correct item texture. The aux value is computed as `raw_id << 16` (plus 32768 for enchanted items).
 
 ## See Also
 

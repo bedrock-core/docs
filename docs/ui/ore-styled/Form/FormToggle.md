@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 2
 ---
 # Form.Toggle
 
@@ -17,9 +17,11 @@ import { Form } from '@bedrock-core/ore-styled';
 
 ```tsx
 <Form.Toggle label={'Music'} name={'music'} defaultValue={true} />
+<Form.Toggle label={'Show hints'} name={'hints'} defaultValue={false} />
+<Form.Toggle label={'Locked option'} name={'locked'} enabled={false} />
 ```
 
-Built on top of the runtime [`Form.Toggle`](../ui-runtime/components/FormToggle.md) primitive and the [theme](./theme.md) token map. Renders as a settings row — caption on the left, switch pinned to the right — when `label` is given; a bare switch otherwise.
+Wraps the runtime [`Form.Toggle`](../../ui-runtime/components/Form/FormToggle.md) primitive with the [theme](../theme.md)'s textures. With a `label` it renders as a settings row — caption on the left, switch pinned to the right; without one, a bare switch.
 
 ## Props
 
@@ -45,17 +47,9 @@ Built on top of the runtime [`Form.Toggle`](../ui-runtime/components/FormToggle.
 
 ### Control Props
 
-`Form.Toggle` inherits all standard [control props](../ui-runtime/components/control-props.md).
+`Form.Toggle` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus texture props: `background` / `backgroundHover` / `backgroundPressed` / `backgroundLocked` skin the **off** switch and `checkedBackground` / `checkedHover` / `checkedLocked` the **on** one. The theme fills in every state you leave out.
 
 ## Examples
-
-### Settings row
-
-```tsx
-<Form.Toggle label={'Music'} name={'music'} defaultValue={true} />
-<Form.Toggle label={'Show hints'} name={'hints'} defaultValue={false} />
-<Form.Toggle label={'Locked option'} name={'locked'} enabled={false} />
-```
 
 ### Bare switch beside decorative text
 

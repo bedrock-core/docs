@@ -55,11 +55,3 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
   }
 });
 ```
-
-## How It Works
-
-1. **Serialization**: Converts the JSX element tree into a compact binary protocol
-2. **Form Creation**: Creates an `ActionFormData` from `@minecraft/server-ui`
-3. **Payload Injection**: Injects serialized data into the form
-4. **Display**: Shows the form to the player
-5. **Rendering**: Companion Resource Pack decodes and renders the UI

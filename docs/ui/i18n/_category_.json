@@ -1,0 +1,11 @@
+{
+  "position": 6,
+  "label": "i18n",
+  "key": "i18n",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "i18n"
+  }
+}

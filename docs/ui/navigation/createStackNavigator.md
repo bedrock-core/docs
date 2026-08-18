@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # createStackNavigator
 
-Create a typed stack navigator. This is the main setup step — call it once at module level, then use the returned `Navigator` and `Screen` components to build your navigation tree.
+Create a typed stack navigator. This is the main setup step — call it once at module level, declare every screen in the `screens` map, and render the returned `Navigator`.
 
 ## Import
 
@@ -18,10 +18,9 @@ import { createStackNavigator } from '@bedrock-core/navigation';
 function createStackNavigator<TRoutes>(
   options: StackNavigatorOptions<TRoutes>,
 ): {
-  Navigator: (props: { initialRouteName?: keyof TRoutes }) => JSX.Element;
-  Screen: <K extends keyof TRoutes>(props: ScreenConfig<K>) => JSX.Element;
-  routeNames: (keyof TRoutes)[];
-  initialRouteName: keyof TRoutes;
+  Navigator: (props: { initialRouteName?: Extract<keyof TRoutes, string> }) => JSX.Element;
+  routeNames: Extract<keyof TRoutes, string>[];
+  initialRouteName: Extract<keyof TRoutes, string>;
 }
 ```
 

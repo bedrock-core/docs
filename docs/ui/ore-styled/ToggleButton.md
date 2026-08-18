@@ -23,7 +23,7 @@ import { ToggleButtonGroup, ToggleButtonItem } from '@bedrock-core/ore-styled';
 </ToggleButtonGroup>
 ```
 
-The group lays its items out in a row with negative gap so the button edges butt up against each other and read as a single segmented control. Each item flex-grows to fill the available width evenly.
+The group lays its items out in a row with their edges flush, reading as a single segmented control. Each item flex-grows to fill the available width evenly.
 
 ## Props
 

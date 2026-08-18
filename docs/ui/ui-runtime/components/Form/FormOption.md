@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 7
 ---
 # Form.Option
 
@@ -23,7 +23,7 @@ import { Form } from '@bedrock-core/ui';
 
 ## How it works
 
-`Form.Option` is layout-only — it is not itself a native control. Its parent (`Form.Dropdown` or `Form.InlineSelect`) reads each option's data and (for `Form.InlineSelect`) its computed layout geometry, and packs them into the parent's single native `dropdown()` call. Under `Form.InlineSelect` each option is genuinely flex-laid-out like any other component; under `Form.Dropdown` the popup rows flow at a fixed height, so an option's own layout props are ignored there.
+`Form.Option` is layout-only — it is not itself a native control, and the whole group submits as its parent's single value. Under `Form.InlineSelect` each option is genuinely flex-laid-out like any other component; under `Form.Dropdown` the popup rows flow at a fixed height, so an option's own layout props are ignored there.
 
 ## Props
 
@@ -59,7 +59,7 @@ import { Form } from '@bedrock-core/ui';
 
 ### Control Props
 
-Under `Form.InlineSelect`, `Form.Option` inherits all standard [control props](./control-props.md) for real flex layout. Under `Form.Dropdown`, layout props are accepted but ignored — popup rows flow at a fixed height.
+Under `Form.InlineSelect`, `Form.Option` inherits all standard [control props](../control-props.md) for real flex layout. Under `Form.Dropdown`, layout props are accepted but ignored — popup rows flow at a fixed height.
 
 ## Examples
 

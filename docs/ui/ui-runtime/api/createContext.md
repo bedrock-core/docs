@@ -64,49 +64,6 @@ function ThemedComponent() {
 
 ## Examples
 
-### Simple Theme Context
-
-```tsx
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-}
-
-const ThemeContext = createContext<Theme>({
-  primaryColor: '#ffffff',
-  backgroundColor: '#000000',
-});
-
-function App() {
-  return (
-    <ThemeContext value={{ primaryColor: '#3498db', backgroundColor: '#2c3e50' }}>
-      <Panel padding={10} gap={8}>
-        <ThemedText />
-        <ThemedButton />
-      </Panel>
-    </ThemeContext>
-  );
-}
-
-function ThemedText() {
-  const theme = useContext(ThemeContext);
-
-  return (
-    <Text>{`Primary: ${theme.primaryColor}`}</Text>
-  );
-}
-
-function ThemedButton() {
-  const theme = useContext(ThemeContext);
-
-  return (
-    <Button onPress={() => {}}>
-      <Text>{'Styled Button'}</Text>
-    </Button>
-  );
-}
-```
-
 ### User Authentication Context
 
 ```tsx
@@ -224,21 +181,6 @@ const ThemeContext = createContext({
 
 // ❌ Less ideal
 const ThemeContext = createContext(null);
-```
-
-### Type Your Contexts
-
-```tsx
-// ✅ Good - typed context
-interface Theme {
-  color: string;
-  fontSize: number;
-}
-
-const ThemeContext = createContext<Theme>({
-  color: '#000000',
-  fontSize: 14,
-});
 ```
 
 ### Create Provider Components

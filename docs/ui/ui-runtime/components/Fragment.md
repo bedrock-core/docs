@@ -156,4 +156,3 @@ function StatusDisplay({ isOnline }: { isOnline: boolean }) {
 | Layout props | Not supported | Supported |
 | Flex container | No (children lifted into parent flow) | Yes |
 | Use case | Logical grouping | Visual container with its own layout |
-| JSON-UI | Not serialized | Serialized |

@@ -1,9 +1,9 @@
 ---
-sidebar_position: 15
+sidebar_position: 4
 ---
 # Form.Radio
 
-Themed single-select radio group for use inside an ore-styled [`Form`](./Form.md). Renders as a bullet + label per option, stacked vertically, matching the look of the ActionForm [`Radio`](./Radio.md).
+Themed single-select radio group for use inside an ore-styled [`Form`](./Form.md). Renders as a bullet + label per option, stacked vertically, matching the look of the ActionForm [`Radio`](../Radio.md).
 
 ![FormRadio](/img/ore-styled/FormRadio.png)
 
@@ -28,12 +28,10 @@ import { Form } from '@bedrock-core/ore-styled';
 />
 ```
 
-## How it works
-
-`Form.Radio` is a single composed component — not a group + item pair like the non-`Form` [`RadioGroup` / `Radio`](./Radio.md). Internally it renders the runtime [`Form.InlineSelect`](../ui-runtime/components/FormInlineSelect.md) with one [`Form.Option`](../ui-runtime/components/FormOption.md) per entry in `options`, styled with the theme's `radio` bullet textures. Since each option is a genuinely flex-laid-out child, changing `rowHeight`/`gap` reflows the whole group with no JSON-UI edit.
+`Form.Radio` is a single composed component — not a group + item pair like the non-`Form` [`RadioGroup` / `Radio`](../Radio.md). It builds its own options from the `options` array and does not accept `children`. It draws on the same theme tokens as the non-`Form` [`Radio`](../Radio.md) (`theme.components.radio`).
 
 :::caution Result is an index, not a value
-Like the runtime primitive it's built on, `Form.Radio` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. Map the index back into your own `options` array if you need the string.
+`Form.Radio` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. Map the index back into your own `options` array if you need the string.
 :::
 
 ## Props
@@ -68,15 +66,13 @@ Like the runtime primitive it's built on, `Form.Radio` reports the selected opti
 - Description: Height (px) of each option row.
 
 #### `gap`
-- Type: `number`
+- Type: `Spacing`
 - Default: `2`
-- Description: Vertical gap (px) between option rows.
+- Description: Vertical gap (px) between option **rows** — not the gap between the `label` and the group.
 
-#### `flex` / `width`
-- Type: `number` / `FlexSize`
-- Description: Layout sizing for the group container.
+### Control Props
 
-This component draws on the same theme tokens as the non-`Form` [`Radio`](./Radio.md) (`theme.components.radio`) — no separate Form-specific theme section exists for it.
+`Form.Radio` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus texture props: `bullet`, `bulletSelected`, `bulletHover` and `bulletSelectedHover` for the glyph (sized by `bulletWidth` / `bulletHeight`), `optionBackground` / `optionHover` / `optionSelected` for the row behind it, `background` for the group container, and `optionFont` / `optionScale` / `optionAlign` for the option labels. The theme fills in anything you leave out. The row faces are themed empty — the bullet carries the visual — so set them if you want the rows themselves to paint.
 
 ## Examples
 

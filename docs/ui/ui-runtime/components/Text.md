@@ -24,43 +24,19 @@ import { Text } from '@bedrock-core/ui';
 ### Component-Specific Props
 
 #### `children`
-- Type: `string`
-- Required: One of `children` or `localizationKey` must be provided.
-- Description: Raw text content to display.
-- Constraints: Max 80 UTF-8 bytes — use `localizationKey` for longer copy.
+- Type: [`DisplayText`](../../i18n/i18n.md#displaytext) (`string | RawMessage`)
+- Required: No
+- Description: The text to display. A single child only — arrays throw. Strings are auto-detected as keys or literals; `RawMessage` values are always localized. See [One text channel](#one-text-channel).
 
 #### `font`
 - Type: `'mojangles' | 'minecraftTen'`
-- Description: Optional font selection. Defaults to `'mojangles'`.
+- Default: `'mojangles'`
+- Description: Font selection.
 
 #### `scale`
 - Type: `number`
 - Default: `1.0`
 - Description: Scale multiplier relative to the standard "normal" glyph size. Values below `1.0` produce smaller text; values above `1.0` produce larger text.
-
-#### `localizationKey`
-- Type: `string`
-- Description: Minecraft translation key (e.g. `'ui.myscreen.title'`). The key must exist in your pack's `.lang` files and in the generated `translationKeys.generated.json`. Requires the `translation-keys` Regolith filter and a `TranslationKeysContext` provider at the root of your UI. Takes priority over `children` when both are present.
-
-:::note Translation Keys filter required
-`localizationKey` requires the [`translation-keys` Regolith filter](https://github.com/bedrock-core/regolith-filters/tree/main/translation-keys). Install it, configure the tsconfig path alias, and provide the generated keys at your UI root:
-
-```tsx
-import translationKeys from '@bedrock-core/generated/translation-keys';
-import { TranslationKeysContext } from '@bedrock-core/ui';
-
-<TranslationKeysContext value={translationKeys}>
-  <App />
-</TranslationKeysContext>
-```
-
-Using `localizationKey` without the provider throws a `TranslationKeysError` at render time. Projects that don't use `localizationKey` don't need the filter.
-
-The easiest way to get started with the filter already configured is to scaffold your project with the **CLI**:
-```bash
-npx @bedrock-core/cli
-```
-:::
 
 #### `wordBreak`
 - Type: `'normal' | 'break-word'`
@@ -79,17 +55,16 @@ npx @bedrock-core/cli
 - Default: `false`
 - Description: Draw a drop shadow behind the glyphs. Purely visual — it does not affect layout or text metrics.
 
+#### `offsetX` / `offsetY`
+- Type: `number`
+- Default: `0`
+- Description: Fine-tune the pixel nudge of the rendered label inside its layout box. The box itself does not move.
+
 ### Control Props
 
 Text inherits all standard [control props](./control-props.md).
 
 ## Examples
-
-### Basic Text
-
-```tsx
-<Text>{'Simple text'}</Text>
-```
 
 ### Multi-line Layout
 
@@ -121,13 +96,33 @@ function Counter() {
 ### Localized Text
 
 ```tsx
-import translationKeys from '@bedrock-core/generated/translation-keys';
-import { TranslationKeysContext } from '@bedrock-core/ui';
+import { Panel, Text, useTranslation } from '@bedrock-core/ui';
+import { i18n } from './i18n';
 
-<TranslationKeysContext value={translationKeys}>
-  <Text localizationKey={'ui.myscreen.title'} />
-</TranslationKeysContext>
+function Greeting() {
+  const { t, key, raw } = useTranslation(i18n);
+
+  return (
+    <Panel padding={10} gap={6}>
+      {/* key(): the string is a real .lang key — the CLIENT resolves it. */}
+      <Text>{key($ => $.ui.screen.title)}</Text>
+
+      {/* A vanilla key works the same, without shipping it in your pack. */}
+      <Text>{key($ => $.vanilla.item.apple.name)}</Text>
+
+      {/* raw(): translate + with, resolved and filled CLIENT-side. */}
+      <Text>{raw($ => $.ui.shop.bought, { item: 'Apple', price: 64 })}</Text>
+
+      {/* t(): resolved to a plain string SERVER-side, in this player's language. */}
+      <Text>{t($ => $.ui.shop.subtitle)}</Text>
+    </Panel>
+  );
+}
 ```
+
+:::tip Which verb?
+`key()` and `raw()` keep resolution on the client, so each player reads the text in their own language. `t()` resolves server-side in the player's currently resolved locale — reach for it when you need to compose the string yourself (concatenating formatting codes, building a template). Full write-up in [The three verbs](../../i18n/i18n.md#the-three-verbs).
+:::
 
 ### Wrapped & Truncated Text
 
@@ -138,6 +133,8 @@ import { TranslationKeysContext } from '@bedrock-core/ui';
   </Text>
 </Panel>
 ```
+
+Wrapping works for localized children too — a localized child wraps against its control box, so the client wraps its own resolved string.
 
 ### Scaled Heading
 
@@ -154,10 +151,39 @@ import { TranslationKeysContext } from '@bedrock-core/ui';
 ## Best Practices
 
 - Don't hardcode `width`/`height` — let `Text` size to its content and rely on the parent panel's `gap`/`padding`.
-- Keep raw strings under 80 UTF-8 bytes; reach for `localizationKey` once copy gets longer or needs translating.
+- Prefer `key()` / `raw()` over `t()` for player-facing copy: the client resolves them, so one screen serves every language at once.
 - Use Minecraft formatting codes for styling: https://minecraft.wiki/w/Formatting_codes
 
 ## Limitations
 
-- Raw `children` is capped at 80 UTF-8 bytes by the serialization protocol — use `localizationKey` to bypass it.
+- One child only. `<Text>{a}{b}</Text>` throws — compose inside a `RawMessage`, or use sibling `<Text>` elements.
 - Word wrapping is opt-in via `wordBreak={'break-word'}`; by default a `Text` renders on a single line.
+- Server-side metrics for a key the world does not publish fall back to measuring the key string itself, so wrapping is approximate until the key is in your bundle. The client still paints its own resolution.
+
+## One text channel
+
+`Text` takes a **single** child of type [`DisplayText`](../../i18n/i18n.md#displaytext) — `string | RawMessage`. Literal text and localized text ride the same channel, and which one you get is detected rather than declared.
+
+- A **`string`** is auto-detected. If the active translation resolver knows it as a key (a `key()` result, a registry display field, any published `.lang` key), it is localized — the client resolves it in its own language. If nothing resolves it, it paints literally, which is exactly how Bedrock treats an unmatched key anyway.
+- A **`RawMessage`** (a `raw()` result) is always localized. The **client** resolves and fills it — its own language, no length cap, `score`/`selector` parts included.
+
+Rendered text is not length-capped. Server-side resolution only feeds **layout metrics** and wrap routing; what actually paints is always the client's own resolution attempt.
+
+:::note Localization needs an i18n instance
+Localized children resolve through [`@bedrock-core/i18n`](../../i18n/i18n.md). Creating your addon's instance is the whole setup — it registers the default translation source, and `render()` injects it (bound to the viewing player) at every root, so `<Text>` measures localized children with no further wiring:
+
+```tsx
+import bundle from '@bedrock-core/generated/i18n';
+import { createI18n } from '@bedrock-core/i18n';
+
+export const i18n = createI18n(bundle);
+```
+
+Inside components, bind [the typed verbs](../../i18n/i18n.md#the-three-verbs) with [`useTranslation(i18n)`](../hooks/useTranslation.md); outside them, use `i18n.forPlayer(player)` / `i18n.forLocale(locale)`.
+
+The easiest way to get a project with the bundle and filter already wired is to scaffold with the **CLI**:
+
+```bash
+npx @bedrock-core/cli
+```
+:::

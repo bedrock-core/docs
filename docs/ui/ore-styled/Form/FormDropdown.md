@@ -1,5 +1,5 @@
 ---
-sidebar_position: 18
+sidebar_position: 7
 ---
 # Form.Dropdown
 
@@ -25,10 +25,10 @@ import { Form } from '@bedrock-core/ore-styled';
 />
 ```
 
-Built on top of the runtime [`Form.Dropdown`](../ui-runtime/components/FormDropdown.md) primitive and the [theme](./theme.md) token map. Unlike the primitive (which takes `Form.Option` children), this layer keeps the simple `options: string[]` API and maps each string to a `Form.Option value={o} label={o}` under the hood. The current selection sits on the left with a chevron on the right, inside the Ore-UI field frame — same look as the non-`Form` [`Dropdown`](./Dropdown.md).
+Wraps the runtime [`Form.Dropdown`](../../ui-runtime/components/Form/FormDropdown.md) primitive with the [theme](../theme.md)'s textures. This layer takes `options: string[]` rather than the primitive's `Form.Option` children, and does not accept `children`.
 
 :::caution Result is an index, not a value
-Like the runtime primitive it's built on, `Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. Map the index back into your own `options` array if you need the string — this differs from the non-`Form` [`Dropdown`](./Dropdown.md), which resolves back to a value string for you.
+`Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. Map the index back into your own `options` array if you need the string — this differs from the non-`Form` [`Dropdown`](../Dropdown.md), which resolves back to a value string for you.
 :::
 
 ## Props
@@ -60,23 +60,17 @@ Like the runtime primitive it's built on, `Form.Dropdown` reports the selected o
 #### `currentInsetX` / `currentInsetY`
 - Type: `number`
 - Default: `8` / vertically centered
-- Description: Position offset (px) of the closed-box current-value text from the box's left-middle frame. Unlike the theme-owned colors and fonts, these stay exposed at the instance level because they're a per-instance layout concern — useful for nudging the value text clear of a neighboring dropdown or an overlapping decoration.
+- Description: Position offset (px) of the closed-box current-value text from the box's left-middle frame. Useful for nudging the value text clear of a neighboring dropdown or an overlapping decoration. The theme has no default for these — an unset inset falls through to the primitive.
 
 ### Control Props
 
-`Form.Dropdown` inherits all standard [control props](../ui-runtime/components/control-props.md).
+`Form.Dropdown` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus texture props: `background` and its state variants for the closed box, `popupBackground` for the open popup card, `optionBackground` / `optionHover` / `optionSelected` for the option rows, and the text styles `optionFont` / `optionScale` / `optionAlign` (popup rows) and `currentColor` / `currentFont` / `currentScale` (closed-box value). The theme fills in anything you leave out. A `backgroundHover` of your own also becomes the pressed face unless you set `backgroundPressed` too.
 
 ## Examples
 
-### Basic dropdown
-
-```tsx
-<Form.Dropdown label={'Mode'} name={'mode'} options={['Easy', 'Normal', 'Hard']} defaultValue={'Normal'} />
-```
-
 ### Offsetting the current-value text
 
-Two dropdowns side by side, where the second's closed-box value text is nudged 40px right of the default inset so it doesn't sit flush against a neighboring element:
+Two dropdowns side by side, where the second's closed-box value text is nudged clear of the default inset:
 
 ```tsx
 <Form.Dropdown label={'Mode'} name={'mode'} options={['Easy', 'Normal', 'Hard']} defaultValue={'Normal'} />

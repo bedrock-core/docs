@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 2
 ---
 # Form.Toggle
 
@@ -52,11 +52,11 @@ import { Form } from '@bedrock-core/ui';
 - Default: the resolved checked base texture
 - Description: Checked texture when `enabled={false}`.
 
-The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](./Button.md) (the toggle RP has no pressed state to show `backgroundPressed`, but the prop is still accepted).
+The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md) (the toggle RP has no pressed state to show `backgroundPressed`, but the prop is still accepted).
 
 ### Control Props
 
-`Form.Toggle` inherits all standard [control props](./control-props.md) for layout and visibility — geometry is computed by the layout phase like any other component.
+`Form.Toggle` inherits all standard [control props](../control-props.md) for layout and visibility — geometry is computed by the layout phase like any other component.
 
 ## Examples
 
@@ -81,4 +81,4 @@ The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`
 
 - Pick clear, unambiguous boolean `name`s (`sound`, not `s`) — it's the only thing you get back on submit.
 - Only override `checkedBackground`/`checkedHover`/`checkedLocked` when the default on/off face doesn't match your theme; otherwise a single `background` styles both states.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](../../ore-styled/FormToggle.md)'s `Form.Toggle` (or `Form.Checkbox` for checkbox-style rows) over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](../../../ore-styled/Form/FormToggle.md)'s `Form.Toggle` (or `Form.Checkbox` for checkbox-style rows) over styling this primitive by hand.

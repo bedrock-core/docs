@@ -1,5 +1,5 @@
 ---
-sidebar_position: 21
+sidebar_position: 13
 ---
 # ItemSlot
 
@@ -8,7 +8,7 @@ sidebar_position: 21
 
 In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `ItemSlot` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
 
-You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 :::
 
 A single inventory slot that renders an item icon or optional overlay texture.
@@ -60,29 +60,7 @@ Default size is 18 × 18 px (from `theme.components.itemSlot.size`). Pass explic
 
 `ItemSlot` inherits all standard [control props](../ui-runtime/components/control-props.md).
 
-## Requirements
-
-Requires an `ItemAuxContext` wrapping the component tree — no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
-
 ## Examples
-
-### Hotbar row
-
-```tsx
-function HotBar({ player }: { player: Player }) {
-  const container = player.getComponent('inventory')?.container;
-
-  return (
-    <ItemAuxContext value={myMap}>
-      <Panel flexDirection="row" gap={2}>
-        {Array.from({ length: 9 }, (_, i) => (
-          <ItemSlot slot={container?.getSlot(i)} />
-        ))}
-      </Panel>
-    </ItemAuxContext>
-  );
-}
-```
 
 ### Empty slot with silhouette overlay
 

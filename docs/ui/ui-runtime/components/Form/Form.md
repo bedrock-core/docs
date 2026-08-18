@@ -1,11 +1,11 @@
 ---
-sidebar_position: 11
+sidebar_position: 1
 ---
 # Form
 
 Atomic modal form. Renders one native `ModalFormData` — every field is shown at once, and nothing comes back until the player presses submit, at which point every value arrives together, keyed by each field's `name`, in `onSubmit`.
 
-This replaces the older one-modal-per-field pattern ([`Input`](./Input.md), [`Dropdown`](./Dropdown.md), [`Slider`](./Slider.md)), which opens a separate single-control modal per field. Those components are now deprecated — for new screens with more than one field, use `Form`.
+This replaces the older one-modal-per-field pattern ([`Input`](../Input.md), [`Dropdown`](../Dropdown.md), [`Slider`](../Slider.md)), which opens a separate single-control modal per field. Those components are now deprecated — for new screens with more than one field, use `Form`.
 
 ## Import
 
@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 
 `Form` is a namespace object: the root `<Form>` component plus its field members.
 
-- [**`Form`**](#formprops) — the root component; wraps the whole modal.
+- [**`Form`**](#props) — the root component; wraps the whole modal.
 - [**`Form.Toggle`**](./FormToggle.md) — boolean on/off field.
 - [**`Form.Slider`**](./FormSlider.md) — numeric field within a range.
 - [**`Form.Dropdown`**](./FormDropdown.md) — select one of a fixed set of options from a popup.
@@ -26,9 +26,7 @@ import { Form } from '@bedrock-core/ui';
 
 ## How it works
 
-`Form` renders a transparent host node that marks the tree as a native modal form; the presenter detects it and builds one atomic `ModalFormData` instead of the all-buttons `ActionFormData` used elsewhere. Descendants get access to a `ModalContext`, which a validation pass uses to enforce the rules below.
-
-Decorative nodes — `Text`, `Image`, `Panel`, `Card`, and so on — render fine inside a `Form`; they ride the modal's label slot. There is no `title`/`body` prop on the modal itself — author a heading as a `Text` node instead.
+Decorative nodes — `Text`, `Image`, `Panel`, `Card`, and so on — render fine inside a `Form`. There is no `title`/`body` prop on the modal itself — author a heading as a `Text` node instead.
 
 Values only arrive once, in `onSubmit`, keyed by each field's `name`:
 
@@ -75,7 +73,3 @@ These are enforced at build time — violating them throws a `ModalFormError`, n
 - Keep exactly one `Form.Button type="submit"`; add a `type="exit"` only when you want an explicit cancel action distinct from the OS-level Esc/X (which already calls `onCancel`).
 - Decorative content (headings, help text, images) is fine anywhere in the flow — it doesn't need to be a field.
 - Prefer switching between an `ActionFormData` screen and a `Form` screen via navigation rather than trying to mix both kinds in one tree.
-
-:::note
-Advanced: the writer-level `nativeArgs` channel and the `MODAL_*_SLOT_TYPE` string constants (re-exported from the package for custom-writer authors) are internal serialization details — most `Form` users never need to touch them.
-:::

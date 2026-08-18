@@ -30,7 +30,6 @@ An array with two elements:
 1. **Current state value** (`T`) - The current value of the state
 2. **State setter function** (`(value: T | ((prev: T) => T)) => void`) - Function to update the state. Can accept a new value directly or a function that receives the previous state and returns the new state
 
-
 ## Usage
 
 ```tsx
@@ -60,32 +59,6 @@ function Toggle() {
     <Button onPress={() => setIsOn(!isOn)}>
       <Text>{isOn ? '§aON' : '§7OFF'}</Text>
     </Button>
-  );
-}
-```
-
-### Multiple State Variables
-
-```tsx
-function MultiState() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('Player');
-  const [isActive, setIsActive] = useState(false);
-
-  return (
-    <Panel padding={10} gap={8}>
-      <Text>{`Count: ${count}`}</Text>
-      <Text>{`Name: ${name}`}</Text>
-      <Text>{`Active: ${isActive ? 'Yes' : 'No'}`}</Text>
-      <Button
-        onPress={() => {
-          setCount(count + 1);
-          setIsActive(true);
-        }}
-      >
-        <Text>{'Update Multiple States'}</Text>
-      </Button>
-    </Panel>
   );
 }
 ```
@@ -190,12 +163,6 @@ items.push(newItem);
 setItems(items);
 ```
 
-### Initial State
-
-- Keep initial state simple and minimal
-- Don't compute expensive values in initial state
-- Initialize with appropriate default values
-
 ### State Organization
 
 - Use multiple `useState` calls for unrelated state
@@ -231,12 +198,6 @@ function MyComponent() {
 }
 ```
 
-## Performance Considerations
-
-- Batch multiple state updates when possible
-- Use object/array spreading carefully with large data structures
-- Consider `useReducer` for complex state logic
-
 ## Common Patterns
 
 ### Derived State
@@ -257,23 +218,6 @@ function FilteredList() {
         <Text key={index}>{item}</Text>
       ))}
     </Panel>
-  );
-}
-```
-
-### Controlled Components
-
-```tsx
-function ControlledToggle() {
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  return (
-    <Button
-      enabled={isEnabled}
-      onPress={() => setIsEnabled(!isEnabled)}
-    >
-      <Text>{isEnabled ? 'Enabled' : 'Disabled'}</Text>
-    </Button>
   );
 }
 ```

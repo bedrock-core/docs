@@ -1,5 +1,5 @@
 ---
-sidebar_position: 16
+sidebar_position: 6
 ---
 # Form.InlineSelect
 
@@ -68,7 +68,7 @@ Just like [`Form.Dropdown`](./FormDropdown.md), `Form.InlineSelect` reports the 
 
 ### Control Props
 
-`Form.InlineSelect` inherits all standard [control props](./control-props.md).
+`Form.InlineSelect` inherits all standard [control props](../control-props.md).
 
 ## Examples
 
@@ -86,4 +86,4 @@ Just like [`Form.Dropdown`](./FormDropdown.md), `Form.InlineSelect` reports the 
 
 - Prefer `Form.InlineSelect` over `Form.Dropdown` when the option count is small and you want everything visible without an extra tap.
 - Keep `Form.Option` children order stable across renders — the result is an index-based, like `Form.Dropdown`.
-- This is the primitive that [`@bedrock-core/ore-styled`](../../ore-styled/Form.md)'s `Form.Radio` and `Form.ToggleButton` are built on — for themed screens, reach for those instead of styling this primitive by hand.
+- This is the primitive that [`@bedrock-core/ore-styled`](../../../ore-styled/Form/Form.md)'s `Form.Radio` and `Form.ToggleButton` are built on — for themed screens, reach for those instead of styling this primitive by hand.

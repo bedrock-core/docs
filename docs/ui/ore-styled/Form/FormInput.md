@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 8
 ---
 # Form.Input
 
@@ -19,7 +19,7 @@ import { Form } from '@bedrock-core/ore-styled';
 <Form.Input label={'Nickname'} name={'nickname'} placeholder={'§7type here'} />
 ```
 
-Built on top of the runtime [`Form.Input`](../ui-runtime/components/FormInput.md) primitive and the [theme](./theme.md) token map. There is no dedicated focused-state texture, so the pressed/focused face reuses hover — same rule as the non-`Form` [`Input`](./Input.md).
+Wraps the runtime [`Form.Input`](../../ui-runtime/components/Form/FormInput.md) primitive with the [theme](../theme.md)'s textures. The focused face reuses the hover texture — same rule as the non-`Form` [`Input`](../Input.md).
 
 ## Props
 
@@ -49,7 +49,7 @@ Built on top of the runtime [`Form.Input`](../ui-runtime/components/FormInput.md
 
 ### Control Props
 
-`Form.Input` inherits all standard [control props](../ui-runtime/components/control-props.md).
+`Form.Input` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus texture props: `background`, `backgroundHover`, `backgroundPressed` and `backgroundLocked` for the field box, `font` / `scale` for its text. The theme fills in anything you leave out. A `backgroundHover` of your own also becomes the focused face unless you set `backgroundPressed` too.
 
 ## Examples
 
@@ -64,5 +64,5 @@ Built on top of the runtime [`Form.Input`](../ui-runtime/components/FormInput.md
 
 ## Best Practices
 
-- Always provide a `placeholder` — same guidance as the runtime [`Form.Input`](../ui-runtime/components/FormInput.md).
+- Always provide a `placeholder` — same guidance as the runtime [`Form.Input`](../../ui-runtime/components/Form/FormInput.md).
 - Give it a `label` on settings-style screens — the primitive itself has no caption.

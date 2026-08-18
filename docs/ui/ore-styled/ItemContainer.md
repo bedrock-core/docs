@@ -1,5 +1,5 @@
 ---
-sidebar_position: 22
+sidebar_position: 14
 ---
 # ItemContainer
 
@@ -8,7 +8,7 @@ sidebar_position: 22
 
 In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `ItemContainer` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
 
-You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 :::
 
 Renders a grid of [`ItemSlot`](./ItemSlot.md) components covering a `Container`'s slots.
@@ -68,27 +68,7 @@ Total width is calculated automatically as `columns × theme.components.itemSlot
 
 `ItemContainer` inherits all standard [control props](../ui-runtime/components/control-props.md).
 
-## Requirements
-
-Requires an `ItemAuxContext` wrapping the component tree — no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
-
 ## Examples
-
-### Full inventory grid
-
-```tsx
-function InventoryScreen({ player }: { player: Player }) {
-  const container = player.getComponent('inventory')?.container;
-
-  if (!container) return null;
-
-  return (
-    <ItemAuxContext value={myMap}>
-      <ItemContainer container={container} />
-    </ItemAuxContext>
-  );
-}
-```
 
 ### Hotbar only (first 9 slots, 3 columns)
 

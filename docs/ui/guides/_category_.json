@@ -1,0 +1,11 @@
+{
+  "position": 8,
+  "label": "guides",
+  "key": "guides",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "guides"
+  }
+}

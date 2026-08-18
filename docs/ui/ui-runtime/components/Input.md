@@ -6,7 +6,7 @@ sidebar_position: 8
 A single-line text field. Pressing it opens a modal to edit the value. Supports controlled and uncontrolled usage.
 
 :::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Input`](./FormInput.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Input`](./Form/FormInput.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
 :::
 
 ## Import

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 17
+sidebar_position: 6
 ---
 # Form.Slider
 
@@ -19,7 +19,7 @@ import { Form } from '@bedrock-core/ore-styled';
 <Form.Slider label={'Volume'} name={'volume'} min={0} max={10} defaultValue={5} />
 ```
 
-Built on top of the runtime [`Form.Slider`](../ui-runtime/components/FormSlider.md) primitive and the [theme](./theme.md) token map — track, progress fill, and thumb textures/geometry all come from the theme; there's no dedicated disabled-progress texture, so the locked face reuses the track/thumb disabled textures.
+Wraps the runtime [`Form.Slider`](../../ui-runtime/components/Form/FormSlider.md) primitive with the [theme](../theme.md)'s track, progress-fill and thumb textures.
 
 ## Props
 
@@ -58,20 +58,9 @@ Built on top of the runtime [`Form.Slider`](../ui-runtime/components/FormSlider.
 
 ### Control Props
 
-`Form.Slider` inherits all standard [control props](../ui-runtime/components/control-props.md).
-
-## Examples
-
-### Two labeled sliders side by side
-
-```tsx
-<Panel flexDirection={'row'} gap={4} alignItems={'flex-start'}>
-  <Form.Slider label={'Low'} name={'m_sld1'} min={0} max={10} defaultValue={3} flex={1} />
-  <Form.Slider label={'High'} name={'m_sld2'} min={0} max={100} defaultValue={50} flex={1} />
-</Panel>
-```
+`Form.Slider` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus texture props: `background` and its state variants for the track, `progress` / `progressHover` for the fill, `thumb` / `thumbHover` / `thumbPressed` / `thumbLocked` for the handle, and the geometry that sizes them (`trackHeight`, `thumbWidth`, `thumbHeight`). The theme fills in anything you leave out. A `thumbHover` of your own also becomes the dragged face unless you set `thumbPressed` too.
 
 ## Best Practices
 
-- Keep `step` a clean divisor of `max - min`, same guidance as the runtime [`Form.Slider`](../ui-runtime/components/FormSlider.md) and the non-`Form` [`Slider`](./Slider.md).
+- Keep `step` a clean divisor of `max - min`, same guidance as the runtime [`Form.Slider`](../../ui-runtime/components/Form/FormSlider.md) and the non-`Form` [`Slider`](../Slider.md).
 - Give it a `label` on settings-style screens — the primitive itself has no caption.

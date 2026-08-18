@@ -42,20 +42,6 @@ function CloseButton() {
 
 ## Examples
 
-### Basic Close Button
-
-```tsx
-function CloseUI() {
-  const exit = useExit();
-
-  return (
-    <Button onPress={exit}>
-      <Text>{'Close'}</Text>
-    </Button>
-  );
-}
-```
-
 ### Conditional Close
 
 ```tsx

@@ -64,49 +64,6 @@ function ThemedComponent() {
 
 ## Examples
 
-### Theme Context
-
-```tsx
-interface Theme {
-  primaryColor: string;
-  backgroundColor: string;
-}
-
-const ThemeContext = createContext<Theme>({
-  primaryColor: '#ffffff',
-  backgroundColor: '#000000',
-});
-
-function App() {
-  return (
-    <ThemeContext value={{ primaryColor: '#3498db', backgroundColor: '#2c3e50' }}>
-      <Panel padding={10} gap={8}>
-        <ThemedText />
-        <ThemedButton />
-      </Panel>
-    </ThemeContext>
-  );
-}
-
-function ThemedText() {
-  const theme = useContext(ThemeContext);
-
-  return (
-    <Text>{`Primary: ${theme.primaryColor}`}</Text>
-  );
-}
-
-function ThemedButton() {
-  const theme = useContext(ThemeContext);
-
-  return (
-    <Button onPress={() => {}}>
-      <Text>{'Styled Button'}</Text>
-    </Button>
-  );
-}
-```
-
 ### User Context
 
 ```tsx
@@ -147,66 +104,6 @@ function Dashboard() {
     <Panel padding={10} gap={4}>
       <Text>{`Welcome, ${user.name}!`}</Text>
       <Text>{`Role: ${user.role}`}</Text>
-    </Panel>
-  );
-}
-```
-
-### Settings Context with Updates
-
-```tsx
-interface Settings {
-  volume: number;
-  brightness: number;
-}
-
-interface SettingsContextValue {
-  settings: Settings;
-  updateSettings: (partial: Partial<Settings>) => void;
-}
-
-const SettingsContext = createContext<SettingsContextValue>({
-  settings: { volume: 50, brightness: 80 },
-  updateSettings: () => {},
-});
-
-function SettingsProvider({ children }: { children: JSX.Element }) {
-  const [settings, setSettings] = useState<Settings>({
-    volume: 50,
-    brightness: 80,
-  });
-
-  const updateSettings = (partial: Partial<Settings>): void => {
-    setSettings(prev => ({ ...prev, ...partial }));
-  };
-
-  return (
-    <SettingsContext value={{ settings, updateSettings }}>
-      {children}
-    </SettingsContext>
-  );
-}
-
-function VolumeControl() {
-  const { settings, updateSettings } = useContext(SettingsContext);
-
-  return (
-    <Panel padding={10} gap={8}>
-      <Text>{`Volume: ${settings.volume}%`}</Text>
-      <Panel flexDirection={'row'} gap={8}>
-        <Button
-          flex={1}
-          onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}
-        >
-          <Text>{'Volume +'}</Text>
-        </Button>
-        <Button
-          flex={1}
-          onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}
-        >
-          <Text>{'Volume -'}</Text>
-        </Button>
-      </Panel>
     </Panel>
   );
 }

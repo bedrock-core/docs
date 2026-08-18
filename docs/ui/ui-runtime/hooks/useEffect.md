@@ -66,25 +66,6 @@ function Timer() {
 
 ## Examples
 
-### Run Once on Mount
-
-```tsx
-function DataLoader() {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    console.log('Component mounted, loading data...');
-    setData('Loaded data');
-  }, []); // Empty array = run once
-
-  return (
-    <Panel padding={10}>
-      <Text>{data || 'Loading...'}</Text>
-    </Panel>
-  );
-}
-```
-
 ### Run on State Change
 
 ```tsx
@@ -105,31 +86,6 @@ function SearchResults() {
       {results.map((result, i) => (
         <Text key={i}>{result}</Text>
       ))}
-    </Panel>
-  );
-}
-```
-
-### Cleanup Function
-
-```tsx
-import { system } from '@minecraft/server';
-
-function EventListener() {
-  useEffect(() => {
-    const runId = system.runTimeout(() => {
-      console.log('Timeout executed');
-    }, 100); // Execute after 100 ticks (~5 seconds)
-
-    // Cleanup: cancel timeout when component unmounts
-    return () => {
-      system.clearRun(runId);
-    };
-  }, []);
-
-  return (
-    <Panel padding={10}>
-      <Text>{'Timeout scheduled...'}</Text>
     </Panel>
   );
 }
@@ -187,76 +143,6 @@ function Countdown() {
   return (
     <Panel padding={10}>
       <Text>{`Time Left: ${timeLeft}s`}</Text>
-    </Panel>
-  );
-}
-```
-
-### Fetch Data on Mount
-
-```tsx
-function PlayerStats() {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const player = usePlayer();
-
-  useEffect(() => {
-    setLoading(true);
-
-    setTimeout(() => {
-      setStats({
-        health: player.health,
-        level: player.level,
-      });
-      setLoading(false);
-    }, 1000);
-  }, []); // Load once on mount
-
-  if (loading) {
-    return (
-      <Panel padding={10}>
-        <Text>{'Loading stats...'}</Text>
-      </Panel>
-    );
-  }
-
-  return (
-    <Panel padding={10} gap={4}>
-      <Text>{`Health: ${stats?.health}`}</Text>
-      <Text>{`Level: ${stats?.level}`}</Text>
-    </Panel>
-  );
-}
-```
-
-### Dependent Effects
-
-```tsx
-function DependentEffects() {
-  const [userId, setUserId] = useState(1);
-  const [user, setUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-
-  // Effect 1: Load user when userId changes
-  useEffect(() => {
-    console.log(`Loading user ${userId}...`);
-    setUser({ id: userId, name: `User ${userId}` });
-  }, [userId]);
-
-  // Effect 2: Load posts when user changes
-  useEffect(() => {
-    if (user) {
-      console.log(`Loading posts for ${user.name}...`);
-      setPosts([`Post 1 by ${user.name}`]);
-    }
-  }, [user]);
-
-  return (
-    <Panel padding={10} gap={4}>
-      <Text>{user?.name || 'Loading...'}</Text>
-      {posts.map((post, i) => (
-        <Text key={i}>{post}</Text>
-      ))}
     </Panel>
   );
 }
@@ -333,10 +219,3 @@ useEffect(() => {
   // Effect for feature B
 }, [depA, depB]);
 ```
-
-## Common Pitfalls
-
-1. **Forgetting cleanup** - Causes memory leaks with event listeners, timers
-2. **Missing dependencies** - Leads to stale closures and bugs
-3. **Too many dependencies** - Effect runs too often
-4. **State updates in effects without conditions** - Can cause infinite loops

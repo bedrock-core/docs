@@ -25,8 +25,8 @@ Unlike `Text` and `Button`, `Image` is **not** intrinsically sized — you must 
 
 #### `texture`
 - Type: `string`
-- Required: Yes
-- Description: Path to the texture in your Resource Pack (without file extension).
+- Default: `'textures/ui/unstyled'` — the blank-canvas placeholder
+- Description: Path to the texture in your Resource Pack (without file extension). Optional, but an `Image` without one just draws the placeholder. Any length — since protocol v0008 the texture rides the payload's variable-length tail, so paths are never padded, truncated or capped.
 
 ### Control Props
 
@@ -116,4 +116,3 @@ Usage:
 ## Limitations
 
 - Animated textures (flipbook) not yet supported.
-- Maximum texture path length determined by serialization protocol (80 bytes).

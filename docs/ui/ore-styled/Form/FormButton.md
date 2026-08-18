@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 9
 ---
 # Form.Button
 
@@ -16,13 +16,13 @@ import { Form } from '@bedrock-core/ore-styled';
 ## Usage
 
 ```tsx
-<Panel flexDirection={'row'} gap={4}>
+<Panel flexDirection={'row'} gap={4} padding={4}>
   <Form.Button type={'submit'} label={'Save'} flex={2} />
   <Form.Button type={'exit'} label={'Cancel'} variant={'danger'} flex={1} />
 </Panel>
 ```
 
-Built on top of the runtime [`Form.Button`](../ui-runtime/components/FormButton.md) primitive and the [theme](./theme.md) token map. The label rides the modal's title payload as plain text, so only the variant's **color** applies to it — the RP renders the label with its own fixed font, so the variant's font/scale can't reach it.
+Wraps the runtime [`Form.Button`](../../ui-runtime/components/Form/FormButton.md) primitive with the [theme](../theme.md)'s textures. The label rides the modal's title payload as plain text, so only the variant's **color** reaches it — its font and scale do not.
 
 ## Props
 
@@ -35,7 +35,7 @@ Built on top of the runtime [`Form.Button`](../ui-runtime/components/FormButton.
 #### `variant`
 - Type: `ButtonVariant` (`'hero' | 'primary' | 'secondary' | 'contrast' | 'danger' | 'realm' | 'transparent'`)
 - Default: `'primary'` for `type="submit"`, `'secondary'` for `type="exit"`
-- Description: Visual style, same variant set as the ore-styled [`Button`](./Button.md).
+- Description: Visual style, same variant set as the ore-styled [`Button`](../Button.md).
 
 #### `label`
 - Type: `string`
@@ -49,18 +49,7 @@ Built on top of the runtime [`Form.Button`](../ui-runtime/components/FormButton.
 
 ### Control Props
 
-`Form.Button` inherits all standard [control props](../ui-runtime/components/control-props.md).
-
-## Examples
-
-### Submit + exit pair with a destructive exit style
-
-```tsx
-<Panel flexDirection={'row'} gap={4} padding={4}>
-  <Form.Button type={'submit'} label={'Save'} flex={2} />
-  <Form.Button type={'exit'} label={'Cancel'} variant={'danger'} flex={1} />
-</Panel>
-```
+`Form.Button` inherits the layout and visibility [control props](../../ui-runtime/components/control-props.md) — sizing, spacing, flex, `visible`, `enabled` — plus the texture props of the non-`Form` [`Button`](../Button.md): `background`, `backgroundHover`, `backgroundPressed` and `backgroundLocked`. Each replaces the variant's face for that one state; the variant keeps every state you leave out.
 
 ## Best Practices
 

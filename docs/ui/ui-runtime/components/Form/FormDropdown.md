@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 5
 ---
 # Form.Dropdown
 
@@ -25,7 +25,7 @@ import { Form } from '@bedrock-core/ui';
 ```
 
 :::caution Result is an index, not a value
-`Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string — this is the native modal dropdown's behavior. If you need the string back, map the index into your own options array yourself. This is different from the legacy [`Dropdown`](./Dropdown.md), which resolves the index back to a value string for you.
+`Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string — this is the native modal dropdown's behavior. If you need the string back, map the index into your own options array yourself. This is different from the legacy [`Dropdown`](../Dropdown.md), which resolves the index back to a value string for you.
 :::
 
 ## Props
@@ -74,11 +74,11 @@ import { Form } from '@bedrock-core/ui';
 - Default: `8` / vertically centered
 - Description: Position offset (px) of the current-value label from the closed box's left-middle frame.
 
-The closed box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](./Button.md).
+The closed box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
 
 ### Control Props
 
-`Form.Dropdown` inherits all standard [control props](./control-props.md).
+`Form.Dropdown` inherits all standard [control props](../control-props.md).
 
 ## Examples
 
@@ -125,4 +125,4 @@ const options = ['Easy', 'Normal', 'Hard'];
 - Keep `Form.Option` children order stable across renders — the result is an index, so reordering shifts what a saved index means.
 - Read `values[name]` as an index and map it back to your own array if you need the string; don't assume it's the `value` you passed in.
 - Prefer [`Form.InlineSelect`](./FormInlineSelect.md) instead when you want every option visible without an extra tap (e.g. a short radio-style choice).
-- For themed screens, prefer [`@bedrock-core/ore-styled`](../../ore-styled/FormDropdown.md)'s `Form.Dropdown` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](../../../ore-styled/Form/FormDropdown.md)'s `Form.Dropdown` over styling this primitive by hand.

@@ -46,25 +46,6 @@ function PlayerInfo() {
 
 ## Examples
 
-### Display Player Stats
-
-```tsx
-function StatsDisplay() {
-  const player = usePlayer();
-  const healthComp = player.getComponent('health');
-
-  return (
-    <Panel padding={10} gap={4}>
-      <Text>{'§lPlayer Stats'}</Text>
-      <Text>{`Name: ${player.name}`}</Text>
-      <Text>{`Health: ${healthComp?.currentValue}/${healthComp?.effectiveMax}`}</Text>
-      <Text>{`Level: ${player.level}`}</Text>
-      <Text>{`Position: ${Math.floor(player.location.x)}, ${Math.floor(player.location.y)}, ${Math.floor(player.location.z)}`}</Text>
-    </Panel>
-  );
-}
-```
-
 ### Check Player Permissions
 
 ```tsx
@@ -95,15 +76,6 @@ function AdminPanel() {
   );
 }
 ```
-
-## Use Cases
-
-1. **Display Player Information** - Name, level, health, location
-2. **Player-specific Actions** - Teleport, heal, give items
-3. **Permission Checks** - Admin panels, role-based features
-4. **Inventory Management** - View or modify player inventory
-5. **Personalization** - Customize UI based on player data
-6. **Player Commands** - Execute commands as the player
 
 ## Best Practices
 

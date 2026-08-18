@@ -6,7 +6,7 @@ sidebar_position: 11
 Numeric field drawn as a track with a thumb. The thumb shows the value's position along the track; pressing it opens a modal to pick a value within the range. Supports controlled and uncontrolled usage.
 
 :::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](./FormSlider.md) inside a [`Form`](./Form.md). Still fully supported for existing screens.
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](./Form/FormSlider.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
 :::
 
 ![Slider](/img/ore-styled/Slider.png)
@@ -29,7 +29,7 @@ import { Slider } from '@bedrock-core/ore-styled';
 />
 ```
 
-Built on top of the [`Slider`](../ui-runtime/components/Slider.md) primitive and the [theme](./theme.md) token map. The thumb is positioned at `(value - min) / (max - min)` along the track to display the current value; pressing the field opens a single-slider modal where the value is actually chosen — confirm commits, cancel keeps the current one.
+Built on top of the [`Slider`](../ui-runtime/components/Slider.md) primitive and the [theme](./theme.md) token map. The thumb only displays the current value; pressing the field opens a single-slider modal where the value is actually chosen — confirm commits, cancel keeps the current one.
 
 ## Props
 

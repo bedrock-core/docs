@@ -12,7 +12,7 @@ Learn how to install `@bedrock-core/ui` for your Minecraft Bedrock addon project
 
 ## Quick Start with CLI (Recommended)
 
-The fastest way to get started is using our CLI tool to scaffold a complete project:
+The fastest way to get started is using our [CLI](../cli.md) to scaffold a complete project:
 
 ```bash
 npx @bedrock-core/cli
@@ -23,7 +23,7 @@ This will create a new addon with:
 - ✅ `@bedrock-core/ui` pre-configured
 - ✅ TypeScript and ESLint setup
 - ✅ Regolith build configuration
-- ✅ Companion resource pack included
+- ✅ Render pack included
 - ✅ Working example to get started
 
 After generation:
@@ -36,11 +36,13 @@ yarn build            # Build the addon
 yarn watch            # Watch for changes and redeploy
 ```
 
-Install companion resource pack:
+Install the render pack:
 
 ```txt
 Open the core-ui-v*.mcpack to add it to your game
 ```
+
+The render pack decodes the runtime's wire format, so it must come from the **same release** as the library. See [Render pack](../ui-runtime/render-pack.md) for how to check which version a world is running.
 
 
 ## Manual Installation
@@ -51,14 +53,14 @@ If you're adding to an existing project, install the package:
 yarn add @bedrock-core/ui
 ```
 
-Download the companion resource pack from the [releases page](https://github.com/bedrock-core/ui/releases) and add it as a dependency in your behavior pack's `manifest.json`:
+Download the render pack from the [releases page](https://github.com/bedrock-core/ui/releases) — take it from the same release as the library, as [Render pack](../ui-runtime/render-pack.md#getting-the-matching-pack) explains — and add it as a dependency in your behavior pack's `manifest.json`:
 
 ```json
 {
   "dependencies": [
     {
         "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
-        "version": [x, y, z]
+        "version": [1, 10, 0]
     }
   ]
 }
@@ -70,7 +72,7 @@ Include the resource pack in your `.mcaddon`:
 pack.mcaddon
 ├── RP/                     (your addon's resource pack)
 ├── BP/                     (your addon's behavior pack)
-└── core-ui-vx.y.z.mcpack   (companion resource pack from releases)
+└── core-ui-vx.y.z.mcpack   (render pack from releases)
 ```
 
 ### Optional: ore-styled
@@ -102,12 +104,14 @@ Add JSX support to your `tsconfig.json`:
 }
 ```
 
+If you also run the i18n Regolith filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [tsconfig](../i18n/regolith-filter.md#tsconfig).
+
 ## Quick Test
 
 Test your installation with a simple render:
 
 ```tsx
-import { render, Screen, Panel, Text } from '@bedrock-core/ui';
+import { render, Panel, Text } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
@@ -121,7 +125,7 @@ const isPlayer = (source: Entity): source is Player => source.typeId === Minecra
 
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(HelloWorld, source, Screen.Scroll);
+    render(HelloWorld, source);
   }
 });
 ```

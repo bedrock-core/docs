@@ -3,7 +3,7 @@ sidebar_position: 3
 ---
 # Card
 
-Themed container that wraps the [`Panel`](../ui-runtime/components/Panel.md) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Four visual variants cover the common light/raised combinations.
+Themed container that wraps the [`Panel`](../ui-runtime/components/Panel.md) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Six visual variants cover the flat and raised surfaces in default, light, and dark tones.
 
 ![Card](/img/ore-styled/Card.png)
 

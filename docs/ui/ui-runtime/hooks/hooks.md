@@ -27,6 +27,11 @@ State and effects management for your components.
 - [`usePlayer`](./usePlayer.md) - Access the current player who is viewing the UI.
 - [`useEvent`](./useEvent.md) - Subscribe to global Minecraft events within your UI components.
 
+### Localization
+
+- [`useTranslation`](./useTranslation.md) - Bind an addon's typed translation verbs to the viewing player.
+- [`useTranslationResolver`](./useTranslationResolver.md) - Read the translation resolver active for this part of the tree.
+
 ## Next Steps
 
 - [Components](../components/components.md) - Built-in components that you can use in your JSX

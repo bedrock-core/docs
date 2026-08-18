@@ -1,5 +1,5 @@
 ---
-sidebar_position: 23
+sidebar_position: 15
 ---
 # EquipmentSlots
 
@@ -8,7 +8,7 @@ sidebar_position: 23
 
 In worlds with multiple addons installed, custom item aux IDs are assigned based on pack stack order at world load time. This order is non-deterministic and cannot be predicted at build time or recovered at runtime. **There is no automatic way to derive correct aux IDs for multi-addon worlds.** Using `EquipmentSlots` in a multi-addon world will render wrong items unless you construct and supply a precisely calibrated `ItemAuxMap` yourself.
 
-You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md) for details on building the map.
+You must wrap your component tree with `<ItemAuxContext value={myMap}>` and provide the correct map. No automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
 :::
 
 Renders a vertical column of equipment slots (helmet, chestplate, leggings, boots, offhand) with silhouette overlay textures for empty slots.
@@ -52,31 +52,6 @@ Renders five [`ItemSlot`](./ItemSlot.md) components stacked vertically: **Head â
 ### Control Props
 
 `EquipmentSlots` inherits all standard [control props](../ui-runtime/components/control-props.md).
-
-## Requirements
-
-Requires an `ItemAuxContext` wrapping the component tree â€” no automatic seeding occurs. See [`ItemRenderer`](../ui-runtime/components/ItemRenderer.md#requirements) for how to build and provide the map.
-
-## Examples
-
-### Armor column next to player name
-
-```tsx
-function ArmorDisplay({ player }: { player: Player }) {
-  const equippable = player.getComponent('equippable');
-
-  if (!equippable) return null;
-
-  return (
-    <ItemAuxContext value={myMap}>
-      <Panel flexDirection="row" padding={8} gap={8}>
-        <EquipmentSlots equippable={equippable} />
-        <Text>{player.name}</Text>
-      </Panel>
-    </ItemAuxContext>
-  );
-}
-```
 
 ## See Also
 

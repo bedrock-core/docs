@@ -1,9 +1,9 @@
 ---
-sidebar_position: 12
+sidebar_position: 1
 ---
 # Form
 
-Themed modal form. Wraps the [`Form`](../ui-runtime/components/Form.md) primitive with authentic Minecraft textures from the [theme](./theme.md) — same config (`onSubmit`/`onCancel`), a themed field for each runtime field, and a couple of ore-styled-only conveniences.
+Themed modal form. Wraps the [`Form`](../../ui-runtime/components/Form/Form.md) primitive with authentic Minecraft textures from the [theme](../theme.md) — same config (`onSubmit`/`onCancel`), a themed field for each runtime field, and a couple of ore-styled-only conveniences.
 
 ## Import
 
@@ -13,7 +13,7 @@ import { Form } from '@bedrock-core/ore-styled';
 
 `Form` is a namespace object, mirroring the runtime's shape so a screen switches styled ↔ unstyled by changing only the import:
 
-- [**`Form`**](#props) — the root component; unchanged from the primitive.
+- [**`Form`**](../../ui-runtime/components/Form/Form.md#props) — the root component; unchanged from the primitive.
 - [**`Form.Toggle`**](./FormToggle.md) — themed on/off switch, settings-row style.
 - [**`Form.Checkbox`**](./FormCheckbox.md) — themed checkbox, same underlying control as `Form.Toggle`.
 - [**`Form.Radio`**](./FormRadio.md) — themed single-select radio group.
@@ -24,14 +24,14 @@ import { Form } from '@bedrock-core/ore-styled';
 - [**`Form.Button`**](./FormButton.md) — themed submit/exit action button.
 
 :::note
-Unlike the runtime namespace, ore-styled's `Form` does **not** re-export `InlineSelect`/`Option` at this level — those two runtime primitives are used only internally, by `Form.Radio` and `Form.ToggleButton`.
+ore-styled's `Form` does **not** re-export `InlineSelect`/`Option`. Use `Form.Radio` and `Form.ToggleButton` instead.
 :::
 
-Every field here accepts a `label?: string` that the runtime primitives don't have — the modal-only primitives are deliberately label-free, so this layer composes the caption for you (above the control for `Input`/`Dropdown`/`Slider`/`Radio`/`ToggleButton`, or beside it as a settings row for `Toggle`/`Checkbox`).
+Every field here accepts a `label?: string` that the runtime primitives don't have. The caption is composed for you: above the control for `Input`/`Dropdown`/`Slider`/`Radio`/`ToggleButton`, beside it as a settings row for `Toggle`/`Checkbox`.
 
 ## Rules & Restrictions
 
-Unchanged from the primitive — see the runtime [`Form`'s Rules & Restrictions](../ui-runtime/components/Form.md#rules--restrictions): exactly one `Form.Button type="submit"` required, at most one `type="exit"`, no nesting, no plain `Button`/`ItemRenderer` inside.
+Unchanged from the primitive — see the runtime [`Form`'s Rules & Restrictions](../../ui-runtime/components/Form/Form.md#rules--restrictions): exactly one `Form.Button type="submit"` required, at most one `type="exit"`, no nesting, no plain `Button`/`ItemRenderer` inside.
 
 ## Examples
 
@@ -72,6 +72,6 @@ Unchanged from the primitive — see the runtime [`Form`'s Rules & Restrictions]
 
 ## Best Practices
 
-- Prefer this themed `Form` for any screen that should match the rest of your Minecraft-styled UI; drop to the raw runtime [`Form`](../ui-runtime/components/Form.md) only when building fully custom, unstyled UI.
+- Prefer this themed `Form` for any screen that should match the rest of your Minecraft-styled UI; drop to the raw runtime [`Form`](../../ui-runtime/components/Form/Form.md) only when building fully custom, unstyled UI.
 - `Form.Radio`/`Form.ToggleButton`/`Form.Dropdown` all report the selected option's **index**, not its value — see each page for the exact gotcha.
-- Give a `label` to every field on a settings-style screen — it's the primary way the player knows what a control does, since the modal primitives themselves carry no caption.
+- Give a `label` to every field on a settings-style screen — it's the primary way the player knows what a control does.

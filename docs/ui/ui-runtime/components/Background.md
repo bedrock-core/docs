@@ -22,7 +22,7 @@ import { Background } from '@bedrock-core/ui';
 
 `Background` occupies no layout space — it takes no width/height, participates in no flexbox flow, and is invisible to its siblings. It simply renders the given texture across the whole screen, behind all other form content.
 
-Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](./Form.md) modal.
+Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](./Form/Form.md) modal.
 
 :::note Only the first `<Background>` wins
 If a tree contains more than one `<Background>`, only the first is rendered; the rest are ignored.
@@ -51,8 +51,10 @@ function Settings({ onSubmit }) {
       <Background texture={'textures/ui/dialog_background_hollow_4_thin'} />
 
       <Text>{'§lSettings'}</Text>
-      <Form.Toggle name={'music'}>{'Music'}</Form.Toggle>
+      <Text>{'Music'}</Text>
+      <Form.Toggle name={'music'} />
       <Form.Input name={'nickname'} />
+      <Form.Button type={'submit'} label={'Save'} />
     </Form>
   );
 }
@@ -78,10 +80,6 @@ function Menu() {
   );
 }
 ```
-
-## How it works
-
-The backdrop texture rides the form's title metadata at a fixed offset, decoded resource-pack-side into a single full-screen image. Because it travels in the title rather than the body, it costs no extra form controls and behaves identically across both form backends and for any scroll count.
 
 ## Limitations
 
