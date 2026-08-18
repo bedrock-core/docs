@@ -222,17 +222,65 @@ core.register({
 });
 ```
 
-Five field kinds:
+Six field kinds:
 
 | `type` | Extra fields | Rendered as |
 | --- | --- | --- |
 | `boolean` | — | toggle |
 | `number` | `min`, `max` (**required**), `step?` | slider, or a text input when the range exceeds 100 |
 | `string` | `maxLength?` | text input |
-| `enum` | `options` | dropdown |
-| `list` | `itemType` (`'string' \| 'enum'`), `options?`, `maxItems?` | **no control** — a modal form has nothing to draw for it. The screen shows the label, the items against `maxItems` and the command that changes it; editing happens through [`get`/`set`/`add`/`remove`](#list-settings-from-a-command) |
+| `enum` | `options` | inline toggle-button segments up to **5 options**, a dropdown beyond that |
+| `multiselect` | `options` | one checkbox per option |
+| `list` | `itemType` (`'string' \| 'enum'`), `options?`, `maxItems?` | **no control** — a modal form has nothing to draw for it. It gets [a page of its own](#how-a-schema-becomes-screens) where there is room for a button, and falls back to showing its items plus the [command](#list-settings-from-a-command) where there is not |
 
-Every entry takes `label` and an optional `description`. Groups are plain nested objects; `type` is reserved and cannot be a group name.
+Every entry takes `label` and an optional `description`.
+
+:::tip Why enums switch at five
+Segments show every choice at once and take one press to change; a dropdown hides them behind a press and a scroll. Past five the segments are too narrow to read, which is the point the dropdown starts winning. Nothing to configure — the count decides.
+:::
+
+Groups are nested objects, and may name themselves with [`$label` / `$description`](/docs/server/server-runtime/config#naming-a-group). Without them the UI derives a title from the key. `type` is reserved and cannot be a group name, and no key may start with `$`.
+
+### How a schema becomes screens
+
+The shape of the schema decides the shape of the UI, and one platform fact drives all of it: **a native modal form has exactly two controls, its submit and its dismiss.** There is no third control to navigate with, so a form can never offer "open this sub-section" or "edit this list".
+
+That gives one rule, applied per level:
+
+| The level holds | It renders as |
+| --- | --- |
+| only sub-groups and/or lists | a **screen of buttons** — one row per sub-group, one per list |
+| at least one form field | a **form**, with any sub-groups drawn inline beneath it and indented |
+
+Walking a schema shaped like the reference addon:
+
+```ts
+server: {
+  economy: {                    // only groups     → screen of buttons
+    balances: { /* fields */ }, //                 → form
+    currency: { /* fields */ }, //                 → form
+  },
+  display: {                    // has fields      → form
+    prefix: { /* … */ },
+    advanced: { /* fields */ }, //                 → drawn INLINE, indented, inside display's form
+  },
+  moderation: {                 // only lists      → screen of buttons, one row per list
+    blockedItems: { type: 'list', /* … */ },
+  },
+}
+```
+
+Depth is unbounded, and each level answers only for itself — a tree can be pure structure for three levels and then hold settings.
+
+:::note A list is not a form field
+Lists do not count toward "at least one form field". A list has no modal control either, so it never needed the form — which is why a level holding nothing but lists is a button screen, and each list opens a real editor there. A list stranded on a level that *does* have fields keeps the old read-only treatment, because there is genuinely no button to give it.
+:::
+
+### Editing a list in game
+
+Reached from a button screen, a list opens its own editor: current items as rows, a press to remove one, and an **Add** button. Adding presents a native modal — a text field for `itemType: 'string'`, and a dropdown of the options **not already in the list** for `itemType: 'enum'`. `maxItems` disables Add and says why.
+
+Edits stage locally and write on **Save**, the same as the settings form. Writing per press would be one write of the whole array per item touched, each replicated to everyone mid-edit.
 
 What this package exposes is the **consumer-side** mirror, for code that reads a replicated schema:
 
@@ -254,13 +302,22 @@ type FlatSchemaLike = Record<string, EntrySchema>;
 
 Note `type` is `string` and `default` is `unknown` here — wider than the definition types.
 
-:::tip List defaults are JSON on the wire
-A `list` default is a `readonly string[]` where you define it, but travels as a **JSON string** in the serialized schema. Anything reading a replicated schema must `JSON.parse` a string default for `type === 'list'`.
+:::tip Array defaults are JSON on the wire
+A `list` or `multiselect` default is a `readonly string[]` where you define it, but travels as a **JSON string** in the serialized schema. Anything reading a replicated schema must `JSON.parse` a string default for those two types.
 :::
+
+Group display strings arrive on their own map, keyed by dot-path exactly as the schema is:
+
+```ts
+type GroupMetaLike = { label?: string; description?: string };
+type FlatGroupsLike = Record<string, GroupMetaLike>;
+```
+
+It is `{}` both for an addon that names no group and for one on a runtime older than the feature. The two are indistinguishable and mean the same thing to a reader — fall back to the key-derived title.
 
 ### List settings from a command
 
-A `list` is the one entry type a form cannot draw a control for, so chat is where it is edited. All four verbs work on one:
+A `list` is the one entry type a form cannot draw a control for. The screen [edits it on a page of its own](#editing-a-list-in-game) where there is room for a button; the commands work everywhere, and all four verbs apply:
 
 ```text
 /<ns>:config get moderation.bannedItems

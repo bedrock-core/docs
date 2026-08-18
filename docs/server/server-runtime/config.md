@@ -93,6 +93,39 @@ Without it, `type: 'number'` widens to `string` and `options` widens to `string[
 
 Groups nest to any depth. `type` is a **reserved key** — never use it as a group name.
 
+### Naming a group
+
+A group can carry its own display strings with `$label` and `$description`:
+
+```ts
+server: {
+  economy: {
+    $label: 'Economy',
+    $description: 'Balances, currency and what players may go negative to.',
+    balances: {
+      $label: 'Balances',
+      startingBalance: { type: 'number', default: 100, min: 0, max: 10000, label: 'Starting Balance' },
+    },
+  },
+},
+```
+
+Leave them off and the UI derives a title from the key (`economy` reads as "Economy"), which is what every schema did before these existed — so adding them is optional and never breaking.
+
+They are **not** settings. `$label` never appears in the value object, is not patchable, and is not a dot-path:
+
+```ts
+config.server.economy.get();              // { balances: { startingBalance: number } } — no $label
+config.server.economy.patch({ $label: 'x' });          // compile error
+config.server.subscribe('economy.$label', fn);         // compile error
+```
+
+The `$` sigil is what keeps them out of the child namespace — any bare name (`label`, `meta`, `title`) is one an addon could plausibly want for a setting. For the same reason **no schema key may start with `$`**; `define()` rejects one that does.
+
+:::info How they travel
+Group strings ride a separate replicated key (`core-config/groups`) from the schema itself, so a consumer that predates them is unaffected and simply sees none. See [the published schema](#the-published-schema).
+:::
+
 :::danger `get`, `set`, `patch`, `subscribe` and `for` are reserved at every depth
 They are the verbs each accessor node carries, so a schema key with one of those names would shadow the method on its own node. `define()` rejects such a schema at registration, naming the path:
 
@@ -109,7 +142,7 @@ The list is exported as `RESERVED_KEYS`, and `validateConfigSchema(scope, schema
 
 ```ts
 type ConfigValue = boolean | number | string;
-type ConfigEntry = BooleanEntry | NumberEntry | StringEntry | EnumEntry | ListEntry;
+type ConfigEntry = BooleanEntry | NumberEntry | StringEntry | EnumEntry | ListEntry | MultiselectEntry;
 ```
 
 Every entry requires `type`, `default` and **`label`**. `description` is optional on all of them.
@@ -120,11 +153,24 @@ Every entry requires `type`, `default` and **`label`**. `description` is optiona
 | `'number'` | `default: number`, `min: number`, `max: number`, `label` | `step`, `description` |
 | `'string'` | `default: string`, `label` | `maxLength`, `description` |
 | `'enum'` | `default: O[number]`, `options: readonly string[]`, `label` | `description` |
+| `'multiselect'` | `default: readonly string[]`, `options: readonly string[]`, `label` | `description` |
 | `'list'` | `default: readonly string[]`, `itemType: 'string' \| 'enum'`, `label` | `options`, `maxItems`, `description` |
 
 :::caution `label` is required, and `min`/`max` are required on numbers
 `NumberEntry` declares `min` and `max` as required, not optional, and every entry type declares `label` as required.
 :::
+
+### `multiselect` vs `list`
+
+Both hold a string array, and the difference is whether the whole option set is known up front.
+
+A **`multiselect`** picks any number from a fixed `options` set, so every choice fits on screen and the UI draws one checkbox per option, inside the settings form like any other field:
+
+```ts
+features: { type: 'multiselect', options: ['pvp', 'tp', 'shop'], default: ['pvp'], label: 'Enabled Features' },
+```
+
+A **`list`** is open-ended — an addon can cap it with `maxItems` but cannot enumerate it — so there is nothing for a form to draw, and it gets a page of its own instead. Reach for `multiselect` whenever the set really is fixed; the result is one screen fewer for the player.
 
 ### Lists
 
@@ -137,8 +183,10 @@ config.server.bannedItems.set(['minecraft:bedrock', 'minecraft:barrier']);
 
 `itemType: 'enum'` plus `options` constrains what the UI offers and what a command will accept as an item; `maxItems` caps the length.
 
-:::caution Lists have no in-game editor — they are edited from chat
-A modal form has no control it can draw for a list, so the config screen *shows* each list — its label, its current items against `maxItems`, and the command that changes it — but does not edit it. Editing goes through the config commands, which carry [four verbs](/docs/ui/config#list-settings-from-a-command) for exactly this reason:
+:::note Where a list is editable in game
+A modal form still has no control for a list, so whether the config screen can edit one comes down to where it sits — see [how a schema becomes screens](/docs/ui/config#how-a-schema-becomes-screens). On a level that renders as buttons it gets a row and a full editor; on a level that renders as a form it falls back to showing its items and naming the command.
+
+The commands work either way, and carry [four verbs](/docs/ui/config#list-settings-from-a-command):
 
 ```text
 /<ns>:config get bannedItems              → [tnt, lava_bucket] (2/50)
@@ -160,8 +208,9 @@ From code the typed API is unchanged — `get()` still returns `string[]` and `s
 | `number` | `number` |
 | `string` | `string` |
 | `enum` | the union of `options` |
+| `multiselect` | `string[]` |
 | `list` | `string[]` |
-| group | nested object |
+| group | nested object (its `$label` / `$description` excluded) |
 
 ```ts
 config.server.get();
@@ -474,7 +523,30 @@ with every key prefixed by its scope:
 
 That single map lets a UI addon enumerate every field of every provider without knowing any of them in advance.
 
-A published value is always a primitive — `ConfigValue` is `boolean | number | string`. A [`list`](#lists) therefore travels as the `JSON.stringify` of its array, which is why `bannedItems` above publishes `default: '[]'`; the typed accessors parse it back to `string[]`.
+A published value is always a primitive — `ConfigValue` is `boolean | number | string`. Both array-valued types, [`list`](#lists) and [`multiselect`](#multiselect-vs-list), therefore travel as the `JSON.stringify` of their array — which is why `bannedItems` above publishes `default: '[]'` — and the typed accessors parse them back to `string[]`.
+
+### Group strings
+
+[Group display strings](#naming-a-group) are published beside the schema, on a key of their own:
+
+```
+<your namespace>  →  core-config/groups  →  FlatGroups
+```
+
+keyed by the group's dot-path, under the same scope prefixes:
+
+```ts
+{
+  'server.economy':          { label: 'Economy', description: 'Balances, currency and …' },
+  'server.economy.balances': { label: 'Balances' },
+}
+```
+
+A group that names neither is absent rather than empty, so a schema that names nothing publishes `{}`.
+
+:::info Why a second key rather than one map
+`core-config/schema` keeps exactly the shape it always had. A consumer written before group strings existed reads it unchanged and never sees the new key; one written after reads both and falls back to key-derived titles when the second is missing — which is the same thing it does for an addon that simply names no group. Neither side needs a version check.
+:::
 
 ---
 

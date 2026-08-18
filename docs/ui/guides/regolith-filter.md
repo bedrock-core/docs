@@ -72,7 +72,7 @@ Only **directories** directly under `sourceDir` are read as locales, so the gene
 
 | Field | Type | Effect |
 | --- | --- | --- |
-| `title` | string | The page title. Wins over a leading `# H1`, which then stays in the body |
+| `title` | string | The page title, for the sidebar row and the page header. Wins over a leading `# H1` for the value — but that h1 is removed from the body either way, so the title never renders twice |
 | `sidebar_position` | number | Sidebar ordering. Pages without it sort last, then alphabetically by page id |
 | `hidden` | boolean | Compiled, but excluded from the sidebar **and** from prev/next |
 | `icon` | string | RP texture path used as the sidebar row thumbnail (≤ 80 chars; the pack must ship it) |
