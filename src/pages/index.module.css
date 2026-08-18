@@ -28,8 +28,17 @@
   image-rendering: pixelated;
 }
 
+.startUsing {
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Wrap rather than overflow once the two package names stop fitting side by side. */
+  flex-wrap: wrap;
+  gap: 1rem;
 }

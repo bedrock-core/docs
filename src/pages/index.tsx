@@ -23,11 +23,18 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <p>Developing a future where addons interact between them</p>
 
+        <p className={styles.startUsing}>Start using @bedrock-core/</p>
+
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/ui/get-started/overview">
-            Start using @bedrock-core/ui
+            to="/docs/server/get-started/installation">
+            server
+          </Link>
+          <Link
+            className="button button--secondary button--lg"
+            to="/docs/ui/get-started/installation">
+            ui
           </Link>
         </div>
       </div>
