@@ -92,6 +92,79 @@ Nothing is held back from the key enums, `list` entries included. An entry whose
 
 Commands degrade rather than fail. An addon with no player-scope settings gets a bare, parameter-less `:config` that still opens the UI; `:configat` is not registered at all when there is nothing to reach. A rejected registration is logged (`[config] '<name>' was not registered: …`) with a pointer at `core.id`, never thrown.
 
+### Register your own commands under the same namespace
+
+:::warning One addon, one namespace
+
+If you mount this UI, **every other command your addon registers must use `core.id` too.** Minecraft allows a pack exactly one namespace — not two — and `ui(core)` has already spent yours on `:config`, `:configat`, `:guide`, `:list` and their enums. A command registered under a different prefix is your addon claiming a second namespace, which is not yours to claim.
+
+:::
+
+Read it once, at the top of your startup handler, and build every name from it:
+
+```ts
+import { system, CommandPermissionLevel } from '@minecraft/server';
+import { core } from '@bedrock-core/server-runtime';
+import { ui } from '@bedrock-core/config';
+
+core.register({ creator: 'drav0011', pack: 'shop', packName: 'drav0011.shop.name', version: '1.0.0' });
+ui(core);
+
+system.beforeEvents.startup.subscribe((ev) => {
+  const ns = core.id;                     // 'drav0011_shop' — never hardcode it
+
+  ev.customCommandRegistry.registerEnum(`${ns}:shopaction`, ['buy', 'sell']);
+  ev.customCommandRegistry.registerCommand(
+    {
+      name: `${ns}:shop`,
+      description: `${ns} - open the shop.`,
+      permissionLevel: CommandPermissionLevel.Any,
+      cheatsRequired: false,
+    },
+    origin => { /* … */ },
+  );
+});
+```
+
+Three things that template gets right, and are worth copying:
+
+- **`const ns = core.id`, not a string literal.** Rename the pack and every command follows; a literal silently keeps the old prefix and starts colliding with whatever else claimed it.
+- **The description leads with the namespace.** Same reason as the built-in commands: the first pack to register `shop` also gets plain `/shop`, with no way to opt out and no way to detect it. The description is the only place a player can see which addon answered.
+- **Enums are namespaced too.** `registerEnum('shopaction', …)` is a world-wide name; two addons doing that is a hard failure at startup.
+
+### Changing your namespace
+
+The namespace is not configurable on its own — it is derived, `${creator}_${pack}`, so you change it by changing those two fields in `core.register()`:
+
+```ts
+core.register({ creator: 'drav0011', pack: 'shop', /* … */ });   // drav0011_shop
+core.register({ creator: 'dv',       pack: 'market', /* … */ }); // dv_market
+```
+
+Both halves must match `/^[a-z0-9_]+$/` — lowercase letters, digits and underscores. The convention is creator-then-pack (`bt_gc_graves` = Bedrock Tweaks, gameplay changes, graves), and shorter is better: the namespace is typed in front of every command.
+
+:::danger Changing it after release orphans data
+
+The namespace is the addon's identity **everywhere** — its sync transport id, its [replicated state](/docs/server/server-runtime/scoped-state) keys, its config storage, its guide, and the id peers name in `dependencies`. Changing it on a live world is a rename with no migration: existing settings and state stay filed under the old namespace and the addon comes up empty. Pick it before you ship, and keep the Minecraft pack namespace in your BP/RP identical to it.
+
+:::
+
+### Turning the commands off
+
+`ui(core, { commands: false })` registers **none** of the four, and no enums. Reach for it when your addon has no config and you would rather not add names to the command list, or when you want to drive the UI entirely from your own command or an item:
+
+```ts
+ui(core, { commands: false });
+
+world.afterEvents.itemUse.subscribe(({ source, itemStack }) => {
+  if (itemStack.typeId !== `${core.id}:guide_book`) { return; }
+
+  openUi(core, source, { kind: 'guide', addonId: core.id });
+});
+```
+
+The UI itself stays fully available — `openUi` is the same funnel the commands go through, permission clamp included — and any *other* installed bedrock-core addon's `:list` still shows your row. It frees the four names, not the namespace: your own commands still belong under `core.id`.
+
 ## Permissions
 
 Non-operators reach their **own player scope only**, enforced independently on both sides.
@@ -101,7 +174,7 @@ Non-operators reach their **own player scope only**, enforced independently on b
 ```ts
 function isOperator(player: Player): boolean
 function allowedScopes(player: Player): readonly ConfigScope[]
-function clampTarget(target: OpenTarget, player: Player): OpenTarget
+function clampTarget(target: OpenTarget, player: Player, core: Runtime): OpenTarget
 ```
 
 - `isOperator` reads the **readonly** `playerPermissionLevel`, never the script-writable `commandPermissionLevel`. `PlayerPermissionLevel.Custom` does **not** count as operator.
@@ -279,7 +352,8 @@ Note that the exports map declares `./i18n/*`, not `./i18n` — `@bedrock-core/c
 | `OpenCallback` | type | `(player, command, args) => void` |
 | `isOperator(player)` | function | Readonly permission-level check |
 | `allowedScopes(player)` | function | The scopes a player may reach |
-| `clampTarget(target, player)` | function | Narrow a target to what the player may reach |
+| `clampTarget(target, player, core)` | function | Narrow a target to what the player may reach |
+| `guideAudienceFor(player)` | function | `'op'` or `'player'` — which slice of a guide they read |
 | `CONFIG_SCOPES` | const | `['server', 'dimension', 'player']` |
 | `ConfigScope` | type | One of the above |
 | `OpenCommand` | type | `'list' \| 'guide' \| 'config'` |

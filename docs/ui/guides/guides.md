@@ -49,6 +49,7 @@ Builds a **self-contained guide component** for one manifest. It owns its home �
 | --- | --- | --- | --- |
 | `title` | `string` | `'Guide'` | Header title. Raw text, so `§` colour codes work |
 | `components` | `GuideComponents` | — | Registry for MDX `cmp` blocks — see [Custom components](#custom-components) |
+| `audience` | `'op' \| 'player'` | `'op'` | Who this instance renders for — see [Operator-only pages](#operator-only-pages) |
 
 ### `GuideProps`
 
@@ -128,6 +129,33 @@ Inline styling is baked into the `.lang` values as `§` codes — `**bold**` →
 
 **Internal links** are woven into the sentence as pressable transparent buttons and navigate within the guide. **External `http(s)` links** render as styled text only — nothing can open a browser from a server form.
 
+## Operator-only pages
+
+A page (or a whole category) can be marked `access: op` when authoring — see [Access](./regolith-filter.md#access). Pass the audience when you build the guide, and the renderer resolves everything else per viewer:
+
+```tsx
+import { createGuide, hasVisiblePages } from '@bedrock-core/guides';
+import { PlayerPermissionLevel } from '@minecraft/server';
+
+const audience = player.playerPermissionLevel === PlayerPermissionLevel.Operator ? 'op' : 'player';
+const Guide = createGuide(guides, { title: 'My Addon', audience });
+```
+
+What changes for a `'player'`:
+
+- Gated pages and categories leave the sidebar; a category that empties out goes with them.
+- The landing page is resolved over what they can see — a guide of one public page and three operator ones is a single-page guide to them, and a `home` they cannot open falls back to the index.
+- Prev/next follows the chain that skips gated pages, so pagination never walks into one.
+- An inline link to a gated page renders as plain prose; the sentence still reads.
+
+`hasVisiblePages(manifest, audience)` answers whether there is anything in there for them at all. Check it before offering a way in — a guide that is entirely gated should have no button and no command landing on an empty index. `@bedrock-core/config` does exactly that: the list button greys out, and a `:guide` command clamps to the addon list.
+
+Build the component **per audience**, and key any cache you keep by audience as well as by addon — the landing page and sidebar are decided when the component is built, so an operator's copy is not a player's.
+
+:::warning Presentation, not protection
+Manifests replicate to every addon in the world and their prose ships in the pack's `.lang`. Gating decides what a player is **shown**, the way `hidden` does — not what they may **do**.
+:::
+
 ## Custom components
 
 MDX `cmp` blocks let a guide embed a real component. Register it by name:
@@ -168,6 +196,7 @@ import { GuideBlockList } from '@bedrock-core/guides';
 | `blocks` | `GuideBlock[]` | The blocks to render |
 | `ns` | `string` | The manifest namespace |
 | `onNavigate` | `(pageId: PageId) => void` | Where internal link presses go |
+| `canOpen` | `(pageId: PageId) => boolean` | Whether a link target may be opened. A refused link renders as plain prose instead of a pressable. Defaults to every link being open |
 | `components` | `GuideComponents` | Registry for `cmp` blocks |
 
 ## `isGuideManifest(value)`
@@ -233,6 +262,9 @@ core.register({ /* … */, guide: guides });
 | `createGuide(manifest, options?)` | function | Build the guide component |
 | `GuideOptions`, `GuideProps` | types | Its options and props |
 | `GuideBlockList` | component | Render a block array directly |
+| `hasVisiblePages(manifest, audience)` | function | Whether an audience has anything to read |
+| `visiblePageIds`, `visibleTree`, `paginationFor`, `canSee` | functions | The per-audience filters the renderer uses |
+| `GuideAccess`, `GuideAudience` | types | `'op'`, and `'op' \| 'player'` |
 | `isGuideManifest(value)` | function | Narrow replicated data to a manifest |
 | `GuideManifest`, `GuidePageData`, `GuideTreeNode`, `GuideBlock`, `GuideListItem`, `GuideRun` | types | The IR |
 | `AdmonitionKind` | type | `'note' \| 'tip' \| 'info' \| 'warning' \| 'danger'` |

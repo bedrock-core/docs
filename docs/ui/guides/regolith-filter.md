@@ -57,7 +57,7 @@ packs/data/guides/
 ├── en_US/                      ← defaultLocale: structure, keys, sidebar, fallbacks
 │   ├── intro.mdx
 │   └── getting-started/
-│       ├── _category_.json     ← Docusaurus-style: label / position / collapsed / link / icon
+│       ├── _category_.json     ← Docusaurus-style: label / position / collapsed / link / icon / access
 │       ├── installation.mdx
 │       └── first-screen.mdx
 └── es_ES/                      ← translations: same tree, values only
@@ -78,6 +78,7 @@ Only **directories** directly under `sourceDir` are read as locales, so the gene
 | `icon` | string | RP texture path used as the sidebar row thumbnail (≤ 80 chars; the pack must ship it) |
 | `description` | string | A one-line localized subtitle under the row title — keep it short |
 | `home` | boolean | Open the guide on this page instead of the index |
+| `access` | `"op"` | Show the page only to world operators. Inherited from a gated `_category_.json` |
 
 ```yaml
 ---
@@ -90,6 +91,35 @@ description: Add the pack and wire the filters.
 
 `home: true` pairs naturally with `hidden: true`, since a landing page is usually not also a sidebar row. Two pages claiming it is a warning, not an error — the first in document order wins.
 
+### Access
+
+`access: op` keeps a page for world operators:
+
+```yaml
+---
+title: Reset the economy
+access: op
+---
+```
+
+Put it in a `_category_.json` instead and the whole section is gated. Access **inherits downward and is never widened by a child** — a page inside a gated category is gated whatever its own frontmatter says — so the manifest carries the *effective* value on every page and sidebar node, and the renderer gates a node by reading one field rather than walking its parents.
+
+Any other value warns and is ignored; `op` is the only level this version understands, and the field is a string rather than a boolean so roles can be added later without breaking the IR.
+
+What the filter bakes for it:
+
+| Manifest field | Meaning |
+| --- | --- |
+| `gated: true` | Something in this guide is gated — also what tells the renderer the second chain exists |
+| `a: "op"` on a page / tree node | Effective access, inheritance already applied. Set on `hidden` pages too, since those stay linkable |
+| `pprev` / `pnext` | The prev/next chain walked with gated pages left out — what a non-operator follows |
+
+A guide with nothing gated compiles exactly as it did before access existed: no flag, no `a`, no second chain, not a byte spent on an audience split that does not exist.
+
+:::warning Presentation, not protection
+A manifest replicates to every addon in the world and its prose ships in the resource pack's `.lang`, so gating decides what a player is **shown**, the way `hidden` does. What a player may **do** is decided by config authorization, which reads `playerPermissionLevel` on the host.
+:::
+
 ### `_category_.json`
 
 One per directory, mirroring Docusaurus:
@@ -100,7 +130,8 @@ One per directory, mirroring Docusaurus:
   "position": 2,
   "collapsed": true,
   "link": "getting-started/installation",
-  "icon": "textures/ui/book_edit_default"
+  "icon": "textures/ui/book_edit_default",
+  "access": "op"
 }
 ```
 
