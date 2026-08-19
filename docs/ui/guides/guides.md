@@ -21,6 +21,8 @@ function GuideScreen({ navigation }: ScreenProps<Routes, 'Guide'>) {
 
 Prose rides `.lang` values, so the client resolves every paragraph in each player's own language and the runtime's raw-text length limits never apply to guide copy.
 
+![An in-game guide page: sidebar on the left, rendered MDX on the right](/img/ui/guide-page.png)
+
 ## Install
 
 ```bash

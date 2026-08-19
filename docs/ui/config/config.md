@@ -16,6 +16,8 @@ ui(core);
 
 Your addon gets a settings screen, a guide screen, a row in the world's addon list, and four commands — without writing a screen.
 
+![An addon's settings screen, built from its config schema](/img/ui/config-screen.png)
+
 :::caution Requires the server runtime
 This package is a UI over [`@bedrock-core/server-runtime`](/docs/server/server-runtime)'s [registry](/docs/server/server-runtime/registry), [config](/docs/server/server-runtime/config) and [RPC](/docs/server/sync/rpc). It is a **types-only** dependency at build time, so the two version independently — but at runtime you need a `Runtime` (`core`) to pass it.
 :::

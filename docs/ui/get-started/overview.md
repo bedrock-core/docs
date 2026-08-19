@@ -3,6 +3,8 @@ sidebar_position: 1
 ---
 # Overview
 
+![The shared addon list, with a row per registered addon](/img/ui/addon-list.png)
+
 Get up and running with `@bedrock-core/ui` in minutes.
 
 
