@@ -167,6 +167,8 @@ world.afterEvents.itemUse.subscribe(({ source, itemStack }) => {
 
 The UI itself stays fully available — `openUi` is the same funnel the commands go through, permission clamp included — and any *other* installed bedrock-core addon's `:list` still shows your row. It frees the four names, not the namespace: your own commands still belong under `core.id`.
 
+`openUi` returns a `Promise<void>` that settles once the screen is handed to the renderer. From a ui-runtime presser, **return it** — `onPress={() => openUi(core, player, target)}` — so the handoff lands inside the press's interactive transaction: deterministic, flash-free, and no `useExit` call needed, because the renderer [swaps the running app out itself](../ui-runtime/api/render.md#one-ui-slot-per-player). Outside a presser (commands, events), `void openUi(...)` is fine — the promise never rejects.
+
 ## Permissions
 
 Non-operators reach their **own player scope only**, enforced independently on both sides.
@@ -407,6 +409,7 @@ Note that the exports map declares `./i18n/*`, not `./i18n` — `@bedrock-core/c
 | `UiOptions` | type | `{ commands?: boolean }` |
 | `App` | component | The UI's root screen stack — mount it yourself for a custom entry point |
 | `AppProps` | type | `{ core, player, target, values? }` |
+| `openUi(core, player, target)` | function | Open the UI from your own code; returns `Promise<void>` — return it from a presser for an in-transaction handoff |
 | `registerAddonCommands(core, onOpen)` | function | Just the command registration, with your own open callback |
 | `OpenCallback` | type | `(player, command, args) => void` |
 | `isOperator(player)` | function | Readonly permission-level check |

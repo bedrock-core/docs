@@ -98,9 +98,9 @@ The generated JSON stays in Regolith's temp workspace and is inlined into the sc
 
 ### Manifest display strings
 
-A pack's `manifest.json` may name itself with a translation key rather than a literal — and Bedrock resolves that key from **that pack's own** `texts/<locale>.lang`, not from the world's merged table. A behavior pack therefore cannot borrow the resource pack's copy: it needs the strings in its own file, or the pack list shows the raw key.
+A pack's `manifest.json` may name itself with a translation key rather than a literal — but that lookup is **not** a general one. Bedrock resolves a manifest header only from the two literal keys `pack.name` and `pack.description`, and only from **that pack's own** `texts/<locale>.lang`, never from the world's merged table. A namespaced key such as `drav0011_shop.meta.name` is printed verbatim in the pack list, and a behavior pack cannot borrow the resource pack's copy: without the strings in its own file, the raw text shows.
 
-You declare those strings once, in the `meta` branch — they are the same values `core.register()` receives through `key()`:
+You still declare the strings once, in the `meta` branch — they are the same values `core.register()` receives through `key()`:
 
 ```ts
 // packs/data/i18n/en_US.ts
@@ -110,13 +110,13 @@ export default {
 } as const;
 ```
 
-So the filter emits that branch — **and nothing else** — into `BP/texts/<locale>.lang`, under the same real keys the RP gets:
+The filter emits **both forms**: the namespaced keys scripts resolve, and the two literal aliases the manifest needs. Both manifests point at the aliases:
 
 ```jsonc
-// packs/BP/manifest.json
+// packs/BP/manifest.json — and packs/RP/manifest.json, keyed the same way
 "header": {
-  "name": "drav0011_shop.meta.name",
-  "description": "drav0011_shop.meta.description"
+  "name": "pack.name",
+  "description": "pack.description"
 }
 ```
 
@@ -125,17 +125,19 @@ So the filter emits that branch — **and nothing else** — into `BP/texts/<loc
 drav0011_shop.meta.creator=DrAv0011
 drav0011_shop.meta.description=Sells items for currency
 drav0011_shop.meta.name=Shop
+pack.description=Sells items for currency
+pack.name=Shop
 ## <core:generated-i18n:end>
 ```
 
-Only `meta.*` goes into the BP. The RP still carries everything, `meta.*` included, so an RP manifest keyed the same way keeps working.
+Only `meta.*` (plus the two aliases) goes into the BP. The RP still carries everything — and the same aliases, since the RP has a manifest of its own.
 
 - **Every locale you author**, exactly like the RP path, plus a `BP/texts/languages.json` kept in sync.
 - **The same marker-delimited section**, so hand-written BP entries outside the markers survive and re-running is idempotent.
 - **No `meta` branch, no file.** Remove the branch from an addon that had one and the stale generated section is stripped on the next build, leaving your hand-written lines behind.
 
 :::tip Drop the duplicate
-If your BP `.lang` still carries hand-written `pack.name` / `pack.description`, delete them and point the manifest header at `<namespace>.meta.name` / `.meta.description`. One declaration, in `packs/data/i18n/`, translated in every locale you ship.
+If your `.lang` files still carry hand-written `pack.name` / `pack.description`, delete them and let the filter generate the aliases from `meta.*`. One declaration, in `packs/data/i18n/`, translated in every locale you ship.
 :::
 
 ### tsconfig

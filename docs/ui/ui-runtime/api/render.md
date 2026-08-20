@@ -32,6 +32,30 @@ Content renders into a single full-screen **root scroll** by default — no extr
 
 `void`
 
+## One UI slot per player
+
+Each player has a single live UI session. Calling `render()` while one is already running does **not** stack a second one — it swaps the new tree into the running session:
+
+- The old tree unmounts first: its effect cleanups run, its hook state is discarded, and any form it has on screen is closed programmatically (that close is not treated as the player dismissing — a modal's `onCancel` does not fire for it).
+- The input lock is carried over, so the camera never flashes free between screens.
+- The new tree then presents with fresh, mount-phase state.
+
+This makes cross-app handoff safe from a button press — no [`useExit`](../hooks/useExit.md) call needed, the swap replaces the running UI by itself:
+
+```tsx
+function SettingsButton() {
+  const player = usePlayer();
+
+  return (
+    <Button onPress={() => render(SettingsApp, player)}>
+      <Text>{'Settings'}</Text>
+    </Button>
+  );
+}
+```
+
+When the handoff goes through an async opener (a prefetch, an RPC), **return the promise from `onPress`** so the swap lands inside the press's transaction — deterministic and flash-free. Fired-and-forgotten it still converges; worst case the screen re-locks for a frame.
+
 ## Usage
 
 ```tsx

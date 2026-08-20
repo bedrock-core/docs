@@ -5,6 +5,10 @@ sidebar_position: 6
 
 Request the UI to be closed.
 
+:::note Closing, not switching
+`exit()` closes the UI back to the game. You do **not** need it to hand off to another screen or app — calling [`render()`](../api/render.md#one-ui-slot-per-player) (or an opener like `openUi`) while a UI is up swaps the new app into the running session by itself.
+:::
+
 ## Import
 
 ```tsx
