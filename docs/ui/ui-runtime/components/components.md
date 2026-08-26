@@ -28,6 +28,15 @@ Atomic modal form. `<Form>` renders one native `ModalFormData` — every field i
 - [**`<Form.Input>`**](./Form/FormInput.md) — single-line text field.
 - [**`<Form.Button>`**](./Form/FormButton.md) — the form's submit/exit action buttons.
 
+## Container screens
+
+The same components on a second backend: a custom entity's chest screen, compiled at build time and driven through container slots. See [container screens](../../container-screens/container-screens.md).
+
+- [**`<Container>`**](./Container.md) — the root; names the entity the screen opens from and is the screen's own panel.
+- [**`<Slot>`**](./Slot.md) — a real container cell, with a role and handlers for what moves through it.
+- [**`<PlayerInventory>`**](./PlayerInventory.md) — the player's 9 × 3 inventory grid.
+- [**`<Hotbar>`**](./Hotbar.md) — the player's hotbar.
+
 ## Form Fields (Legacy)
 
 :::note
@@ -39,14 +48,6 @@ Modal-backed input components. Native `ActionFormData` can't take typed input, s
 - [**`<Input>`**](./Input.md) — single-line text field.
 - [**`<Dropdown>`**](./Dropdown.md) — select one option from a fixed list.
 - [**`<Slider>`**](./Slider.md) — pick a number within a range.
-
-## Experimental Components
-
-:::caution
-These components are experimental and may change or be removed. They have known limitations in multi-addon worlds — read each component's page before use.
-:::
-
-- [**`<ItemRenderer>`**](./ItemRenderer.md) — render an item icon. Requires a manual `ItemAuxContext` wrapping the tree.
 
 ## Control Props
 

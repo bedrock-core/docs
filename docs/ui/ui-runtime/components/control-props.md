@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 18
 ---
 # Control Props
 
@@ -40,7 +40,9 @@ The library uses a **flexbox-based layout system**. You compose UIs by nesting `
 
 #### `zIndex`
 - Type: `number`
-- Description: Z-order. Higher values render on top.
+- Default: `0`
+- Description: Draw order, in a **container screen** only. There it becomes the control's baked `layer`, so a higher `zIndex` draws on top. A **server form** has no per-element layer — JSON UI cannot bind one, and its cells draw in fixed per-kind bands (a background below, a `Button` above it, `Text` above that) — so `zIndex` has no effect in a form.
+
 
 #### `display`
 - Type: `'flex' | 'none'`

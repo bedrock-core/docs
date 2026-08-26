@@ -40,21 +40,6 @@ Atomic modal form — one native `ModalFormData` for the whole screen, all value
 
 - [**`<Form>`**](./Form/Form.md) — the root component, plus its themed field members: `Form.Toggle`, `Form.Checkbox`, `Form.Radio`, `Form.ToggleButton`, `Form.Slider`, `Form.Dropdown`, `Form.Input`, `Form.Button`.
 
-## Experimental Components
-
-:::caution
-These components are experimental and may change or be removed. They have known limitations in multi-addon worlds — each requires a manually supplied `ItemAuxMap` via `ItemAuxContext`. Read each component's page before use.
-:::
-
-```tsx
-import { ItemSlot, ItemContainer, EquipmentSlots } from '@bedrock-core/ore-styled';
-import { ItemAuxContext, type ItemAuxMap } from '@bedrock-core/ui';
-```
-
-- [**`<ItemSlot>`**](./ItemSlot.md) — single inventory slot with item or overlay texture.
-- [**`<ItemContainer>`**](./ItemContainer.md) — grid of `ItemSlot`s covering a `Container`'s slots.
-- [**`<EquipmentSlots>`**](./EquipmentSlots.md) — helmet → boots + offhand column with silhouette overlays.
-
 ## Theme
 
 All visual tokens (spacing, font colors, component textures) live in a single `theme` object you can read and reuse. See the [theme](./theme.md) page for the full token map.

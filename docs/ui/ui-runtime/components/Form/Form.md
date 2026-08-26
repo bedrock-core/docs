@@ -65,7 +65,7 @@ These are enforced at build time — violating them throws a `ModalFormError`, n
 - Exactly **one** `Form.Button type="submit"` is required. The native modal has no built-in submit control.
 - At most **one** `Form.Button type="exit"` is allowed.
 - A `Form` cannot be nested inside another `Form`.
-- A plain `Button` or `ItemRenderer` cannot appear inside a `Form` — only `Form.*` field members and decorative nodes are allowed. If you need an `ActionFormData`-style screen with regular buttons, use a separate screen (switch via navigation) instead of nesting form kinds.
+- A plain `Button` cannot appear inside a `Form` — only `Form.*` field members and decorative nodes are allowed. If you need an `ActionFormData`-style screen with regular buttons, use a separate screen (switch via navigation) instead of nesting form kinds.
 
 ## Best Practices
 

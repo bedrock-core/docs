@@ -31,7 +31,7 @@ Every field here accepts a `label?: string` that the runtime primitives don't ha
 
 ## Rules & Restrictions
 
-Unchanged from the primitive — see the runtime [`Form`'s Rules & Restrictions](../../ui-runtime/components/Form/Form.md#rules--restrictions): exactly one `Form.Button type="submit"` required, at most one `type="exit"`, no nesting, no plain `Button`/`ItemRenderer` inside.
+Unchanged from the primitive — see the runtime [`Form`'s Rules & Restrictions](../../ui-runtime/components/Form/Form.md#rules--restrictions): exactly one `Form.Button type="submit"` required, at most one `type="exit"`, no nesting, no plain `Button` inside.
 
 ## Examples
 

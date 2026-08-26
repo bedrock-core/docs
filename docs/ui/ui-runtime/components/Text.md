@@ -50,6 +50,10 @@ import { Text } from '@bedrock-core/ui';
 - Type: `number`
 - Description: Limit rendered text to N lines. The last line is always ellipsized when content overflows.
 
+#### `maxLength`
+- Type: `number`
+- Description: The most characters the text will ever need. In a [container screen](../../container-screens/container-screens.md) this is what makes the text **live**: a compiled layout cannot grow, so a string that changes at runtime reserves its cells before the build knows what it will say — one container slot per character, decoded through a 64-glyph table (space, `A–Z`, `a–z`, `0–9`, `.`; anything else, formatting codes included, draws as a blank). Leave it off for text that never changes, which is baked and may use any character at all. In a server form the text is live anyway; a literal string is cut to this length so the two backends agree on what fits, while keys and `RawMessage`s the client resolves are left whole.
+
 #### `shadow`
 - Type: `boolean`
 - Default: `false`
@@ -146,6 +150,26 @@ Wrapping works for localized children too — a localized child wraps against it
 
 ```tsx
 <Text shadow>{'§eBig Title'}</Text>
+```
+
+### Live Text in a Container Screen
+
+```tsx
+function Furnace() {
+  const [held, setHeld] = useState('nothing');
+
+  return (
+    <Container entity={'core:furnace'} padding={8} gap={6}>
+      {/* Baked into the layout: any character, any formatting code. */}
+      <Text>{'§fBEDROCK CORE'}</Text>
+
+      {/* Live: 24 cells reserved, one container slot each. */}
+      <Text maxLength={24}>{`holding ${held}`}</Text>
+
+      <Slot role={'input'} onInsert={(_player, stack) => setHeld(stack.typeId)} />
+    </Container>
+  );
+}
 ```
 
 ## Best Practices

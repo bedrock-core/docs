@@ -163,18 +163,18 @@ Manifests replicate to every addon in the world and their prose ships in the pac
 MDX `cmp` blocks let a guide embed a real component. Register it by name:
 
 ```tsx
-import { ItemRenderer } from '@bedrock-core/ui';
+import { Panel } from '@bedrock-core/ui';
 
 const Guide = createGuide(guides, {
   title: 'My Addon',
-  components: { ItemRenderer },
+  components: { Panel },
 });
 ```
 
 ```mdx
-Here is what the reward looks like:
+Here is a live component embedded in the page:
 
-<ItemRenderer itemId="minecraft:diamond" />
+<Panel height={40} />
 ```
 
 Props are literal-only (strings, numbers, booleans) — they are validated by the authoring filter, not at render time. An unregistered name renders a placeholder rather than crashing the screen.

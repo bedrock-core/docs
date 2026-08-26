@@ -102,9 +102,6 @@ Tokens only — `ore-styled` exports no `Tabs` component yet. Read them if you'r
 
 [`Form.ToggleButton`](./Form/FormToggleButton.md) reuses this same section — there's no separate Form-specific toggle-button theme.
 
-### `itemSlot`
-- `size`, and `textures`: `slot`/`slotHover`/`slotDisabled` for a single [`ItemSlot`](./ItemSlot.md), plus `equipment.{helmet,chestplate,leggings,boots,shield}` — the empty-slot silhouette textures used by [`EquipmentSlots`](./EquipmentSlots.md).
-
 ### `field`
 - `padding: { top, bottom, x }`, `gap`.
 - `textStyle`: `font`, `scale`, and color codes for `value`/`placeholder`/`disabled` text.
