@@ -77,6 +77,13 @@ Per-slot binding types, measured:
 - `('%.Ns' * X)` takes a prefix only when `X` is a binding, not a string literal.
 - A container slot publishes no text: `#hover_text` is a single hover-driven screen value that any press steals, and `#group_item_group_name` is empty for a container. What a slot publishes is numbers.
 
+## Server forms
+
+- **A control the pack places itself can own a `form_buttons` entry — but only if the CONTROL carries the collection binding.** A `stack_panel` declaring `collection_name: "form_buttons"` with a child carrying a baked `collection_index` is enough to *read* that entry, and enough for a `button` in that subtree to be pressed. It is **not** enough for the press to be attributed: the button must itself carry `{ "binding_type": "collection_details", "binding_collection_name": "form_buttons" }`. Measured 2026-08-27 with four rows in one form — three carrying the binding returned `response.selection` 0, 1 and 2 respectively; a fourth, identical but for the binding, returned `canceled`.
+- **A form button with no collection binding fails silently and misleadingly.** The click still routes and the form still closes; script sees `canceled`, which is exactly what Esc and the X produce. There is no log line and no visual difference, so a missing binding looks like a player dismissing the form.
+- This is what `$cell_details_binding_type` is for in `core_ui_common.control`, which sets it to `collection_details` for buttons and leaves it `none` for panels: the per-cell collection index is what routes `button.form_button_click` to the right form button.
+- **A form's content can be replaced without touching a vanilla file.** `server_form.main_screen_content` sizes the library's own container to the screen only when the title carries the protocol header, and `core_ui_common.action_container` — a definition the pack owns, which declares its own `controls` — accepts placed subtrees by ordinary reference. Nothing needs `modifications`, and nothing vanilla is re-declared, so the plain form path is untouched by construction.
+
 ## Script API
 
 - **No lock mode makes a container slot read-only.** `ItemLockMode.slot` binds the item to a *player* slot, not the container slot: the player moves it out of the container freely and then cannot move it back — it is stuck wherever it landed in their inventory until script clears it. The lock does not stop the take and makes every escape worse. Poll-and-restore is the only mechanism, and items the runtime places carry `ItemLockMode.none`.
