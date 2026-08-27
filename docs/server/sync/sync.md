@@ -81,7 +81,7 @@ interface SyncNodeOptions {
 | `meta` | — | Opaque metadata broadcast with every announce; surfaces on peers as `PeerInfo.meta`. `server-runtime` puts the addon manifest here. |
 | `ownedNamespaces` | `[id]` | Namespaces this node is authoritative for — the ones it answers snapshot requests for. |
 | `strictOwnership` | `false` | When `true`, `state.set()` / `state.delete()` throw for a namespace this node does not own. See [ownership](./state.md#ownership-and-strictownership). |
-| `maxMessage` | `2000` | Per-message character budget for the [chunker](./protocol.md#framing-and-chunking). Mainly for tests. |
+| `maxMessage` | `2000` | Character budget for one script-event message — what the [chunker](./protocol.md#framing-and-chunking) splits against and what a batch is packed up to. Mainly for tests. |
 | `instanceId` | generated | Overrides the auto-generated instance id. Mainly for tests. |
 
 ---
@@ -109,7 +109,8 @@ class SyncNode {
 
 - **One node per realm.** Several `SyncNode`s with different ids in one realm is only useful for in-realm testing. Production addons use `server-runtime` and `core.node`.
 - **Timing is tick-based.** Messages flush over ticks; you will never get an RPC reply on the same tick you sent it.
-- **Large payloads are fine.** Frames above the size budget are split and reassembled transparently.
+- **Large payloads are fine.** An envelope above the size budget is split into frames and reassembled transparently; one that fits is sent whole.
+- **Small messages travel together.** A node that sends several at once has them packed into as few script events as the budget allows — see the [outbound queue](./protocol.md#outbound-queue-and-rate-limiting).
 - **sync never touches dynamic properties.** They are pack-scoped, and persistence is each addon's own responsibility — see [State](./state.md#persistence-is-not-syncs-job).
 - **Load order is not a problem.** Every node re-announces on a heartbeat and broadcasts a `whois` at startup, so a late loader catches up and an early loader hears about it.
 
@@ -122,4 +123,4 @@ class SyncNode {
 | [Discovery](./discovery.md) | Finding peers: announce, whois, TTL eviction, namespace collisions |
 | [Rpc](./rpc.md) | Request/response calls, typed clients, handler maps, timeouts |
 | [State](./state.md) | Replicated key/value: deltas, snapshots, `requestSync`, ownership |
-| [Protocol](./protocol.md) | The bus, the envelope, `PROTOCOL_VERSION`, framing and rate limiting |
+| [Protocol](./protocol.md) | The bus, the envelope, the supported protocol window, framing and rate limiting |

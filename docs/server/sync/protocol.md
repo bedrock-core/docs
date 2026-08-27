@@ -9,7 +9,7 @@ What actually goes over the wire: the bus, the envelope, framing and rate limiti
 ## Import
 
 ```ts
-import { Bus, MessageType, PROTOCOL_VERSION } from '@bedrock-core/sync';
+import { Bus, Cap, MAX_MESSAGE, MessageType, PROTOCOL_MAX, PROTOCOL_MIN } from '@bedrock-core/sync';
 import type { Envelope, BusOptions, SendOptions, EnvelopeHandler, Unsubscribe } from '@bedrock-core/sync';
 ```
 
@@ -32,7 +32,7 @@ The bus subscribes to `system.afterEvents.scriptEventReceive` filtered to the `b
 
 ```ts
 interface Envelope<T = unknown> {
-  v: number;      // protocol version
+  v: number;      // protocol version this envelope was written at
   src: string;    // sender addon id
   iid: string;    // sender instance id
   dst?: string;   // target addon id; omitted for a broadcast
@@ -42,7 +42,7 @@ interface Envelope<T = unknown> {
 }
 ```
 
-An envelope is JSON-serialized and then split into one or more wire [frames](#framing-and-chunking).
+An envelope is JSON-serialized and then sent as-is if it fits in one message, or [split into frames](#framing-and-chunking) if it does not. Either way it travels inside a tagged [wire message](#wire-messages).
 
 ### `src` vs `iid`
 
@@ -53,13 +53,24 @@ That distinction does real work:
 - The receive path drops a node's **own echoes by `iid`**, not by `src`. A colliding twin announcing your id is therefore still delivered, which is how [collisions](./discovery.md#oncollision) are detectable at all.
 - `mid` is derived from `iid` plus a counter, so message ids stay unique across colliding nodes.
 
-### `PROTOCOL_VERSION`
+### Protocol versions
 
 ```ts
-PROTOCOL_VERSION;   // 1
+PROTOCOL_MIN;   // 1 — oldest wire format this build still reads and writes
+PROTOCOL_MAX;   // 2 — newest it knows
 ```
 
-Bumped on any breaking change to the envelope or frame wire format. Decoding is strict: an envelope whose `v` does not match **exactly** is dropped silently, along with malformed JSON and structurally invalid envelopes. One bad sender can never crash a listener — and two incompatible protocol generations simply do not see each other rather than corrupting each other.
+A node advertises the **range** it speaks, and talks to each peer at the newest version both know. Addons update on their own schedules, so one world routinely holds packs built against different releases; gating on a single version instead would split such a world into two meshes on one channel — each listing only its own half, each electing its own UI host, each timing out every RPC to the other.
+
+Decoding accepts any `v` inside the window. Only a version below `PROTOCOL_MIN` (too old to still be supported) or above `PROTOCOL_MAX` (newer than this build knows) is dropped, along with malformed JSON and structurally invalid envelopes. One bad sender can never crash a listener.
+
+`v` is picked **per recipient**, so the same node emits different versions to different peers. See [negotiation](./discovery.md#protocol-negotiation) for the rule.
+
+#### The support window
+
+The window is two versions wide: a version stays readable for two releases after it stops being the newest. Raising `PROTOCOL_MIN` drops everything below it and is a breaking change.
+
+A node whose range does not overlap this build's at all cannot be addressed. It is reported through [`onIncompatible`](./discovery.md#onincompatible) and named in the addon list rather than quietly missing from it.
 
 ---
 
@@ -77,7 +88,7 @@ MessageType.StateSnapshot  // 'state-snapshot'
 
 | Type | Layer | Direction | Payload |
 |---|---|---|---|
-| `announce` | [Discovery](./discovery.md) | broadcast, or direct in reply to a whois | `{ version, schemaVersion, meta? }` |
+| `announce` | [Discovery](./discovery.md) | broadcast, or direct in reply to a whois | `{ version, schemaVersion, meta?, pmin?, pmax?, caps? }` |
 | `whois` | Discovery | broadcast | none |
 | `req` | [RPC](./rpc.md) | direct | `{ method, params? }` |
 | `res` | RPC | direct | `{ rid, ok, data?, err? }` |
@@ -94,28 +105,34 @@ class Bus {
   readonly selfId: string;
   readonly instanceId: string;
   readonly queueSize: number;
+  readonly broadcastProtocol: number;    // what a broadcast currently goes out at
 
   start(): void;
   stop(): void;
   send(options: SendOptions): string;                      // returns the message id
   reply(to: Envelope, type: string, data?: unknown): string;
   on(type: string, handler: EnvelopeHandler): Unsubscribe;
+
+  // Discovery pushes negotiation results in through these; addons do not call them.
+  setPeerProtocol(id: string, protocol: number, caps: readonly string[]): void;
+  forgetPeer(id: string): void;
 }
 
 interface SendOptions {
-  dst?: string;   // omit to broadcast
+  dst?: string;      // omit to broadcast
   type: string;
-  mid?: string;   // reuse a specific message id
+  mid?: string;      // reuse a specific message id
   data?: unknown;
+  protocol?: number; // force an encoding instead of the negotiated one
 }
 ```
 
 The receive path, in order:
 
 1. Ignore anything that is not on `bedrock-core:bus`.
-2. Decode the frame; drop it if malformed.
-3. Feed it to the reassembler; stop unless the group is now complete.
-4. Decode the envelope; drop it if malformed or the protocol version mismatches.
+2. Read the [wire tag](#wire-messages); drop the message if the tag is unknown or the body is malformed.
+3. For a chunk, feed the frame to the reassembler and stop unless the group is now complete, then decode the envelope.
+4. Drop any envelope that is malformed or whose `v` falls outside the supported window. A batch keeps whichever of its envelopes are sound.
 5. Drop it if `iid` is our own instance — that is our own echo.
 6. Drop it if `dst` is set and is not us.
 7. Dispatch to every handler registered for `type`.
@@ -128,9 +145,42 @@ A message whose `dst` equals the sender's own id never goes over the wire — it
 
 ---
 
+## Wire messages
+
+One script-event message opens with a single tag character naming which of three shapes follows:
+
+```text
+0{"v":2,"src":"shop",…}          one envelope, verbatim
+2[{"v":2,…},{"v":2,…}]           several envelopes packed into one message
+1{"c":"…","s":0,"t":9,"p":"…"}   one frame of an envelope too large to send whole
+```
+
+The tag exists to keep the common case cheap. Nesting an envelope inside a frame's `p` field means JSON-escaping the whole thing to sit inside a JSON string — every quote costs a backslash — and a one-piece message would carry a `c`/`s`/`t` header describing a split that never happened. Most bus traffic is one-piece, so that was the common case paying for the rare one.
+
+A batch (`2`) is a JSON array of envelopes, not of encoded strings, so packing costs no escaping either. Batching is the [outbound queue](#outbound-queue-and-rate-limiting)'s work, not the bus's.
+
+Protocol 1 predates the tag: every message was a bare frame, so it opens with `{`. The frame shape never changed — only what wraps it — so a message recognised by that leading brace is read through the same reassembly path as a tagged chunk.
+
+The tag is otherwise frozen. A shape added by some later protocol takes a character of its own, and a reader that does not know a character drops that one message rather than the peer that sent it.
+
+### Which encoding a message gets
+
+| Message | Encoding |
+|---|---|
+| Directed at a known peer | the version negotiated with that peer |
+| Directed at a peer not yet heard from | `PROTOCOL_MIN` — every supported build reads it |
+| Broadcast | the lowest version any live peer can read |
+| `announce` / `whois` | always `PROTOCOL_MIN` |
+
+Announces are pinned because they are what establishes everything else: the message that tells peers which versions you speak cannot itself assume an answer. That costs a heartbeat the packing a negotiated message gets, which at one broadcast per 5 s is affordable.
+
+Both broadcast values rise on their own as the peers holding them down expire, so a world returns to the newest encoding once its last outdated addon is gone — no restart, no setting.
+
+---
+
 ## Framing and chunking
 
-Script-event messages are size-capped, so every wire message is a **frame**, and an encoded envelope larger than the budget is split across several:
+Script-event messages are size-capped, so an encoded envelope larger than the budget is split across several **frames**, each sent as its own tagged message:
 
 ```ts
 interface Frame {
@@ -141,15 +191,15 @@ interface Frame {
 }
 ```
 
-A single-frame group (`t === 1`) carries the whole envelope and skips buffering entirely. Larger groups are buffered by the receiver until complete.
+A group is only created when an envelope does not fit in one message, so `t` is always at least 2 in practice; the receiver buffers the group until it is complete.
 
 | Constant | Value | Meaning |
 |---|---|---|
-| `MAX_MESSAGE` | `2000` chars | Per-message budget, set well below the engine's real cap. |
+| `MAX_MESSAGE` | `2000` chars | Per-message budget, set below the engine's cap. Exported, and overridable per bus via `BusOptions.maxMessage`. |
 | `CHUNK_TTL_TICKS` | `200` | An incomplete group is discarded after 10 s. |
 | Eviction interval | `20` ticks | How often stalled groups are swept. |
 
-The per-frame payload budget is the remaining space **halved**, because worst-case JSON escaping can double every character of `p`. That guarantees each encoded frame fits, at the cost of some efficiency.
+The per-frame payload budget is exact rather than pessimistic: each character is charged what JSON will actually spend escaping it — two for a quote or a backslash, six for a control character, one for anything else, including printable non-ASCII. Ordinary JSON escapes roughly one character in eight, so a frame fills instead of leaving half of it reserved against an all-quotes payload that never arrives. A hostile payload simply yields more frames; none can exceed the budget. Surrogate pairs are never split across a boundary.
 
 The reassembler ignores stray frames whose `t` disagrees with the group, out-of-range sequence numbers, and duplicate sequence numbers — so a partially-arrived group from a node that restarted mid-send times out rather than producing garbage.
 
@@ -157,14 +207,20 @@ The reassembler ignores stray frames whose `t` disagrees with the group, out-of-
 
 ## Outbound queue and rate limiting
 
-The engine only processes a bounded number of script events per tick, so **nothing is ever sent inline**. Every frame goes into an outbound queue drained on an interval:
+The engine only processes a bounded number of script events per tick, so **nothing is ever sent inline**. Everything goes into an outbound queue drained on an interval:
 
 | Constant | Value | Meaning |
 |---|---|---|
 | `FLUSH_INTERVAL_TICKS` | `1` | The queue flushes every tick. |
-| `MAX_FLUSH_PER_TICK` | `50` | At most 50 frames leave per flush. |
+| `MAX_FLUSH_PER_TICK` | `50` | At most 50 messages leave per flush. |
 
-If a send throws — an unexpectedly oversized message slipping through, for instance — that message is dropped and counted rather than being allowed to crash the flush loop. `bus.queueSize` exposes the backlog for inspection.
+The bound is on **messages, not bytes**, which is why the queue packs rather than simply draining: consecutive envelopes small enough to share a message leave as one batch. A node that sends a burst in a single tick — a run of `State.set` calls, a snapshot broadcast, an RPC fan-out — therefore spends a few of its slots instead of one per envelope. Each addon has its own queue, so this packs one node's own traffic and never several nodes' together.
+
+Packing is conditional. A packed message is a shape only a reader that knows the batch tag can parse, so the queue stops packing for as long as a live peer predates the tag — a lone envelope is still tagged and sent, and packing resumes by itself once that peer is gone.
+
+Frames are never packed. An envelope is only split when it fills a message on its own, so there is nothing left over to pack it with.
+
+If a send throws — an unexpectedly oversized message slipping through, for instance — that message is dropped and counted rather than being allowed to crash the flush loop. `bus.queueSize` exposes the backlog, counted in queued entries before any packing.
 
 The practical consequence is the one stated everywhere else in these docs: **timing is tick-based**. A reply cannot arrive on the tick you sent the request, and a large payload that spans many frames takes proportionally longer to land.
 

@@ -10,7 +10,7 @@ sidebar_position: 2
 
 ```ts
 import { core } from '@bedrock-core/server-runtime';
-import type { RegisteredAddon, AddonListener, CollisionListener } from '@bedrock-core/server-runtime';
+import type { RegisteredAddon, AddonListener, CollisionListener, IncompatibleListener, IncompatiblePeer } from '@bedrock-core/server-runtime';
 ```
 
 ## Usage
@@ -144,6 +144,39 @@ core.registry.onNamespaceCollision((info) => {
   console.error(`[economy] another pack is using '${info.id}' (instance ${info.instanceId})`);
 });
 ```
+
+---
+
+### `incompatible`
+
+```ts
+core.registry.incompatible(): IncompatiblePeer[]
+
+interface IncompatiblePeer {
+  id: string;
+  pmin: number;
+  pmax: number;
+  lastSeen: number;
+}
+```
+
+Addons heard on the bus that this build cannot talk to, because the [protocol ranges](../sync/discovery.md#protocol-negotiation) the two were built with do not overlap. They are present in the world but absent from [`all()`](#all): without a conversation there is no manifest to read.
+
+They are listed rather than ignored because the alternative is worse than an error. An addon that cannot be reached, silently left out, looks exactly like an addon that was never installed — the addon list is confidently wrong instead of visibly incomplete.
+
+### `onIncompatible`
+
+```ts
+core.registry.onIncompatible(listener: IncompatibleListener): Unsubscribe
+```
+
+Fires the **first** time such an addon is heard. The runtime also logs:
+
+```
+[bedrock-core] '<id>' speaks sync protocol <pmin>-<pmax>, this addon speaks <min>-<max>; the two cannot talk. Update whichever is older.
+```
+
+The fix is always to update one of the two packs; there is no runtime setting that bridges the gap.
 
 ---
 
