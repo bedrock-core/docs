@@ -49,6 +49,26 @@ Modal-backed input components. Native `ActionFormData` can't take typed input, s
 - [**`<Dropdown>`**](./Dropdown.md) — select one option from a fixed list.
 - [**`<Slider>`**](./Slider.md) — pick a number within a range.
 
+## Handler events
+
+Every handler in the library takes **one event object**, never a positional argument list:
+
+```tsx
+<Button onPress={({ player }) => player.sendMessage('hi')} />
+<Slot onInsert={({ stack, host }) => count(host, stack)} />
+<Form onSubmit={({ values }) => save(values)} />
+```
+
+| Type | Fields | Used by |
+| --- | --- | --- |
+| `UiEvent` | `player`, `host?` | `Form.onCancel` |
+| `PressEvent` | `player`, `host?` | `Button.onPress` |
+| `ContainerEvent` | `player`, `host` | `Container.onOpen` / `onClose` |
+| `SlotEvent` | `player`, `host`, `stack` | `Slot.onInsert` / `onRemove` |
+| `SubmitEvent` | `player`, `values` | `Form.onSubmit` |
+
+`player` is always the player the event is about: the viewer on a form, and on a container screen the player who moved the item. `host` is the entity that owns the screen, so it is present exactly on screens an entity owns — always on a container screen, never on a form. What a handler receives can gain a field without breaking a single call site, which is why it is an object rather than arguments.
+
 ## Control Props
 
 All components support [**Control Props**](./control-props.md) for layout, background, and visibility — the flexbox properties plus `position={'absolute'}` with `top`/`right`/`bottom`/`left` for out-of-flow placement.

@@ -166,7 +166,7 @@ function Furnace() {
       {/* Live: 24 cells reserved, one container slot each. */}
       <Text maxLength={24}>{`holding ${held}`}</Text>
 
-      <Slot role={'input'} onInsert={(_player, stack) => setHeld(stack.typeId)} />
+      <Slot role={'input'} onInsert={({ stack }) => setHeld(stack.typeId)} />
     </Container>
   );
 }

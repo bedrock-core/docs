@@ -47,12 +47,12 @@ Values only arrive once, in `onSubmit`, keyed by each field's `name`:
 ## Props
 
 #### `onSubmit`
-- Type: `(values: FormValues) => void`
-- Description: Called once when the player presses the submit button, with every field's value keyed by its `name`. `FormValues = Record<string, ModalValue>`, where `ModalValue = string | number | boolean | undefined`.
+- Type: `(event: SubmitEvent) => void`
+- Description: Called once when the player presses the submit button. `event.values` holds every field's value keyed by its `name` (`FormValues = Record<string, ModalValue>`, where `ModalValue = string | number | boolean | undefined`), and `event.player` is who submitted. Destructure it: `onSubmit={({ values }) => …}`.
 
 #### `onCancel`
-- Type: `() => void`
-- Description: Called when the player dismisses the modal — the X button, Esc, or a `Form.Button type="exit"`.
+- Type: `(event: UiEvent) => void`
+- Description: Called when the player dismisses the modal — the X button, Esc, or a `Form.Button type="exit"`. `event.player` is who dismissed it.
 
 #### `children`
 - Type: `JSX.Node`

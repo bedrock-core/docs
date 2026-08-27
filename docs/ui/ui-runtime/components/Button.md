@@ -26,8 +26,8 @@ Buttons are sized intrinsically from their content plus the button's built-in pa
 ### Component-Specific Props
 
 #### `onPress`
-- Type: `() => void | Promise<void>`
-- Description: Callback invoked when the player presses the button.
+- Type: `(event: PressEvent) => unknown | Promise<unknown>`
+- Description: Runs when the player presses the button. `event.player` is who pressed; on a [container screen](../../container-screens/container-screens.md) `event.host` is the entity that owns the screen, and on a form there is none. Every handler in the library takes one event object — see [Handler events](./components.md#handler-events).
 
 #### `children`
 - Type: `JSX.Node`

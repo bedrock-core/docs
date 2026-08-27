@@ -38,14 +38,14 @@ Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a scr
 - Description: Type of the entity the screen opens from, e.g. `'core:furnace'`. The build sizes that entity's `minecraft:inventory` and stamps it with the screen's layout key; the runtime serves the screen when a player interacts with it. The entity must exist in the behavior pack, or the build fails.
 
 #### `onOpen`
-- Type: `(player: Player, host: Entity) => void`
+- Type: `(event: ContainerEvent) => void`
 - Default: `undefined`
-- Description: Ran when a player opens the screen, with the entity it opened, and again for every further viewer. One layout serves everyone looking, so this is where a screen learns who is there — keep what it needs in state.
+- Description: Ran when a player opens the screen, and again for every further viewer. `event.player` is who opened it and `event.host` the entity it opened. One layout serves everyone looking, so this is where a screen learns who is there — keep what it needs in state.
 
 #### `onClose`
-- Type: `(player: Player, host: Entity) => void`
+- Type: `(event: ContainerEvent) => void`
 - Default: `undefined`
-- Description: Ran when a player closes the screen, or leaves the world with it open, with the entity it belonged to.
+- Description: Ran when a player closes the screen, or leaves the world with it open. `event.player` is who left, `event.host` the entity it belonged to.
 
 #### `children`
 - Type: `JSX.Node`

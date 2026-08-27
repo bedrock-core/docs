@@ -16,7 +16,7 @@ import { Slot } from '@bedrock-core/ui';
 ```tsx
 <Slot
   role={'input'}
-  onInsert={(player, stack) => player.sendMessage(`§7${stack.typeId} went in`)}
+  onInsert={({ player, stack }) => player.sendMessage(`§7${stack.typeId} went in`)}
 />
 ```
 
@@ -46,12 +46,12 @@ Handlers are props, like everywhere else in this library. They are matched to th
 - Description: Whether the player can move items through the slot at all. `false` draws an inert cell — the item shows, but no take, place or drop reaches it, and `role` no longer applies. Use it for a slot the player must never touch; use `role` for one that moves in a single direction.
 
 #### `onInsert`
-- Type: `(player: Player, stack: ItemStack, host: Entity) => void`
-- Description: Runs after an item arrives, with the player who put it there, the stack that landed, and the entity that owns the screen.
+- Type: `(event: SlotEvent) => void`
+- Description: Runs after an item arrives. `event.stack` is what landed, `event.player` who put it there, `event.host` the entity that owns the screen.
 
 #### `onRemove`
-- Type: `(player: Player, stack: ItemStack, host: Entity) => void`
-- Description: Runs after the slot empties, with the player who took the item, the stack that left, and the entity that owns the screen.
+- Type: `(event: SlotEvent) => void`
+- Description: Runs after the slot empties. `event.stack` is what left, `event.player` who took it, `event.host` the entity that owns the screen.
 
 #### `collection`
 - Type: `string`
@@ -87,10 +87,10 @@ function Furnace() {
 
       <Panel flexDirection={'row'} gap={4}>
         {/* Items go in and never come back out. */}
-        <Slot role={'input'} onInsert={(_player, stack) => setHeld(stack.typeId)} />
+        <Slot role={'input'} onInsert={({ stack }) => setHeld(stack.typeId)} />
 
         {/* Items may be taken and nothing put in. */}
-        <Slot role={'output'} onRemove={(_player, stack) => setHeld(`took ${stack.typeId}`)} />
+        <Slot role={'output'} onRemove={({ stack }) => setHeld(`took ${stack.typeId}`)} />
 
         {/* Ordinary storage. */}
         <Slot />

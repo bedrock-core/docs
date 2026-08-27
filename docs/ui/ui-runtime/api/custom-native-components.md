@@ -7,6 +7,10 @@ Register your own native component `type` that the runtime serializes and your
 **own resource pack's JSON UI decodes and renders** — extending the framework
 beyond the built-in `Panel` / `Text` / `Button` / `Image` primitives.
 
+:::danger Experimental — not covered by the 1.0 API promise
+A registration is a pair of halves: a writer that packs props into the byte payload, and JSON UI in your own pack that decodes them at fixed offsets. It is therefore bound to the **wire format** rather than to the component API. That format is being replaced by compiled screens, which describe a component by the values it carries instead of by a byte layout, and this entry point changes with it. Everything else in `@bedrock-core/ui` is stable at 1.0; a custom native component is not — pin an exact version if you ship one.
+:::
+
 :::warning Advanced — you own both sides
 This is a low-level extension point, not everyday API. To use it you need to
 understand **two** things:

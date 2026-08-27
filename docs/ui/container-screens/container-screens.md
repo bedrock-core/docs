@@ -32,8 +32,8 @@ export default function Furnace() {
         <Panel flexDirection={'row'} gap={4}>
           <Button enabled={charge < 1} onPress={() => setCharge(value => Math.min(1, value + 0.25))}>{'+'}</Button>
           <Button enabled={charge > 0} onPress={() => setCharge(value => Math.max(0, value - 0.25))}>{'-'}</Button>
-          <Slot role={'input'} onInsert={(_player, stack) => setHeld(stack.typeId)} />
-          <Slot role={'output'} onRemove={(_player, stack) => setHeld(`took ${stack.typeId}`)} />
+          <Slot role={'input'} onInsert={({ stack }) => setHeld(stack.typeId)} />
+          <Slot role={'output'} onRemove={({ stack }) => setHeld(`took ${stack.typeId}`)} />
         </Panel>
       </Card>
 
@@ -88,7 +88,7 @@ The same set as a form, with four additions and a few container-specific behavio
 | Component | In a container screen |
 | --- | --- |
 | [`Container`](../ui-runtime/components/Container.md) | The root. Names the entity, and is the screen's own panel: `padding`, `gap` and `background` apply. |
-| [`Slot`](../ui-runtime/components/Slot.md) | A container cell of the screen's own container. `role` is `both` (storage), `input` (in only) or `output` (out only), enforced server-side; `interactive={false}` locks it inert. `onInsert(player, stack, host)` and `onRemove(player, stack, host)` fire after a move. Given a `collection`, it instead reads a foreign cell — see [Rendering other containers](#rendering-other-containers). |
+| [`Slot`](../ui-runtime/components/Slot.md) | A container cell of the screen's own container. `role` is `both` (storage), `input` (in only) or `output` (out only), enforced server-side; `interactive={false}` locks it inert. `onInsert(event)` and `onRemove(event)` fire after a move, with `event.stack`, `event.player` and `event.host`. Given a `collection`, it instead reads a foreign cell — see [Rendering other containers](#rendering-other-containers). |
 | [`SlotGrid`](../ui-runtime/components/SlotGrid.md) | A grid of cells over a foreign collection — any collection the engine exposes. Not part of the screen's own container. |
 | [`PlayerInventory`](../ui-runtime/components/PlayerInventory.md), [`Hotbar`](../ui-runtime/components/Hotbar.md) | The player's own grids — thin `SlotGrid` wrappers over `inventory_items` / `hotbar_items`. Placed by the layout engine. Not free: a screen owns the whole chest screen, so leave them out and they are gone. |
 | [`Text`](../ui-runtime/components/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
@@ -133,7 +133,7 @@ What *is* baked into the JSON UI is inertness. A container slot's take and place
 
 State is **entity-owned**. Hook state lives on the entity the screen is attached to, in a dynamic property, and persists on its own: close the screen and reopen it, leave and come back, restart the world — the furnace is still at the charge it was left at. Nothing has to be saved or restored, but it does mean state must be JSON-serializable: numbers, strings, booleans, plain objects and arrays.
 
-There is no single viewer, so **the player reaches a screen through its handlers** rather than a hook: `Slot` and `Button` handlers receive the player who moved the item, and the `Container` itself has `onOpen` / `onClose` with the player who came or went — keep what the screen needs (a name, a count of viewers) in state. [`usePlayer`](../ui-runtime/hooks/usePlayer.md) is unavailable, because a container screen has no player of its own. [`useExit`](../ui-runtime/hooks/useExit.md) hands back a press rather than a closer: nothing closes a container from script, but a `<Button onPress={useExit()}>` becomes the screen's **close button** — the client closes the screen, as vanilla's own X does, and the button takes no container slot. Vanilla's textures are `textures/ui/close_button_default`, `_hover` and `_pressed`, and they are the default look when the button is unstyled. [`useEffect`](../ui-runtime/hooks/useEffect.md) works, and effects run while someone is viewing the screen; a timer in an effect is how a bar sweeps on its own.
+There is no single viewer, so **the player reaches a screen through its handlers** rather than a hook: `Slot` and `Button` handlers receive an event carrying the player who moved the item, and the `Container` itself has `onOpen` / `onClose` carrying the player who came or went — keep what the screen needs (a name, a count of viewers) in state. [`usePlayer`](../ui-runtime/hooks/usePlayer.md) is unavailable, because a container screen has no player of its own. [`useExit`](../ui-runtime/hooks/useExit.md) hands back a press rather than a closer: nothing closes a container from script, but a `<Button onPress={useExit()}>` becomes the screen's **close button** — the client closes the screen, as vanilla's own X does, and the button takes no container slot. Vanilla's textures are `textures/ui/close_button_default`, `_hover` and `_pressed`, and they are the default look when the button is unstyled. [`useEffect`](../ui-runtime/hooks/useEffect.md) works, and effects run while someone is viewing the screen; a timer in an effect is how a bar sweeps on its own.
 
 The shape is frozen: the build sees the tree once, with initial state, and every later render must produce the same elements in the same order. Never add or drop a `Slot` or a `Button` from one render to the next — change what they show instead: `enabled` on a button, or live text.
 
