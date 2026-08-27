@@ -94,7 +94,7 @@ The same set as a form, with four additions and a few container-specific behavio
 | [`Text`](../ui-runtime/components/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
 | [`Image`](../ui-runtime/components/Image.md) | A texture, baked into the layout. |
 | [`Scroll`](../ui-runtime/components/Scroll.md) | A region laid out at its own height that the client scrolls. Not inside another scroll. |
-| [`Button`](../ui-runtime/components/Button.md) | A container slot with the item hidden: a press reaches script only as an item move, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images. |
+| [`Button`](../ui-runtime/components/Button.md) | A container slot with the item hidden: a press reaches script only as an item move, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their colour, which is why an [ore-styled](../ore-styled/ore-styled.md) button's caption keeps its enabled colour while its background swaps to the disabled one. |
 | [`Background`](../ui-runtime/components/Background.md) | A full-screen texture behind everything, as in a form. |
 | `Panel`, `Fragment`, contexts | Exactly as in a form. |
 
