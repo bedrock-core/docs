@@ -63,7 +63,7 @@ Every `**/*.screen.tsx` under `BP/scripts`, sorted by path. Ordinary `.tsx` help
 
 A screen's **name** is its file name without the suffix — `furnace.screen.tsx` is `furnace`. It becomes the screen's output file and part of its JSON UI namespace, `<namespace>_furnace`, so it has to be unique across the addon whatever directory the screen sits in. The **namespace** is the addon's own — the `namespace` setting, or the `creator_pack` from `core.register()` — so a screen carries your name, not the library's.
 
-A screen's position in the sorted list is its **layout key**, the number the router picks it by. Sorting keeps the key stable across builds: an entity keeps the key it was stamped with, so a key that moved would leave every already-placed entity in a world opening the wrong screen. Name a new screen so it sorts after the ones you already ship.
+A screen's **layout key** — the number the router picks it by and the build stamps on its entity — is derived from its JSON UI namespace, `<namespace>_<name>`, by a hash folded into 1..3969. Nothing is handed out in sequence: two addons built apart never claim the same key for their first screens, a rebuild never moves a key, and an entity placed in a world keeps opening the screen it was stamped with. Two screens of one addon hashing to the same key is a build failure naming both; rename one.
 
 ### The one rule
 
@@ -77,9 +77,10 @@ The screen module is the only file you own; the bundler inlines it and strips th
 
 | Output | Why |
 | --- | --- |
-| `RP/ui/core-ui/screens/<name>.json` | the compiled screen — one JSON UI namespace, `<namespace>_<name>`, per screen |
-| `RP/ui/chest_screen.json` | the router, gating every compiled layout onto the vanilla chest screen — see [The router](#the-router) |
-| `RP/ui/_ui_defs.json` | both of the above registered, or the game never loads them |
+| `RP/ui/core-ui/screens/<name>.json` | the compiled screen — one JSON UI namespace, `<namespace>_<name>`, per screen. It references only the library's own definitions (`core_ui_container.*`, shipped as static files under `RP/ui/core-ui/container/`) and its own |
+| `RP/ui/core-ui/screens/<namespace>_router.json` | the addon's router — one gated host per screen, gathered under the addon's root — see [The router](#the-router) |
+| `RP/ui/chest_screen.json` | the hook: the addon's copy of vanilla's chest file, one `modifications` entry inserting the addon's root into the chest top half the chest root mounts on both UI profiles. Nothing is defined in it |
+| `RP/ui/_ui_defs.json` | the three above registered, or the game never loads them — written from scratch when the pack had none |
 | `RP/texts/<locale>.lang` | the character table `<Text maxLength>` decodes through; only written when a screen has live text |
 | `BP/entities/<file>.json` | the entity each screen names: `minecraft:inventory` sized to the layout, and a `core:ui_layout` property carrying the screen's key — see [Entities](#entities) |
 
@@ -89,7 +90,13 @@ No `tsconfig` alias is needed: a screen is imported by its path like any other m
 
 One router covers every screen. A marker item in the container's slot 0 carries a protocol key (is this chest a compiled screen at all?) and a layout key (which one?), and the router shows the layout whose key matches. A vanilla chest has no marker, fails the first check and renders untouched — so a world with the render pack and an ordinary chest looks exactly as it did.
 
-The router is written to `RP/ui/chest_screen.json`, **vanilla's own path** — that is why it is fixed, not a setting. JSON UI resolves a definition from the file that owns it: a replacement of `chest.small_chest_panel` declared in any other file — same namespace or not — is silently ignored, and the ordinary chest renders.
+Every edit to vanilla is made in a copy of vanilla's own `chest_screen.json`, at vanilla's own path: that is the one file the engine stacks across packs, in whatever order they sit. Nothing of vanilla's is removed or re-emitted.
+
+- **The render pack's copy**, static, does two things. It re-declares the chest screen with a different `$screen_content` — the way vanilla's own shulker-box and barrel screens point theirs elsewhere — namely the **chest root**, `core_ui_router.chest_root` / `chest_root_pocket` in the static `RP/ui/core-ui/container/router.json`. The root holds vanilla's chest panel, referenced by name and untouched, behind a gate that opens only when no compiled layout claims the chest; behind the opposite gate sit the library's chrome (key routes, touch take-progress, the held-item icon, the controller pointer) and a second reference to vanilla's chest top half, the panel every addon's root is inserted into. And it gives that top half's two children — the title label and the 9 × 3 grid, both chest-only definitions — a visibility binding on the protocol key, so in that second reference nothing but the roots shows. A `modifications` entry cannot switch the content: `variables` is not an array modifications reach, and a `controls` insert on the screen creates an array that shadows the one the screen inherits from `common.base_screen`, emptying every chest.
+- **The addon's copy**, generated, inserts the addon's root into `chest.small_chest_panel_top_half` — one `modifications` entry, defining nothing. That definition declares its own `controls`, so the inserts from packs built apart all land; the chest root mounts it on both UI profiles, so one hook covers desktop and pocket.
+- **The addon's router**, `RP/ui/core-ui/screens/<namespace>_router.json` (namespace `core_ui_router`, every definition prefixed with the addon's namespace), holds that root: one gated host per screen. Its path and its names carry the addon's namespace, so no addon's file overwrites another's.
+
+Everything a compiled screen draws — item cells, slot buttons, the scrolling region, the transport-hiding renderer — is the library's own, in the static `core_ui_container` files the render pack ships. A compiled screen and a router reference no vanilla definition; the chest root references exactly three, the two chest panels it shows for an ordinary chest and the top half it mounts the roots in.
 
 ## Entities
 
@@ -99,7 +106,7 @@ A screen names the entity it opens from. The filter finds that entity's definiti
 "description": {
   "properties": {
     // The runtime reads this when a player opens the entity, to pick the screen.
-    "core:ui_layout": { "type": "int", "range": [0, 2000], "default": 1 }
+    "core:ui_layout": { "type": "int", "range": [0, 3969], "default": 1094 }
   }
 },
 "components": {
