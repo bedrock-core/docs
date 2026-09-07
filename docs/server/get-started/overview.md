@@ -39,7 +39,7 @@ The two packages underneath — [`@bedrock-core/server-runtime`](../server-runti
 
 - **[Registry](../server-runtime/registry.md)** — declare `creator` + `pack` once and every other bedrock-core addon sees you, with version, dependencies and display labels. Missing soft dependencies log and fire an event; they never block loading.
 - **[RPC](../sync/rpc.md)** — typed request/response calls to another addon, with a timeout so an absent peer can never hang your code.
-- **[Replicated state](../server-runtime/scoped-state.md)** — a shared key/value store every realm mirrors locally. Reads are synchronous; writes broadcast a delta.
+- **[Shared](../server-runtime/shared.md)** — a declared shape every realm mirrors locally as a typed tree. Reads are synchronous; writes broadcast a delta; only the owner writes.
 - **[Config](../server-runtime/config.md)** — a declarative schema in three scopes (server, dimension, player), persisted automatically and editable in game.
 - **[Features](../server-runtime/features.md)** — behaviour that auto-enables when a condition over the registry becomes true, and auto-disables when it stops being true.
 - **[Translations](../server-runtime/translations.md)** and **[guides](../server-runtime/guides.md)** — publish your i18n bundle and compiled guide so any addon's UI can render your content.

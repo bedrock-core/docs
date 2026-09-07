@@ -68,10 +68,12 @@ Their `exports` map points at `src/*.ts` rather than at compiled JavaScript, so 
 import { core } from '@bedrock-core/server';
 
 core.register({
-  creator: 'drav0011',       // creator/vendor id — [a-z0-9_]+
-  pack: 'economy',           // abbreviated pack id — [a-z0-9_]+
-  packName: 'Economy',       // display label only, not part of identity
-  version: '1.0.0',
+  manifest: {
+    creator: 'drav0011',       // creator/vendor id — [a-z0-9_]+
+    pack: 'economy',           // abbreviated pack id — [a-z0-9_]+
+    packName: 'Economy',       // display label only, not part of identity
+    version: '1.0.0',
+  },
 });
 
 console.warn(core.id);        // 'drav0011_economy'
@@ -132,13 +134,15 @@ const configDef = {
 export type EconomyConfigDef = typeof configDef;
 
 // register() brings the addon online and, because `config` was given, returns the
-// typed scope accessors.
-const config = core.register({
-  creator: 'drav0011',
-  pack: 'economy',
-  packName: 'Economy',
-  creatorName: 'DrAv0011',
-  version: '1.0.0',
+// typed scope accessors under `config`.
+const { config } = core.register({
+  manifest: {
+    creator: 'drav0011',
+    pack: 'economy',
+    packName: 'Economy',
+    creatorName: 'DrAv0011',
+    version: '1.0.0',
+  },
   config: configDef,
 });
 
@@ -171,7 +175,7 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 :::caution Dynamic properties are unreadable during early execution
 Anything that touches `world.getDynamicProperty` / `setDynamicProperty` — including your own persistence — must be deferred with `system.run()`. The runtime already does this for config: persisted values load one tick after registration, and change listeners fire for every key whose stored value differs from its default, so a subscriber attached right after `register()` still ends up seeing the real values.
 
-Nothing you put in `core.state` survives a reload unless you save it yourself — see [Persistence is your job](../server-runtime/scoped-state.md#persistence-is-your-job) for the pattern.
+Nothing in the shared mirror survives a reload unless the leaf is declared `persisted()` — see [Persistence](../server-runtime/shared.md#persistence).
 :::
 
 ## Getting two addons talking
@@ -188,12 +192,14 @@ interface EconomyRPC {
 }
 
 core.register({
-  creator: 'drav0011',
-  pack: 'shop',
-  packName: 'Shop',
-  version: '1.0.0',
-  dependencies: ['drav0011_economy'],            // soft — warns, never blocks
-  optionalDependencies: ['drav0011_leaderboard'], // unlocks optional features
+  manifest: {
+    creator: 'drav0011',
+    pack: 'shop',
+    packName: 'Shop',
+    version: '1.0.0',
+    dependencies: ['drav0011_economy'],            // soft — warns, never blocks
+    optionalDependencies: ['drav0011_leaderboard'], // unlocks optional features
+  },
 });
 
 // Fires immediately if the dependency is already present, otherwise when it appears.

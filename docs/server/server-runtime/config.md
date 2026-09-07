@@ -55,7 +55,7 @@ core.config.define<I extends ConfigDefinition>(input: I): Config<I>
 
 Declare this addon's config and get back the typed scope accessors. **Call once.** A second call throws `core.config.define() called more than once`.
 
-You normally never call it directly: pass `config` to `register()` and it delegates here, returning the same value.
+You normally never call it directly: pass `config` to `register()` and it delegates here, returning the same value under the `config` key.
 
 ```ts
 const configDef = {
@@ -78,11 +78,8 @@ const configDef = {
 
 export type ShopConfigDef = typeof configDef;
 
-const config = core.register({
-  creator: 'drav0011',
-  pack: 'shop',
-  packName: 'Shop',
-  version: '1.0.0',
+const { config } = core.register({
+  manifest: { creator: 'drav0011', pack: 'shop', packName: 'Shop', version: '1.0.0' },
   config: configDef,
 });
 ```
@@ -347,7 +344,7 @@ What that means for your code:
 - Therefore a subscriber attached right after `register()` always ends up seeing the real values. You do not need to defer your own subscription.
 
 ```ts
-const config = core.register({ /* … */, config: configDef });
+const { config } = core.register({ manifest, config: configDef });
 
 // Safe here: if the stored taxRate is 0.2, this fires once on load with (0.2, 0.05).
 config.server.pricing.taxRate.subscribe((next) => { applyTax(next); });
@@ -430,7 +427,7 @@ export type ShopConfigDef = typeof configDef;
 // in the shop addon's entry
 import { configDef } from '@drav0011/shop-types';
 
-const config = core.register({ /* …identity… */, config: configDef });
+const { config } = core.register({ manifest, config: configDef });
 ```
 
 A consumer passes `ShopConfigDef` to `core.config.of()` or `core.config.subscribe()` and gets `pricing.taxRate` typed as `number`.
@@ -556,7 +553,7 @@ A group that names neither is absent rather than empty, so a schema that names n
 core.config.local: LocalConfigScopes | undefined
 ```
 
-Your own scopes, narrowed to what a generic consumer can use **without** knowing the schema's type. Reach for it from tooling built on a plain `Runtime` — config commands, debug screens — where the typed value `register()` returned is not in hand.
+Your own scopes, narrowed to what a generic consumer can use **without** knowing the schema's type. Reach for it from tooling built on a plain `Runtime` — config commands, debug screens — where the typed `config` that `register()` returned is not in hand.
 
 ```ts
 interface LocalConfigScopes {

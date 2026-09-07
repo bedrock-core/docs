@@ -48,10 +48,7 @@ import guides from '@bedrock-core/generated/guides';
 import { configDef } from './example';
 
 core.register({
-  creator: 'drav0011',
-  pack: 'economy',
-  packName: 'Economy',
-  version: '1.0.0',
+  manifest: { creator: 'drav0011', pack: 'economy', packName: 'Economy', version: '1.0.0' },
   translations: bundle,
   guide: guides,
   config: configDef,

@@ -254,7 +254,7 @@ Pass the manifest to the server runtime's [registration](/docs/server/server-run
 ```ts
 import guides from '@bedrock-core/generated/guides';
 
-core.register({ /* … */, guide: guides });
+core.register({ manifest, guide: guides });
 ```
 
 ## API reference

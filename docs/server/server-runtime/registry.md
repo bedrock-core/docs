@@ -186,11 +186,13 @@ Dependencies are declared and matched by namespace, and they are **soft**: a mis
 
 ```ts
 core.register({
-  creator: 'drav0011',
-  pack: 'shop',
-  packName: 'Shop',
-  version: '1.0.0',
-  dependencies: ['drav0011_economy'],
+  manifest: {
+    creator: 'drav0011',
+    pack: 'shop',
+    packName: 'Shop',
+    version: '1.0.0',
+    dependencies: ['drav0011_economy'],
+  },
 });
 ```
 

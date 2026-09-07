@@ -141,21 +141,23 @@ Two of your answers become Minecraft-safe identifiers — lowercased, non-alphan
 
 | Variable | From | Used for |
 | --- | --- | --- |
-| `CREATOR_ID` | Author name | `core.register({ creator })`, the addon namespace |
-| `PACK_ID` | Project name | `core.register({ pack })`, generated identifiers |
+| `CREATOR_ID` | Author name | `core.register({ manifest: { creator } })`, the addon namespace |
+| `PACK_ID` | Project name | `core.register({ manifest: { pack } })`, generated identifiers |
 
 Together they form the addon namespace `<creator>_<pack>` that the [i18n filter derives](./i18n/regolith-filter.md#namespacing) for `.lang` keys and that the `guides` filter takes as its `namespace` setting.
 
 ### The generated `main.ts`
 
 ```ts
-const config = core.register({
-  creator: 'your_name',
-  pack: 'my_addon',
-  packName: i18n.key($ => $.meta.name),
-  creatorName: i18n.key($ => $.meta.creator),
-  version: '1.0.0',
-  description: i18n.key($ => $.meta.description),
+const { config } = core.register({
+  manifest: {
+    creator: 'your_name',
+    pack: 'my_addon',
+    packName: i18n.key($ => $.meta.name),
+    creatorName: i18n.key($ => $.meta.creator),
+    version: '1.0.0',
+    description: i18n.key($ => $.meta.description),
+  },
   translations: bundle,
   guide: guides,
   config: configDef,

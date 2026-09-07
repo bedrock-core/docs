@@ -6,7 +6,7 @@ sidebar_position: 3
 
 `core.features` declares behaviour that switches itself on when a condition becomes true and off when it stops being true. It is how an addon reacts to `optionalDependencies` without writing its own bookkeeping.
 
-Each feature's enabled flag is published to replicated state automatically, under the [reserved `core-` prefix](./scoped-state.md#reserved-keys), so other addons can read it with `ctx.feature()` or `core.features.of()`.
+Each feature's enabled flag is published to replicated state automatically, under the [reserved `core-` prefix](./shared.md#reserved-keys), so other addons can read it with `ctx.feature()` or `core.features.of()`.
 
 ## Import
 

@@ -6,10 +6,10 @@ sidebar_position: 4
 
 `sync.state` is a **replicated** key/value store. Every node keeps a full in-memory mirror, so reads are local and synchronous; writes broadcast a delta that every other node applies to its own mirror.
 
-The model is **shared-mutable**: any node may read or write any `namespace:key`. Conflicts resolve last-write-wins on a Lamport-style logical clock, so every mirror converges regardless of delivery order.
+Any node may read any `namespace:key`. A mirror **applies** an entry for a namespace only when it came from the namespace's owner — the node whose id is the namespace — unless the owner wrote the key with `{ open: true }`, in which case any node's write is taken. Among accepted entries conflicts resolve last-write-wins on a logical clock (a higher version wins; on a tie, the lexicographically greater `src`), so every mirror converges regardless of delivery order. Refused entries are counted in `droppedForeign`.
 
-:::tip From an addon, prefer `core.state`
-[`ScopedState`](../server-runtime/scoped-state.md) pre-fills your namespace and hides the framework's reserved keys. Drop to `core.node.state` — the object documented here — when you need to read another namespace or reach a framework key.
+:::tip From an addon, prefer `core.shared`
+[Shared](../server-runtime/shared.md) declares a shape and gives you a typed tree over this store, with the framework's reserved keys hidden. Drop to `core.node.state` — the object documented here — when you need a raw key or a framework key.
 :::
 
 ## Import
@@ -23,6 +23,7 @@ import type { StateKey, StateChange, StateChangeListener, StateOptions, Snapshot
 
 ```ts
 sync.state.set('mycoolitems', 'spawnRate', 5);
+sync.state.set('mycoolitems', 'votes', 0, { open: true });  // any node may write this key from now on
 const rate = sync.state.get('mycoolitems', 'spawnRate');   // 5
 const all = sync.state.getNamespace('drav0011_economy');   // { currency: 'gold', … }
 
@@ -62,11 +63,13 @@ Every namespace currently present in the mirror, in insertion order.
 ### `set`
 
 ```ts
-set<T = unknown>(ns: string, key: StateKey<T>, value: NoInfer<T>): void
-set(ns: string, key: string, value: unknown): void
+set<T = unknown>(ns: string, key: StateKey<T>, value: NoInfer<T>, options?: SetOptions): void
+set(ns: string, key: string, value: unknown, options?: SetOptions): void
+
+interface SetOptions { open?: boolean }
 ```
 
-Write a key, apply it locally, and broadcast a `state-delta`. Throws when [`strictOwnership`](#ownership-and-strictownership) is on and `ns` is not owned.
+Write a key, apply it locally, and broadcast a `state-delta`. Throws when [`strictOwnership`](#ownership-and-strictownership) is on and `ns` is not owned. `open: true`, honoured only when this node owns `ns`, marks the key writable by any node; a write to a namespace this node does not own is applied by every mirror — this one included — only if the owner opened the key.
 
 ### `delete`
 
@@ -92,7 +95,7 @@ interface StateChange {
 Fires on **every applied change**, local or remote, in **every** namespace. Only writes that win the last-write-wins comparison are applied, so a losing delta fires nothing.
 
 :::caution This listener is very chatty
-Config schemas, i18n bundles, guide manifests and feature flags all replicate through this channel, so a raw `subscribe` sees traffic from every addon in the world. Filter by `ns` and `key`, or use [`core.state.subscribe`](../server-runtime/scoped-state.md#subscribe), which filters to your own namespace and drops framework keys.
+Config schemas, i18n bundles, guide manifests and feature flags all replicate through this channel, so a raw `subscribe` sees traffic from every addon in the world. Filter by `ns` and `key`, or subscribe on a node of a [shared tree](../server-runtime/shared.md#use-your-own-tree), which fires for one leaf, one branch or one namespace.
 :::
 
 ---
@@ -242,4 +245,4 @@ system.run(() => {
 });
 ```
 
-See [ScopedState](../server-runtime/scoped-state.md#persistence-is-your-job) for the per-key variant, which is what you want once a namespace can grow past a dynamic property's 32767-character ceiling.
+From an addon, `persisted()` on a [shared](../server-runtime/shared.md#persistence) leaf does this per key, which is what you want once a namespace can grow past a dynamic property's 32767-character ceiling.

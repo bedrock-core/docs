@@ -26,7 +26,7 @@ import { core } from '@bedrock-core/server-runtime';  // direct
 ```ts
 import { core } from '@bedrock-core/server-runtime';
 
-core.register({ creator: 'drav0011', pack: 'economy', packName: 'Economy', version: '1.0.0' });
+core.register({ manifest: { creator: 'drav0011', pack: 'economy', packName: 'Economy', version: '1.0.0' } });
 ```
 
 Every accessor below throws `runtime.<name> is unavailable: call register() first` until registration has happened.
@@ -40,7 +40,8 @@ Every accessor below throws `runtime.<name> is unavailable: call register() firs
 | `core.registry` | [`Registry`](./registry.md) | The cross-addon directory. |
 | `core.features` | [`FeatureManager`](./features.md) | Condition-driven togglable behaviour. |
 | `core.host` | [`HostElection`](./host.md) | Which realm does the work only one realm may do. |
-| `core.state` | [`ScopedState`](./scoped-state.md) | Replicated state, pre-scoped to this addon's namespace. |
+| `core.shared` | [`SharedRegistry`](./shared.md) | The replicated mirror as typed trees: `of(ns)` for a peer's, `own` for this addon's. |
+| `core.state` | `ScopedState` | Deprecated string-keyed access to this addon's namespace; declare `shared` in `register()` instead. |
 | `core.config` | [`ConfigRegistry`](./config.md) | Schema, scopes and cross-addon config access. |
 | `core.translations` | [`TranslationsRegistry`](./translations.md) | Cross-addon i18n bundles. |
 | `core.guides` | [`GuidesRegistry`](./guides.md) | Cross-addon compiled guides. |
@@ -52,13 +53,12 @@ Every accessor below throws `runtime.<name> is unavailable: call register() firs
 ## `register()`
 
 ```ts
-register<I extends ConfigDefinition>(options: RegisterOptions<I> & { config: I }): Config<I>
-register(options: RegisterOptions): void
+register(options: RegisterOptions): { config, shared }   // one key per declaration; void when neither is declared
 ```
 
 Declare the addon and bring it online. **Call exactly once — there is no separate `start()`.** It throws on an invalid manifest and on a second call.
 
-`RegisterOptions` is the [manifest](#manifest-fields) plus three optional declaration fields. Each is exactly equivalent to the standalone call listed beside it, which stays available for publishing late or replacing data at runtime:
+`RegisterOptions` is `{ manifest: AddonManifest; translations?; guide?; guideReference?; page?; config?; shared? }` — a `manifest` (the [manifest fields](#manifest-fields)) plus the optional declarations beside it. Each declaration is exactly equivalent to the standalone call listed beside it, which stays available for publishing late or replacing data at runtime:
 
 | Field | Type | Equivalent to |
 |---|---|---|
@@ -66,7 +66,7 @@ Declare the addon and bring it online. **Call exactly once — there is no separ
 | `guide` | `GuideManifest` | [`core.guides.provideManifest()`](./guides.md#providemanifest) |
 | `config` | `ConfigDefinition` | [`core.config.define()`](./config.md#define) |
 
-When `config` is given, `register()` returns the typed scope accessors — the same value `core.config.define()` would return. Without it, the return type is `void`.
+`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value [`core.config.define()`](./config.md#define) returns) and [`shared`](./shared.md) (the tree). Each key is present only when its declaration was given; with neither, the return type is `void`.
 
 ```ts
 import { core } from '@bedrock-core/server-runtime';
@@ -74,17 +74,19 @@ import bundle from '@bedrock-core/generated/i18n';
 import guides from '@bedrock-core/generated/guides';
 import { configDef } from './example';
 
-const config = core.register({
-  creator: 'drav0011',
-  pack: 'economy',
-  packName: 'Economy',
-  creatorName: 'DrAv0011',
-  version: '1.0.0',
-  description: 'Balances, currency and trading',
-  dependencies: ['drav0011_core_data'],
-  optionalDependencies: ['drav0011_leaderboard'],
-  icon: 'textures/ui/economy/icon',
-  thumbnail: 'textures/ui/economy/thumbnail',
+const { config } = core.register({
+  manifest: {
+    creator: 'drav0011',
+    pack: 'economy',
+    packName: 'Economy',
+    creatorName: 'DrAv0011',
+    version: '1.0.0',
+    description: 'Balances, currency and trading',
+    dependencies: ['drav0011_core_data'],
+    optionalDependencies: ['drav0011_leaderboard'],
+    icon: 'textures/ui/economy/icon',
+    thumbnail: 'textures/ui/economy/thumbnail',
+  },
   translations: bundle,
   guide: guides,
   config: configDef,
@@ -136,12 +138,14 @@ import bundle from '@bedrock-core/generated/i18n';
 const i18n = createI18n(bundle);
 
 core.register({
-  creator: 'drav0011',
-  pack: 'economy',
-  packName: i18n.key($ => $.meta.name),
-  creatorName: i18n.key($ => $.meta.creator),
-  description: i18n.key($ => $.meta.description),
-  version: '1.0.0',
+  manifest: {
+    creator: 'drav0011',
+    pack: 'economy',
+    packName: i18n.key($ => $.meta.name),
+    creatorName: i18n.key($ => $.meta.creator),
+    description: i18n.key($ => $.meta.description),
+    version: '1.0.0',
+  },
   translations: bundle,
 });
 ```
@@ -182,11 +186,11 @@ import { Runtime } from '@bedrock-core/server-runtime';
 register('core', 'discovery_and_rpc', (test: Test) => {
   const a = new Runtime();
 
-  a.register({ creator: 'test', pack: 'demo_a', packName: 'A', version: '1.0.0' });
+  a.register({ manifest: { creator: 'test', pack: 'demo_a', packName: 'A', version: '1.0.0' } });
 
   const b = new Runtime();
 
-  b.register({ creator: 'test', pack: 'demo_b', packName: 'B', version: '1.0.0' });
+  b.register({ manifest: { creator: 'test', pack: 'demo_b', packName: 'B', version: '1.0.0' } });
   b.rpc.onRequest('ping', () => 'pong');
 
   // a.id === 'test_demo_a', b.id === 'test_demo_b'
@@ -231,7 +235,7 @@ import { RUNTIME_VERSION, compareVersions } from '@bedrock-core/server-runtime';
 | [Registry](./registry.md) | Enumerate peers, resolve dependencies, detect namespace collisions |
 | [FeatureManager](./features.md) | Behaviour that toggles on a condition over registry and state |
 | [HostElection](./host.md) | `core.host` — deterministic "who does the shared work" |
-| [ScopedState](./scoped-state.md) | Replicated key/value scoped to your namespace, with reserved keys |
+| [Shared](./shared.md) | The replicated mirror as typed trees, owner-only writes, `open()` and `persisted()` |
 | [ConfigRegistry](./config.md) | Schema, three scopes, persistence, cross-addon access, authorization |
 | [TranslationsRegistry](./translations.md) | Publish and resolve i18n bundles across addons |
 | [GuidesRegistry](./guides.md) | Publish and read compiled guide manifests across addons |

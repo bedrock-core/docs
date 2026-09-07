@@ -18,7 +18,7 @@ import type { GuideManifest, GuidesChangeListener } from '@bedrock-core/server-r
 ```ts
 import guides from '@bedrock-core/generated/guides';
 
-core.register({ /* …identity… */, guide: guides });   // publish up front
+core.register({ manifest, guide: guides });           // publish up front
 core.guides.provideManifest(guides);                   // or publish/replace later
 
 core.guides.own();                  // this addon's manifest

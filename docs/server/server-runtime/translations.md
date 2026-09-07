@@ -22,7 +22,7 @@ import type { I18nBundle, TranslationResolver, TranslationsChangeListener } from
 ```ts
 import bundle from '@bedrock-core/generated/i18n';
 
-core.register({ /* …identity… */, translations: bundle });   // publish up front
+core.register({ manifest, translations: bundle });           // publish up front
 core.translations.provide(bundle);                            // or publish/replace later
 
 core.translations.of('drav0011_shop');        // another addon's verbs

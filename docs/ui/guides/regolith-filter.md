@@ -187,7 +187,7 @@ Admonition **default** titles (Note, Tip, …) are not this filter's output. The
 | `maxCodeLineBytes` | `number` | `60` | Hard-wrap budget (UTF-8 bytes) for code-block lines — code is raw un-localized text, which the runtime caps at 80 bytes |
 | `strictLocales` | `boolean` | `false` | Fail the build instead of warning on cross-locale key drift |
 
-Use the same `<creator>_<pack>` join for `namespace` that [the i18n filter derives](../i18n/regolith-filter.md#namespacing) from `core.register({ creator, pack })` and the server runtime builds at startup, so every key your pack emits sits under one prefix.
+Use the same `<creator>_<pack>` join for `namespace` that [the i18n filter derives](../i18n/regolith-filter.md#namespacing) from `core.register({ manifest: { creator, pack } })` and the server runtime builds at startup, so every key your pack emits sits under one prefix.
 
 A missing `sourceDir`, no locale directories, or no pages in the default locale is an **info-level no-op**, not a failure. A missing `defaultLocale` directory, a broken internal link, or any other compile error exits non-zero.
 

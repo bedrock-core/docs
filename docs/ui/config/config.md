@@ -10,7 +10,7 @@ sidebar_position: 1
 import { core } from '@bedrock-core/server-runtime';
 import { ui } from '@bedrock-core/config';
 
-core.register({ creator: 'bt', pack: 'gc_graves', /* …translations, guide, config… */ });
+core.register({ manifest: { creator: 'bt', pack: 'gc_graves', /* … */ }, /* …translations, guide, config… */ });
 ui(core);
 ```
 
@@ -109,7 +109,7 @@ import { system, CommandPermissionLevel } from '@minecraft/server';
 import { core } from '@bedrock-core/server-runtime';
 import { ui } from '@bedrock-core/config';
 
-core.register({ creator: 'drav0011', pack: 'shop', packName: 'drav0011.shop.name', version: '1.0.0' });
+core.register({ manifest: { creator: 'drav0011', pack: 'shop', packName: 'drav0011.shop.name', version: '1.0.0' } });
 ui(core);
 
 system.beforeEvents.startup.subscribe((ev) => {
@@ -139,15 +139,15 @@ Three things that template gets right, and are worth copying:
 The namespace is not configurable on its own — it is derived, `${creator}_${pack}`, so you change it by changing those two fields in `core.register()`:
 
 ```ts
-core.register({ creator: 'drav0011', pack: 'shop', /* … */ });   // drav0011_shop
-core.register({ creator: 'dv',       pack: 'market', /* … */ }); // dv_market
+core.register({ manifest: { creator: 'drav0011', pack: 'shop', /* … */ } });   // drav0011_shop
+core.register({ manifest: { creator: 'dv',       pack: 'market', /* … */ } }); // dv_market
 ```
 
 Both halves must match `/^[a-z0-9_]+$/` — lowercase letters, digits and underscores. The convention is creator-then-pack (`bt_gc_graves` = Bedrock Tweaks, gameplay changes, graves), and shorter is better: the namespace is typed in front of every command.
 
 :::danger Changing it after release orphans data
 
-The namespace is the addon's identity **everywhere** — its sync transport id, its [replicated state](/docs/server/server-runtime/scoped-state) keys, its config storage, its guide, and the id peers name in `dependencies`. Changing it on a live world is a rename with no migration: existing settings and state stay filed under the old namespace and the addon comes up empty. Pick it before you ship, and keep the Minecraft pack namespace in your BP/RP identical to it.
+The namespace is the addon's identity **everywhere** — its sync transport id, its [shared](/docs/server/server-runtime/shared) keys, its config storage, its guide, and the id peers name in `dependencies`. Changing it on a live world is a rename with no migration: existing settings and state stay filed under the old namespace and the addon comes up empty. Pick it before you ship, and keep the Minecraft pack namespace in your BP/RP identical to it.
 
 :::
 
@@ -210,8 +210,7 @@ You define a schema on the runtime, either inline in `core.register({ config })`
 
 ```ts
 core.register({
-  creator: 'bt',
-  pack: 'gc_graves',
+  manifest: { creator: 'bt', pack: 'gc_graves', /* … */ },
   config: {
     server: {
       pricing: {

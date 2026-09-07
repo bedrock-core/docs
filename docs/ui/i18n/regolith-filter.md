@@ -71,10 +71,10 @@ Keys are constrained by what has to survive as both a `.lang` key segment and a 
 
 Every key you author lands in the `.lang` files prefixed with your addon's namespace: `shop.bought` becomes `drav0011_shop.shop.bought`. The prefix is what keeps addons from colliding everywhere their text meets — Bedrock merges every installed pack's `.lang` into one world-wide table, and the server runtime merges every addon's published translation tables under the same namespace.
 
-The namespace is **derived, not configured**. The filter scans `BP/scripts` for the `core.register({ creator: '…', pack: '…' })` call and joins the two string literals — the same two fields the server runtime joins at startup.
+The namespace is **derived, not configured**. The filter scans `BP/scripts` for the `core.register({ manifest: { creator: '…', pack: '…' } })` call and joins the two string literals — the same two fields the server runtime joins at startup.
 
 ```ts
-core.register({ creator: 'drav0011', pack: 'shop', /* … */ });
+core.register({ manifest: { creator: 'drav0011', pack: 'shop', /* … */ } });
 // → namespace 'drav0011_shop'
 ```
 
