@@ -210,6 +210,29 @@ div[class^='codeBlockTitle'] {
   font-size: var(--text-caption);
   border-bottom: 1px solid var(--border-subtle);
 }
+/* language badge, top right, uppercase mono like the kit's CodeBlock title bar */
+.theme-code-block { position: relative; }
+.theme-code-block::after {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.theme-code-block.language-ts::after { content: 'ts'; }
+.theme-code-block.language-tsx::after { content: 'tsx'; }
+.theme-code-block.language-js::after { content: 'js'; }
+.theme-code-block.language-json::after { content: 'json'; }
+.theme-code-block.language-jsonc::after { content: 'jsonc'; }
+.theme-code-block.language-bash::after { content: 'bash'; }
+.theme-code-block.language-yaml::after { content: 'yaml'; }
+.theme-code-block.language-mdx::after { content: 'mdx'; }
+.theme-code-block:has(div[class^='codeBlockTitle'])::after { top: 8px; }
+.theme-code-block:hover::after { opacity: 0; }
 :not(pre) > code { border: 1px solid var(--border-subtle); }
 
 /* cards, tables, prev/next: flat, bordered, no shadow */
@@ -239,6 +262,19 @@ table th {
   font-weight: var(--weight-semibold);
 }
 table td, table th { border: 0; border-bottom: 1px solid var(--border-subtle); }
+/* tables: identifiers in mono without inline-code chrome; the first column is the name */
+table td { vertical-align: top; }
+table td code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: var(--text-caption);
+  color: var(--text-body);
+}
+table td:first-child code { color: var(--accent-alt); font-weight: var(--weight-semibold); }
+table td a code { color: var(--ifm-link-color); font-weight: var(--weight-semibold); }
+table td a:hover code { color: var(--ifm-link-hover-color); text-decoration: underline; }
+table td:first-child { white-space: nowrap; }
 
 /* buttons never bounce; they nudge 1px */
 .button { font-weight: var(--weight-semibold); letter-spacing: var(--tracking-label); transition: var(--transition-control); }
@@ -247,9 +283,72 @@ table td, table th { border: 0; border-bottom: 1px solid var(--border-subtle); }
 /* focus ring */
 :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
-/* footer */
-.footer { border-top: 1px solid var(--border-subtle); }
-.footer__copyright { font-size: var(--text-caption); color: var(--text-faint); }
+/* navbar right cluster: room before the theme toggle; DocSearch button as the kit's SearchInput */
+.navbar__items--right { gap: var(--space-2); }
+.navbar__items--right > * { margin: 0; }
+.DocSearch-Button {
+  height: 32px;
+  width: 220px;
+  margin: 0;
+  padding: 0 8px 0 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-faint);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-sm);
+  box-shadow: none;
+  transition: var(--transition-control);
+}
+.DocSearch-Button:hover, .DocSearch-Button:focus-visible {
+  background: var(--bg-surface);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-focus);
+  color: var(--text-faint);
+}
+.DocSearch-Button .DocSearch-Search-Icon { width: 14px; height: 14px; color: var(--text-faint); }
+.DocSearch-Button-Placeholder { flex: 1; text-align: left; padding: 0 0 0 var(--space-2); font-size: var(--text-body-sm); }
+.DocSearch-Button-Keys { min-width: 0; gap: 3px; }
+.DocSearch-Button-Key {
+  width: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  margin: 0;
+  top: 0;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-default);
+  border-bottom-width: 2px;
+  background: var(--bg-surface);
+  box-shadow: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+}
+@media (max-width: 996px) { .DocSearch-Button { width: 32px; padding: 0; justify-content: center; } .DocSearch-Button-Placeholder, .DocSearch-Button-Keys { display: none; } }
+/* DocSearch modal on the same tokens */
+.DocSearch {
+  --docsearch-primary-color: var(--accent-solid);
+  --docsearch-text-color: var(--text-body);
+  --docsearch-muted-color: var(--text-muted);
+  --docsearch-container-background: var(--overlay-scrim);
+  --docsearch-modal-background: var(--bg-raised);
+  --docsearch-modal-shadow: var(--shadow-lg);
+  --docsearch-searchbox-background: var(--bg-surface);
+  --docsearch-searchbox-focus-background: var(--bg-surface);
+  --docsearch-searchbox-shadow: 0 0 0 1px var(--border-accent);
+  --docsearch-hit-color: var(--text-body);
+  --docsearch-hit-background: var(--bg-surface);
+  --docsearch-hit-active-color: var(--accent-on-solid);
+  --docsearch-hit-shadow: none;
+  --docsearch-key-gradient: var(--bg-surface);
+  --docsearch-key-shadow: 0 0 0 1px var(--border-default);
+  --docsearch-footer-background: var(--bg-sunken);
+  --docsearch-footer-shadow: 0 -1px 0 var(--border-subtle);
+  --docsearch-logo-color: var(--text-faint);
+}
+.DocSearch-Modal { border: 1px solid var(--border-default); border-radius: var(--radius-lg); }
+.DocSearch-Hit a { border-radius: var(--radius-sm); }
 
 /* respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
