@@ -38,8 +38,8 @@ import { Slider } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `min` (required) | `number` | — | Minimum selectable value |
-| `max` (required) | `number` | — | Maximum selectable value |
+| `min`<Req /> | `number` | — | Minimum selectable value |
+| `max`<Req /> | `number` | — | Maximum selectable value |
 | `step` | `number` | `1` | Increment between selectable values |
 | `value` | `number` | — | Controlled value. When provided, the face reflects it on every render and `onChange` is your only way to update it |
 | `defaultValue` | `number` | `min` | Initial value when running uncontrolled |

@@ -32,7 +32,7 @@ Wraps the runtime [`Form.Toggle`](/docs/ui/components/Form/FormToggle) primitive
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
 | `defaultValue` | `boolean` | `false` | Initial checked state |
 | `label` | `string` | — | Caption rendered to the right of the box. Omit for a bare box |
 | `enabled` | `boolean` | `true` | Whether the control is interactive. When `false`, renders the disabled face and the caption in the theme's disabled color |

@@ -28,7 +28,7 @@ Wraps the runtime [`Form.Input`](/docs/ui/components/Form/FormInput) primitive w
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
 | `placeholder` | `string` | — | Text shown inside the field when empty |
 | `defaultValue` | `string` | `''` | Initial text |
 | `label` | `string` | — | Caption rendered above the field |

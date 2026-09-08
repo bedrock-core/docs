@@ -33,7 +33,7 @@ A `Form` enforces the cardinality of these buttons at build time (see [`Form`'s 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `type` (required) | `'submit' \| 'exit'` | — | `'submit'` presses the native submit — field values return via the form's `onSubmit`. `'exit'` closes the form like Esc — no values, the form's `onCancel` fires instead |
+| `type`<Req /> | `'submit' \| 'exit'` | — | `'submit'` presses the native submit — field values return via the form's `onSubmit`. `'exit'` closes the form like Esc — no values, the form's `onCancel` fires instead |
 | `label` | `string` | `'Submit'` for `type="submit"`, `'Close'` for `type="exit"` | Button text |
 
 ### Control props

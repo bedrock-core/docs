@@ -36,15 +36,15 @@ The group lays its items out in a row with their edges flush, reading as a singl
 | `defaultValue` | `string` | `''` | Initial selected value when running uncontrolled |
 | `onChange` | `(value: string) => void` | — | Called whenever the player picks a different item |
 | `disabled` | `boolean` | `false` | Disables every item in the group. Individual items can still set their own `disabled={true}` regardless |
-| `children` | `JSX.Node` | — (**required**) | One or more `ToggleButtonItem` children |
+| `children`<Req /> | `JSX.Node` | — | One or more `ToggleButtonItem` children |
 
 ### `ToggleButtonItem`
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `string` | — (**required**) | Identifier matched against the group's selected value |
+| `value`<Req /> | `string` | — | Identifier matched against the group's selected value |
 | `disabled` | `boolean` | — | Disables this item only. Falls back to the group's `disabled` when unset |
-| `children` | `JSX.Node` | — (**required**) | Item content. A string is auto-wrapped in a themed `Text` whose color reflects the selected/unselected/disabled state |
+| `children`<Req /> | `JSX.Node` | — | Item content. A string is auto-wrapped in a themed `Text` whose color reflects the selected/unselected/disabled state |
 
 ### Control props
 

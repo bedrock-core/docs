@@ -31,7 +31,7 @@ import { Form } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
 | `defaultValue` | `boolean` | `false` | Initial on/off state |
 | `checkedBackground` | `string` | the resolved unchecked base texture | Checked (on) base texture |
 | `checkedHover` | `string` | the resolved checked base texture | Checked hover texture |

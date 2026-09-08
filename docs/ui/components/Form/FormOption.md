@@ -32,8 +32,8 @@ import { Form } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` (required) | `string` | — | The option's stable identifier — what a parent's `defaultValue` is matched against. The parent reports the SELECTED option's index on submit, not this value |
-| `label` (required) | `string` | — | Option text rendered in the row |
+| `value`<Req /> | `string` | — | The option's stable identifier — what a parent's `defaultValue` is matched against. The parent reports the SELECTED option's index on submit, not this value |
+| `label`<Req /> | `string` | — | Option text rendered in the row |
 | `font` / `scale` / `align` | `LabelFont` / `number` / `'left' \| 'center' \| 'right'` | falls back to the parent's `optionFont` / `optionScale` / `optionAlign` | Per-option label style override |
 | `background` / `backgroundHover` / `backgroundSelected` | `string` | falls back to the parent's `optionBackground` / `optionHover` / `optionSelected` | Per-option row background override |
 | `bullet` / `bulletSelected` / `bulletHover` / `bulletSelectedHover` | `string` | falls back to the parent's matching group prop | Per-option bullet glyph override (only meaningful under `Form.InlineSelect`) |

@@ -41,8 +41,8 @@ Like [`Form.Radio`](./FormRadio.md), `Form.ToggleButton` is a single composed co
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
-| `options` (required) | `{ value: string; label: string }[]` | — | The segments, left to right |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `options`<Req /> | `{ value: string; label: string }[]` | — | The segments, left to right |
 | `defaultValue` | `string` | the first option | Initial selected value, matched to its index |
 | `enabled` | `boolean` | `true` | Whether the group is interactive |
 | `label` | `string` | — | Caption rendered above the group |

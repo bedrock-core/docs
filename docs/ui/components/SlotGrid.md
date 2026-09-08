@@ -29,9 +29,9 @@ Its size is fixed by the cell: `columns × rows` cells of 18 texels each. Lay it
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `collection` (required) | `string` | — | The JSON UI collection every cell reads, e.g. `inventory_items`, `hotbar_items`, or a custom one |
-| `columns` (required) | `number` | — | Columns of cells. At least one |
-| `rows` (required) | `number` | — | Rows of cells. At least one |
+| `collection`<Req /> | `string` | — | The JSON UI collection every cell reads, e.g. `inventory_items`, `hotbar_items`, or a custom one |
+| `columns`<Req /> | `number` | — | Columns of cells. At least one |
+| `rows`<Req /> | `number` | — | Rows of cells. At least one |
 | `interactive` | `boolean` | `true` | Whether the player can move items through the cells. `false` makes the grid inert — no take, no place, no drop |
 
   A container slot's take and place are one combined engine action, so there is no take-only or place-only grid; interactivity is all-or-nothing, and `false` is the way to make a grid purely a display.

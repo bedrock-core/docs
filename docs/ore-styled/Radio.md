@@ -35,13 +35,13 @@ import { RadioGroup, Radio } from '@bedrock-core/ore-styled';
 | `defaultValue` | `string` | `''` | Initial selected value when running uncontrolled |
 | `onChange` | `(value: string) => void` | — | Called whenever the player selects a different `Radio` |
 | `disabled` | `boolean` | `false` | Disables every `Radio` inside the group. Individual `Radio`s can still set their own `disabled={true}` regardless |
-| `children` | `JSX.Node` | — (**required**) | One or more `Radio` items |
+| `children`<Req /> | `JSX.Node` | — | One or more `Radio` items |
 
 ### `Radio`
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `string` | — (**required**) | Identifier matched against the group's selected value |
+| `value`<Req /> | `string` | — | Identifier matched against the group's selected value |
 | `label` | `string` | — | Text rendered next to the radio. Omit for an unlabeled bullet |
 | `disabled` | `boolean` | — | Disables this `Radio` only. Falls back to the group's `disabled` when unset |
 

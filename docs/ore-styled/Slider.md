@@ -38,8 +38,8 @@ Built on top of the [`Slider`](/docs/ui/components/deprecated/Slider) primitive 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `min` (required) | `number` | — | Minimum selectable value; the left end of the track |
-| `max` (required) | `number` | — | Maximum selectable value; the right end of the track |
+| `min`<Req /> | `number` | — | Minimum selectable value; the left end of the track |
+| `max`<Req /> | `number` | — | Maximum selectable value; the right end of the track |
 | `step` | `number` | `1` | Increment between selectable values in the modal |
 | `value` | `number` | — | Controlled value. When provided, the thumb reflects it on every render and `onChange` is your only way to update it |
 | `defaultValue` | `number` | `min` | Initial value when running uncontrolled |

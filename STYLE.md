@@ -99,7 +99,7 @@ Reference pages end when the content ends: no `Next steps`, no `Best practices`.
 | Export index | `\| Export \| Kind \| Description \|` |
 | Section index | `\| Page \| Description \|` |
 
-Cell rules: types in backticks, `\|` inside unions; Default is `—` when none and `— (**required**)` when required; descriptions are one sentence with no trailing period; a compound component gets one table per part under `### RadioGroup`, `### Radio`.
+Cell rules: types in backticks, `\|` inside unions; Default is `—` when none; a required prop carries `<Req />` after its name (a red asterisk) and `—` as its default; descriptions are one sentence with no trailing period; a compound component gets one table per part under `### RadioGroup`, `### Radio`.
 
 ## Voice and typography
 

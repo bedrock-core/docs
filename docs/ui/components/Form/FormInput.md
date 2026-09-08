@@ -31,7 +31,7 @@ import { Form } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
 | `placeholder` | `string` | — | Text shown inside the native field when empty |
 | `defaultValue` | `string` | `''` | Initial text |
 | `font` | `LabelFont` | `'mojangles'` | Font family for the typed value and placeholder |

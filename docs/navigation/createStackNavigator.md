@@ -48,7 +48,7 @@ TypeScript uses this map to:
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `screens` | `ScreensMap<TRoutes>` | — (**required**) | Maps each route name to a screen component, optionally with `initialParams` |
+| `screens`<Req /> | `ScreensMap<TRoutes>` | — | Maps each route name to a screen component, optionally with `initialParams` |
 | `initialRouteName` | `keyof TRoutes` | first key in `screens` | The route shown first when the navigator mounts |
 
 ### `screens`

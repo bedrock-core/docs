@@ -28,9 +28,9 @@ Wraps the runtime [`Form.Slider`](/docs/ui/components/Form/FormSlider) primitive
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
-| `min` (required) | `number` | — | Minimum selectable value |
-| `max` (required) | `number` | — | Maximum selectable value |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `min`<Req /> | `number` | — | Minimum selectable value |
+| `max`<Req /> | `number` | — | Maximum selectable value |
 | `step` | `number` | `1` | Increment between selectable values |
 | `defaultValue` | `number` | `min` | Initial value |
 | `label` | `string` | — | Caption rendered above the slider |

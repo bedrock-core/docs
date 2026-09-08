@@ -35,7 +35,7 @@ import { Form } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
 | `defaultValue` | `string` | the first option | Initial selection, matched against a [`Form.Option`](./FormOption.md)'s `value` |
 | `children` | `JSX.Node` | — | The selectable options, authored as [`Form.Option`](./FormOption.md) elements. Popup rows flow at a fixed row height, so an option's own layout props are ignored here — only its `value`/`label`/style are read |
 | `popupBackground` | `string` | the unstyled placeholder texture | Background texture for the popup surface behind the option list |

@@ -41,8 +41,8 @@ import { Form } from '@bedrock-core/ore-styled';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
-| `options` (required) | `{ value: string; label: string }[]` | — | The options, top to bottom |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `options`<Req /> | `{ value: string; label: string }[]` | — | The options, top to bottom |
 | `defaultValue` | `string` | the first option | Initial selected value, matched to its index |
 | `enabled` | `boolean` | `true` | Whether the group is interactive |
 | `label` | `string` | — | Caption rendered above the group |

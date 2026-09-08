@@ -31,8 +31,8 @@ import { Form } from '@bedrock-core/ui';
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `min` (required) | `number` | — | Minimum selectable value |
-| `max` (required) | `number` | — | Maximum selectable value |
+| `min`<Req /> | `number` | — | Minimum selectable value |
+| `max`<Req /> | `number` | — | Maximum selectable value |
 | `step` | `number` | `1` (native default) | Increment between selectable values |
 | `defaultValue` | `number` | `min` | Initial value |
 | `progress` | `string` | the resolved track base texture | Progress-fill texture, drawn to the left of the thumb |

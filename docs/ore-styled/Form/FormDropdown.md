@@ -38,8 +38,8 @@ Wraps the runtime [`Form.Dropdown`](/docs/ui/components/Form/FormDropdown) primi
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
-| `options` (required) | `string[]` | — | The selectable options. The closed box shows the current one; the popup lists them all |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `options`<Req /> | `string[]` | — | The selectable options. The closed box shows the current one; the popup lists them all |
 | `defaultValue` | `string` | the first option | Initial selection |
 | `label` | `string` | — | Caption rendered above the closed box |
 | `enabled` | `boolean` | `true` | Whether the field is interactive. When `false`, renders the disabled face and a dimmed chevron |

@@ -35,7 +35,7 @@ Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a scr
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `entity` | `string` | — (**required**) | Type of the entity the screen opens from, e.g. `'core:furnace'`. The build sizes that entity's `minecraft:inventory` and stamps it with the screen's layout key; the runtime serves the screen when a player interacts with it. The entity must exist in the behavior pack, or the build fails |
+| `entity`<Req /> | `string` | — | Type of the entity the screen opens from, e.g. `'core:furnace'`. The build sizes that entity's `minecraft:inventory` and stamps it with the screen's layout key; the runtime serves the screen when a player interacts with it. The entity must exist in the behavior pack, or the build fails |
 | `onOpen` | `(event: ContainerEvent) => void` | `undefined` | Ran when a player opens the screen, and again for every further viewer. `event.player` is who opened it and `event.host` the entity it opened. One layout serves everyone looking, so this is where a screen learns who is there — keep what it needs in state |
 | `onClose` | `(event: ContainerEvent) => void` | `undefined` | Ran when a player closes the screen, or leaves the world with it open. `event.player` is who left, `event.host` the entity it belonged to |
 | `children` | `JSX.Node` | — | The screen. Anything a form can hold except the [form-only components](../guides/container-screens.md#not-supported), plus [`Slot`](./Slot.md), [`PlayerInventory`](./PlayerInventory.md) and [`Hotbar`](./Hotbar.md) |

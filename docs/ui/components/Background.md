@@ -35,7 +35,7 @@ If a tree contains more than one `<Background>`, only the first is rendered; the
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `texture` | `string` | — (**required**) | Resource-pack texture path drawn as the full-screen backdrop, e.g. `'textures/ui/my_background'` |
+| `texture`<Req /> | `string` | — | Resource-pack texture path drawn as the full-screen backdrop, e.g. `'textures/ui/my_background'` |
 - Constraints: The path must fit within 80 UTF-8 bytes and may not contain a `;` character.
 
 ## Examples

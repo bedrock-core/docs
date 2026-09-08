@@ -31,7 +31,7 @@ Wraps the runtime [`Form.Button`](/docs/ui/components/Form/FormButton) primitive
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `type` (required) | `'submit' \| 'exit'` | — | `'submit'` presses the native submit; `'exit'` closes the form like Esc. A form must declare exactly one submit button and at most one exit button — see [`Form`'s Rules & Restrictions](./Form.md#rules) |
+| `type`<Req /> | `'submit' \| 'exit'` | — | `'submit'` presses the native submit; `'exit'` closes the form like Esc. A form must declare exactly one submit button and at most one exit button — see [`Form`'s Rules & Restrictions](./Form.md#rules) |
 | `variant` | `ButtonVariant` (`'hero' \| 'primary' \| 'secondary' \| 'contrast' \| 'danger' \| 'realm' \| 'transparent'`) | `'primary'` for `type="submit"`, `'secondary'` for `type="exit"` | Visual style, same variant set as the ore-styled [`Button`](../Button.md) |
 | `label` | `string` | `'Submit'` for `type="submit"`, `'Close'` for `type="exit"` | Button text |
 | `enabled` | `boolean` | `true` | Whether the button is interactive |

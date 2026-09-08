@@ -39,7 +39,7 @@ The native modal works on item *indices*; `Dropdown` maps the selected index bac
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `options` (required) | `string[]` | — | The selectable options. The face shows the current one; the modal lists them all |
+| `options`<Req /> | `string[]` | — | The selectable options. The face shows the current one; the modal lists them all |
 | `value` | `string` | — | Controlled selection — should match one of `options`. When provided, the face reflects it on every render and `onChange` is your only way to update it |
 | `defaultValue` | `string` | the first option | Initial selection when running uncontrolled |
 | `onChange` | `(value: string, index: number) => void` | — | Called with the chosen option and its index in `options` when the player confirms the modal |

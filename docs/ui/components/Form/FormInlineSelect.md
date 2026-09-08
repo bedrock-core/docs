@@ -34,7 +34,7 @@ Just like [`Form.Dropdown`](./FormDropdown.md), `Form.InlineSelect` reports the 
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` (required) | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
 | `defaultValue` | `string` | the first option | Initial selection, matched against a [`Form.Option`](./FormOption.md)'s `value` |
 | `children` | `JSX.Node` | — | The selectable options, authored as [`Form.Option`](./FormOption.md) elements. Unlike `Form.Dropdown`'s popup rows, each option here is laid out by the normal flex engine — position it with ordinary layout props (`flex`, `gap`, `width`, …) |
 | `optionBackground` / `optionHover` / `optionSelected` | `string` | — | Group-level default row textures for idle/hover/selected states. Any `Form.Option` can override its own |
