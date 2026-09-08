@@ -1,6 +1,9 @@
 # Dependencies
 /node_modules
 
+# Yarn writes this on every install; it is a local cache, not a lockfile
+.yarn/install-state.gz
+
 # Production
 /build
 
