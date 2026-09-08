@@ -1,0 +1,32 @@
+:root{
+  /* display — Space Grotesk, tight, used for hero + page titles */
+  --text-display-1:clamp(44px,6.2vw,84px);
+  --text-display-2:clamp(34px,4.4vw,56px);
+  --text-h1:36px;
+  --text-h2:26px;
+  --text-h3:20px;
+  --text-h4:17px;
+  --text-body-lg:17px;
+  --text-body-md:15px;
+  --text-body-sm:13.5px;
+  --text-caption:12px;
+  --text-micro:11px;
+  --text-code:13.5px;
+
+  --leading-tight:1.05;
+  --leading-snug:1.22;
+  --leading-normal:1.5;
+  --leading-relaxed:1.72;
+  --leading-code:1.62;
+
+  --tracking-display:-0.035em;
+  --tracking-heading:-0.02em;
+  --tracking-body:0em;
+  --tracking-label:0.02em;
+  --tracking-eyebrow:0.16em;
+
+  --weight-regular:400;
+  --weight-medium:500;
+  --weight-semibold:600;
+  --weight-bold:700;
+}

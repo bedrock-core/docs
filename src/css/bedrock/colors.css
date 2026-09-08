@@ -1,0 +1,178 @@
+/* @bedrock-core color system.
+   Base ramp = "stone": the grey/graphite of the bedrock logo.
+   Accents  = "ore": one hue per package family. */
+:root{
+  /* stone ramp (neutral, very slightly cool) */
+  --stone-0:#ffffff;
+  --stone-25:#fafafa;
+  --stone-50:#f4f4f5;
+  --stone-100:#e9e9ec;
+  --stone-200:#d6d6db;
+  --stone-300:#b4b4bb;
+  --stone-400:#8b8b93;
+  --stone-500:#6a6a72;
+  --stone-600:#4d4d54;
+  --stone-700:#3a3a40;
+  --stone-800:#28282d;
+  --stone-850:#1f1f23;
+  --stone-900:#17171a;
+  --stone-950:#111113;
+  --stone-1000:#0b0b0c;
+
+  /* logo-sampled greys — use for the mark, never as UI surfaces */
+  --logo-face-light:#b6b6b6;
+  --logo-face-mid:#8f8f8f;
+  --logo-face-dark:#3e3e3e;
+  --logo-outline:#101010;
+
+  /* ore accents */
+  --ore-emerald-300:#7ce2a8;
+  --ore-emerald-400:#4fd189;
+  --ore-emerald-500:#2ebe6a;
+  --ore-emerald-600:#1e9a53;
+  --ore-emerald-700:#16743e;
+  --ore-gold-300:#ffd88a;
+  --ore-gold-400:#ffc153;
+  --ore-gold-500:#f2a83b;
+  --ore-gold-600:#cf8618;
+  --ore-gold-700:#9c6410;
+  --ore-diamond-200:#b5e6e8;
+  --ore-diamond-300:#7fd8db;
+  --ore-diamond-400:#55c9cd;
+  --ore-diamond-500:#3cb9be;
+  --ore-diamond-600:#2c9599;
+  --ore-diamond-700:#1f7275;
+  --ore-amethyst-300:#c6a6f2;
+  --ore-amethyst-400:#a97fe8;
+  --ore-amethyst-500:#8f5cdb;
+  --ore-amethyst-600:#7440bd;
+  --ore-redstone-300:#f79ea1;
+  --ore-redstone-400:#ef6f74;
+  --ore-redstone-500:#e0484f;
+  --ore-redstone-600:#bb2f36;
+  --ore-lapis-400:#6f97ef;
+  --ore-lapis-500:#3b6fe0;
+  --ore-lapis-600:#2b55b6;
+
+  /* ---- category identity ----
+     Diamond is the BRAND primary and is reserved for interaction, so it is
+     never handed to a category. Each top-level docs category owns one ore hue;
+     every package inside a category inherits it. */
+  --cat-framework:var(--ore-emerald-500);
+  --cat-ui:var(--ore-gold-500);
+  --cat-data:var(--ore-lapis-500);
+  --cat-tooling:var(--ore-amethyst-500);
+  --cat-toolchain:var(--ore-redstone-500);
+
+  /* package aliases — resolve to their category */
+  --pkg-server:var(--cat-framework);
+  --pkg-sync:var(--cat-framework);
+  --pkg-ui:var(--cat-ui);
+  --pkg-ore-styled:var(--cat-ui);
+  --pkg-filters:var(--cat-data);
+  --pkg-tools:var(--cat-tooling);
+  --pkg-cli:var(--cat-toolchain);
+  --pkg-generator:var(--cat-toolchain);
+}
+
+/* ---------- dark theme (default) ---------- */
+:root{
+  color-scheme:dark;
+  --bg-canvas:var(--stone-950);
+  --bg-surface:var(--stone-900);
+  --bg-raised:var(--stone-850);
+  --bg-sunken:var(--stone-1000);
+  --bg-code:#0e0e10;
+  --bg-hover:rgba(255,255,255,.05);
+  --bg-active:rgba(255,255,255,.09);
+  --bg-selected:rgba(60,185,190,.14);
+
+  --text-strong:#f5f5f6;
+  --text-body:#d3d3d8;
+  --text-muted:#9a9aa2;
+  --text-faint:#6c6c74;
+  --text-inverse:var(--stone-1000);
+  --text-accent:var(--ore-diamond-400);
+  --text-link:var(--ore-diamond-400);
+  --text-link-hover:var(--ore-diamond-300);
+
+  --border-subtle:rgba(255,255,255,.07);
+  --border-default:rgba(255,255,255,.12);
+  --border-strong:rgba(255,255,255,.2);
+  --border-accent:var(--ore-diamond-500);
+
+  --accent-solid:var(--ore-diamond-500);
+  --accent-solid-hover:var(--ore-diamond-400);
+  --accent-solid-active:var(--ore-diamond-600);
+  --accent-on-solid:#04191a;
+  --accent-soft:rgba(60,185,190,.14);
+  --accent-soft-border:rgba(60,185,190,.34);
+
+  /* emerald survives as the secondary accent — success, framework category,
+     and the alternate solid button when two accents must sit side by side */
+  --accent-alt:var(--ore-emerald-400);
+  --accent-alt-solid:var(--ore-emerald-500);
+  --accent-alt-soft:rgba(46,190,106,.14);
+  --accent-alt-soft-border:rgba(46,190,106,.32);
+
+  --status-info:var(--ore-lapis-400);
+  --status-info-soft:rgba(111,151,239,.13);
+  --status-success:var(--ore-emerald-400);
+  --status-success-soft:rgba(79,209,137,.13);
+  --status-warning:var(--ore-gold-400);
+  --status-warning-soft:rgba(255,193,83,.13);
+  --status-danger:var(--ore-redstone-400);
+  --status-danger-soft:rgba(239,111,116,.13);
+
+  --focus-ring:var(--ore-diamond-400);
+}
+
+/* ---------- light theme ---------- */
+[data-theme="light"]{
+  color-scheme:light;
+  --bg-canvas:var(--stone-0);
+  --bg-surface:var(--stone-25);
+  --bg-raised:var(--stone-0);
+  --bg-sunken:var(--stone-50);
+  --bg-code:var(--stone-950);
+  --bg-hover:rgba(17,17,19,.045);
+  --bg-active:rgba(17,17,19,.08);
+  --bg-selected:rgba(44,149,153,.12);
+
+  --text-strong:var(--stone-950);
+  --text-body:var(--stone-700);
+  --text-muted:var(--stone-500);
+  --text-faint:var(--stone-400);
+  --text-inverse:var(--stone-0);
+  --text-accent:var(--ore-diamond-700);
+  --text-link:var(--ore-diamond-700);
+  --text-link-hover:var(--ore-diamond-600);
+
+  --border-subtle:rgba(17,17,19,.07);
+  --border-default:rgba(17,17,19,.13);
+  --border-strong:rgba(17,17,19,.24);
+  --border-accent:var(--ore-diamond-600);
+
+  --accent-solid:var(--ore-diamond-600);
+  --accent-solid-hover:var(--ore-diamond-500);
+  --accent-solid-active:var(--ore-diamond-700);
+  --accent-on-solid:#ffffff;
+  --accent-soft:rgba(44,149,153,.11);
+  --accent-soft-border:rgba(44,149,153,.28);
+
+  --accent-alt:var(--ore-emerald-700);
+  --accent-alt-solid:var(--ore-emerald-600);
+  --accent-alt-soft:rgba(30,154,83,.1);
+  --accent-alt-soft-border:rgba(30,154,83,.26);
+
+  --status-info:var(--ore-lapis-600);
+  --status-info-soft:rgba(59,111,224,.09);
+  --status-success:var(--ore-emerald-700);
+  --status-success-soft:rgba(30,154,83,.1);
+  --status-warning:var(--ore-gold-700);
+  --status-warning-soft:rgba(242,168,59,.13);
+  --status-danger:var(--ore-redstone-600);
+  --status-danger-soft:rgba(224,72,79,.09);
+
+  --focus-ring:var(--ore-diamond-600);
+}
