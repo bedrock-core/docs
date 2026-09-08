@@ -52,7 +52,7 @@ export interface PackageCardProps {
   icon?: string;
   /** Any CSS colour; carries the 2px top rule, the glyph and the call to action. */
   accent?: string;
-  /** Short release-state label, e.g. `pre-1.0`. `planned` dims the card and disables it. */
+  /** Short release-state label, e.g. `beta`. `planned` dims the card and disables it. */
   status?: string;
   href?: string;
 }
@@ -66,7 +66,7 @@ export function PackageCard({
   href = '#',
 }: PackageCardProps): ReactNode {
   const planned = status === 'planned';
-  const tone = planned ? 'neutral' : status === '1.0' ? 'success' : 'warning';
+  const tone = planned ? 'neutral' : status === '1.0' ? 'success' : status === '1.0-rc' ? 'info' : 'warning';
   return (
     <Link
       to={planned ? undefined : href}
@@ -99,10 +99,10 @@ export function PackageCard({
   );
 }
 
-/** The standard action control: `primary` once per view, `secondary` for the paired action, `ghost` in dense toolbars. */
+/** The standard action control: `primary` once per view, `secondary` for the paired action, `outline` for a bordered action with no fill, `ghost` in dense toolbars. */
 export interface ButtonProps {
   children?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'accentSoft';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'accentSoft';
   size?: 'sm' | 'md' | 'lg';
   /** Lucide icon name rendered before the label. */
   iconLeft?: string;
@@ -150,5 +150,14 @@ export function FeatureCard({ icon = 'box', title, children, accent = 'var(--acc
       <h3 className={styles.featureTitle}>{title}</h3>
       <p className={styles.featureBody}>{children}</p>
     </div>
+  );
+}
+
+/** Red asterisk after a required prop name in a props table. */
+export function Req(): ReactNode {
+  return (
+    <span className="required" title="required" aria-label="required">
+      *
+    </span>
   );
 }

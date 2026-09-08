@@ -1,6 +1,7 @@
-/* DocsMenu trigger */
+/* DocsMenu trigger and the plain left links share one shape */
 .menu { position: relative; }
-.trigger {
+.trigger,
+.navLink {
   appearance: none;
   cursor: pointer;
   height: 30px;
@@ -17,9 +18,13 @@
   font-weight: var(--weight-semibold);
   transition: var(--transition-control);
 }
-.trigger:hover, .open { color: var(--text-strong); }
+.navLink { text-decoration: none; }
+.trigger:hover, .navLink:hover, .open { color: var(--text-strong); text-decoration: none; }
+.navLinkActive { color: var(--text-accent); }
 .open { background: var(--bg-hover); border-color: var(--border-default); }
 .chevron { display: inline-flex; transition: transform var(--duration-fast) var(--ease-standard); }
+.triggerIcon { display: none; }
+.triggerLabel { display: inline; }
 .open .chevron { transform: rotate(180deg); }
 
 /* panel */
@@ -81,12 +86,38 @@
 }
 .all:hover { color: var(--text-strong); text-decoration: none; }
 
+/* below the Docusaurus breakpoint the panel spans the viewport; the trigger keeps its label until 600px */
 @media (max-width: 996px) {
-  .panel { position: static; grid-template-columns: 1fr; box-shadow: none; border: 0; background: transparent; padding: var(--space-2) 0; }
+  .menu { display: flex !important; }
+  .panel {
+    position: fixed;
+    top: var(--ifm-navbar-height);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--ifm-navbar-height));
+    overflow-y: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    border-radius: 0;
+    border-width: 1px 0;
+  }
 }
+@media (max-width: 600px) {
+  .navLink { display: none; }
+  .trigger { width: 32px; height: 32px; padding: 0; justify-content: center; }
+  .triggerIcon { display: inline-flex; }
+  .triggerLabel, .chevron { display: none; }
+  .panel { grid-template-columns: 1fr; }
+  .iconNav { display: inline-flex !important; }
+  }
 
 /* icon links */
 .iconLink {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -97,3 +128,10 @@
   transition: var(--transition-control);
 }
 .iconLink:hover { color: var(--text-strong); background: var(--bg-hover); }
+
+.mobileGroup { padding: var(--space-2) 0; }
+.mobileLink { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); }
+
+.desktopOnly { display: inline-flex; }
+
+.iconNav { display: none; }

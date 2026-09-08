@@ -47,6 +47,7 @@
   --ifm-alert-border-radius: var(--radius-md);
   --ifm-button-border-radius: var(--radius-sm);
   --ifm-navbar-height: var(--layout-header-h);
+  --ifm-navbar-padding-horizontal: var(--space-6);
   --ifm-spacing-horizontal: var(--space-6);
   --ifm-global-spacing: var(--space-6);
   --ifm-toc-padding-vertical: var(--space-4);
@@ -97,7 +98,7 @@
   --ifm-color-success-dark: var(--status-success);
   --ifm-color-warning-dark: var(--status-warning);
   --ifm-color-danger-dark: var(--status-danger);
-  --ifm-color-secondary-dark: var(--border-default);
+  --ifm-color-secondary-dark: var(--text-muted);
   --ifm-color-info-contrast-background: color-mix(in srgb, var(--status-info) 13%, var(--bg-canvas));
   --ifm-color-success-contrast-background: color-mix(in srgb, var(--status-success) 13%, var(--bg-canvas));
   --ifm-color-warning-contrast-background: color-mix(in srgb, var(--status-warning) 13%, var(--bg-canvas));
@@ -140,14 +141,14 @@ h1, h2, h3, h4, .markdown h1, .markdown h2 {
   backdrop-filter: var(--blur-overlay);
   -webkit-backdrop-filter: var(--blur-overlay);
 }
-/* package + section names in the navbar are identifiers, so: mono */
-.navbar__title,
-.navbar__item.navbar__link {
+/* the site name is an identifier, so: mono */
+.navbar__title {
   font-family: var(--font-mono);
   font-size: var(--text-body-sm);
 }
 .navbar__title { font-weight: var(--weight-bold); color: var(--text-strong); }
 .navbar__logo img { image-rendering: pixelated; }
+.navbar__brand { margin-right: var(--space-2); }
 
 /* sidebar: top-level groups sans, leaf pages mono (they are file names) */
 .menu { font-size: var(--text-body-sm); }
@@ -167,18 +168,9 @@ h1, h2, h3, h4, .markdown h1, .markdown h2 {
 }
 .table-of-contents__left-border { border-left-color: var(--border-subtle); }
 
-/* breadcrumbs use a literal slash and mono type */
+/* breadcrumbs: mono type, default separator */
 .breadcrumbs__item { font-family: var(--font-mono); font-size: var(--text-caption); }
 .breadcrumbs__link { background: transparent !important; padding-left: 0; padding-right: 0; }
-.breadcrumbs__item:not(:first-child)::before {
-  content: '/';
-  color: var(--text-faint);
-  background: none;
-  width: auto;
-  height: auto;
-  margin: 0 var(--space-2);
-  filter: none;
-}
 
 /* admonitions: flat tinted panel with a 2px coloured top rule */
 .theme-admonition {
@@ -271,7 +263,8 @@ table td code {
   font-size: var(--text-caption);
   color: var(--text-body);
 }
-table td:first-child code { color: var(--accent-alt); font-weight: var(--weight-semibold); }
+table td:first-child code { color: var(--text-strong); font-weight: var(--weight-bold); }
+.required { color: var(--status-danger); font-weight: var(--weight-bold); margin-left: 2px; }
 table td a code { color: var(--ifm-link-color); font-weight: var(--weight-semibold); }
 table td a:hover code { color: var(--ifm-link-hover-color); text-decoration: underline; }
 table td:first-child { white-space: nowrap; }
@@ -325,7 +318,7 @@ table td:first-child { white-space: nowrap; }
   font-family: var(--font-mono);
   font-size: var(--text-micro);
 }
-@media (max-width: 996px) { .DocSearch-Button { width: 32px; padding: 0; justify-content: center; } .DocSearch-Button-Placeholder, .DocSearch-Button-Keys { display: none; } }
+@media (max-width: 768px) { .DocSearch-Button { width: 32px; padding: 0; justify-content: center; } .DocSearch-Button-Placeholder, .DocSearch-Button-Keys { display: none; } }
 /* DocSearch modal on the same tokens */
 .DocSearch {
   --docsearch-primary-color: var(--accent-solid);
@@ -349,6 +342,77 @@ table td:first-child { white-space: nowrap; }
 }
 .DocSearch-Modal { border: 1px solid var(--border-default); border-radius: var(--radius-lg); }
 .DocSearch-Hit a { border-radius: var(--radius-sm); }
+
+/* the navbar never uses the Docusaurus drawer: below 996px it keeps the desktop
+   layout, the right cluster collapses to icons at 768px and the left one at 600px */
+@media (max-width: 996px) {
+  /* the drawer carries the section's page tree, so its trigger belongs to docs pages */
+  .navbar__toggle { display: none; }
+  html.docs-wrapper .navbar__toggle { display: inline-flex; }
+  html.docs-wrapper .navbar__title { display: none; }
+  .navbar__items .navbar__item { display: inline-block; }
+  .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; }
+  .navbar__items--right [class*='navbarSearchContainer'] { position: static; }
+}
+@media (max-width: 768px) {
+  .navbar__items--right { gap: var(--space-1); }
+  .navbar__items--right > [class*='iconLink'] { order: 1; }
+  .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; order: 2; }
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; }
+}
+@media (max-width: 600px) {
+  :root { --ifm-navbar-padding-horizontal: var(--space-4); }
+  /* where the left links become icons the drawer takes over the social links and the theme */
+  html.docs-wrapper .navbar__items--right > [class*='iconLink'],
+  html.docs-wrapper .navbar__items--right [class*='colorModeToggle'] { display: none; }
+  .navbar__items:not(.navbar__items--right) { gap: 2px; }
+  .navbar__brand { margin-right: 0; }
+  .navbar__title { font-size: var(--text-body-sm); }
+}
+@media (max-width: 420px) {
+  .navbar__title { display: none; }
+}
+
+/* mobile "On this page" collapsible under the breadcrumbs */
+.theme-doc-toc-mobile {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+.theme-doc-toc-mobile > button {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.theme-doc-toc-mobile > button:hover { color: var(--text-strong); }
+.theme-doc-toc-mobile > button::after { filter: var(--ifm-menu-link-sublist-icon-filter); opacity: 0.7; }
+.theme-doc-toc-mobile > div > ul { border-top: 1px solid var(--border-subtle); }
+
+/* the drawer trigger: the same icon box as the header's other icons, docs pages only */
+.navbar__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--ifm-navbar-link-color);
+  cursor: pointer;
+  transition: var(--transition-control);
+}
+.navbar__toggle:hover { color: var(--text-strong); background: var(--bg-hover); }
+
+/* mobile drawer: the section's page tree, on the kit's surfaces */
+.navbar-sidebar--show { background: var(--bg-canvas); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.navbar-sidebar { background: var(--bg-raised); box-shadow: var(--shadow-lg); }
+.navbar-sidebar__brand { border-bottom: 1px solid var(--border-subtle); box-shadow: none; }
+.navbar-sidebar__item { overflow-y: auto; }
 
 /* respect reduced motion */
 @media (prefers-reduced-motion: reduce) {

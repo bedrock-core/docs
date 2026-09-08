@@ -40,6 +40,8 @@
 .actions { display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; }
 .command { width: min(520px, 100%); text-align: left; }
 .command > div { margin: 0; }
+.trust { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3) var(--space-6); margin: var(--space-2) 0 0; padding: 0; list-style: none; }
+.trustItem { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--text-muted); font-size: var(--text-body-sm); }
 
 /* shared section chrome */
 .wrap { max-width: 1120px; margin: 0 auto; padding: var(--space-16) var(--space-8); }
@@ -54,13 +56,16 @@
 .title { margin: 0 0 var(--space-3); font-size: var(--text-h1); font-weight: var(--weight-bold); letter-spacing: var(--tracking-display); }
 .sub { margin: 0; max-width: 640px; color: var(--text-muted); font-size: var(--text-body-lg); line-height: var(--leading-relaxed); }
 .head { margin-bottom: var(--space-8); }
+.headWide .sub { max-width: none; }
 
 /* features */
 .sunken { border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle); background: var(--bg-sunken); }
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); }
 
 /* code tour */
-.tour { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: var(--space-12); align-items: start; }
+.tour { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: var(--space-12); align-items: start; }
+.tour > div { min-width: 0; }
+.pane > div { overflow-x: auto; }
 .tabs { display: flex; gap: var(--space-5); border-bottom: 1px solid var(--border-subtle); margin-bottom: var(--space-4); }
 .tab {
   appearance: none;
@@ -78,7 +83,8 @@
 }
 .tabOn { color: var(--text-strong); border-bottom-color: var(--accent-solid); }
 .caption { margin: 0 0 var(--space-4); min-height: calc(2 * var(--text-body-sm) * var(--leading-relaxed)); color: var(--text-muted); font-size: var(--text-body-sm); line-height: var(--leading-relaxed); }
-.panes { display: grid; }
+.panes { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.pane { min-width: 0; }
 .pane { grid-area: 1 / 1; }
 .pane[hidden] { display: block !important; visibility: hidden; pointer-events: none; }
 .pane > div { margin: 0; }

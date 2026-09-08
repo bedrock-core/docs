@@ -10,6 +10,7 @@ export default function PackageGrid(): ReactNode {
     <section id="packages" className={styles.grid}>
       <div className="container">
         <SectionHead
+          wide
           eyebrow="Packages"
           title="One scope, four categories."
           sub="Install the meta-package for a matching set, or take the layers you need on their own."

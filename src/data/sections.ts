@@ -7,7 +7,8 @@
 
 export type CategoryId = 'framework' | 'ui' | 'content' | 'tooling';
 
-export type SectionStatus = 'pre-1.0' | '1.0' | 'planned';
+/** `beta` is a 0.x package, `1.0-rc` a release candidate, `1.0` a released package. */
+export type SectionStatus = 'beta' | '1.0-rc' | '1.0' | 'planned';
 
 export interface Category {
   id: CategoryId;
@@ -49,7 +50,7 @@ export const sections: Section[] = [
     label: 'server',
     pkg: '@bedrock-core/server',
     category: 'framework',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Registry, RPC, shared state and config across addon realms.',
     icon: 'server',
     repo: `${GH}/server`,
@@ -59,7 +60,7 @@ export const sections: Section[] = [
     label: 'sync',
     pkg: '@bedrock-core/sync',
     category: 'framework',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'The script-event transport: bus, discovery, RPC, replicated state.',
     icon: 'radio',
     repo: `${GH}/server`,
@@ -91,7 +92,7 @@ export const sections: Section[] = [
     label: 'ui',
     pkg: '@bedrock-core/ui',
     category: 'ui',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'JSX screens for server forms and containers, drawn by the render pack.',
     icon: 'layout-panel-left',
     repo: `${GH}/ui`,
@@ -101,7 +102,7 @@ export const sections: Section[] = [
     label: 'ore-styled',
     pkg: '@bedrock-core/ore-styled',
     category: 'ui',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Themed components with vanilla Minecraft textures.',
     icon: 'palette',
     repo: `${GH}/ui`,
@@ -111,7 +112,7 @@ export const sections: Section[] = [
     label: 'navigation',
     pkg: '@bedrock-core/navigation',
     category: 'ui',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Stack navigation between screens.',
     icon: 'navigation',
     repo: `${GH}/ui`,
@@ -133,7 +134,7 @@ export const sections: Section[] = [
     label: 'config',
     pkg: '@bedrock-core/config',
     category: 'content',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'The shared addon list, settings screens and guide viewer.',
     icon: 'sliders-horizontal',
     repo: `${GH}/ui`,
@@ -143,7 +144,7 @@ export const sections: Section[] = [
     label: 'guides',
     pkg: '@bedrock-core/guides',
     category: 'content',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'In-game guides authored in MDX.',
     icon: 'book-open',
     repo: `${GH}/ui`,
@@ -153,7 +154,7 @@ export const sections: Section[] = [
     label: 'i18n',
     pkg: '@bedrock-core/i18n',
     category: 'content',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Typed keys, interpolation and plurals, resolved per player.',
     icon: 'languages',
     repo: `${GH}/ui`,
@@ -165,7 +166,7 @@ export const sections: Section[] = [
     label: 'filters',
     pkg: 'bedrock-core/regolith-filters',
     category: 'tooling',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Regolith filters: manifest, generator, guides, i18n, ui-compile, bundler.',
     icon: 'funnel',
     repo: `${GH}/regolith-filters`,
@@ -175,7 +176,7 @@ export const sections: Section[] = [
     label: 'cli',
     pkg: '@bedrock-core/cli',
     category: 'tooling',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Scaffold an addon with the whole stack wired.',
     icon: 'terminal',
     repo: `${GH}/ui`,
@@ -185,7 +186,7 @@ export const sections: Section[] = [
     label: 'bds-runner',
     pkg: '@bedrock-core/bds-runner',
     category: 'tooling',
-    status: 'pre-1.0',
+    status: 'beta',
     description: 'Run GameTests headlessly on a Bedrock Dedicated Server.',
     icon: 'flask-conical',
     repo: `${GH}/bds-runner`,

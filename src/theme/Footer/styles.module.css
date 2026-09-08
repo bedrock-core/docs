@@ -6,7 +6,15 @@
 .inner { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--space-12); }
 .brand { min-width: 200px; max-width: 260px; }
 .wordmark { height: 22px; width: auto; image-rendering: pixelated; opacity: 0.85; }
-.tagline { margin: var(--space-4) 0 0; color: var(--text-faint); font-size: var(--text-body-sm); line-height: var(--leading-relaxed); }
+.tagline {
+  margin: var(--space-4) 0 0;
+  color: var(--text-faint);
+  font-family: var(--font-display);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-snug);
+}
 .spacer { flex: 1; }
 .col { display: grid; gap: var(--space-2); align-content: start; }
 .title {
@@ -19,7 +27,6 @@
 }
 .link { color: var(--text-muted); font-size: var(--text-body-sm); text-decoration: none; font-family: var(--font-mono); transition: var(--transition-control); }
 .link:hover { color: var(--text-strong); text-decoration: none; }
-.sans { font-family: var(--font-sans); }
 .bottom {
   max-width: 1120px;
   margin: var(--space-10) auto 0;
@@ -28,7 +35,18 @@
   color: var(--text-faint);
   font-size: var(--text-caption);
 }
-@media (max-width: 768px) {
-  .inner { gap: var(--space-8); }
+/* narrow: three columns, the wordmark keeps the first cell */
+@media (max-width: 996px) {
+  .inner { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8) var(--space-6); }
+  .brand { max-width: none; }
   .spacer { display: none; }
+}
+/* phones: wordmark centered on its own row, then a centered pair of columns */
+@media (max-width: 768px) {
+  .inner { grid-template-columns: repeat(2, minmax(0, 150px)); justify-content: center; gap: var(--space-10) var(--space-8); }
+  .brand { grid-column: 1 / -1; justify-self: center; text-align: center; margin-bottom: var(--space-2); }
+  .col { justify-items: center; text-align: center; }
+  /* five columns in pairs leaves Community alone: give it the whole row */
+  .col:last-child { grid-column: 1 / -1; }
+  .bottom { text-align: center; }
 }

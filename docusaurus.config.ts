@@ -1,6 +1,6 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { categories, publishedSections, sectionsOf } from './src/data/sections';
 import { redirects } from './src/data/redirects';
 import { bedrockPrism } from './src/prism/bedrock';
@@ -9,6 +9,35 @@ import { bedrockPrism } from './src/prism/bedrock';
 // registry (menus, home page) without an instance.
 const liveSections = publishedSections.filter((section) => existsSync(`docs/${section.id}`));
 const isLive = (id: string): boolean => liveSections.some((section) => section.id === id);
+
+// Search credentials come from the environment; a local .env fills them in for
+// development. Without them the algolia block is omitted, the search theme is
+// never loaded and the search box disappears instead of rendering inert.
+function envFile(): Record<string, string> {
+  if (!existsSync('.env')) return {};
+  return Object.fromEntries(
+    readFileSync('.env', 'utf8')
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'))
+      .map((line) => {
+        const at = line.indexOf('=');
+        return [line.slice(0, at).trim(), line.slice(at + 1).trim().replace(/^["']|["']$/g, '')];
+      })
+      .filter(([key]) => key),
+  );
+}
+
+const env = { ...envFile(), ...process.env } as Record<string, string | undefined>;
+const algolia =
+  env.ALGOLIA_APP_ID && env.ALGOLIA_SEARCH_API_KEY && env.ALGOLIA_INDEX_NAME
+    ? {
+        appId: env.ALGOLIA_APP_ID,
+        apiKey: env.ALGOLIA_SEARCH_API_KEY,
+        indexName: env.ALGOLIA_INDEX_NAME,
+        contextualSearch: false,
+      }
+    : undefined;
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -102,20 +131,15 @@ const config: Config = {
       },
       items: [
         { type: 'custom-docsMenu', position: 'left', label: 'Docs' },
-        { to: '/showcase', label: 'Showcase', position: 'left' },
+        { type: 'custom-iconNav', position: 'left', to: '/showcase', icon: 'blocks', label: 'Showcase' },
         { type: 'search', position: 'right' },
         { type: 'custom-iconLink', position: 'right', href: 'https://bedrock-core.drav.dev/discord', icon: 'discord', label: 'Discord' },
         { type: 'custom-iconLink', position: 'right', href: 'https://github.com/bedrock-core/', icon: 'github', label: 'GitHub' },
       ],
     },
-    // DocSearch: apply at https://docsearch.algolia.com/apply/ and paste the
-    // credentials here; the search box stays inert until they are real.
-    algolia: {
-      appId: 'BEDROCKCORE',
-      apiKey: 'replace-with-the-docsearch-search-only-key',
-      indexName: 'bedrock-core',
-      contextualSearch: false,
-    },
+    // DocSearch: apply at https://docsearch.algolia.com/apply/, then set the
+    // three ALGOLIA_ variables. See .env.example.
+    ...(algolia ? { algolia } : {}),
     // Code blocks stay dark in both themes; one palette serves both.
     prism: {
       theme: bedrockPrism,

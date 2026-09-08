@@ -2,12 +2,18 @@ import { useState, type ReactNode } from 'react';
 import clsx from 'clsx';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import CodeBlock from '@theme/CodeBlock';
-import { Button, FeatureCard } from '../ds';
+import { Badge, Button, FeatureCard, Icon } from '../ds';
 import Stats from './Stats';
 import styles from './home.module.css';
 
 const DISCORD = 'https://bedrock-core.drav.dev/discord';
 const GITHUB = 'https://github.com/bedrock-core/';
+
+const TRUST = [
+  { icon: 'shield-check', label: 'Type-safe by design' },
+  { icon: 'package', label: 'Zero dependencies at runtime' },
+  { icon: 'store', label: 'Marketplace ready', pending: true },
+];
 
 export function Hero(): ReactNode {
   const wordmark = useBaseUrl('img/logo/title.png');
@@ -30,21 +36,30 @@ export function Hero(): ReactNode {
           <Button size="lg" variant="secondary" iconLeft="github" href={GITHUB}>
             GitHub
           </Button>
-          <Button size="lg" variant="ghost" iconLeft="discord" href={DISCORD}>
+          <Button size="lg" variant="outline" iconLeft="discord" href={DISCORD}>
             Discord
           </Button>
         </div>
         <div className={styles.command}>
           <CodeBlock language="bash">npx @bedrock-core/cli</CodeBlock>
         </div>
+        <ul className={styles.trust}>
+          {TRUST.map((item) => (
+            <li key={item.label} className={styles.trustItem}>
+              <Icon name={item.icon} size="sm" color="var(--accent-alt)" />
+              {item.label}
+              {item.pending ? <Badge>soon</Badge> : null}
+            </li>
+          ))}
+        </ul>
       </div>
     </header>
   );
 }
 
-export function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }): ReactNode {
+export function SectionHead({ eyebrow, title, sub, wide = false }: { eyebrow: string; title: string; sub?: string; wide?: boolean }): ReactNode {
   return (
-    <div className={styles.head}>
+    <div className={clsx(styles.head, wide && styles.headWide)}>
       <p className={styles.eyebrow}>{eyebrow}</p>
       <h2 className={styles.title}>{title}</h2>
       {sub ? <p className={styles.sub}>{sub}</p> : null}
@@ -210,7 +225,7 @@ export function Cta(): ReactNode {
     <div className={styles.cta}>
       <section className={styles.wrap}>
         <h2 className={styles.ctaTitle}>Start with one package.</h2>
-        <p className={styles.ctaSub}>Pin an exact version while the stack is pre-1.0, and read the release notes before you upgrade.</p>
+        <p className={styles.ctaSub}>Pin an exact version while a package is in beta, and read the release notes before you upgrade.</p>
         <div className={styles.actions}>
           <Button size="lg" iconRight="arrow-right" href="/docs/server">
             Read the docs

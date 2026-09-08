@@ -40,7 +40,7 @@ export default function Footer(): ReactNode {
         <div className={styles.col}>
           <div className={styles.title}>Community</div>
           {community.map((item) => (
-            <Link key={item.label} href={item.href} className={`${styles.link} ${styles.sans}`}>
+            <Link key={item.label} href={item.href} className={styles.link}>
               {item.label}
             </Link>
           ))}

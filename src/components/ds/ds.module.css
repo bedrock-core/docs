@@ -125,6 +125,8 @@
 .primary:active { background: var(--accent-solid-active); }
 .secondary { background: var(--bg-raised); color: var(--text-strong); border-color: var(--border-default); }
 .secondary:hover { background: var(--bg-active); border-color: var(--border-strong); color: var(--text-strong); }
+.outline { background: transparent; color: var(--text-strong); border-color: var(--border-default); }
+.outline:hover { background: transparent; border-color: var(--border-strong); color: var(--text-strong); }
 .ghost { background: transparent; color: var(--text-body); }
 .ghost:hover { background: var(--bg-hover); color: var(--text-body); }
 .ghost:active { background: var(--bg-active); }

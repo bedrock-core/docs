@@ -6,8 +6,39 @@ import { categories, sectionsOf } from '../../data/sections';
 import { Badge, Icon } from '../ds';
 import styles from './nav.module.css';
 
+/** In the mobile drawer the menu is a flat grouped list. */
+function DocsMenuMobile({ activeId }: { activeId?: string }): ReactNode {
+  return (
+    <li className="menu__list-item">
+      {categories.map((category) => (
+        <div key={category.id} className={styles.mobileGroup}>
+          <div className={styles.colHead}>
+            <span className={styles.dot} style={{ background: `var(${category.accent})` }} />
+            <span className={styles.colLabel}>{category.label}</span>
+          </div>
+          <ul className="menu__list">
+            {sectionsOf(category.id)
+              .filter((section) => section.status !== 'planned')
+              .map((section) => (
+                <li key={section.id} className="menu__list-item">
+                  <Link
+                    to={`/docs/${section.id}`}
+                    className={clsx('menu__link', styles.mobileLink, section.id === activeId && 'menu__link--active')}
+                  >
+                    <Icon name={section.icon} size="sm" />
+                    {section.label}
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ))}
+    </li>
+  );
+}
+
 /** Header mega-menu: one column per category, one row per section. */
-export default function DocsMenu({ label = 'Docs' }: { label?: string }): ReactNode {
+export default function DocsMenu({ label = 'Docs', mobile = false }: { label?: string; mobile?: boolean }): ReactNode {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
@@ -33,6 +64,8 @@ export default function DocsMenu({ label = 'Docs' }: { label?: string }): ReactN
     setOpen(false);
   }, [pathname]);
 
+  if (mobile) return <DocsMenuMobile activeId={activeId} />;
+
   return (
     <div ref={ref} className={clsx('navbar__item', styles.menu)}>
       <button
@@ -42,7 +75,10 @@ export default function DocsMenu({ label = 'Docs' }: { label?: string }): ReactN
         aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
       >
-        {label}
+        <span className={styles.triggerIcon}>
+          <Icon name="book-open" size="lg" />
+        </span>
+        <span className={styles.triggerLabel}>{label}</span>
         <span className={styles.chevron}>
           <Icon name="chevron-down" size="xs" />
         </span>
@@ -62,6 +98,7 @@ export default function DocsMenu({ label = 'Docs' }: { label?: string }): ReactN
                     key={section.id}
                     to={planned ? undefined : `/docs/${section.id}`}
                     className={clsx(styles.row, section.id === activeId && styles.rowActive, planned && styles.rowPlanned)}
+                    onClick={() => setOpen(false)}
                     role="menuitem"
                     aria-disabled={planned || undefined}
                   >
@@ -75,7 +112,7 @@ export default function DocsMenu({ label = 'Docs' }: { label?: string }): ReactN
               })}
             </div>
           ))}
-          <Link to="/#packages" className={styles.all}>
+          <Link to="/#packages" className={styles.all} onClick={() => setOpen(false)}>
             Browse all packages
             <Icon name="arrow-right" size="xs" />
           </Link>

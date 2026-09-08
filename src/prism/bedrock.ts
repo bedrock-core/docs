@@ -2,7 +2,7 @@ import type { PrismTheme } from 'prism-react-renderer';
 
 // Syntax palette on the ore accents (colors.css). Code blocks are dark in both
 // site themes, so one palette serves both.
-const stone = { text: '#d3d3d8', muted: '#8b8b93', faint: '#6a6a72', bright: '#e9e9ec' };
+const stone = { text: '#d3d3d8', muted: '#9a9aa2', faint: '#8b8b93', bright: '#e9e9ec' };
 const ore = {
   emerald: '#7ce2a8',
   gold: '#ffd88a',
