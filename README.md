@@ -18,6 +18,13 @@ yarn start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
+## Search
+
+DocSearch is configured from the environment. Copy `.env.example` to `.env` and
+fill in the three values from the Algolia dashboard; without them the site builds
+with no search box. The deploy workflow reads the same names from repository
+variables and secrets.
+
 ## Build
 
 ```bash
