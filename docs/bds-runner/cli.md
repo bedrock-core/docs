@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: "The bc-bds commands, every run option, exit codes and how uncaught script errors are reported."
+description: "The bc-bds commands, every run option, what a run does, exit codes and how uncaught script errors are reported."
 ---
 # Commands
 
@@ -9,6 +9,8 @@ bc-bds run --packs <dir> --tag <tag> [options]   run a suite
 bc-bds fetch                                     download and cache the server
 bc-bds where                                     show which build will be used, and from where
 ```
+
+`bc-bds fetch` resolves the build and downloads it into the cache without running anything, so a CI job can warm the cache in a separate step. `bc-bds where` prints the selected build, the config file it came from, the cache and server tree paths, the schema path, and the current upstream builds; a pin that is not a published build gets a warning.
 
 ## `run` options
 
@@ -27,7 +29,7 @@ bc-bds where                                     show which build will be used, 
 | `--keep-alive` | After the results, keep the server running so you can join it. See [Looking at the plots](#looking-at-the-plots) |
 | `--offline` | Never download. Fail if the server is not already cached |
 | `--quiet` | Do not echo server output while the run is in progress |
-| `--json <path>` | Also write the result as JSON: tag, server version, duration, per-test verdicts, regressions, and any infrastructure error |
+| `--json <path>` | Also write the result as JSON: tag, server version, duration, per-test verdicts, regressions, uncaught script errors, and any infrastructure error |
 
 ### Build selection options
 
@@ -44,6 +46,17 @@ Accepted by every command. See [Choosing the server build](./config.md#choosing-
 Either a directory containing `BP/` and optionally `RP/`, which is what Regolith exports, or a directory that is itself a single pack. A pack is treated as a behavior pack when its manifest declares a `script` or `data` module, and as a resource pack otherwise.
 
 Passing `--packs` more than once installs several addons into the same world. That is how a test which asserts that *another* addon is present can pass. Each pack is copied into the world under a folder named after the addon it came from, so two addons that both export `BP/` do not collide.
+
+## What a run does
+
+1. Resolves the server build and downloads it into the cache if it is not there. See [Choosing the server build](./config.md#choosing-the-server-build).
+2. Copies the cached build into a server tree, one per version, and writes `server.properties` and `config/default/permissions.json` into it. See [Server properties](./config.md#server-properties).
+3. On the first run for that tree, boots the server once to generate the world, then turns Beta APIs and the flat generator on in `level.dat`. Every later run is a single boot.
+4. Deletes the world's chunks so the tests start on unmodified terrain, copies the packs into the world's `behavior_packs/` and `resource_packs/`, and writes the world pack references.
+5. Boots the server, adds a ticking area around the origin so the playerless world simulates, and runs `gametest runset <tag>`.
+6. Waits until every announced test has a verdict, the server has been quiet for `--idle` seconds, or `--timeout` elapses. Then stops the server and prints the verdicts.
+
+The full console transcript of every run is written to `.bds/logs/<timestamp>-<tag>.log`; the summary prints the path.
 
 ## Looking at the plots
 
@@ -77,11 +90,13 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.MinecraftUWP_8wekyb3d8bbwe
 | --- | --- |
 | `0` | Every test passed, or the only failures were declared with `--known-failure` |
 | `1` | Tests failed |
-| `2` | The run could not be trusted: no server, no boot, no tests announced, or the tag is unknown |
+| `2` | The run could not be trusted: no server, no boot, no tests announced, an unknown tag, an `--expect-registered` mismatch, or an uncaught script error without `--allow-script-errors` |
 
 `1` and `2` are distinct so that a broken harness can never look like broken code.
 
-Any test the engine announces but never reports a verdict for is counted as a failure. The run is over when every announced test has a verdict, or when the idle or wall-clock timeout fires.
+Any test the engine announces but never reports a verdict for is counted as a failure. A test the engine counted but never placed a plot for, because its structure is missing or the plot could not be placed, is reported as `absent` and also fails the run. The run is over when every announced test has a verdict, or when the idle or wall-clock timeout fires.
+
+The verdicts come from the engine's own `onTestPassed` and `onTestFailed` console lines and the announced count from its `Running N tests with tag` line. If a newer engine renames those lines the result is exit code `2`, never a pass. Only the most recent `runset` in the console is read, so running the tag again from a held-open server does not mix results.
 
 ## Uncaught script errors
 
