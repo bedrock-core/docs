@@ -201,7 +201,7 @@ By default **writes are open** — any node may write any namespace. With `stric
 [sync] cannot write to namespace 'drav0011_economy': not owned by this node (strictOwnership is enabled)
 ```
 
-The runtime creates its node with `ownedNamespaces: [namespace]` and leaves `strictOwnership` at its default, so `core.node.state` can still write anywhere. `core.state` narrows that by construction — it only ever addresses your own namespace.
+The runtime creates its node with `ownedNamespaces: [namespace]` and leaves `strictOwnership` at its default, so `core.node.state` can still write anywhere. [`core.shared`](/docs/server/api/shared) narrows that by construction — its trees only ever address your own namespace, and a peer's tree has no `set`.
 
 :::note Ownership is a convention, not a security boundary
 `strictOwnership` guards *your* node against writing where it should not. It cannot stop another pack from writing your namespace — every addon in a world runs arbitrary script. Treat state as shared and cooperative; put anything that needs an authority check behind [RPC](./rpc.md), the way [config](/docs/server/api/config#authorization) does.
@@ -234,4 +234,4 @@ system.run(() => {
 });
 ```
 
-From an addon, `persisted()` on a [shared](/docs/server/api/shared#persistence) leaf does this per key, which is what you want once a namespace can grow past a dynamic property's 32767-character ceiling.
+From an addon, `@bedrock-core/db` does this per document, on whatever dynamic property the target itself can hold — which is what you want once a namespace can grow past one property's 32767-character ceiling. A [shared](/docs/server/api/shared) key that must survive a restart is one such document, mirrored across in a line.

@@ -5,32 +5,30 @@ description: "core.shared is the replicated mirror every realm holds, as typed t
 
 # core.shared
 
-`core.shared` is the replicated mirror every realm holds, as typed trees. An addon declares a shape once, in `register()`, and gets a tree back whose every node reads, writes and subscribes; every other realm mirrors it and reads it through `core.shared.of()`. Reads are local and synchronous. Writes broadcast a delta over sync's [`State`](/docs/sync/state).
+`core.shared` is the replicated mirror every realm holds, as typed trees. An addon declares a flat shape once, in `register()`, and gets a tree back whose every key reads, writes and subscribes; every other realm mirrors it and reads it through `core.shared.of()`. Reads are local and synchronous. Writes broadcast a delta over sync's [`State`](/docs/sync/state).
 
-Two rules make it safe to build on:
+The mirror does exactly one job: **the owner sets a value, every realm can read it now, and is told when it changes.** Two rules follow from it:
 
-1. **Only the owner writes.** A mirror applies a change to a namespace only from the addon that owns it, unless the owner marked the leaf `open()`.
-2. **`persisted()` survives restarts.** The owner writes those leaves to the world on change and restores them on boot; nobody else has to.
+1. **Only the owner writes.** A mirror applies a change to a namespace only from the addon that owns it. A peer that wants a change asks over [RPC](/docs/sync/rpc).
+2. **Nothing is stored.** The mirror never touches the world. A value that must survive a restart is a `@bedrock-core/db` document the owner maps onto a key.
 
 ## Import
 
 ```ts
-import { core, open, persisted, leaf } from '@bedrock-core/server-runtime';
-import type { SharedTree, PeerSharedTree } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import type { SharedTree, PeerSharedTree } from '@bedrock-core/server';
 ```
 
 ## Declare
 
-Values are leaves, plain objects are branches, and three markers change how a leaf or a whole branch behaves:
+A declaration is a flat record. Every top-level key is one value, and an object is one value too — replicated whole on every write.
 
 ```ts
 export const sharedDef = {
   currency: 'gold',
   spawnRate: 5,
-  tags: ['pvp', 'events'],                                // an array is one leaf
-  votes: open(0),                                          // any realm may write it
-  event: persisted({ name: 'none', active: false }),      // both leaves survive restarts
-  palette: leaf({ fg: '#fff', bg: '#000' }),               // one object under one key, not a branch
+  tags: ['pvp', 'events'],
+  event: { name: 'none', active: false },   // one object under one key, written whole
 };
 
 /** Export the type: a peer gets the typed tree from `core.shared.of<EconomyShared>()`. */
@@ -43,9 +41,9 @@ const { shared } = core.register({
 });
 ```
 
-`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value `core.config.define()` returns) and `shared` (the tree). Markers nest (`persisted(open(0))`) and a marker on a branch applies to every leaf under it. Nested keys become dotted mirror keys (`event.active`), which is what a raw `core.node.state.get(ns, 'event.active')` sees.
+`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value `core.config.define()` returns) and `shared` (the tree).
 
-A branch cannot have a child named `get`, `set`, `patch` or `subscribe`, and keys cannot contain a dot; `register()` throws on either.
+A key may not begin `core-`, which is the framework's own announcement prefix; `register()` throws if one does.
 
 ## Use your own tree
 
@@ -55,15 +53,13 @@ shared.currency.set('emerald');               // written to the mirror, broadcas
 
 shared.event.get();                           // { name: 'none', active: false }
 shared.event.set({ name: 'race', active: true });
-shared.event.patch({ active: false });        // only the leaves given, at any depth
-shared.patch({ event: { name: 'quiet' } });
 
-shared.currency.subscribe(kind => hud.setCurrency(kind));      // a leaf
-shared.event.subscribe(event => …);                             // a branch — any leaf under it
-shared.subscribe(all => …);                                     // the whole namespace
+shared.currency.subscribe((next, prev) => hud.setCurrency(next));
 ```
 
-Every node has `get` and `subscribe`, so a leaf is a `ReadonlyObservable` for `@bedrock-core/observable`: `computed(() => …, [shared.spawnRate])`, `effect(…, [shared.event.active])` and `toNative(shared.spawnRate)` take it as it is.
+Every key has `get` and `subscribe`, so it is a `ReadonlyObservable` for `@bedrock-core/observable`: `computed(() => …, [shared.spawnRate])`, `effect(…, [shared.event])` and `toNative(shared.spawnRate)` take it as it is. The backend subscription is attached with the first listener and released with the last, so a tree nobody watches costs nothing per change.
+
+The owner's tree falls back to the declared value while the mirror holds none, so it answers correctly before its first write lands.
 
 The tree is also reachable later as `core.shared.own`, untyped.
 
@@ -76,26 +72,29 @@ const economy = core.shared.of<EconomyShared>('drav0011_economy');   // undefine
 
 economy?.currency.get();                        // string | undefined
 economy?.event.subscribe(event => …);
-economy?.votes.set(1);                          // only because the owner said open(); a compile error on any other leaf
 ```
 
-`of()` materializes the tree from the shape the owner announced under `core-shared/shape` when it registered; the type argument is the compile-time view over it, the same arrangement as `core.config.of<Def>()`. A peer's leaf reads `undefined` while its value has not arrived yet, and a peer's branch has no `set`.
+`of()` materializes the tree from the key names the owner announced under `core-shared/shape` when it registered; the type argument is the compile-time view over it, the same arrangement as `core.config.of<Def>()`. A peer's key reads `undefined` while its value has not arrived — a peer never knows what the owner declared — and a peer's tree has no `set` at all, in the type and at runtime.
 
 Peers that only have the namespace, not the type, still get an untyped tree from `core.shared.of(ns)`.
 
 ## Who may write
 
-The transport is last-write-wins, which is right for a mirror and wrong for data two realms disagree about. So the mirror applies an entry for a namespace only when it came from the namespace's owner — the addon whose id it is. A write from anyone else is dropped and counted in `core.node.state.droppedForeign`.
+The transport is last-write-wins, which is right for a mirror and wrong for data two realms disagree about. So the mirror applies an entry for a namespace only when it came from the namespace's owner — the sending node for a delta, the recorded writer for a snapshot entry, so a snapshot relayed by a third party still names the original writer. A write from anyone else is dropped and counted in `core.node.state.droppedForeign`.
 
-`open()` is the exception, declared by the owner: a mirror takes anyone's write for those leaves, last write wins, and the flag itself can only be set or cleared by the owner. Use it for the counter, the vote, the thing that genuinely has many writers.
+The local mirror applies the same rule to its own writes, so a foreign write is visible locally exactly when it is visible everywhere, which is never.
 
 This is robustness against a buggy peer, not security: a pack can forge its id, and script events carry no sender identity.
 
-## Persistence
+## Persisting a shared value
 
-`persisted()` leaves are written to the world as JSON on every change, under `core-shared:<namespace>:<key>`, and written back into the mirror one tick after registration — dynamic properties are not readable before the first tick. Until then the owner's own tree answers with the declared value. Nothing else is saved: a leaf without the marker starts at its declared value on every boot.
+The mirror is not storage. When a value has to survive a restart, the owner keeps it in a `@bedrock-core/db` document and maps it across in one line:
 
-A dynamic property string caps at 32 767 characters and throws past it. A persisted shared value is a small value by construction; documents belong in `@bedrock-core/db`.
+```ts
+settings.for(world).subscribe(doc => shared.event.set(doc.event));
+```
+
+A document's subscriber hears the document load, so that line is correct at boot as well as on every later change.
 
 ## Reserved keys
 
@@ -108,14 +107,10 @@ Your namespace carries more than you put there. The framework replicates its own
 | `core-guide/manifest`, `core-guide/reference` | [GuidesRegistry](./guides.md) — the guide |
 | `core-addon/page` | PagesRegistry — the addon's page in the shared list |
 | `core-feature/<id>` | [FeatureManager](./features.md) — one boolean per declared feature |
-| `core-shared/shape` | the shared registry — every leaf path, and which are open |
+| `core-shared/shape` | the shared registry — the owner's key names |
 
 The shared tree never sees them. To reach the raw namespace, framework keys included, use `core.node.state`:
 
 ```ts
 core.node.state.get(core.id, 'core-config/schema');
 ```
-
-## `core.state`
-
-The string-keyed `core.state` (`set` / `get` / `delete` / `getNamespace` / `subscribe` on this addon's namespace, framework keys hidden) is deprecated: a leaf of the tree covers each of its calls, and `persisted()` in the declaration replaces subscribing to save. It is removed in a later minor.

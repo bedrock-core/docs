@@ -123,12 +123,12 @@ const { config } = core.register({
 
 // ─── Serve RPC ───────────────────────────────────────────────────────────────
 
-core.rpc.serve<EconomyRPC>({
-  getBalance: ({ player }) => {
-    const balance = core.state.get(`balance.${player}`);
+// Whatever this addon keeps balances in — a plain map here; `@bedrock-core/db`
+// when they have to survive a restart.
+const balances = new Map<string, number>();
 
-    return typeof balance === 'number' ? balance : 0;
-  },
+core.rpc.serve<EconomyRPC>({
+  getBalance: ({ player }) => balances.get(player) ?? 0,
 });
 
 // ─── React to config changes ─────────────────────────────────────────────────
@@ -150,7 +150,7 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 :::caution Dynamic properties are unreadable during early execution
 Anything that touches `world.getDynamicProperty` / `setDynamicProperty` — including your own persistence — must be deferred with `system.run()`. The runtime already does this for config: persisted values load one tick after registration, and change listeners fire for every key whose stored value differs from its default, so a subscriber attached right after `register()` still ends up seeing the real values.
 
-Nothing in the shared mirror survives a reload unless the leaf is declared `persisted()` — see [Persistence](./api/shared.md#persistence).
+Nothing in the shared mirror survives a reload: it is not storage. A shared value that must come back is a db document the owner maps onto a key — see [Persisting a shared value](./api/shared.md#persisting-a-shared-value).
 :::
 
 ## Getting two addons talking

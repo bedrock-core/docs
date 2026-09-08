@@ -40,7 +40,6 @@ Every accessor below throws `runtime.<name> is unavailable: call register() firs
 | `core.features` | [`FeatureManager`](./features.md) | Condition-driven togglable behavior. |
 | `core.host` | [`HostElection`](./host.md) | Which realm does the work only one realm may do. |
 | `core.shared` | [`SharedRegistry`](./shared.md) | The replicated mirror as typed trees: `of(ns)` for a peer's, `own` for this addon's. |
-| `core.state` | `ScopedState` | Deprecated string-keyed access to this addon's namespace; declare `shared` in `register()` instead. |
 | `core.config` | [`ConfigRegistry`](./config.md) | Schema, scopes and cross-addon config access. |
 | `core.translations` | [`TranslationsRegistry`](./translations.md) | Cross-addon i18n bundles. |
 | `core.guides` | [`GuidesRegistry`](./guides.md) | Cross-addon compiled guides. |
@@ -222,7 +221,7 @@ import { RUNTIME_VERSION, compareVersions } from '@bedrock-core/server-runtime';
 | [Registry](./registry.md) | Enumerate peers, resolve dependencies, detect namespace collisions |
 | [FeatureManager](./features.md) | Behavior that toggles on a condition over registry and state |
 | [HostElection](./host.md) | `core.host` — deterministic "who does the shared work" |
-| [Shared](./shared.md) | The replicated mirror as typed trees, owner-only writes, `open()` and `persisted()` |
+| [Shared](./shared.md) | The replicated mirror as typed trees, one value per key, owner-only writes |
 | [ConfigRegistry](./config.md) | Schema, three scopes, persistence, cross-addon access, authorization |
 | [TranslationsRegistry](./translations.md) | Publish and resolve i18n bundles across addons |
 | [GuidesRegistry](./guides.md) | Publish and read compiled guide manifests across addons |

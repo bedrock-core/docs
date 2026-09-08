@@ -72,11 +72,7 @@ export interface EconomyRPC {
 }
 
 core.rpc.serve<EconomyRPC>({
-  getBalance: ({ player }) => {
-    const balance = core.state.get(`balance.${player}`);
-
-    return typeof balance === 'number' ? balance : 0;
-  },
+  getBalance: ({ player }) => balances.get(player) ?? 0,
   transfer: ({ from, to, amount }) => moveFunds(from, to, amount),
 });
 ```
