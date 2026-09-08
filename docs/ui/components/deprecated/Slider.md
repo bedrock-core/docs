@@ -1,0 +1,94 @@
+---
+sidebar_position: 3
+description: "A numeric field backed by a modal slider."
+---
+# Slider
+
+A numeric field backed by a modal slider. Pressing it opens a modal to pick a value within a range. Supports controlled and uncontrolled usage.
+
+:::caution Deprecated
+This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](../Form/FormSlider.md) inside a [`Form`](../Form/Form.md). Still fully supported for existing screens.
+:::
+
+## Import
+
+```tsx
+import { Slider } from '@bedrock-core/ui';
+```
+
+## Usage
+
+```tsx
+<Slider
+  label={'Volume'}
+  min={0}
+  max={100}
+  step={5}
+  onChange={(value) => console.log(value)}
+/>
+```
+
+## How it works
+
+`Slider` renders as a [`Button`](../Button.md) whose face shows the current value. Pressing it opens a single-slider `ModalFormData`; on confirm the chosen value is committed (internal state + `onChange`), on cancel nothing changes (`onCancel`). Either way the root form re-presents with the current value.
+
+## Props
+
+### Component-Specific props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `min` (required) | `number` | — | Minimum selectable value |
+| `max` (required) | `number` | — | Maximum selectable value |
+| `step` | `number` | `1` | Increment between selectable values |
+| `value` | `number` | — | Controlled value. When provided, the face reflects it on every render and `onChange` is your only way to update it |
+| `defaultValue` | `number` | `min` | Initial value when running uncontrolled |
+| `onChange` | `(value: number) => void` | — | Called with the new value when the player confirms the modal |
+| `onCancel` | `() => void` | — | Called when the player cancels (X / Esc) the modal. The value is left unchanged |
+| `face` | `JSX.Node` | a `Text` showing the current value | Overrides the content drawn on the button face. Lets a styled wrapper render its own face (e.g. a track and thumb positioned by the value) while reusing this component's modal + state logic. This is how [`@bedrock-core/ore-styled`](/docs/ore-styled/Slider) builds its themed `Slider` |
+
+### Modal field props
+
+Slider inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
+
+### Control props
+
+Slider inherits all standard [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
+
+## Examples
+
+### Controlled
+
+```tsx
+function VolumeSetting() {
+  const [volume, setVolume] = useState(50);
+
+  return (
+    <Panel flexDirection={'column'} gap={6}>
+      <Slider
+        label={'Volume'}
+        min={0}
+        max={100}
+        step={5}
+        value={volume}
+        onChange={setVolume}
+        title={'Set volume'}
+        submitLabel={'Save'}
+      />
+      <Text>{`Volume: ${volume}%`}</Text>
+    </Panel>
+  );
+}
+```
+
+### Uncontrolled
+
+```tsx
+<Slider min={1} max={10} defaultValue={3} onChange={(v) => console.log(v)} />
+```
+
+## Notes
+
+- Choose a `step` that matches the precision you actually need — players can only land on `min + n * step`.
+- Make sure `defaultValue` (or a controlled `value`) sits within `[min, max]`.
+- Pair the slider with a `Text` that echoes the value so the current setting stays visible without opening the modal.

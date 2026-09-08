@@ -6,6 +6,6 @@
   "link": {
     "type": "generated-index",
     "title": "Guides",
-    "description": "The render pack, container screens and native components."
+    "description": "How the server side fits together and how other packages read it."
   }
 }

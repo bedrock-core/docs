@@ -1,0 +1,10 @@
+{
+  "position": 9,
+  "label": "Form",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "components/Form/Form"
+  }
+}

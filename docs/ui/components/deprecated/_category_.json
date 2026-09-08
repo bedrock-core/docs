@@ -1,0 +1,11 @@
+{
+  "position": 16,
+  "label": "Deprecated",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Deprecated",
+    "description": "One-modal-per-field components, kept until the code removes them. Use Form.* instead."
+  }
+}

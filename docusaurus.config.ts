@@ -1,6 +1,14 @@
-import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { existsSync } from 'node:fs';
+import { categories, publishedSections, sectionsOf } from './src/data/sections';
+import { redirects } from './src/data/redirects';
+import { bedrockPrism } from './src/prism/bedrock';
+
+// Sections that have a docs/<id> folder today. Planned sections stay in the
+// registry (menus, home page) without an instance.
+const liveSections = publishedSections.filter((section) => existsSync(`docs/${section.id}`));
+const isLive = (id: string): boolean => liveSections.some((section) => section.id === id);
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -54,28 +62,19 @@ const config: Config = {
     ],
   ],
 
+  // One docs instance per section: docs/<id> served at /docs/<id> with its own sidebar.
   plugins: [
     'docusaurus-plugin-llms',
-    [
+    ...liveSections.map((section) => [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'server',
-        path: 'docs/server',
-        routeBasePath: 'docs/server',
+        id: section.id,
+        path: `docs/${section.id}`,
+        routeBasePath: `docs/${section.id}`,
         sidebarPath: './sidebars.ts',
-        editUrl: 'https://github.com/bedrock-core/docs/edit/main/docs/server/',
+        editUrl: `https://github.com/bedrock-core/docs/edit/main/docs/${section.id}/`,
       },
-    ],
-    [
-      '@docusaurus/plugin-content-docs',
-      {
-        id: 'ui',
-        path: 'docs/ui',
-        routeBasePath: 'docs/ui',
-        sidebarPath: './sidebars.ts',
-        editUrl: 'https://github.com/bedrock-core/docs/edit/main/docs/ui/',
-      },
-    ],
+    ]),
     [
       '@docusaurus/plugin-client-redirects',
       {
@@ -84,6 +83,7 @@ const config: Config = {
             to: 'https://discord.gg/xq9JpJ3',
             from: ['/discord'],
           },
+          ...redirects,
         ],
       },
     ],
@@ -101,39 +101,26 @@ const config: Config = {
         src: 'img/logo/icon.png',
       },
       items: [
-        {
-          type: 'docSidebar',
-          sidebarId: 'serverSidebar',
-          docsPluginId: 'server',
-          position: 'left',
-          label: 'server',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'uiSidebar',
-          docsPluginId: 'ui',
-          position: 'left',
-          label: 'ui',
-        },
-        {
-          label: 'Discord',
-          href: 'https://bedrock-core.drav.dev/discord',
-          position: 'right',
-        },
-        {
-          href: 'https://github.com/bedrock-core/',
-          label: 'GitHub',
-          position: 'right',
-        },
+        { type: 'custom-docsMenu', position: 'left', label: 'Docs' },
+        { to: '/showcase', label: 'Showcase', position: 'left' },
+        { type: 'search', position: 'right' },
+        { type: 'custom-iconLink', position: 'right', href: 'https://bedrock-core.drav.dev/discord', icon: 'discord', label: 'Discord' },
+        { type: 'custom-iconLink', position: 'right', href: 'https://github.com/bedrock-core/', icon: 'github', label: 'GitHub' },
       ],
     },
-    footer: {
-      style: 'dark',
-      copyright: `Copyright © ${new Date().getFullYear()} @bedrock-core. Built with Docusaurus.`,
+    // DocSearch: apply at https://docsearch.algolia.com/apply/ and paste the
+    // credentials here; the search box stays inert until they are real.
+    algolia: {
+      appId: 'BEDROCKCORE',
+      apiKey: 'replace-with-the-docsearch-search-only-key',
+      indexName: 'bedrock-core',
+      contextualSearch: false,
     },
+    // Code blocks stay dark in both themes; one palette serves both.
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: bedrockPrism,
+      darkTheme: bedrockPrism,
+      additionalLanguages: ['json5'],
     },
   } satisfies Preset.ThemeConfig,
 };
