@@ -131,7 +131,6 @@ const config: Config = {
       },
       items: [
         { type: 'custom-docsMenu', position: 'left', label: 'Docs' },
-        { type: 'custom-iconNav', position: 'left', to: '/showcase', icon: 'blocks', label: 'Showcase' },
         { type: 'search', position: 'right' },
         { type: 'custom-iconLink', position: 'right', href: 'https://bedrock-core.drav.dev/discord', icon: 'discord', label: 'Discord' },
         { type: 'custom-iconLink', position: 'right', href: 'https://github.com/bedrock-core/', icon: 'github', label: 'GitHub' },

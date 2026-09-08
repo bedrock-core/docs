@@ -25,7 +25,7 @@ export default function IconLink({ href, icon, label, mobile = false }: IconLink
     );
   }
   return (
-    <Link href={href} className={`${styles.iconLink} ${styles.desktopOnly}`} aria-label={label} title={label}>
+    <Link href={href} className={styles.iconLink} aria-label={label} title={label}>
       <Icon name={icon} size="lg" />
     </Link>
   );

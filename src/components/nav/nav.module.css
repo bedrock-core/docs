@@ -23,8 +23,6 @@
 .navLinkActive { color: var(--text-accent); }
 .open { background: var(--bg-hover); border-color: var(--border-default); }
 .chevron { display: inline-flex; transition: transform var(--duration-fast) var(--ease-standard); }
-.triggerIcon { display: none; }
-.triggerLabel { display: inline; }
 .open .chevron { transform: rotate(180deg); }
 
 /* panel */
@@ -86,7 +84,7 @@
 }
 .all:hover { color: var(--text-strong); text-decoration: none; }
 
-/* below the Docusaurus breakpoint the panel spans the viewport; the trigger keeps its label until 600px */
+/* below the Docusaurus breakpoint the panel spans the viewport */
 @media (max-width: 996px) {
   .menu { display: flex !important; }
   .panel {
@@ -103,13 +101,8 @@
   }
 }
 @media (max-width: 600px) {
-  .navLink { display: none; }
-  .trigger { width: 32px; height: 32px; padding: 0; justify-content: center; }
-  .triggerIcon { display: inline-flex; }
-  .triggerLabel, .chevron { display: none; }
   .panel { grid-template-columns: 1fr; }
-  .iconNav { display: inline-flex !important; }
-  }
+}
 
 /* icon links */
 .iconLink {
@@ -132,6 +125,4 @@
 .mobileGroup { padding: var(--space-2) 0; }
 .mobileLink { display: flex; align-items: center; gap: var(--space-2); font-family: var(--font-mono); }
 
-.desktopOnly { display: inline-flex; }
 
-.iconNav { display: none; }

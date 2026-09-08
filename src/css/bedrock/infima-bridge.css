@@ -160,8 +160,15 @@ h1, h2, h3, h4, .markdown h1, .markdown h2 {
 .menu__link--active:not(.menu__link--sublist) { font-weight: var(--weight-semibold); }
 .theme-doc-sidebar-container { border-right: 1px solid var(--border-subtle) !important; }
 
-/* TOC: active item takes an accent left rule, never a background */
-.table-of-contents { border-left: 1px solid var(--border-subtle); font-size: var(--text-body-sm); }
+/* TOC: the rule hugs the list, one indent step, active item takes the accent */
+.table-of-contents {
+  border-left: 1px solid var(--border-subtle);
+  font-size: var(--text-body-sm);
+  padding: 0 0 0 var(--space-3);
+}
+.table-of-contents ul { padding-left: var(--space-3); }
+.table-of-contents li { margin: 0; }
+.table-of-contents__link { padding: 4px 0; line-height: var(--leading-snug); }
 .table-of-contents__link--active {
   color: var(--text-accent);
   font-weight: var(--weight-medium);
@@ -269,6 +276,53 @@ table td a code { color: var(--ifm-link-color); font-weight: var(--weight-semibo
 table td a:hover code { color: var(--ifm-link-hover-color); text-decoration: underline; }
 table td:first-child { white-space: nowrap; }
 
+/* Next steps closes a page: one card per link, mono title, description alongside */
+.markdown h2#next-steps ~ ul {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+}
+.markdown h2#next-steps ~ ul > li {
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-relaxed);
+  transition: var(--transition-control);
+}
+.markdown h2#next-steps ~ ul > li:hover,
+.markdown h2#next-steps ~ ul > li:focus-within { border-color: var(--border-accent); }
+/* the whole card follows the first link; any other link in the row stays on top of it */
+.markdown h2#next-steps ~ ul > li > a:first-of-type::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+}
+.markdown h2#next-steps ~ ul > li a:not(:first-of-type) { position: relative; z-index: 1; }
+.markdown h2#next-steps ~ ul > li::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: var(--space-3);
+  background: var(--text-faint);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 10 5 5-5 5'/%3E%3Cpath d='M4 4v7a4 4 0 0 0 4 4h12'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 10 5 5-5 5'/%3E%3Cpath d='M4 4v7a4 4 0 0 0 4 4h12'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.markdown h2#next-steps ~ ul > li a:first-of-type {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-semibold);
+}
+
 /* buttons never bounce; they nudge 1px */
 .button { font-weight: var(--weight-semibold); letter-spacing: var(--tracking-label); transition: var(--transition-control); }
 .button:active { transform: translateY(1px); }
@@ -354,17 +408,17 @@ table td:first-child { white-space: nowrap; }
   .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; }
   .navbar__items--right [class*='navbarSearchContainer'] { position: static; }
 }
-@media (max-width: 768px) {
+@media (max-width: 996px) {
   .navbar__items--right { gap: var(--space-1); }
   .navbar__items--right > [class*='iconLink'] { order: 1; }
   .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; order: 2; }
   .navbar__items--right [class*='navbarSearchContainer'] { order: 3; }
+  /* where the search becomes a button the drawer takes over these, on the pages that have one */
+  html.docs-wrapper .navbar__items--right > [class*='iconLink'],
+  html.docs-wrapper .navbar__items--right [class*='colorModeToggle'] { display: none; }
 }
 @media (max-width: 600px) {
   :root { --ifm-navbar-padding-horizontal: var(--space-4); }
-  /* where the left links become icons the drawer takes over the social links and the theme */
-  html.docs-wrapper .navbar__items--right > [class*='iconLink'],
-  html.docs-wrapper .navbar__items--right [class*='colorModeToggle'] { display: none; }
   .navbar__items:not(.navbar__items--right) { gap: 2px; }
   .navbar__brand { margin-right: 0; }
   .navbar__title { font-size: var(--text-body-sm); }

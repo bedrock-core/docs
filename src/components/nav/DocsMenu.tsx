@@ -75,10 +75,7 @@ export default function DocsMenu({ label = 'Docs', mobile = false }: { label?: s
         aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className={styles.triggerIcon}>
-          <Icon name="book-open" size="lg" />
-        </span>
-        <span className={styles.triggerLabel}>{label}</span>
+        {label}
         <span className={styles.chevron}>
           <Icon name="chevron-down" size="xs" />
         </span>
