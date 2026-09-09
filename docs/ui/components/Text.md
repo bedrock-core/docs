@@ -34,6 +34,8 @@ import { Text } from '@bedrock-core/ui';
 | `maxLines` | `number` | — | Limit rendered text to N lines. The last line is always ellipsized when content overflows |
 | `maxLength` | `number` | — | The most characters the text will ever need. In a [container screen](../guides/container-screens.md) this is what makes the text **live**: a compiled layout cannot grow, so a string that changes at runtime reserves its cells before the build knows what it will say — one container slot per character, decoded through a 64-glyph table (space, `A–Z`, `a–z`, `0–9`, `.`; anything else, formatting codes included, draws as a blank). Leave it off for text that never changes, which is baked and may use any character at all. In a server form the text is live anyway; a literal string is cut to this length so the two backends agree on what fits, while keys and `RawMessage`s the client resolves are left whole |
 | `shadow` | `boolean` | `false` | Draw a drop shadow behind the glyphs. Purely visual — it does not affect layout or text metrics |
+| `color` | `[number, number, number]` | — | Glyph colour as RGB in `0..1`. For text a `§` code cannot colour: a localization key, whose value the client resolves. Compiled screens only |
+| `textAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Where the glyphs sit in the label's box. Only shows when the box is wider than the text: give the text a `width`, or let it grow. Compiled screens only |
 | `offsetX` / `offsetY` | `number` | `0` | Fine-tune the pixel nudge of the rendered label inside its layout box. The box itself does not move |
 
 ### Control props
