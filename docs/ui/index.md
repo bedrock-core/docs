@@ -39,20 +39,22 @@ So your component logic keeps running in the background, but the player only see
 Here's a simple example to get you started:
 
 ```tsx
-import { render, Panel, Text, Button } from '@bedrock-core/ui';
+import { render, Panel, Screen, Text, Button } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
-// Create a simple UI component
+// Create a simple UI component. <Screen> at the root makes it an action form.
 function WelcomeScreen() {
   return (
-    <Panel padding={10} gap={8}>
-      <Text>{'Welcome to Bedrock UI!'}</Text>
+    <Screen>
+      <Panel padding={10} gap={8}>
+        <Text>{'Welcome to Bedrock UI!'}</Text>
 
-      <Button onPress={() => console.log('clicked')}>
-        <Text>{'Click Me'}</Text>
-      </Button>
-    </Panel>
+        <Button onPress={() => console.log('clicked')}>
+          <Text>{'Click Me'}</Text>
+        </Button>
+      </Panel>
+    </Screen>
   );
 }
 

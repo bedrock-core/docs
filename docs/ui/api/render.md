@@ -23,7 +23,7 @@ function render(root: FunctionComponent | JSX.Element, player: Player): void
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `root` | `FunctionComponent \| JSX.Element` | The root component or element to render |
+| `root` | `FunctionComponent \| JSX.Element` | The screen: a component or element whose root is [`<Screen>`](../components/Screen.md) or [`<Form>`](../components/Form/Form.md). Anything else is refused with the list of roots; a [`<Container>`](../components/Container.md) is served by `createContainerScreen` instead |
 | `player` | `Player` (from `@minecraft/server`) | The player who will see the UI |
 
 ### Scrolls
@@ -61,14 +61,16 @@ When the handoff goes through an async opener (a prefetch, an RPC), **return the
 ## Usage
 
 ```tsx
-import { render, Panel, Text } from '@bedrock-core/ui';
+import { render, Panel, Screen, Text } from '@bedrock-core/ui';
 import { world } from '@minecraft/server';
 
 function WelcomeScreen() {
   return (
-    <Panel padding={10}>
-      <Text>{'Hello, Minecraft!'}</Text>
-    </Panel>
+    <Screen>
+      <Panel padding={10}>
+        <Text>{'Hello, Minecraft!'}</Text>
+      </Panel>
+    </Screen>
   );
 }
 

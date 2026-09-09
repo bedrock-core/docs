@@ -81,14 +81,16 @@ If you also run the i18n Regolith filter, it needs one more `paths` alias and an
 Test your installation with a simple render:
 
 ```tsx
-import { render, Panel, Text } from '@bedrock-core/ui';
+import { render, Panel, Screen, Text } from '@bedrock-core/ui';
 import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
 const HelloWorld = (
-  <Panel padding={20}>
-    <Text>{'Hello from @bedrock-core/ui!'}</Text>
-  </Panel>
+  <Screen>
+    <Panel padding={20}>
+      <Text>{'Hello from @bedrock-core/ui!'}</Text>
+    </Panel>
+  </Screen>
 );
 
 const isPlayer = (source: Entity): source is Player => source.typeId === MinecraftEntityTypes.Player;

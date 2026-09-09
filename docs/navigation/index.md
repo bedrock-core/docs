@@ -22,7 +22,7 @@ This package covers stack navigation only. There is no support for animations, t
 The example below wires up a two-screen stack: a `Home` screen that navigates to a `Details` screen and back.
 
 ```tsx
-import { render, Panel, Text, Button } from '@bedrock-core/ui';
+import { render, Panel, Screen, Text, Button } from '@bedrock-core/ui';
 import {
   NavigationContainer,
   createStackNavigator,
@@ -45,26 +45,31 @@ const Stack = createStackNavigator<Routes>({
   initialRouteName: 'Home',
 });
 
-// 3. Screen components receive navigation + route as props
+// 3. Screen components receive navigation + route as props. Each is a whole
+//    screen, so each starts with a root: <Screen> here, <Form> for a modal.
 function HomeScreen({ navigation }: ScreenProps<Routes, 'Home'>) {
   return (
-    <Panel padding={10} gap={8}>
-      <Text>{'Home Screen'}</Text>
-      <Button onPress={() => navigation.navigate('Details', { id: 1, title: 'First' })}>
-        <Text>{'Open Details'}</Text>
-      </Button>
-    </Panel>
+    <Screen>
+      <Panel padding={10} gap={8}>
+        <Text>{'Home Screen'}</Text>
+        <Button onPress={() => navigation.navigate('Details', { id: 1, title: 'First' })}>
+          <Text>{'Open Details'}</Text>
+        </Button>
+      </Panel>
+    </Screen>
   );
 }
 
 function DetailsScreen({ navigation, route }: ScreenProps<Routes, 'Details'>) {
   return (
-    <Panel padding={10} gap={8}>
-      <Text>{`Details — ${route.params.title}`}</Text>
-      <Button onPress={() => navigation.goBack()}>
-        <Text>{'Go Back'}</Text>
-      </Button>
-    </Panel>
+    <Screen>
+      <Panel padding={10} gap={8}>
+        <Text>{`Details — ${route.params.title}`}</Text>
+        <Button onPress={() => navigation.goBack()}>
+          <Text>{'Go Back'}</Text>
+        </Button>
+      </Panel>
+    </Screen>
   );
 }
 

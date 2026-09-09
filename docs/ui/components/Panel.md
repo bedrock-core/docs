@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 description: "A flex container for organizing and grouping other UI elements."
 ---
 # Panel

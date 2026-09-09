@@ -48,8 +48,8 @@ Container inherits all standard [control props](./control-props.md). It is the s
 
 The build enforces these, with a message naming the fix:
 
-- **Exactly one, at the root.** Providers and fragments above it are looked through; anything else beside it, or a screen without one, is rejected.
-- **No nesting.** One entity opens one screen — compose the inner part as a component instead.
+- **Exactly one, at the root.** Providers and fragments above it are looked through; anything else beside it is rejected, and a screen with no root at all is refused with the list of roots.
+- **No nesting.** One entity opens one screen, and no root sits inside another — compose the inner part as a component instead.
 - **The content fits the canvas.** A container screen is laid out on the same 320 × 210 canvas as a form, but it cannot scroll: content past the canvas fails the build rather than clipping.
 
 ## Examples

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description: "Interactive button component that responds to player interactions."
 ---
 # Button

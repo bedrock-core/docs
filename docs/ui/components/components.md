@@ -6,6 +6,14 @@ description: "Built-in JSX components for layout, text, and interactivity."
 
 Built-in JSX components for layout, text, and interactivity.
 
+## Roots
+
+A screen's root names its host, and there is no default: a tree that starts with anything else is refused with the list of roots.
+
+- [**`<Screen>`**](./Screen.md) — an action form: buttons, decoration, lists and scrolls, shown with `render()`.
+- [**`<Form>`**](./Form/Form.md) — a native modal form, shown with `render()`.
+- [**`<Container>`**](./Container.md) — a compiled container screen, served with `createContainerScreen()`.
+
 ## Components
 
 - [**`<Panel>`**](./Panel.md) — basic container with optional background and flexbox layout.
