@@ -11,11 +11,11 @@ description: "@bedrock-core/server-runtime is the framework layer addons build o
 
 <Install pkg="@bedrock-core/server-runtime" />
 
-Most addons install [`@bedrock-core/server`](https://www.npmjs.com/package/@bedrock-core/server) instead, which re-exports everything below and pins a matching `@bedrock-core/sync`. Both imports are interchangeable:
+Most addons install [`@bedrock-core/server`](../index.md) instead, which re-exports everything below and pins matching versions of the packages it is built on. Both imports are interchangeable:
 
 ```ts
-import { core } from '@bedrock-core/server';          // meta-package (recommended)
-import { core } from '@bedrock-core/server-runtime';  // direct
+import { core } from '@bedrock-core/server';          // the meta package
+import { core } from '@bedrock-core/server-runtime';  // the runtime alone
 ```
 
 ## `core` — the runtime singleton
@@ -23,7 +23,7 @@ import { core } from '@bedrock-core/server-runtime';  // direct
 `core` is a `Runtime` instance. Import it, register once, and use it for the rest of the addon's life.
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
 
 core.register({ manifest: { creator: 'drav0011', pack: 'economy', packName: 'Economy', version: '1.0.0' } });
 ```
@@ -40,37 +40,44 @@ Every accessor below throws `runtime.<name> is unavailable: call register() firs
 | `core.features` | [`FeatureManager`](./features.md) | Condition-driven togglable behavior. |
 | `core.host` | [`HostElection`](./host.md) | Which realm does the work only one realm may do. |
 | `core.shared` | [`SharedRegistry`](./shared.md) | The replicated mirror as typed trees: `of(ns)` for a peer's, `own` for this addon's. |
+| `core.events` | [`EventsRegistry`](./events.md) | Broadcasts delivered and forgotten: `of(ns)` for a peer's, `own` for this addon's. |
+| `core.db` | [`Db`](./db.md) | This addon's persisted documents, keyed by target. |
 | `core.config` | [`ConfigRegistry`](./config.md) | Schema, scopes and cross-addon config access. |
-| `core.translations` | [`TranslationsRegistry`](./translations.md) | Cross-addon i18n bundles. |
-| `core.guides` | [`GuidesRegistry`](./guides.md) | Cross-addon compiled guides. |
+| `core.translations` | [`TranslationsRegistry`](./translations.md) | Cross-addon i18n bundles, with resolvers over all of them. |
+| `core.guides` | [`GuidesRegistry`](./guides.md) | Cross-addon guide references. |
+| `core.pages` | [`Announcement<AddonPageReference>`](./pages.md) | This addon's page in the shared addon list. |
 | `core.rpc` | `Rpc` | [RPC](/docs/sync/rpc), passed through from the sync node. |
-| `core.node` | `SyncNode` | The raw [sync node](/docs/sync) — bus, discovery, unscoped state. |
+| `core.node` | `SyncNode` | The raw [sync node](/docs/sync) — bus, discovery, the mirror, events. |
 
 ## `register()`
 
 ```ts
-register(options: RegisterOptions): { config, shared }   // one key per declaration; void when neither is declared
+register(options: RegisterOptions): Registered   // { config?, shared?, events? } — one key per declaration
 ```
 
 Declare the addon and bring it online. **Call exactly once — there is no separate `start()`.** It throws on an invalid manifest and on a second call.
 
-`RegisterOptions` is `{ manifest: AddonManifest; translations?; guide?; guideReference?; page?; config?; shared? }` — a `manifest` (the [manifest fields](#manifest-fields)) plus the optional declarations beside it. Each declaration is exactly equivalent to the standalone call listed beside it, which stays available for publishing late or replacing data at runtime:
+`RegisterOptions` is a `manifest` (the [manifest fields](#manifest-fields)) plus the optional declarations beside it. Each declaration is exactly equivalent to the standalone call listed beside it, which stays available for publishing late or replacing data at runtime:
 
 | Field | Type | Equivalent to |
 |---|---|---|
 | `translations` | `I18nBundle` | [`core.translations.provide()`](./translations.md#provide) |
-| `guide` | `GuideManifest` | [`core.guides.provideManifest()`](./guides.md#providemanifest) |
+| `guideReference` | `GuideReference` | [`core.guides.provide()`](./guides.md) |
+| `guide` | `GuideManifest` | [`core.guides.manifest.provide()`](./guides.md#manifest) |
+| `page` | `AddonPageReference` | [`core.pages.provide()`](./pages.md) |
 | `config` | `ConfigDefinition` | [`core.config.define()`](./config.md#define) |
+| `shared` | `SharedDef` | [`core.shared.define()`](./shared.md) |
+| `events` | `EventsDef` | [`core.events.define()`](./events.md) |
 
-`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value [`core.config.define()`](./config.md#define) returns) and [`shared`](./shared.md) (the tree). Each key is present only when its declaration was given; with neither, the return type is `void`.
+`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value [`core.config.define()`](./config.md#define) returns), [`shared`](./shared.md) (the tree) and [`events`](./events.md) (the tree). Each key is present only when its declaration was given.
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import { guideReference } from '@bedrock-core/guides';
 import bundle from '@bedrock-core/generated/i18n';
-import guides from '@bedrock-core/generated/guides';
-import { configDef } from './example';
+import { configDef, sharedDef, eventsDef } from './example';
 
-const { config } = core.register({
+const { config, shared, events } = core.register({
   manifest: {
     creator: 'drav0011',
     pack: 'economy',
@@ -84,11 +91,15 @@ const { config } = core.register({
     thumbnail: 'textures/ui/economy/thumbnail',
   },
   translations: bundle,
-  guide: guides,
+  guideReference: guideReference('drav0011_economy'),
   config: configDef,
+  shared: sharedDef,
+  events: eventsDef,
 });
 
-config.server.get();  // fully typed
+config.server.get();       // fully typed
+shared.currency.set('gold');
+events.purchase.emit({ playerId: player.id, gold: 5 });
 ```
 
 ## Manifest fields
@@ -146,7 +157,7 @@ core.register({
 
 ### Validation
 
-`validateManifest(input)` is exported, and `register()` runs it for you. It throws a descriptive error rather than letting a misconfigured addon misbehave silently:
+`register()` validates the manifest and throws a descriptive error rather than letting a misconfigured addon misbehave silently:
 
 | Input | Error |
 |---|---|
@@ -154,8 +165,6 @@ core.register({
 | Missing/empty `creator`, `pack`, `packName` or `version` | `addon manifest '<field>' is required and must be a non-empty string` |
 | `creator` or `pack` with an illegal character | `invalid <field> '<value>': must be lowercase alphanumeric and underscores only (a-z0-9_)` |
 | `dependencies` that is not a `string[]` | `addon manifest '<field>' must be an array of strings` |
-
-`addonNamespace(manifest)` is exported too, and simply returns `` `${manifest.creator}_${manifest.pack}` ``.
 
 ## `stop()`
 
@@ -171,7 +180,7 @@ The `Runtime` class stands alone, so a GameTest can create **several runtimes in
 
 ```ts
 import { register, type Test } from '@minecraft/server-gametest';
-import { Runtime } from '@bedrock-core/server-runtime';
+import { Runtime } from '@bedrock-core/server';
 
 register('core', 'discovery_and_rpc', (test: Test) => {
   const a = new Runtime();
@@ -205,23 +214,27 @@ register('core', 'discovery_and_rpc', (test: Test) => {
 
 Use `core` — the singleton — in a real addon. One identity per pack.
 
-## Version helpers
+## `RUNTIME_VERSION`
 
 ```ts
-import { RUNTIME_VERSION, compareVersions } from '@bedrock-core/server-runtime';
+import { RUNTIME_VERSION } from '@bedrock-core/server';
 ```
 
-- **`RUNTIME_VERSION`** — the version of `@bedrock-core/server-runtime` this build was compiled against. It is stamped into the discovery `meta` blob automatically, surfaces on every registry entry as `runtimeVersion`, and is what the [host election](./host.md) compares. It is generated at release time; addons never set it.
-- **`compareVersions(a, b)`** — minimal semver comparison returning `-1` / `0` / `1`, suitable for `Array.prototype.sort`. Handles `major.minor.patch` with an optional `-prerelease` tail; anything unparseable sorts as `0.0.0` rather than throwing.
+The version of `@bedrock-core/server-runtime` this build was compiled against. It is stamped into the discovery `meta` blob automatically, surfaces on every registry entry as `runtimeVersion`, and is what the [host election](./host.md) compares. It is generated at release time; addons never set it.
 
 ## In this section
 
 | Page | Description |
 |---|---|
-| [Registry](./registry.md) | Enumerate peers, resolve dependencies, detect namespace collisions |
-| [FeatureManager](./features.md) | Behavior that toggles on a condition over registry and state |
-| [HostElection](./host.md) | `core.host` — deterministic "who does the shared work" |
-| [Shared](./shared.md) | The replicated mirror as typed trees, one value per key, owner-only writes |
-| [ConfigRegistry](./config.md) | Schema, three scopes, persistence, cross-addon access, authorization |
-| [TranslationsRegistry](./translations.md) | Publish and resolve i18n bundles across addons |
-| [GuidesRegistry](./guides.md) | Publish and read compiled guide manifests across addons |
+| [`core.registry`](./registry.md) | Enumerate peers, resolve dependencies, detect namespace collisions |
+| [`core.features`](./features.md) | Behavior that toggles on a condition over the registry and the mirror |
+| [`core.host`](./host.md) | Deterministic "who does the shared work" |
+| [`core.shared`](./shared.md) | The replicated mirror as typed trees, one value per key, owner-only writes |
+| [`core.events`](./events.md) | Broadcasts delivered and forgotten |
+| [`core.db`](./db.md) | Persisted documents keyed by target |
+| [`core.config`](./config.md) | Schema, three scopes, persistence, cross-addon access, authorization |
+| [`core.translations`](./translations.md) | Announce and resolve i18n bundles across addons |
+| [`core.guides`](./guides.md) | Announce and read guide references across addons |
+| [`core.pages`](./pages.md) | An addon's page in the shared addon list |
+| [`Announcement`](./announcement.md) | The shape every cross-addon feed shares |
+| [`authorize`](./authorize.md) | The one rule a handler applies on behalf of a player |

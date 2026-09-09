@@ -32,23 +32,27 @@ None of them imported each other. They found each other at runtime.
 
 <Install pkg="@bedrock-core/server" />
 
-That is the answer for an addon. It is a meta-package that pins a matching set of the stack and re-exports everything, so `import { core } from '@bedrock-core/server'` is all you need. The transport stays available at `@bedrock-core/server/sync` if you ever want it, and the runtime already owns exactly one node and hands it to you as `core.node`.
+That is the answer for an addon. It is a meta package that pins a matching set of the stack and re-exports everything, so `import { core } from '@bedrock-core/server'` is all you need. Each package underneath stays reachable at its own subpath — `/sync`, `/db`, `/observable` — for when you reach past `core` to the thing itself.
 
-The two packages underneath — [`@bedrock-core/server-runtime`](./api/runtime.md) (registry, features, config, guides, translations, host election) and [`@bedrock-core/sync`](/docs/sync) (bus, discovery, RPC, replicated state) — are strictly layered and installable on their own if you are building a framework layer of your own.
+The packages underneath are strictly layered and installable on their own if you are building a framework layer of your own: [`@bedrock-core/server-runtime`](./api/runtime.md) (registry, features, config, shared, events, guides, translations, host election), [`@bedrock-core/sync`](/docs/sync) (bus, discovery, RPC, the mirror, events), [`@bedrock-core/db`](/docs/db) (persisted documents) and [`@bedrock-core/observable`](/docs/observable) (the reactive primitive every accessor is).
 
 ## What you get
 
 - **[Registry](./api/registry.md)** — declare `creator` + `pack` once and every other bedrock-core addon sees you, with version, dependencies and display labels. Missing soft dependencies log and fire an event; they never block loading.
-- **[RPC](/docs/sync/rpc)** — typed request/response calls to another addon, with a timeout so an absent peer can never hang your code.
-- **[Shared](./api/shared.md)** — a declared shape every realm mirrors locally as a typed tree. Reads are synchronous; writes broadcast a delta; only the owner writes.
-- **[Config](./api/config.md)** — a declarative schema in three scopes (server, dimension, player), persisted automatically and editable in game.
+- **[RPC](/docs/sync/rpc)** — typed request/response calls to another addon, with a timeout so an absent peer can never hang your code, and [one rule](./api/authorize.md) a handler applies on behalf of a player.
+- **[Shared](./api/shared.md)** — a flat shape every realm mirrors locally, one observable per key. Reads are synchronous; writes broadcast a delta; only the owner writes.
+- **[Events](./api/events.md)** — a broadcast delivered and forgotten, typed by its payload, so a peer hears that something happened without polling for it.
+- **[Db](./api/db.md)** — persisted documents keyed by target, on whatever dynamic properties the target itself can hold, with versions and lazy migrations. Local: a peer reaches one only through a method you wrote.
+- **[Config](./api/config.md)** — a declarative schema in three scopes (server, dimension, player), stored as documents and editable in game.
 - **[Features](./api/features.md)** — behavior that auto-enables when a condition over the registry becomes true, and auto-disables when it stops being true.
-- **[Translations](./api/translations.md)** and **[guides](./api/guides.md)** — publish your i18n bundle and compiled guide so any addon's UI can render your content.
+- **[Translations](./api/translations.md)**, **[guides](./api/guides.md)** and **[pages](./api/pages.md)** — announce your i18n bundle, guide and list page so any addon's UI can render your content.
 - **[Host election](./api/host.md)** — a deterministic rule for "which realm does the work only one realm may do".
 
 ## Next steps
 
-- [Installation](./installation.md) — Scaffold with the CLI, or install and register by hand
-- [server-runtime](./api/runtime.md) — The runtime reference: `core`, registry, features, host, state, config
-- [sync](/docs/sync) — The transport reference: nodes, discovery, RPC, replicated state
-- [UI integration](./guides/ui-integration.md) — How config, translations and guides feed the UI packages
+- [Installation](./installation.md) — scaffold with the CLI, or install and register by hand
+- [Sharing data between addons](./guides/channels.md) — which of shared, events and RPC carries what, and what stays local
+- [Trust model](./guides/trust-model.md) — what the framework defends against, and what it cannot
+- [`core`](./api/runtime.md) — the runtime reference: registry, features, host, shared, events, db, config
+- [sync](/docs/sync) — the transport reference: nodes, discovery, RPC, the mirror, events
+- [UI integration](./guides/ui-integration.md) — how config, translations and guides feed the UI packages

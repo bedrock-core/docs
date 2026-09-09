@@ -156,7 +156,7 @@ Every `request` can reject — timeout, unknown method, or a handler that threw.
 
 ### Namespace your method names
 
-The framework's own methods are namespaced (`core:config.get-server`, `core:ui.open`). Method names are per-node, so collisions are only possible within your own addon — but a prefix keeps framework methods and yours visibly apart.
+The framework's own methods are namespaced (`core:config.server.get`, `core:ui.open`). Method names are per-node, so collisions are only possible within your own addon — but a prefix keeps framework methods and yours visibly apart.
 
 ## Lifecycle
 

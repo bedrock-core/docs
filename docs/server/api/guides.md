@@ -1,131 +1,82 @@
 ---
-sidebar_position: 8
-description: "core.guides replicates each addon's compiled guide manifest across the world, so the elected host can list and render every addon's guide locally — one…"
+sidebar_position: 10
+description: "core.guides announces each addon's compiled guide as a reference, so the elected host can present every addon's guide without any addon importing another."
 ---
 
 # core.guides
 
-`core.guides` replicates each addon's **compiled guide manifest** across the world, so the [elected host](./host.md) can list and render every addon's guide locally — one in-game documentation browser for everything installed, without any addon importing another.
+`core.guides` announces each addon's **compiled guide** across the world, so the [elected host](./host.md) can present every addon's guide — one in-game documentation browser for everything installed, without any addon importing another.
+
+A guide is authored as MDX and compiled by the [`guides` filter](/docs/filters/guides) into screens baked into the addon's own pack, so every client already holds what the guide *says*. What the host needs to present it is small — per screen a compiled title, the entry values and where each press leads — and that is the **reference** an addon announces. `core.guides` is an [`Announcement<GuideReference>`](./announcement.md).
 
 ## Import
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
-import type { GuideManifest, GuidesChangeListener } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import type { GuideReference, GuideManifest } from '@bedrock-core/server';
 ```
 
 ## Usage
 
 ```ts
-import guides from '@bedrock-core/generated/guides';
+import { guideReference } from '@bedrock-core/guides';
 
-core.register({ manifest, guide: guides });           // publish up front
-core.guides.provideManifest(guides);                   // or publish/replace later
+core.register({ manifest, guideReference: guideReference(core.id) });   // publish up front
+core.guides.provide(guideReference(core.id));                           // or publish/replace later
 
-core.guides.own();                  // this addon's manifest
-core.guides.of('drav0011_shop');    // another addon's manifest, or undefined
-core.guides.has('drav0011_shop');   // boolean
-core.guides.addonsWithGuides();     // every namespace that published one
-core.guides.subscribe(() => { /* … */ });
+core.guides.own();                  // this addon's reference
+core.guides.of('drav0011_shop');    // another addon's, or undefined
+core.guides.namespaces();           // every addon that published one
+core.guides.subscribe((namespace) => { … });
 ```
 
-## What a manifest is
+## What travels
 
-A guide is authored as MDX and compiled by the [`guides` filter](/docs/filters/guides) into `@bedrock-core/generated/guides`. To the runtime it is an opaque payload with two known fields:
+To the runtime a reference is an opaque payload with two known fields:
 
 ```ts
+interface GuideReference {
+  v: 1;
+  ns: string;       // the owning addon's namespace
+  pages: unknown;   // page id → screen reference, to the renderer
+}
+```
+
+```
+<your namespace>  →  core-guide/reference  →  GuideReference
+```
+
+The runtime never looks inside one. Reads verify only that the value is an object carrying `ns` and `pages`; narrow it with `isGuideReference` from `@bedrock-core/guides` before presenting.
+
+## API
+
+`provide`, `own`, `of`, `namespaces` and `subscribe` are the [`Announcement`](./announcement.md#members) members over the reference.
+
+### `manifest`
+
+```ts
+core.guides.manifest: Announcement<GuideManifest>
+
 interface GuideManifest {
   tree: unknown;    // sidebar entries in display order
   pages: unknown;   // page id → page data
 }
 ```
 
-The framework stores and replicates manifests **without ever looking inside one**. The detailed intermediate representation belongs to the renderer, `@bedrock-core/guides`, which is the only code that interprets it.
-
-Extra fields the filter emits (`v`, `ns`, `defaultLocale`, `locales`) ride along unmentioned and untouched.
-
-```
-<your namespace>  →  core-guide/manifest  →  GuideManifest
-```
-
-Each addon publishes under its own namespace, so an addon that loads late still receives every guide.
-
-Reads verify only that the value is an object carrying `tree` and `pages`. Narrow it properly with `isGuideManifest` from `@bedrock-core/guides` before rendering.
-
-## API
-
-### `provideManifest`
-
-```ts
-core.guides.provideManifest(manifest: GuideManifest): void
-```
-
-Publish this addon's compiled manifest so peers can render it without an RPC round trip. Usually declared up front through `register({ guide })`; call this directly to publish late or replace it.
-
-### `own`
-
-```ts
-core.guides.own(): GuideManifest | undefined
-```
-
-This addon's own manifest, or `undefined` if it never published one.
-
-### `of`
-
-```ts
-core.guides.of(addonId: string): GuideManifest | undefined
-```
-
-Another addon's manifest. Local-mirror read — synchronous, no RPC.
-
-### `has`
-
-```ts
-core.guides.has(addonId: string): boolean
-```
-
-Whether the given addon published a guide.
-
-### `addonsWithGuides`
-
-```ts
-core.guides.addonsWithGuides(): string[]
-```
-
-Every namespace that published a manifest. Cached and rebuilt on change.
-
-```ts
-for (const id of core.guides.addonsWithGuides()) {
-  const addon = core.registry.get(id);
-
-  console.warn(`${addon?.packName ?? id} ships a guide`);
-}
-```
-
-### `subscribe`
-
-```ts
-core.guides.subscribe(listener: GuidesChangeListener): Unsubscribe
-
-type GuidesChangeListener = () => void;
-```
-
-Fires when **any** addon's published guide changes. Coarse and payload-free — re-read through `of()` / `addonsWithGuides()`.
+The whole compiled manifest, announced under `core-guide/manifest`, for an addon that presents from one rather than from a reference. Declared with `register({ guide })`; read with `core.guides.manifest.of(addonId)`. A host that finds a reference presents from it and renders nothing of the manifest.
 
 ## Guides and the host election
 
-Rendering is a job for exactly one realm, so the pattern is:
+Presenting is a job for exactly one realm, so the pattern is:
 
 ```ts
 if (core.host.isHost) {
-  // We run the newest runtime in this world — render every published guide ourselves.
-  for (const id of core.guides.addonsWithGuides()) {
+  for (const id of core.guides.namespaces()) {
     listGuide(id, core.guides.of(id));
   }
 } else {
-  // Forward to whoever is hosting.
   void core.rpc.request(core.host.hostId, 'core:ui.open', { playerId: player.id, command: 'guide', args: [] });
 }
 ```
 
-Because the manifest is replicated rather than fetched, the host already has every guide in memory — there is nothing to await. See [HostElection](./host.md).
+Because the reference is announced rather than fetched, the host already has every guide's index in memory — there is nothing to await. See [HostElection](./host.md).

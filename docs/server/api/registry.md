@@ -10,8 +10,8 @@ description: "core.registry is a live directory of every bedrock-core addon pres
 ## Import
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
-import type { RegisteredAddon, AddonListener, CollisionListener, IncompatibleListener, IncompatiblePeer } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import type { RegisteredAddon, AddonListener, CollisionListener, IncompatibleListener, IncompatiblePeer } from '@bedrock-core/server';
 ```
 
 ## Usage

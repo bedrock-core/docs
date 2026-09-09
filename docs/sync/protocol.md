@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: "What actually goes over the wire: the bus, the envelope, framing and rate limiting."
 ---
 

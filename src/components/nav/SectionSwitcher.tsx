@@ -43,10 +43,7 @@ export default function SectionSwitcher(): ReactNode {
         onClick={() => setOpen((v) => !v)}
       >
         <span className={styles.dot} style={{ background: `var(${accent})` }} />
-        <span className={styles.name}>
-          <span className={styles.scope}>@bedrock-core/</span>
-          {current.label}
-        </span>
+        <span className={styles.name}>{current.label}</span>
         <span className={styles.spacer} />
         {current.status !== 'planned' ? <Badge tone={current.status === '1.0' ? 'success' : current.status === '1.0-rc' ? 'info' : 'warning'}>{current.status}</Badge> : null}
         <Icon name="chevrons-up-down" size="sm" color="var(--text-faint)" />

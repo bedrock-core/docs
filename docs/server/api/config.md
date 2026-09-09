@@ -1,46 +1,44 @@
 ---
-sidebar_position: 6
+sidebar_position: 8
 description: "core.config turns a declarative schema into typed, persisted, cross-addon settings."
 ---
 
 # core.config
 
-`core.config` turns a declarative schema into typed, persisted, cross-addon settings. An addon declares its schema once; the runtime handles storage, change events, discovery and remote access.
+`core.config` turns a declarative schema into typed, persisted, cross-addon settings. An addon declares its schema once; the runtime handles storage, change notification, discovery and remote access.
 
-Only the schema is broadcast over replicated state: its presence is the "this addon has config" signal, and it is what lets a UI build a form without a round trip. Values are fetched on demand over RPC, so reading *another* addon's config is always async — your own never is.
+Underneath, config is three [`core.db`](./db.md) collections with a form on top: one document for the world, one per dimension, one per player, each nested exactly as the schema is and holding only what differs from the defaults. Only the schema is announced to other realms; values stay with the owning addon and are fetched over RPC, so reading *another* addon's config is always async — your own never is.
 
 ## Import
 
 ```ts
-import { core, RESERVED_KEYS, validateConfigSchema } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
 import type {
   Config, ConfigDefinition, ConfigEntry, ConfigValue,
-  BooleanEntry, NumberEntry, StringEntry, EnumEntry, ListEntry,
-  FlatSchema, SerializedEntry, SchemaToValue, DotPath, PathValue, DeepPartial,
+  BooleanEntry, NumberEntry, StringEntry, EnumEntry, ListEntry, MultiselectEntry,
+  FlatSchema, FlatGroups, SerializedEntry, SchemaToValue, DeepPartial,
   LocalConfigScopes, RemoteConfigAccessor, TypedRemoteConfig, ConfigAccessOptions,
-  // The accessor tree
-  ServerConfigTree, ConfigTree, ConfigNode, ConfigChildren,
-  ConfigGroupAccessor, ConfigLeafAccessor, NodeValue,
-} from '@bedrock-core/server-runtime';
+  ScopeTree, ConfigTree, ConfigNode, ConfigChildren, ConfigGroupAccessor, ConfigLeafAccessor, NodeValue,
+} from '@bedrock-core/server';
 ```
 
 ## The three scopes
 
-| Scope | Shared across… | Accessor | Value falls back to |
+| Scope | Shared across… | Accessor | Stored on |
 |---|---|---|---|
-| `server` | the whole world | `config.server` | schema default |
-| `dimension` | one `Dimension` | `config.dimension.for(dim)` | schema default, until overridden for that dimension |
-| `player` | one `Player` | `config.player.for(player)` | schema default, until overridden for that player |
+| `server` | the whole world | `config.server` | the world |
+| `dimension` | one `Dimension` | `config.dimension.for(dim)` | the world, keyed by the dimension |
+| `player` | one `Player` | `config.player.for(player)` | the player entity |
 
 They are independent — a schema may declare any combination, including only one.
 
-Each scope is a **dotted accessor tree** mirroring the schema. Every node — group or leaf — carries its own verbs, in the style of `world.afterEvents.playerSpawn.subscribe(...)`:
+Each scope is a **dotted accessor tree** mirroring the schema. Every node — group or leaf — is an [observable](/docs/observable) with `get` / `set` / `subscribe`, in the style of `world.afterEvents.playerSpawn.subscribe(…)`:
 
 ```ts
 config.server.pricing.currency.get();          // 'emerald' | 'gold' | 'diamond'
 config.server.pricing.currency.set('gold');
-config.server.pricing.currency.subscribe((next, prev) => { /* … */ });
-config.server.pricing.subscribe(pricing => { /* … */ });   // group level
+config.server.pricing.currency.subscribe((next, prev) => { … });
+config.server.pricing.subscribe(pricing => { … });         // group level
 config.player.for(player).allowGifts.get();                // entity scopes pick the entity first
 ```
 
@@ -108,19 +106,16 @@ server: {
 
 Leave them off and the UI derives a title from the key (`economy` reads as "Economy"), so both fields are optional.
 
-They are **not** settings. `$label` never appears in the value object, is not patchable, and is not a dot-path:
+They are **not** settings. `$label` never appears in the value object and is not patchable:
 
 ```ts
-config.server.economy.get();              // { balances: { startingBalance: number } } — no $label
-config.server.economy.patch({ $label: 'x' });          // compile error
-config.server.subscribe('economy.$label', fn);         // compile error
+config.server.economy.get();                   // { balances: { startingBalance: number } } — no $label
+config.server.economy.patch({ $label: 'x' });  // compile error
 ```
 
 The `$` sigil is what keeps them out of the child namespace — any bare name (`label`, `meta`, `title`) is one an addon could plausibly want for a setting. For the same reason **no schema key may start with `$`**; `define()` rejects one that does.
 
-:::info How they travel
-Group strings ride a separate replicated key (`core-config/groups`) from the schema itself, so a consumer that predates them is unaffected and simply sees none. See [the published schema](#the-published-schema).
-:::
+Group strings travel on their own announcement, [`core.config.groups`](#schema-and-groups), beside the schema.
 
 :::danger `get`, `set`, `patch`, `subscribe` and `for` are reserved at every depth
 They are the verbs each accessor node carries, so a schema key with one of those names would shadow the method on its own node. `define()` rejects such a schema at registration, naming the path:
@@ -128,14 +123,26 @@ They are the verbs each accessor node carries, so a schema key with one of those
 ```text
 config schema: "server.economy.set" uses the reserved key "set"; reserved keys are get, set, patch, subscribe, for
 ```
-
-The list is exported as `RESERVED_KEYS`, and `validateConfigSchema(scope, schema)` runs the same check if you want it earlier.
 :::
+
+### Versioning the stored document
+
+```ts
+const configDef = {
+  version: 2,
+  migrate: {
+    2: (stored, scope) => ({ ...stored, taxRate: stored.tax ?? stored.taxRate }),
+  },
+  server: { … },
+} as const;
+```
+
+`version` is handed straight to db, which stamps each target's document with it and runs the `migrate` steps when it reads one written at an older version. Each step takes one target's stored document — nested as the schema is, overrides only — and the scope it belongs to, and returns the next shape. Steps run lazily, per document, so a player who joins two versions late migrates as they load. There is no separate config migration engine.
 
 ## Entry types
 
 ```ts
-type ConfigValue = boolean | number | string;
+type ConfigValue = boolean | number | string | readonly string[];
 type ConfigEntry = BooleanEntry | NumberEntry | StringEntry | EnumEntry | ListEntry | MultiselectEntry;
 ```
 
@@ -168,7 +175,7 @@ A **`list`** is open-ended — an addon can cap it with `maxItems` but cannot en
 
 ### Lists
 
-A `list` entry is an ordered string array. Values are flat, so it is stored and transported as a **JSON string** under its single dot-path key, and read back as an array:
+A `list` entry is an ordered string array, stored and transported as one:
 
 ```ts
 config.server.bannedItems.get();   // string[]
@@ -219,22 +226,20 @@ Two write operations with identical semantics everywhere — local and remote, a
 | Operation | Semantics |
 |---|---|
 | `patch(partial)` | **Deep merge.** Every part of the object is optional; only the provided keys change. |
-| `set(value)` | **Full replace.** Requires the whole object. Any schema key missing from the payload reverts to its schema default and its persisted override is deleted. |
+| `set(value)` | **Full replace.** Requires the whole object. Any schema key missing from the payload reverts to its schema default. |
 
-Both are available on **every** node of the tree, scoped to that node: `config.server.pricing.patch({ taxRate: 0.1 })` merges within `pricing`, and `config.server.pricing.set({ … })` replaces `pricing` — reverting only the keys under it. A leaf has `set` alone, which is the same single-key write.
+Both are available on **every** group of the tree, scoped to that group: `config.server.pricing.patch({ taxRate: 0.1 })` merges within `pricing`, and `config.server.pricing.set({ … })` replaces `pricing` — reverting only the keys under it. A leaf has `set` alone, which is the same single-key write.
+
+Every value is coerced to its entry on the way in — a number clamped to `min`/`max`, an enum outside its `options` reverted to the default — and a value equal to its default is not stored at all, so the document holds only what the player changed.
 
 ### Server scope
 
 ```ts
-// Walk to the node you mean
 config.server.pricing.taxRate.get();    // number
 config.server.pricing.taxRate.set(0.1);
 config.server.pricing.patch({ taxRate: 0.1 });
 
-// Or take the whole scope — a fully typed nested object
-const cfg = config.server.get();
-
-console.warn(cfg.pricing.taxRate);      // number
+const cfg = config.server.get();        // the whole scope, a fully typed nested object
 
 config.server.patch({ pricing: { taxRate: 0.1 } });
 config.server.set({
@@ -245,7 +250,7 @@ config.server.set({
 
 ### Dimension and player scopes
 
-`for(entity)` picks the entity and hands back the same tree the server scope is, so both scopes read identically past that point. An entity with no stored override resolves to the **schema default**.
+`for(entity)` picks the entity and hands back the same tree the server scope is, so both scopes read identically past that point. An entity with no stored document resolves to the **schema defaults**.
 
 ```ts
 import { world } from '@minecraft/server';
@@ -254,73 +259,38 @@ const nether = world.getDimension('nether');
 
 config.dimension.for(nether).miningBonus.get();       // number
 config.dimension.for(nether).miningBonus.set(2);
-config.dimension.for(nether).get();                   // { miningBonus: number }
 config.dimension.for(nether).set({ miningBonus: 3 });
 
 config.player.for(player).allowGifts.set(false);
 config.player.for(player).get();                      // { allowGifts: boolean; displayCurrency: … }
 ```
 
-The entity-first forms — `config.player.get(player)`, `patch(player, …)`, `set(player, …)` — remain for callers holding an untyped scope, such as [`core.config.local`](#coreconfiglocal).
+The entity-first forms — `config.player.get(player)`, `patch(player, …)` — remain for callers holding an untyped scope, such as [`core.config.local`](#coreconfiglocal).
 
-:::caution Player values only exist while the player is online
-The player scope tracks connected players. Values are loaded on `playerSpawn` (and for anyone already connected when the schema is defined, which matters after a `/reload`), and cleared on `playerLeave`. A remote `patch`/`set` aimed at an offline player logs a warning and is ignored — the read still answers with schema defaults.
-:::
+A player's tree is dropped when the player leaves, so a tree held across a leave answers for an invalidated handle; take it from `for(player)` again on the next spawn.
 
 ## Change listeners
 
-`subscribe` sits on **every** node, so you watch a value by naming it. Listeners **bubble**: a change to `pricing.taxRate` fires the leaf listener, then the `pricing` group listener, then the root listener — deepest first.
+`subscribe` sits on **every** node, so you watch a value by naming it. A node's listener fires when the value *at that node* changes — a leaf for its own value, a group for anything under it — with the new value and the one before it:
 
 ```ts
-// Leaf — next and previous
 config.server.pricing.taxRate.subscribe((next, prev) => {
   console.warn(`tax ${String(prev)} → ${String(next)}`);
 });
 
-// Group — the subtree value
-config.server.pricing.subscribe(pricing => console.warn(pricing.taxRate));
-
-// Root — the whole scope value
-config.server.subscribe(full => console.warn(full.pricing.taxRate));
+config.server.pricing.subscribe(pricing => console.warn(pricing.taxRate));   // the subtree value
+config.server.subscribe(full => console.warn(full.pricing.taxRate));         // the whole scope
+config.player.for(player).allowGifts.subscribe((next, prev) => { … });
 ```
 
-Entity scopes are identical past `for(entity)`:
+Every `subscribe` returns an unsubscribe function. A node is a `ReadonlyObservable`, so `computed`, `effect`, `useObservable` and `toNative` from [`@bedrock-core/observable`](/docs/observable) take it as it is.
 
-```ts
-config.player.for(player).allowGifts.subscribe((next, prev) => { /* … */ });
-config.player.for(player).subscribe(full => { /* … */ });
-```
+## Timing
 
-### The dot-path escape hatch
+Dynamic properties are unreadable during early execution, so the tree answers with the schema defaults until one tick after registration, when the documents are read. What that means for your code:
 
-Groups (the scope root included) also take a **dot-path**, for a path computed at runtime rather than written out. It is still type-checked against the schema (`DotPath<S>`), and the value is inferred (`PathValue<S, P>`). Paths resolve relative to the node they are called on.
-
-```ts
-config.server.subscribe('pricing.taxRate', (next, prev) => { /* … */ });
-config.server.pricing.subscribe('taxRate', (next, prev) => { /* … */ });
-config.player.for(player).subscribe('allowGifts', (next, prev) => { /* … */ });
-```
-
-When the path is a literal, prefer the node — `config.server.pricing.taxRate.subscribe(…)` says the same thing with no string to keep in sync.
-
-The listener signature is `(next, prev)` where `prev` may be `undefined`. Every `subscribe` returns an unsubscribe function.
-
-## Timing and persistence
-
-Values live in dynamic properties, one property per key:
-
-| Scope | Dynamic property |
-|---|---|
-| `server` | `world` → `core-cfg:s:<addonId>:<key>` |
-| `dimension` | `world` → `core-cfg:d:<addonId>:<dimId>:<key>` |
-| `player` | the player entity → `core-cfg:p:<addonId>:<key>` |
-
-Dynamic properties are unreadable during early execution, so `define()` schedules its load with `system.run()` — one tick after registration. In that same deferred pass the schema is broadcast to replicated state.
-
-What that means for your code:
-
-- Reads **before** the load completes return schema defaults.
-- When loading completes, change listeners fire for every key whose persisted value differs from its default.
+- Reads **before** that tick return schema defaults.
+- When the documents load, listeners fire for every node whose stored value differs from its default.
 - Therefore a subscriber attached right after `register()` always ends up seeing the real values. You do not need to defer your own subscription.
 
 ```ts
@@ -329,6 +299,8 @@ const { config } = core.register({ manifest, config: configDef });
 // Safe here: if the stored taxRate is 0.2, this fires once on load with (0.2, 0.05).
 config.server.pricing.taxRate.subscribe((next) => { applyTax(next); });
 ```
+
+The schema is announced to other realms in that same tick.
 
 ## Cross-addon config
 
@@ -339,7 +311,7 @@ core.config.of(addonId: string, options?: ConfigAccessOptions): RemoteConfigAcce
 core.config.of<I extends ConfigDefinition>(addonId: string, options?: ConfigAccessOptions): TypedRemoteConfig<I> | undefined
 ```
 
-Returns `undefined` until that addon's schema has reached the local state mirror — which is the synchronous "does this addon have config?" test. Value reads and writes go over RPC and are async.
+Returns `undefined` until that addon's schema has reached the local mirror — which is the synchronous "does this addon have config?" test. Value reads and writes go over RPC and are async.
 
 ```ts
 import type { ShopConfigDef } from '@drav0011/shop-types';
@@ -365,7 +337,10 @@ Omit the type parameter for untyped access — `RemoteConfigAccessor` exposes th
 | Member | What it is |
 |---|---|
 | `schema` | `FlatSchema` — flat dot-path keys, scope segment stripped |
-| `scopedSchema` | `FlatSchema` — the raw published map, keys prefixed `server.` / `dimension.` / `player.` |
+| `scopedSchema` | `FlatSchema` — the announced map, keys prefixed `server.` / `dimension.` / `player.` |
+| `scopedGroups` | `FlatGroups` — the announced group strings, same prefixes |
+
+A config peer is **not told when a value changes**. An owner that wants peers told mirrors the value on a [shared key](./shared.md) or emits an [event](./events.md).
 
 ### `subscribe`
 
@@ -374,7 +349,7 @@ core.config.subscribe(addonId, listener): Unsubscribe
 core.config.subscribe<I extends ConfigDefinition>(addonId, listener): Unsubscribe
 ```
 
-Fires immediately if that addon's schema is already published, and again whenever it re-publishes.
+Fires immediately if that addon's schema is already announced, and again whenever it announces a new one.
 
 ```ts
 core.config.subscribe<ShopConfigDef>('drav0011_shop', async (shopCfg) => {
@@ -412,7 +387,7 @@ A consumer passes `ShopConfigDef` to `core.config.of()` or `core.config.subscrib
 
 ## Authorization
 
-Remote access can be made **on behalf of a player** by passing an `actorId`. The owning addon then authorizes every request against that player.
+Remote access can be made **on behalf of a player** by passing an `actorId`. The owning addon then runs [`authorize`](./authorize.md) against that player before every request:
 
 ```ts
 const shopCfg = core.config.of('drav0011_shop', { actorId: player.id });
@@ -421,88 +396,54 @@ await shopCfg?.server.patch({ pricing: { taxRate: 0.1 } });
 // rejects unless `player` is a world operator
 ```
 
-The rule, implemented by `denyReason(scope, actorId, targetId)`:
-
-| Situation | Outcome |
-|---|---|
-| No `actorId` | **Allowed.** An addon acting programmatically, not a player. |
-| Actor is not in the world | **Refused** — `acting player '<id>' is not in the world` |
-| Actor is a world operator | **Allowed** in every scope |
-| Anyone else, `server` or `dimension` scope | **Refused** — `<scope> config may only be changed by an operator` |
-| Anyone else, `player` scope, someone else's id | **Refused** — `a non-operator may only reach their own player config` |
-| Anyone else, `player` scope, their own id | **Allowed** |
-
-Checks apply to **every write**, and to **player-scope reads** as well — server and dimension settings are world settings, not secrets, but one player's settings are not another player's business.
-
-A refusal **rejects the RPC** rather than silently doing nothing, so the caller learns why:
-
-```
-'drav0011_shop' config: server request refused - server config may only be changed by an operator
-```
-
-### `isOperator`
-
-```ts
-import { isOperator } from '@bedrock-core/server-runtime';
-
-isOperator(player);   // boolean
-```
-
-Reads `player.playerPermissionLevel`, which is **readonly** on `Player`. It deliberately does **not** read `commandPermissionLevel`, which is mutable and could be rewritten by any script in the world — authorization must never rest on a value another addon can hand itself. `PlayerPermissionLevel.Custom` is a separate bucket, not a tier above `Operator`, so it is not accepted.
-
-:::warning What this does and does not defend against
-Every addon in a world runs arbitrary script and can write the underlying dynamic properties directly, so nothing here stops a hostile *pack*. The boundary this enforces is the one that actually exists: a **player** driving a config UI or a config command must not be able to change settings they have no business changing.
-:::
+The targets are the world for the `server` scope, the dimension for `dimension`, and the player's own entity for `player` — so an operator reaches anything, anyone else reads world and dimension settings and reaches only their own player document, and a request with no actor is an addon acting for itself. A refusal **rejects the RPC** rather than silently doing nothing.
 
 ## The RPC surface
 
-`define()` registers these methods on your node automatically. You will not call them by hand — `core.config.of()` wraps them — but they are the contract a non-bedrock-core caller would need.
+`define()` registers these methods on your node. You will not call them by hand — `core.config.of()` wraps them — but they are the contract a non-bedrock-core caller would need.
 
 | Method | Params | Returns |
 |---|---|---|
-| `core:config.get-server` | `{}` | flat server values |
-| `core:config.patch` | `{ values, actorId? }` | updated flat server values |
-| `core:config.set` | `{ values, actorId? }` | updated flat server values |
-| `core:config.get-dim` | `{ dimId }` | flat dimension values |
-| `core:config.patch-dim` | `{ dimId, values, actorId? }` | updated flat values |
-| `core:config.set-dim` | `{ dimId, values, actorId? }` | updated flat values |
-| `core:config.get-player` | `{ playerId, actorId? }` | flat player values |
-| `core:config.patch-player` | `{ playerId, values, actorId? }` | updated flat values |
-| `core:config.set-player` | `{ playerId, values, actorId? }` | updated flat values |
+| `core:config.server.get` | `{ actorId? }` | the server document, defaults filled |
+| `core:config.server.patch` | `{ changes, actorId? }` | the updated document |
+| `core:config.server.set` | `{ doc, actorId? }` | the updated document |
+| `core:config.dimension.get` | `{ dimId, actorId? }` | the dimension's document |
+| `core:config.dimension.patch` | `{ dimId, changes, actorId? }` | the updated document |
+| `core:config.dimension.set` | `{ dimId, doc, actorId? }` | the updated document |
+| `core:config.player.get` | `{ playerId, actorId? }` | the player's document |
+| `core:config.player.patch` | `{ playerId, changes, actorId? }` | the updated document |
+| `core:config.player.set` | `{ playerId, doc, actorId? }` | the updated document |
 
-`values` is a flat dot-path map of primitives, always nested under a `values` field so that an `actorId` can never collide with a schema key of the same name.
+`changes` and `doc` are nested as the schema is, so an `actorId` can never collide with a schema key. A dimension or player that is not in the world rejects the request by name.
 
-## The published schema
+## Schema and groups
 
-In the same deferred pass that loads values, the flattened schema is written to replicated state:
+```ts
+core.config.schema: Announcement<FlatSchema>
+core.config.groups: Announcement<FlatGroups>
+```
+
+One tick after registration the flattened schema is [announced](./announcement.md) with every key prefixed by its scope:
 
 ```
 <your namespace>  →  core-config/schema  →  FlatSchema
 ```
 
-with every key prefixed by its scope:
-
 ```ts
 {
   'server.pricing.taxRate': { type: 'number', default: 0.05, min: 0, max: 1, step: 0.01, label: 'Tax Rate', description: '…' },
-  'server.bannedItems':     { type: 'list', itemType: 'string', maxItems: 50, default: '[]', label: 'Banned Items' },
+  'server.bannedItems':     { type: 'list', itemType: 'string', maxItems: 50, default: [], label: 'Banned Items' },
   'player.allowGifts':      { type: 'boolean', default: true, label: 'Allow Gifts' },
 }
 ```
 
-That single map lets a UI addon enumerate every field of every provider without knowing any of them in advance.
+That single map lets a UI addon enumerate every field of every provider without knowing any of them in advance. Its presence is the "this addon has config" signal.
 
-A published value is always a primitive — `ConfigValue` is `boolean | number | string`. Both array-valued types, [`list`](#lists) and [`multiselect`](#multiselect-vs-list), therefore travel as the `JSON.stringify` of their array — which is why `bannedItems` above publishes `default: '[]'` — and the typed accessors parse them back to `string[]`.
-
-### Group strings
-
-[Group display strings](#naming-a-group) are published beside the schema, on a key of their own:
+[Group display strings](#naming-a-group) ride beside it, keyed by the group's dot-path under the same prefixes:
 
 ```
 <your namespace>  →  core-config/groups  →  FlatGroups
 ```
-
-keyed by the group's dot-path, under the same scope prefixes:
 
 ```ts
 {
@@ -511,11 +452,7 @@ keyed by the group's dot-path, under the same scope prefixes:
 }
 ```
 
-A group that names neither is absent rather than empty, so a schema that names nothing publishes `{}`.
-
-:::info Why a second key rather than one map
-`core-config/schema` keeps exactly the shape it always had. A consumer written before group strings existed reads it unchanged and never sees the new key; one written after reads both and falls back to key-derived titles when the second is missing — which is the same thing it does for an addon that simply names no group. Neither side needs a version check.
-:::
+A group that names neither is absent rather than empty; a reader that finds no entry falls back to the key-derived title.
 
 ## `core.config.local`
 
@@ -533,4 +470,4 @@ interface LocalConfigScopes {
 }
 ```
 
-It is `undefined` until `define()` has run, and **synchronously available** afterwards — unlike `core.config.of(core.id)`, which needs the schema to have reached replicated state one tick later. That is what makes it usable at startup, e.g. while registering custom commands. Writes go through the same `patch` the typed accessors use, so persistence, change events and revert-to-default behave identically.
+It is `undefined` until `define()` has run, and **synchronously available** afterwards — unlike `core.config.of(core.id)`, which needs the schema to have reached the mirror one tick later. That is what makes it usable at startup, e.g. while registering custom commands. Writes go through the same `patch` the typed accessors use, so persistence, change notification and revert-to-default behave identically.

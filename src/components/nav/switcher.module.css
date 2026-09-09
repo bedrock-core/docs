@@ -18,7 +18,6 @@
 .dot { width: 7px; height: 7px; border-radius: 2px; flex: none; }
 .dotSm { width: 6px; height: 6px; border-radius: 2px; flex: none; }
 .name { font-family: var(--font-mono); font-size: var(--text-body-sm); color: var(--text-strong); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scope { color: var(--text-faint); }
 .spacer { flex: 1; }
 .list {
   position: absolute;

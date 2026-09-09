@@ -7,13 +7,13 @@ description: "core.features declares behavior that switches itself on when a con
 
 `core.features` declares behavior that switches itself on when a condition becomes true and off when it stops being true. It is how an addon reacts to `optionalDependencies` without writing its own bookkeeping.
 
-Each feature's enabled flag is published to replicated state automatically, under the [reserved `core-` prefix](./shared.md#reserved-keys), so other addons can read it with `ctx.feature()` or `core.features.of()`.
+The enabled flags are announced as one record under `core-feature/flags` — `core.features.flags` is the [`Announcement`](./announcement.md) — so other addons can read them with `ctx.feature()` or `core.features.of()`.
 
 ## Import
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
-import type { FeatureSpec, FeatureConditionContext, TypedFeatureAccessor } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import type { FeatureSpec, FeatureConditionContext, FeatureFlags, TypedFeatureAccessor } from '@bedrock-core/server';
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ core.features.add('leaderboard-sync', {
 });
 ```
 
-The condition is evaluated **immediately** when you call `add()`, and re-evaluated on **every** registry change and **every** replicated-state change. `onEnable` / `onDisable` are edge-triggered — they run only when the result flips.
+The condition is evaluated **immediately** when you call `add()`, and re-evaluated on **every** registry change and **every** mirror change. `onEnable` / `onDisable` are edge-triggered — they run only when the result flips.
 
 ## `FeatureSpec`
 
@@ -53,7 +53,7 @@ condition: r => r.has('drav0011_leaderboard')
 :::
 
 :::warning Conditions must be cheap and pure
-Because a condition re-runs on every registry and state change — and state changes include every config-schema, translation and guide broadcast in the world — it must be a fast predicate with no side effects. Do the work in `onEnable` / `onDisable`, never in `condition`.
+Because a condition re-runs on every registry and mirror change — and mirror changes include every announcement and shared write in the world — it must be a fast predicate with no side effects. Do the work in `onEnable` / `onDisable`, never in `condition`.
 :::
 
 ## `FeatureConditionContext`
@@ -69,8 +69,8 @@ interface FeatureConditionContext {
 | Member | Use it for |
 |---|---|
 | `ctx.registry` | Peer presence — the full [`Registry`](./registry.md) API. |
-| `ctx.state` | Any addon's published values, via the raw [`State`](/docs/sync/state) mirror (`ctx.state.get(ns, key)`). |
-| `ctx.feature` | Another addon's feature flag, read straight from the state mirror. |
+| `ctx.state` | The raw [`State`](/docs/sync/state) mirror, for a value no typed surface covers (`ctx.state.get(ns, key)`). |
+| `ctx.feature` | Another addon's feature flag, read from its announced record. |
 
 ### Another addon's feature flag
 
@@ -84,15 +84,19 @@ core.features.add('cross-pvp', {
 });
 ```
 
-### A raw state value
+### A peer's shared value
 
 ```ts
+const shop = core.shared.of<ShopShared>('drav0011_shop');
+
 core.features.add('shop-integration', {
-  condition: ctx => ctx.state.get('drav0011_shop', 'shopOpen') === true,
+  condition: () => shop?.open.get() === true,
   onEnable() { showShopButton(); },
   onDisable() { hideShopButton(); },
 });
 ```
+
+The condition is re-run on every mirror change, so a [`core.shared`](./shared.md) read inside it is enough — no subscription needed.
 
 ## API
 
@@ -102,7 +106,7 @@ core.features.add('shop-integration', {
 core.features.add(id: string, spec: FeatureSpec): void
 ```
 
-Declare a feature. Evaluated immediately, then on every registry or state change. Adding the same `id` twice replaces the previous spec and re-evaluates from a disabled baseline.
+Declare a feature. Evaluated immediately, then on every registry or mirror change. Adding the same `id` twice replaces the previous spec and re-evaluates from a disabled baseline.
 
 ### `isEnabled`
 
@@ -122,7 +126,7 @@ interface TypedFeatureAccessor<T extends string> {
 }
 ```
 
-A typed accessor for reading another addon's feature flags. Reads are synchronous, straight from the in-memory state mirror — no RPC.
+A typed accessor for reading another addon's feature flags. Reads are synchronous, from the record it announced — no RPC.
 
 ```ts
 type ShopFeatures = 'discount-mode' | 'leaderboard-sync';
@@ -134,4 +138,14 @@ shop.isEnabled('unknown-feature');  // ❌ TS error
 ```
 
 Omit the type parameter for untyped access (`isEnabled(id: string)`). An addon that is offline, or that never declared the feature, reads as `false`.
+
+### `flags`
+
+```ts
+core.features.flags: Announcement<FeatureFlags>
+
+type FeatureFlags = Record<string, boolean>;
+```
+
+Every addon's flags as one record each, the [`Announcement`](./announcement.md) behind `of()` and `ctx.feature()`. Republished whole whenever one of this addon's features flips; a feature that has never been enabled is absent from it.
 

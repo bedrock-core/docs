@@ -12,9 +12,9 @@ Some jobs cannot be done by every addon at once — rendering a shared config or
 ## Import
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
-import { HostElection } from '@bedrock-core/server-runtime';
-import type { HostListener } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import { HostElection } from '@bedrock-core/server';
+import type { HostListener } from '@bedrock-core/server';
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ The practical consequence: **installing one up-to-date bedrock-core addon upgrad
 
 ## The rule
 
-1. Highest `runtimeVersion` wins — that is [`RUNTIME_VERSION`](./runtime.md#version-helpers), the version of `@bedrock-core/server-runtime` each addon was built against, **not** the addon's own `version`.
+1. Highest `runtimeVersion` wins — that is [`RUNTIME_VERSION`](./runtime.md#runtime_version), the version of `@bedrock-core/server-runtime` each addon was built against, **not** the addon's own `version`.
 2. Ties are broken by the **lowest namespace**, compared as a plain string.
 
 Every realm sees the same [registry](./registry.md) and applies the same rule, so they all agree on the same winner without exchanging a single message.
@@ -130,18 +130,3 @@ Hosting can move at any time — a newer addon loads, the current host's pack is
 :::
 
 This is exactly how [`@bedrock-core/config`](../guides/ui-integration.md) mounts the shared config and guide UI.
-
-## `HostElection` standalone
-
-The class is exported for tests and for framework layers that build their own runtime:
-
-```ts
-import { HostElection } from '@bedrock-core/server-runtime';
-
-const host = new HostElection(registry, selfNamespace);
-
-host.start();   // subscribes to registry changes and elects
-host.stop();    // unsubscribes and clears listeners
-```
-
-In an addon you never construct one — `core.host` is created and started by `core.register()`.

@@ -1,46 +1,49 @@
 ---
-sidebar_position: 7
-description: "core.translations replicates each addon's i18n bundle across the world, so one addon can resolve, measure and render another addon's strings server-side."
+sidebar_position: 9
+description: "core.translations announces each addon's i18n bundle across the world, so one addon can resolve, measure and render another addon's strings server-side."
 ---
 
 # core.translations
 
-`core.translations` replicates each addon's **i18n bundle** across the world, so one addon can resolve, measure and render another addon's strings server-side.
+`core.translations` announces each addon's **i18n bundle** across the world, so one addon can resolve, measure and render another addon's strings server-side.
 
 A registry or config UI has to draw labels it did not author: `packName`, `creatorName` and `description` are translation keys living in *someone else's* resource pack. Without a published bundle the rendering realm can neither resolve them nor measure their width for layout.
+
+It is an [`Announcement<I18nBundle>`](./announcement.md) — `provide`, `own`, `of`, `namespaces`, `subscribe` over the bundle — with resolvers on top.
 
 ## Import
 
 ```ts
-import { core } from '@bedrock-core/server-runtime';
-import type { I18nBundle, TranslationResolver, TranslationsChangeListener } from '@bedrock-core/server-runtime';
+import { core } from '@bedrock-core/server';
+import type { I18nBundle, TranslationResolver } from '@bedrock-core/server';
 ```
 
-`I18nBundle` and `TranslationResolver` are re-exported from [`@bedrock-core/i18n`](../guides/ui-integration.md#i18n), which `server-runtime` depends on.
+`I18nBundle` and `TranslationResolver` are re-exported from `@bedrock-core/i18n`, which the runtime depends on.
 
 ## Usage
 
 ```ts
 import bundle from '@bedrock-core/generated/i18n';
 
-core.register({ manifest, translations: bundle });           // publish up front
-core.translations.provide(bundle);                            // or publish/replace later
+core.register({ manifest, translations: bundle });   // publish up front
+core.translations.provide(bundle);                    // or publish/replace later
 
-core.translations.of('drav0011_shop');        // another addon's verbs
-core.translations.forPlayer(player);          // chained resolver for that player's locale
-core.translations.forLocale('en_US');         // chained resolver for one locale
-core.translations.subscribe(() => { /* … */ }); // any addon re-published
+core.translations.of('drav0011_shop');                // another addon's bundle
+core.translations.i18n('drav0011_shop');              // verbs over it: t(), key(), raw(), resolve()
+core.translations.forPlayer(player);                  // chained resolver for that player's locale
+core.translations.forLocale('en_US');                 // chained resolver for one locale
+core.translations.subscribe((namespace) => { … });   // an addon re-published
 ```
 
 ## What travels
 
-The registry replicates the **bundle itself** — the module the [i18n filter](/docs/filters/i18n) generates (`@bedrock-core/generated/i18n`), or `createResourceBundle`'s runtime equivalent. Templates stay in `{{var}}` form with their recorded argument order.
+The bundle itself — the module the [i18n filter](/docs/filters/i18n) generates (`@bedrock-core/generated/i18n`), or `createResourceBundle`'s runtime equivalent. Templates stay in `{{var}}` form with their recorded argument order.
 
 ```
 <your namespace>  →  core-i18n/bundle  →  I18nBundle
 ```
 
-Late joiners are covered by sync's snapshot exchange, so an addon that loads after everyone else still sees every bundle. A payload that fails structural validation is ignored rather than replacing a good one.
+A payload that fails structural validation reads as no bundle rather than replacing a good one.
 
 ## API
 
@@ -55,27 +58,24 @@ Publish this addon's bundle. Usually declared up front through `register({ trans
 ### `of`
 
 ```ts
-core.translations.of(addonId: string): I18n<unknown> | undefined
+core.translations.of(addonId: string): I18nBundle | undefined
 ```
 
-The **verbs** over one addon's published strings — `t()`, `key()`, `raw()`, `resolve()`, `display()`, `forLocale()`, `forPlayer()` — exactly what `createI18n` gives that addon locally, minus its compile-time resource types. Those types never travel, so paths are plain strings here.
+The bundle an addon announced, from the local mirror. `own()` is the same read for this addon.
 
-Returns `undefined` until that addon publishes.
+### `i18n`
 
 ```ts
-const shopStrings = core.translations.of('drav0011_shop');
-const title = shopStrings?.forPlayer(player).resolve('drav0011_shop.shop.title');
+core.translations.i18n(addonId: string): I18n<unknown> | undefined
 ```
 
-Reading a peer's strings never shadows your own addon's default translation source.
-
-### `bundleOf`
+The verbs over one addon's strings — `t()`, `key()`, `raw()`, `resolve()`, `forPlayer()` — exactly what `createI18n` gives that addon locally, minus its compile-time resource types: those never travel, so paths are plain strings here. `undefined` until that addon publishes. Cached per addon; rebuilt when any addon re-publishes.
 
 ```ts
-core.translations.bundleOf(addonId: string): I18nBundle | undefined
-```
+const shop = core.translations.i18n('drav0011_shop');
 
-The raw bundle an addon published, straight from the local mirror.
+shop?.t('shop.title');
+```
 
 ### `forLocale`
 
@@ -120,17 +120,15 @@ const resolve = core.translations.forPlayer(player);
 const label = resolve(addon.packName) ?? addon.packName;
 ```
 
-A key nothing resolves comes back `undefined` — fall back to rendering the literal key, which is what Bedrock does anyway.
+A key nothing resolves comes back `undefined` — fall back to rendering the literal key, which is what Bedrock does anyway. A player whose handle has been invalidated gets the `defaultLocale` resolver.
 
 ### `subscribe`
 
 ```ts
-core.translations.subscribe(listener: TranslationsChangeListener): Unsubscribe
-
-type TranslationsChangeListener = () => void;
+core.translations.subscribe(listener: (namespace: string) => void): Unsubscribe
 ```
 
-Fires when **any** addon's published bundle changes. It is deliberately coarse — it carries no payload. Re-read through `of()` / `forLocale()` / `forPlayer()`, which return freshly rebuilt views.
+Fires with the namespace whenever any addon's bundle changes. Re-read through `i18n()` / `forLocale()` / `forPlayer()`, which return freshly rebuilt views.
 
 ## Display fields are keys
 

@@ -24,11 +24,13 @@ If you're adding to an existing project, install the package:
 
 <Install pkg="@bedrock-core/server" />
 
-That single dependency pins matching versions of `@bedrock-core/server-runtime` and `@bedrock-core/sync`, and re-exports them:
+That single dependency pins matching versions of the packages the runtime is built on and re-exports each at its own subpath:
 
 ```ts
-import { core } from '@bedrock-core/server';        // the runtime
-import { createSync } from '@bedrock-core/server/sync'; // the raw transport, rarely needed
+import { core } from '@bedrock-core/server';                  // the runtime
+import { computed } from '@bedrock-core/server/observable';   // the reactive primitive
+import { createEngineDb } from '@bedrock-core/server/db';     // documents beyond core.db, rarely needed
+import { createSync } from '@bedrock-core/server/sync';       // the raw transport, rarely needed
 ```
 
 :::info The packages ship TypeScript sources
@@ -84,14 +86,22 @@ Two addons collide only when **both** halves match. A creator shipping several a
 Everything an addon *declares* rides in the one `register()` call. Here is an economy addon that serves a balance over RPC and exposes two settings.
 
 ```ts title="packs/BP/scripts/main.ts"
-import { core } from '@bedrock-core/server';
-import { world } from '@minecraft/server';
+import { core, players, schema } from '@bedrock-core/server';
+import { world, type Player } from '@minecraft/server';
 
 // The RPC surface other addons call. Publish this interface from a types package so
 // consumers get a typed client.
 export interface EconomyRPC {
   getBalance(params: { player: string }): number;
 }
+
+const playerOf = (id: string): Player => {
+  const found = world.getAllPlayers().find(candidate => candidate.id === id);
+
+  if (found === undefined) { throw new Error(`player '${id}' is not in the world`); }
+
+  return found;
+};
 
 // The config schema. `as const` is what gives you literal types on enums and defaults.
 const configDef = {
@@ -123,12 +133,12 @@ const { config } = core.register({
 
 // ─── Serve RPC ───────────────────────────────────────────────────────────────
 
-// Whatever this addon keeps balances in — a plain map here; `@bedrock-core/db`
-// when they have to survive a restart.
-const balances = new Map<string, number>();
+// Balances live in a db collection, so they survive a restart. Nothing in it is
+// reachable from another realm until this addon answers a method over it.
+const balances = core.db.collection('balances', { schema: schema<{ gold: number }>({ defaults: { gold: 0 } }), accept: players() });
 
 core.rpc.serve<EconomyRPC>({
-  getBalance: ({ player }) => balances.get(player) ?? 0,
+  getBalance: ({ player }) => balances.for(playerOf(player)).get()?.gold ?? 0,
 });
 
 // ─── React to config changes ─────────────────────────────────────────────────
@@ -148,7 +158,7 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 ```
 
 :::caution Dynamic properties are unreadable during early execution
-Anything that touches `world.getDynamicProperty` / `setDynamicProperty` — including your own persistence — must be deferred with `system.run()`. The runtime already does this for config: persisted values load one tick after registration, and change listeners fire for every key whose stored value differs from its default, so a subscriber attached right after `register()` still ends up seeing the real values.
+Anything that touches `world.getDynamicProperty` / `setDynamicProperty` directly must be deferred with `system.run()`. `core.db` and config already handle it: documents are read one tick after registration, and a subscriber attached right after `register()` hears the load, so it still ends up seeing the real values.
 
 Nothing in the shared mirror survives a reload: it is not storage. A shared value that must come back is a db document the owner maps onto a key — see [Persisting a shared value](./api/shared.md#persisting-a-shared-value).
 :::
@@ -160,8 +170,6 @@ The second addon declares a dependency on the first by namespace and calls it on
 ```ts title="shop — packs/BP/scripts/main.ts"
 import { core } from '@bedrock-core/server';
 
-// In a real project this interface comes from the economy addon's published types
-// package and is installed as a devDependency.
 interface EconomyRPC {
   getBalance(params: { player: string }): number;
 }
@@ -204,8 +212,9 @@ Addons load in undefined order and messages flush over ticks, so you will never 
 
 ## Next steps
 
-- [server-runtime](./api/runtime.md) — the full runtime reference
-- [ConfigRegistry](./api/config.md) — schema types, scopes, cross-addon access and authorization
-- [Registry](./api/registry.md) — enumerating peers, dependencies and collisions
+- [`core`](./api/runtime.md) — the full runtime reference
+- [Sharing data between addons](./guides/channels.md) — which of shared, events and RPC carries what
+- [`core.config`](./api/config.md) — schema types, scopes, cross-addon access and authorization
+- [`core.registry`](./api/registry.md) — enumerating peers, dependencies and collisions
 - [sync](/docs/sync) — the transport underneath, when you need it directly
 - [UI integration](./guides/ui-integration.md) — turning your schema and guides into player-facing screens

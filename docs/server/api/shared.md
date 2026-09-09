@@ -10,7 +10,7 @@ description: "core.shared is the replicated mirror every realm holds, as typed t
 The mirror does exactly one job: **the owner sets a value, every realm can read it now, and is told when it changes.** Two rules follow from it:
 
 1. **Only the owner writes.** A mirror applies a change to a namespace only from the addon that owns it. A peer that wants a change asks over [RPC](/docs/sync/rpc).
-2. **Nothing is stored.** The mirror never touches the world. A value that must survive a restart is a `@bedrock-core/db` document the owner maps onto a key.
+2. **Nothing is stored.** The mirror never touches the world. A value that must survive a restart is a [`core.db`](./db.md) document the owner maps onto a key.
 
 ## Import
 
@@ -57,11 +57,19 @@ shared.event.set({ name: 'race', active: true });
 shared.currency.subscribe((next, prev) => hud.setCurrency(next));
 ```
 
-Every key has `get` and `subscribe`, so it is a `ReadonlyObservable` for `@bedrock-core/observable`: `computed(() => …, [shared.spawnRate])`, `effect(…, [shared.event])` and `toNative(shared.spawnRate)` take it as it is. The backend subscription is attached with the first listener and released with the last, so a tree nobody watches costs nothing per change.
+Every key has `get` and `subscribe`, so it is a `ReadonlyObservable` for [`@bedrock-core/observable`](/docs/observable): `computed(() => …, [shared.spawnRate])`, `effect(…, [shared.event])` and `toNative(shared.spawnRate)` take it as it is. The backend subscription is attached with the first listener and released with the last, so a tree nobody watches costs nothing per change.
 
 The owner's tree falls back to the declared value while the mirror holds none, so it answers correctly before its first write lands.
 
 The tree is also reachable later as `core.shared.own`, untyped.
+
+### `shape`
+
+```ts
+core.shared.shape: Announcement<Shape>   // Shape = readonly string[]
+```
+
+The key names each owner announces under `core-shared/shape`, the [`Announcement`](./announcement.md) a peer's tree is built from.
 
 ## Read a peer's tree
 
@@ -88,7 +96,7 @@ This is robustness against a buggy peer, not security: a pack can forge its id, 
 
 ## Persisting a shared value
 
-The mirror is not storage. When a value has to survive a restart, the owner keeps it in a `@bedrock-core/db` document and maps it across in one line:
+The mirror is not storage. When a value has to survive a restart, the owner keeps it in a [`core.db`](./db.md) document and maps it across in one line:
 
 ```ts
 settings.for(world).subscribe(doc => shared.event.set(doc.event));
@@ -102,14 +110,14 @@ Your namespace carries more than you put there. The framework replicates its own
 
 | Key | Written by |
 |---|---|
-| `core-config/schema`, `core-config/groups` | [ConfigRegistry](./config.md) — the published config schema |
-| `core-i18n/bundle` | [TranslationsRegistry](./translations.md) — this addon's i18n bundle |
-| `core-guide/manifest`, `core-guide/reference` | [GuidesRegistry](./guides.md) — the guide |
-| `core-addon/page` | PagesRegistry — the addon's page in the shared list |
-| `core-feature/<id>` | [FeatureManager](./features.md) — one boolean per declared feature |
+| `core-config/schema`, `core-config/groups` | [`core.config`](./config.md) — the announced config schema |
+| `core-i18n/bundle` | [`core.translations`](./translations.md) — this addon's i18n bundle |
+| `core-guide/reference`, `core-guide/manifest` | [`core.guides`](./guides.md) — the guide |
+| `core-addon/page` | [`core.pages`](./pages.md) — the addon's page in the shared list |
+| `core-feature/flags` | [`core.features`](./features.md) — every declared feature's flag, one record |
 | `core-shared/shape` | the shared registry — the owner's key names |
 
-The shared tree never sees them. To reach the raw namespace, framework keys included, use `core.node.state`:
+Each is an [`Announcement`](./announcement.md). The shared tree never sees them; to reach the raw namespace, framework keys included, use `core.node.state`:
 
 ```ts
 core.node.state.get(core.id, 'core-config/schema');

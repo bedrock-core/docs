@@ -105,15 +105,15 @@ for (const addon of core.registry.all()) {
 
 ### Guides
 
-[`GuidesRegistry`](../api/guides.md) replicates each addon's compiled `GuideManifest` — the `guides` Regolith filter's output, `@bedrock-core/generated/guides`.
+[`core.guides`](../api/guides.md) announces each addon's compiled guide as a reference — `guideReference(ns)` from `@bedrock-core/guides`, per screen the compiled title, the entry values and where a press leads.
 
-The runtime treats it as opaque: two fields, `tree` and `pages`, and no interpretation. [`@bedrock-core/guides`](/docs/guides) owns the real intermediate representation and narrows the payload with `isGuideManifest` at the point of rendering.
+The runtime treats it as opaque. [`@bedrock-core/guides`](/docs/guides) owns the real shape and narrows the payload with `isGuideReference` at the point of presenting.
 
-Because manifests are replicated rather than fetched, the elected host already has every guide in memory:
+Because references are announced rather than fetched, the elected host already has every guide's index in memory:
 
 ```ts
-for (const id of core.guides.addonsWithGuides()) {
-  const manifest = core.guides.of(id);   // synchronous, no RPC
+for (const id of core.guides.namespaces()) {
+  const reference = core.guides.of(id);   // synchronous, no RPC
 }
 ```
 

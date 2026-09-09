@@ -7,7 +7,7 @@ description: "@bedrock-core/sync is the low-level cross-addon transport for Mine
 
 # sync
 
-`@bedrock-core/sync` is the low-level cross-addon transport for Minecraft Bedrock. It layers a message bus, peer discovery, RPC and a replicated state channel on top of script events, so addons in separate script realms can talk.
+`@bedrock-core/sync` is the low-level cross-addon transport for Minecraft Bedrock. It layers a message bus, peer discovery, RPC, a replicated state mirror and a broadcast channel on top of script events, so addons in separate script realms can talk.
 
 :::warning For framework and library developers
 If you are building a Bedrock addon, you do not need this package directly — use [`@bedrock-core/server-runtime`](/docs/server/api/runtime) instead. The runtime creates and manages the one sync node for you, and raw transport access is available as `core.node` whenever you want it.
@@ -47,12 +47,13 @@ export const sync = createSync({
 sync.start();
 ```
 
-After `start()`, `sync.discovery`, `sync.rpc` and `sync.state` are live.
+After `start()`, `sync.discovery`, `sync.rpc`, `sync.state` and `sync.events` are live.
 
 ```ts
 sync.discovery.onPeerUp(peer => console.warn('peer up', peer.id));
 sync.rpc.onRequest('ping', () => 'pong');
 sync.state.set('mycoolitems', 'volume', 5);
+sync.events.emit('restocked', { item: 'diamond' });
 ```
 
 ## `SyncNodeOptions`
@@ -90,13 +91,14 @@ class SyncNode {
   readonly discovery: Discovery;
   readonly rpc: Rpc;
   readonly state: State;
+  readonly events: Events;
 
   start(): void;   // idempotent
   stop(): void;
 }
 ```
 
-`createSync(options)` simply builds one and returns it; `new SyncNode(options)` is equivalent. `start()` brings up the bus, RPC, discovery and state in that order, and `stop()` tears them down in reverse.
+`createSync(options)` simply builds one and returns it; `new SyncNode(options)` is equivalent. `start()` brings up the bus, RPC, discovery, state and events in that order, and `stop()` tears them down in reverse.
 
 ## Notes
 
@@ -118,4 +120,5 @@ class SyncNode {
 | [Discovery](./discovery.md) | Finding peers: announce, whois, TTL eviction, namespace collisions |
 | [Rpc](./rpc.md) | Request/response calls, typed clients, handler maps, timeouts |
 | [State](./state.md) | Replicated key/value: deltas, snapshots, `requestSync`, ownership |
+| [Events](./events.md) | A happening: one message, every listener, nothing kept |
 | [Protocol](./protocol.md) | The bus, the envelope, the supported protocol window, framing and rate limiting |
