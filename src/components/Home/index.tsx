@@ -26,7 +26,7 @@ export function Hero(): ReactNode {
         </div>
         <h1 className={styles.headline}>Addons Better Connected</h1>
         <p className={styles.lede}>
-          Behavior packs run in isolated realms. <code>@bedrock-core</code> lets yours find each other, call each other,
+          Addons run in isolated realms. <code>@bedrock-core</code> lets yours find each other, call each other,
           share state, and draw custom UI the whole world can use.
         </p>
         <div className={styles.actions}>

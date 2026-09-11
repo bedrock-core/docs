@@ -56,16 +56,6 @@ export const sections: Section[] = [
     repo: `${GH}/server`,
   },
   {
-    id: 'sync',
-    label: 'sync',
-    pkg: '@bedrock-core/sync',
-    category: 'framework',
-    status: 'beta',
-    description: 'The script-event transport: bus, discovery, RPC, replicated state.',
-    icon: 'radio',
-    repo: `${GH}/server`,
-  },
-  {
     id: 'db',
     label: 'db',
     pkg: '@bedrock-core/db',
@@ -85,6 +75,16 @@ export const sections: Section[] = [
     icon: 'activity',
     repo: `${GH}/server`,
   },
+  {
+    id: 'sync',
+    label: 'sync',
+    pkg: '@bedrock-core/sync',
+    category: 'framework',
+    status: 'beta',
+    description: 'The script-event transport: bus, discovery, RPC, replicated state.',
+    icon: 'radio',
+    repo: `${GH}/server`,
+  },
 
   // UI
   {
@@ -93,7 +93,7 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/ui',
     category: 'ui',
     status: 'beta',
-    description: 'JSX screens for server forms and containers, drawn by the render pack.',
+    description: 'JSX screens, forms and containers.',
     icon: 'layout-panel-left',
     repo: `${GH}/ui`,
   },

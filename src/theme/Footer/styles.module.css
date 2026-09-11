@@ -15,6 +15,27 @@
   letter-spacing: var(--tracking-heading);
   line-height: var(--leading-snug);
 }
+.author {
+  display: inline-block;
+  margin-top: var(--space-3);
+  color: var(--text-faint);
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+  transition: var(--transition-control);
+}
+.author:hover { color: var(--text-muted); text-decoration: none; }
+/* The wordmark is scaled and dropped so its lettering shares the x-height and
+   baseline of the "by" beside it. In the 154-unit artwork the glyphs have a
+   49.34-unit x-height and sit on a baseline 48 units above the bottom edge. */
+.authorMark {
+  height: 3.121ex;
+  width: auto;
+  margin-left: 0.45em;
+  vertical-align: -0.973ex;
+  opacity: 0.75;
+  transition: var(--transition-control);
+}
+.author:hover .authorMark { opacity: 1; }
 .spacer { flex: 1; }
 .col { display: grid; gap: var(--space-2); align-content: start; }
 .title {

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
 import { categories, publishedSections, sectionsOf } from '../../data/sections';
 import styles from './styles.module.css';
 
@@ -10,10 +11,13 @@ const community = [
   { label: 'npm', href: 'https://www.npmjs.com/org/bedrock-core' },
 ];
 
-// Site footer: wordmark and tagline on the left, one column per category on
-// the right, copyright on a hairline. Columns come from src/data/sections.ts.
+// Site footer: wordmark, tagline and author credit on the left, one column per
+// category on the right, copyright on a hairline. Columns come from
+// src/data/sections.ts.
 export default function Footer(): ReactNode {
   const wordmark = useBaseUrl('img/logo/title.png');
+  const dravLight = useBaseUrl('img/drav/wordmark-light.svg');
+  const dravDark = useBaseUrl('img/drav/wordmark-dark.svg');
   const live = new Set(publishedSections.map((s) => s.id));
   return (
     <footer className={styles.footer}>
@@ -23,6 +27,10 @@ export default function Footer(): ReactNode {
             <img src={wordmark} alt="@bedrock-core" className={styles.wordmark} />
           </Link>
           <p className={styles.tagline}>Addons Better Connected</p>
+          <Link href="https://drav.dev" className={styles.author}>
+            by
+            <ThemedImage className={styles.authorMark} alt="drav.dev" sources={{ light: dravLight, dark: dravDark }} />
+          </Link>
         </div>
         <span className={styles.spacer} />
         {categories.map((category) => (
