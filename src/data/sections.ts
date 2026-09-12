@@ -127,6 +127,7 @@ export const sections: Section[] = [
     icon: 'layout-grid',
     repo: `${GH}/ui`,
   },
+
   // Content
   {
     id: 'config',
@@ -156,7 +157,7 @@ export const sections: Section[] = [
     status: 'beta',
     description: 'Typed keys, interpolation and plurals, resolved per player.',
     icon: 'languages',
-    repo: `${GH}/ui`,
+    repo: `${GH}/server`,
   },
 
   // Tooling
