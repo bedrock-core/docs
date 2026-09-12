@@ -137,7 +137,7 @@ export const sections: Section[] = [
     status: 'beta',
     description: 'The shared addon list, settings screens and guide viewer.',
     icon: 'sliders-horizontal',
-    repo: `${GH}/ui`,
+    repo: `${GH}/apps`,
   },
   {
     id: 'guides',
@@ -147,7 +147,7 @@ export const sections: Section[] = [
     status: 'beta',
     description: 'In-game guides authored in MDX.',
     icon: 'book-open',
-    repo: `${GH}/ui`,
+    repo: `${GH}/apps`,
   },
   {
     id: 'i18n',
