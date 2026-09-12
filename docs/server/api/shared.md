@@ -112,8 +112,8 @@ Your namespace carries more than you put there. The framework replicates its own
 |---|---|
 | `core-config/schema`, `core-config/groups` | [`core.config`](./config.md) — the announced config schema |
 | `core-i18n/bundle` | [`core.translations`](./translations.md) — this addon's i18n bundle |
-| `core-guide/reference`, `core-guide/manifest` | [`core.guides`](./guides.md) — the guide |
-| `core-addon/page` | [`core.pages`](./pages.md) — the addon's page in the shared list |
+| `core-ui/reference` | [`screens(core)`](/docs/navigation/references) — this addon's compiled screens, as references |
+| `core-addon/page` | [`pages(core)`](/docs/navigation/references) — the addon's page in the shared list |
 | `core-feature/flags` | [`core.features`](./features.md) — every declared feature's flag, one record |
 | `core-shared/shape` | the shared registry — the owner's key names |
 

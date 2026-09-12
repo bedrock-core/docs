@@ -13,7 +13,7 @@ This page is the seam between the two: what `server-runtime` publishes, which UI
 
 ```
   ┌──────────────────────────── your addon ────────────────────────────┐
-  │  core.register({ config, translations, guide })                    │
+  │  core.register({ config })  ·  core.translations.provide(bundle)   │
   └───────────────┬────────────────────────────────────────────────────┘
                   │  declares once
                   ▼
@@ -43,22 +43,21 @@ One call, after `core.register()`:
 import { core } from '@bedrock-core/server';
 import { ui } from '@bedrock-core/config';
 import bundle from '@bedrock-core/generated/i18n';
-import guides from '@bedrock-core/generated/guides';
 import { configDef } from './example';
 
 core.register({
   manifest: { creator: 'drav0011', pack: 'economy', packName: 'Economy', version: '1.0.0' },
-  translations: bundle,
-  guide: guides,
   config: configDef,
 });
+
+core.translations.provide(bundle);
 
 ui(core);
 ```
 
 `ui` comes from [`@bedrock-core/config`](/docs/config) — the shared addon list, settings screens and guide viewer. `ui(core)` registers this addon's commands and serves the open RPC, so this realm can render on behalf of another whenever it wins the [host election](../api/host.md).
 
-Pass the `Runtime` itself, not the typed config accessors — everything `ui` needs it reaches generically, through [`core.config.local`](../api/config.md#coreconfiglocal), `core.config.of()`, `core.registry`, `core.guides`, `core.translations` and `core.host`.
+Pass the `Runtime` itself, not the typed config accessors — everything `ui` needs it reaches generically, through [`core.config.local`](../api/config.md#coreconfiglocal), `core.config.of()`, `core.registry`, `core.translations` and `core.host`.
 
 ## The three feeds
 
@@ -105,15 +104,17 @@ for (const addon of core.registry.all()) {
 
 ### Guides
 
-[`core.guides`](../api/guides.md) announces each addon's compiled guide as a reference — `guideReference(ns)` from `@bedrock-core/guides`, per screen the compiled title, the entry values and where a press leads.
+A guide's pages are compiled screens like any other, so they ride the screen references [`screens(core)`](/docs/navigation/references) announces rather than a feed of their own. `ui(core)` publishes them for you.
 
-The runtime treats it as opaque. [`@bedrock-core/guides`](/docs/guides) owns the real shape and narrows the payload with `isGuideReference` at the point of presenting.
+The runtime treats the payload as opaque: [`@bedrock-core/guides`](/docs/guides) owns the real shape and narrows it at the point of presenting.
 
-Because references are announced rather than fetched, the elected host already has every guide's index in memory:
+Because references are announced rather than fetched, the realm drawing the list already has every addon's screens in memory:
 
 ```ts
-for (const id of core.guides.namespaces()) {
-  const reference = core.guides.of(id);   // synchronous, no RPC
+import { screens } from '@bedrock-core/navigation';
+
+for (const id of screens(core).namespaces()) {
+  const published = screens(core).of(id);   // synchronous, no RPC
 }
 ```
 
@@ -145,11 +146,11 @@ import guides from '@bedrock-core/generated/guides';  // the guides filter's out
 
 The specifiers are `tsconfig.json` aliases the [`bundler`](/docs/filters/bundler) inlines at build time; the [`i18n`](/docs/filters/i18n) and [`guides`](/docs/filters/guides) filter pages cover the aliases, the outputs and the `namespace` they derive from `register()`.
 
-An addon with no guide omits the `guide` field and the filter; the registries handle absence everywhere (`core.guides.of()` returns `undefined`, `core.config.of()` returns `undefined`, resolvers fall through).
+An addon with no guide omits the filter; the registries handle absence everywhere (`core.config.of()` returns `undefined`, a key nothing published resolves to `undefined`, resolvers fall through).
 
 ## Next steps
 
 - [`core.config`](../api/config.md) — schema types, scopes and authorization
 - [`core.translations`](../api/translations.md) — what the bundle publishes
-- [`core.guides`](../api/guides.md) — the manifest the runtime replicates
-- [config](/docs/config) — the shared UI that reads all three
+- [References](/docs/navigation/references) — the screen and page feeds the UI reads
+- [config](/docs/config) — the shared UI that reads all of them

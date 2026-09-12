@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 10
 description: "Announcement is the shape of every cross-addon feed: one owner-written value under a framework key, read from every realm's mirror."
 ---
 
@@ -7,7 +7,7 @@ description: "Announcement is the shape of every cross-addon feed: one owner-wri
 
 `Announcement<T>` is the shape of every cross-addon feed the runtime publishes: one small, owner-written value under a framework key on the [mirror](/docs/sync/state), read from every realm's local copy.
 
-`core.pages` is one. `core.guides` and `core.translations` extend one. `core.features.flags`, `core.config.schema`, `core.config.groups` and `core.shared.shape` are fields of one. Wherever you meet the five members below, they mean the same thing.
+`core.translations` extends one, and so do the registries `@bedrock-core/navigation` builds over the same mirror — [`screens(core)` and `pages(core)`](/docs/navigation/references). `core.features.flags`, `core.config.schema`, `core.config.groups` and `core.shared.shape` are fields of one. Wherever you meet the five members below, they mean the same thing.
 
 ## Import
 
@@ -35,13 +35,13 @@ type AnnouncementListener = (namespace: string) => void;
 ## Usage
 
 ```ts
-core.pages.provide(addonPageReference(AddonPage));   // this addon's
+core.translations.provide(bundle);            // this addon's
 
-core.pages.of('drav0011_shop');                       // a peer's, or undefined
-core.pages.namespaces();                              // who published one
+core.translations.of('drav0011_shop');        // a peer's, or undefined
+core.translations.namespaces();               // who published one
 
-const release = core.pages.subscribe((namespace) => {
-  redrawRowFor(namespace);
+const release = core.translations.subscribe((namespace) => {
+  remeasureLabelsFor(namespace);
 });
 ```
 

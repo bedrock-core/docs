@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 11
 description: "authorize is the one rule an RPC handler applies before it does anything on behalf of a player."
 ---
 

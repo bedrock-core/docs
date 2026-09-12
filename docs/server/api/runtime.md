@@ -44,8 +44,6 @@ Every accessor below throws `runtime.<name> is unavailable: call register() firs
 | `core.db` | [`Db`](./db.md) | This addon's persisted documents, keyed by target. |
 | `core.config` | [`ConfigRegistry`](./config.md) | Schema, scopes and cross-addon config access. |
 | `core.translations` | [`TranslationsRegistry`](./translations.md) | Cross-addon i18n bundles, with resolvers over all of them. |
-| `core.guides` | [`GuidesRegistry`](./guides.md) | Cross-addon guide references. |
-| `core.pages` | [`Announcement<AddonPageReference>`](./pages.md) | This addon's page in the shared addon list. |
 | `core.rpc` | `Rpc` | [RPC](/docs/sync/rpc), passed through from the sync node. |
 | `core.node` | `SyncNode` | The raw [sync node](/docs/sync) — bus, discovery, the mirror, events. |
 
@@ -61,10 +59,6 @@ Declare the addon and bring it online. **Call exactly once — there is no separ
 
 | Field | Type | Equivalent to |
 |---|---|---|
-| `translations` | `I18nBundle` | [`core.translations.provide()`](./translations.md#provide) |
-| `guideReference` | `GuideReference` | [`core.guides.provide()`](./guides.md) |
-| `guide` | `GuideManifest` | [`core.guides.manifest.provide()`](./guides.md#manifest) |
-| `page` | `AddonPageReference` | [`core.pages.provide()`](./pages.md) |
 | `config` | `ConfigDefinition` | [`core.config.define()`](./config.md#define) |
 | `shared` | `SharedDef` | [`core.shared.define()`](./shared.md) |
 | `events` | `EventsDef` | [`core.events.define()`](./events.md) |
@@ -73,7 +67,6 @@ Declare the addon and bring it online. **Call exactly once — there is no separ
 
 ```ts
 import { core } from '@bedrock-core/server';
-import { guideReference } from '@bedrock-core/guides';
 import bundle from '@bedrock-core/generated/i18n';
 import { configDef, sharedDef, eventsDef } from './example';
 
@@ -90,12 +83,12 @@ const { config, shared, events } = core.register({
     icon: 'textures/ui/economy/icon',
     thumbnail: 'textures/ui/economy/thumbnail',
   },
-  translations: bundle,
-  guideReference: guideReference('drav0011_economy'),
   config: configDef,
   shared: sharedDef,
   events: eventsDef,
 });
+
+core.translations.provide(bundle);
 
 config.server.get();       // fully typed
 shared.currency.set('gold');
@@ -151,8 +144,9 @@ core.register({
     description: i18n.key($ => $.meta.description),
     version: '1.0.0',
   },
-  translations: bundle,
 });
+
+core.translations.provide(bundle);
 ```
 
 ### Validation
@@ -234,7 +228,5 @@ The version of `@bedrock-core/server-runtime` this build was compiled against. I
 | [`core.db`](./db.md) | Persisted documents keyed by target |
 | [`core.config`](./config.md) | Schema, three scopes, persistence, cross-addon access, authorization |
 | [`core.translations`](./translations.md) | Announce and resolve i18n bundles across addons |
-| [`core.guides`](./guides.md) | Announce and read guide references across addons |
-| [`core.pages`](./pages.md) | An addon's page in the shared addon list |
 | [`Announcement`](./announcement.md) | The shape every cross-addon feed shares |
 | [`authorize`](./authorize.md) | The one rule a handler applies on behalf of a player |

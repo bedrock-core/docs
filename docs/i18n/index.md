@@ -337,7 +337,8 @@ A library creating its own instance must pass `{ asDefault: false }` so it never
 Publish the bundle itself through the server runtime's registration:
 
 ```ts
-core.register({ manifest, translations: bundle });
+core.register({ manifest });
+core.translations.provide(bundle);
 ```
 
 The runtime replicates the bundle — objects, templates and recorded argument order intact — and serves two lazy views: `core.translations.of(addonId)` gives verbs over a peer's strings, and `core.translations.forPlayer(player)` gives one resolver chaining every published bundle, later registrations winning collisions. Registry display fields (`packName`, `description`, `creatorName`) are translation keys so that this works.

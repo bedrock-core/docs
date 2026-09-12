@@ -45,7 +45,7 @@ The packages underneath are strictly layered and installable on their own if you
 - **[Db](./api/db.md)** — persisted documents keyed by target, on whatever dynamic properties the target itself can hold, with versions and lazy migrations. Local: a peer reaches one only through a method you wrote.
 - **[Config](./api/config.md)** — a declarative schema in three scopes (server, dimension, player), stored as documents and editable in game.
 - **[Features](./api/features.md)** — behavior that auto-enables when a condition over the registry becomes true, and auto-disables when it stops being true.
-- **[Translations](./api/translations.md)**, **[guides](./api/guides.md)** and **[pages](./api/pages.md)** — announce your i18n bundle, guide and list page so any addon's UI can render your content.
+- **[Translations](./api/translations.md)** — announce your i18n bundle so any addon's UI can resolve and measure your strings. Your screens and your list page are announced by [`@bedrock-core/navigation`](/docs/navigation/references).
 - **[Host election](./api/host.md)** — a deterministic rule for "which realm does the work only one realm may do".
 
 ## Next steps

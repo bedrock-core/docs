@@ -25,7 +25,7 @@ import type { I18nBundle, TranslationResolver } from '@bedrock-core/server';
 ```ts
 import bundle from '@bedrock-core/generated/i18n';
 
-core.register({ manifest, translations: bundle });   // publish up front
+core.translations.provide(bundle);   // publish up front
 core.translations.provide(bundle);                    // or publish/replace later
 
 core.translations.of('drav0011_shop');                // another addon's bundle
