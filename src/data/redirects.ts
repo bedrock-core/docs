@@ -21,7 +21,7 @@ export const redirects: { from: string; to: string }[] = [
   { from: '/docs/ui/config', to: '/docs/config' },
   { from: '/docs/ui/container-screens', to: '/docs/ui/guides/container-screens' },
   { from: '/docs/ui/container-screens/findings', to: '/docs/ui/guides/container-screens' },
-  { from: '/docs/ui/container-screens/regolith-filter', to: '/docs/filters/ui-compile' },
+  { from: '/docs/ui/container-screens/regolith-filter', to: '/docs/filters/ui-compiler' },
   { from: '/docs/ui/flexbox', to: '/docs/flexbox' },
   { from: '/docs/ui/flexbox/computeLayout', to: '/docs/flexbox/computeLayout' },
   { from: '/docs/ui/flexbox/createNode', to: '/docs/flexbox/createNode' },
@@ -102,4 +102,7 @@ export const redirects: { from: string; to: string }[] = [
   { from: '/docs/ui/ui-runtime/hooks/useTranslation', to: '/docs/ui/hooks/useTranslation' },
   { from: '/docs/ui/ui-runtime/hooks/useTranslationResolver', to: '/docs/ui/hooks/useTranslationResolver' },
   { from: '/docs/ui/ui-runtime/render-pack', to: '/docs/ui/guides/render-pack' },
+  { from: '/docs/filters/ui-compile', to: '/docs/filters/ui-compiler' },
+  { from: '/docs/ui-compile', to: '/docs/ui/compiler' },
+  { from: '/docs/ui-compiler', to: '/docs/ui/compiler' },
 ];

@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Form onSubmit={v => console.log(v.sound)}>
+<Form onSubmit={v => console.warn(v.sound)}>
   <Form.Toggle name={'sound'} defaultValue={true} />
   <Form.Button type={'submit'} />
 </Form>
@@ -27,8 +27,6 @@ import { Form } from '@bedrock-core/ui';
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
@@ -39,9 +37,7 @@ import { Form } from '@bedrock-core/ui';
 
 The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md) (the toggle RP has no pressed state to show `backgroundPressed`, but the prop is still accepted).
 
-### Control props
-
-`Form.Toggle` inherits all standard [control props](../control-props.md) for layout and visibility — geometry is computed by the layout phase like any other component.
+Inherits [control props](../control-props.md) for layout and visibility — geometry is computed by the layout phase like any other component.
 
 ## Examples
 

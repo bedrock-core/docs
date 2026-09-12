@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 description: "Perform side effects in function components."
 ---
 # useEffect
@@ -73,7 +73,7 @@ function SearchResults() {
 
   useEffect(() => {
     if (query.length > 0) {
-      console.log(`Searching for: ${query}`);
+      console.warn(`Searching for: ${query}`);
       setResults([`Result for ${query}`]);
     }
   }, [query]); // Runs when query changes
@@ -98,17 +98,17 @@ function MultiEffect() {
 
   // Effect 1: Log count changes
   useEffect(() => {
-    console.log(`Count changed to: ${count}`);
+    console.warn(`Count changed to: ${count}`);
   }, [count]);
 
   // Effect 2: Log name changes
   useEffect(() => {
-    console.log(`Name changed to: ${name}`);
+    console.warn(`Name changed to: ${name}`);
   }, [name]);
 
   // Effect 3: Run on every execution
   useEffect(() => {
-    console.log('Component executed');
+    console.warn('Component executed');
   });
 
   return (
@@ -174,12 +174,12 @@ Include all values used inside the effect:
 ```tsx
 // ✅ Good - all dependencies listed
 useEffect(() => {
-  console.log(count, name);
+  console.warn(count, name);
 }, [count, name]);
 
 // ❌ Bad - missing dependencies
 useEffect(() => {
-  console.log(count, name);
+  console.warn(count, name);
 }, []); // count and name should be in deps!
 ```
 

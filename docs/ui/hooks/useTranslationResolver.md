@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 13
 description: "Read the translation resolver that is active for this part of the tree."
 ---
 # useTranslationResolver

@@ -24,7 +24,7 @@ import { Slider } from '@bedrock-core/ui';
   min={0}
   max={100}
   step={5}
-  onChange={(value) => console.log(value)}
+  onChange={(value) => console.warn(value)}
 />
 ```
 
@@ -33,8 +33,6 @@ import { Slider } from '@bedrock-core/ui';
 `Slider` renders as a [`Button`](../Button.md) whose face shows the current value. Pressing it opens a single-slider `ModalFormData`; on confirm the chosen value is committed (internal state + `onChange`), on cancel nothing changes (`onCancel`). Either way the root form re-presents with the current value.
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -51,9 +49,7 @@ import { Slider } from '@bedrock-core/ui';
 
 Slider inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
 
-### Control props
-
-Slider inherits all standard [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
+Inherits [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
 
 ## Examples
 
@@ -84,7 +80,7 @@ function VolumeSetting() {
 ### Uncontrolled
 
 ```tsx
-<Slider min={1} max={10} defaultValue={3} onChange={(v) => console.log(v)} />
+<Slider min={1} max={10} defaultValue={3} onChange={(v) => console.warn(v)} />
 ```
 
 ## Notes

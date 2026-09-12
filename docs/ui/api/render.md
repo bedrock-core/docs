@@ -1,11 +1,10 @@
 ---
 sidebar_position: 2
-description: "Display a UI component tree to a player."
+description: "Show a compiled screen to one player and keep it shown across its state changes."
 ---
-
 # render
 
-Display a UI component tree to a player.
+Shows a screen to one player and keeps it shown across its state changes.
 
 ## Import
 
@@ -15,71 +14,63 @@ import { render } from '@bedrock-core/ui';
 
 ## Signature
 
-```tsx
-function render(root: FunctionComponent | JSX.Element, player: Player): void
+```ts
+function render(root: JSX.Element | FunctionComponent, player: Player, options?: RenderOptions): void
 ```
 
-### Parameters
+## Parameters
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `root` | `FunctionComponent \| JSX.Element` | The screen: a component or element whose root is [`<Screen>`](../components/Screen.md) or [`<Form>`](../components/Form/Form.md). Anything else is refused with the list of roots; a [`<Container>`](../components/Container.md) is served by `createContainerScreen` instead |
-| `player` | `Player` (from `@minecraft/server`) | The player who will see the UI |
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `root`<Req /> | `FunctionComponent \| JSX.Element` | — | The screen: a component or element whose root is [`<Screen>`](../components/Screen.md) or [`<Form>`](../components/Form/Form.md) |
+| `player`<Req /> | `Player` | — | Who sees it |
+| `options` | `RenderOptions` | `{}` | See below |
 
-### Scrolls
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `debug` | `boolean` | `false` | Diff every present against the snapshot the build recorded and warn on drift |
 
-Content renders into a single full-screen **root scroll** by default — no extra setup, it scrolls when it overflows the viewport. For multiple independent scroll regions (columns or rows, up to 2), compose [`<Scroll>`](../components/Scroll.md) components.
-
-### Returns
+## Returns
 
 `void`
 
-## One UI slot per player
+## The screen has to be compiled
 
-Each player has a single live UI session. Calling `render()` while one is already running does **not** stack a second one — it swaps the new tree into the running session:
+A screen is drawn from its layout in the pack, picked by the title the build registered it under. Without that there is nothing to show, so `render()` throws [`UncompiledScreenError`](./errors.md#uncompiledscreenerror) naming the two things that produce a registration:
 
-- The old tree unmounts first: its effect cleanups run, its hook state is discarded, and any form it has on screen is closed programmatically (that close is not treated as the player dismissing — a modal's `onCancel` does not fire for it).
-- The input lock is carried over, so the camera never flashes free between screens.
-- The new tree then presents with fresh, mount-phase state.
+- the [`ui-compiler` filter](/docs/filters/ui-compiler) seeing the screen — a `*.screen.tsx` under `BP/scripts`, or one of the screens a build compiles from what the addon declared
+- `@bedrock-core/generated/ui` being imported once so the build's registrations run
 
-This makes cross-app handoff safe from a button press — no [`useExit`](../hooks/useExit.md) call needed, the swap replaces the running UI by itself:
+A [`<Container>`](../components/Container.md) is refused too, with `ContainerScreenError`: a container screen belongs to an entity and is served by `createContainerScreen` instead.
 
-```tsx
-function SettingsButton() {
-  const player = usePlayer();
+## debug
 
-  return (
-    <Button onPress={() => render(SettingsApp, player)}>
-      <Text>{'Settings'}</Text>
-    </Button>
-  );
-}
+Probing at build cannot see a threshold no probe crossed. `debug` is where such a miss becomes loud instead of silent: every present is diffed against what the build recorded, and a baked prop that changed, a shape that does not match, or a live string past its reservation is warned about.
+
+```ts
+render(Screen, player, { debug: true });
 ```
 
-When the handoff goes through an async opener (a prefetch, an RPC), **return the promise from `onPress`** so the swap lands inside the press's transaction — deterministic and flash-free. Fired-and-forgotten it still converges; worst case the screen re-locks for a frame.
+Leave it off in a shipped build — the diff runs on every present.
 
 ## Usage
 
-```tsx
-import { render, Panel, Screen, Text } from '@bedrock-core/ui';
-import { world } from '@minecraft/server';
+```ts
+import { render } from '@bedrock-core/ui';
+import '@bedrock-core/generated/ui';
+import Welcome from './welcome.screen';
 
-function WelcomeScreen() {
-  return (
-    <Screen>
-      <Panel padding={10}>
-        <Text>{'Hello, Minecraft!'}</Text>
-      </Panel>
-    </Screen>
-  );
+export function openWelcome(player: Player): void {
+  render(Welcome, player);
 }
-
-const isPlayer = (source: Entity): source is Player => source.typeId === MinecraftEntityTypes.Player;
-
-// Render it to a player
-world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
-  if (isPlayer(source)) {
-    render(WelcomeScreen, source);
-  }
-});
 ```
+
+## Scrolls
+
+Content renders into a single full-screen **root scroll** by default, which scrolls when it overflows. For independent scroll regions compose [`<Scroll>`](../components/Scroll.md); a form supports two of them beside the root.
+
+## Notes
+
+Each player has one live UI session, and a second `render()` swaps the new tree into it rather than stacking a second one. [State](../guides/state.md#one-ui-slot-per-player) covers what that does to the old tree's hooks and effects, and how to make an async handoff flash-free.
+
+To open a screen by key rather than by component — including another addon's — use [`navigate()`](../guides/navigation.md) instead.

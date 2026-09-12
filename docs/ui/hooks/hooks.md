@@ -1,39 +1,49 @@
 ---
 sidebar_position: 1
-description: "State and effects management for your components."
+description: "State, effects, and the hooks that reach the player, the host and the world."
 ---
 # Hooks
 
-State and effects management for your components.
+State and effects for your components, plus the few that reach outside them.
 
-## Built-in hooks
+## State
 
-### State management
+- [`useState`](./useState.md) — component state
+- [`useReducer`](./useReducer.md) — state through a reducer
+- [`useContext`](./useContext.md) — read a context value
+- [`useObservable`](./useObservable.md) — re-render when an observable changes, optionally on a selected slice
 
-- [`useState`](./useState.md) — Manage component state.
-- [`useReducer`](./useReducer.md) — Manage complex state logic with a reducer function.
-- [`useContext`](./useContext.md) — Access context values from Context.
+## Effects and lifecycle
 
-### Effects & lifecycle
+- [`useEffect`](./useEffect.md) — side effects with cleanup
+- [`useExit`](./useExit.md) — close the screen from inside it
 
-- [`useEffect`](./useEffect.md) — Perform side effects in function components with cleanup support.
-- [`useExit`](./useExit.md) — Request the UI to be closed.
+## References
 
-### References
+- [`useRef`](./useRef.md) — a mutable value that survives re-renders
 
-- [`useRef`](./useRef.md) — Create a mutable reference that is persisted across executions.
+## Minecraft
 
-### Minecraft specific
+- [`usePlayer`](./usePlayer.md) — the player looking at this screen
+- [`useEvent`](./useEvent.md) — subscribe to a Minecraft event signal for as long as the screen is mounted
 
-- [`usePlayer`](./usePlayer.md) — Access the current player who is viewing the UI.
-- [`useEvent`](./useEvent.md) — Subscribe to global Minecraft events within your UI components.
+## Hosts
 
-### Localization
+- [`useMechanism`](./useMechanism.md) — what this kind of component becomes on the screen it is drawn on
 
-- [`useTranslation`](./useTranslation.md) — Bind an addon's typed translation verbs to the viewing player.
-- [`useTranslationResolver`](./useTranslationResolver.md) — Read the translation resolver active for this part of the tree.
+## Localization
+
+- [`useTranslation`](./useTranslation.md) — bind an addon's typed translation verbs to the viewing player
+- [`useTranslationResolver`](./useTranslationResolver.md) — read the resolver active for this part of the tree
+
+## Where the state lives
+
+A form cannot be mutated while open, so a state change never repaints what the player is looking at — they see a new snapshot when they press. A container screen's state belongs to its entity and outlives every viewer. Both are covered in [State](../guides/state.md).
+
+`usePlayer()` has no answer on a container screen: one compiled layout serves everyone, so the screen learns who is looking from `<Container onOpen>` instead.
 
 ## Next steps
 
-- [Components](../components/components.md) — Built-in components that you can use in your JSX
-- [API](../api/api.md) — APIs that are useful for defining components
+- [State](../guides/state.md) — the model behind all of these
+- [Components](../components/components.md) — what the hooks drive
+- [API](../api/api.md) — `render()`, contexts and the compiled-screen registry

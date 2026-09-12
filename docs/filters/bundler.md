@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description: "Bundles the behavior pack's TypeScript into one main.js with esbuild."
 ---
 # bundler
@@ -22,7 +22,7 @@ It runs last, after every filter that writes something the scripts import:
         "filters": [
           { "filter": "guides" },
           { "filter": "i18n" },
-          { "filter": "ui-compile" },
+          { "filter": "ui-compiler" },
           { "filter": "bundler" }
         ]
       }

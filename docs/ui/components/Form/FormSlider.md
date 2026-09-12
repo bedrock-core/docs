@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Form onSubmit={v => console.log(v.volume)}>
+<Form onSubmit={v => console.warn(v.volume)}>
   <Form.Slider name={'volume'} min={0} max={10} defaultValue={5} />
   <Form.Button type={'submit'} />
 </Form>
@@ -26,8 +26,6 @@ import { Form } from '@bedrock-core/ui';
 `Form.Slider` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.slider` control; the result (`number`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -44,9 +42,7 @@ import { Form } from '@bedrock-core/ui';
 
 The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
 
-### Control props
-
-`Form.Slider` inherits all standard [control props](../control-props.md). Defaults to `width: '100%'` when no explicit sizing is given.
+Inherits [control props](../control-props.md). Defaults to `width: '100%'` when no explicit sizing is given.
 
 ## Examples
 

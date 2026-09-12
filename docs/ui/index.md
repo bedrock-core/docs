@@ -2,13 +2,13 @@
 slug: /
 sidebar_position: 1
 sidebar_label: Overview
-description: "Get up and running with @bedrock-core/ui in minutes."
+description: "@bedrock-core/ui writes Minecraft Bedrock screens in JSX and compiles them into the resource pack."
 ---
 # ui
 
 ![The shared addon list, with a row per registered addon](/img/ui/addon-list.png)
 
-Get up and running with `@bedrock-core/ui` in minutes.
+`@bedrock-core/ui` writes Minecraft Bedrock screens in JSX and compiles them into the resource pack.
 
 :::caution Pre-1.0
 `@bedrock-core/ui` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
@@ -16,70 +16,85 @@ Get up and running with `@bedrock-core/ui` in minutes.
 
 ## What is @bedrock-core/ui?
 
-`@bedrock-core/ui` is a React-like UI framework for Minecraft Bedrock Edition that enables you to create rich, interactive user interfaces using JSX syntax. It serializes your UI components into a protocol and renders them using JSON UI with the render pack.
+A screen is a component. You write it with JSX, flexbox props and hooks, and the build [compiles](./compiler/index.md) it once into the JSON UI that ships in the pack. At runtime nothing sends a layout: showing a screen sends its title and the values that changed, and the client draws it from the pack it already holds.
 
-For a pre-themed component set that matches vanilla Minecraft's look (buttons, cards, checkboxes, toggles, …), see the [`@bedrock-core/ore-styled`](/docs/ore-styled) layer. It's optional — pick it up when you want batteries-included visuals, skip it when you'd rather style every primitive yourself.
+Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/Screen.md) is an action form, [`<Form>`](./components/Form/Form.md) a native modal, [`<Container>`](./components/Container.md) a custom entity's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
 
-Localization is built in rather than bolted on: `<Text>` takes literal and localized children on the same channel, so one screen serves every language at once. See [i18n](/docs/i18n) for the translation verbs and how player locale is resolved.
+For a pre-themed component set matching vanilla Minecraft's look, see [`@bedrock-core/ore-styled`](/docs/ore-styled). It is optional — pick it up for batteries-included visuals, skip it to style every primitive yourself.
 
-## Learn React first
+Localization is built in rather than bolted on: `<Text>` takes literal and localized children on the same channel, so one screen serves every language at once. See [i18n](/docs/i18n).
 
-If you're new to React, start with the official React tutorial:
+## Install
 
-- React Learn: https://react.dev/learn
+<Install pkg="@bedrock-core/ui" />
 
-### Differences with React
+A world also needs the render pack, which must come from the same release as the library. [Installation](./installation.md) covers both, and the [CLI](/docs/cli) scaffolds them wired together.
 
-`@minecraft/server-ui` forms cannot be mutated while open — updating one means closing it and presenting a new form, which loses cursor/controller focus.
+## Your first screen
 
-So your component logic keeps running in the background, but the player only sees a new snapshot of the UI **when they press a button**. A state change on its own does not repaint their screen.
+A screen lives in a `*.screen.tsx` file under `BP/scripts` and default-exports its component. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) looks for.
 
-## Your first UI
+```tsx title="packs/BP/scripts/welcome.screen.tsx"
+import { Button, Panel, Screen, Text } from '@bedrock-core/ui';
 
-Here's a simple example to get you started:
-
-```tsx
-import { render, Panel, Screen, Text, Button } from '@bedrock-core/ui';
-import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
-import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
-
-// Create a simple UI component. <Screen> at the root makes it an action form.
-function WelcomeScreen() {
+export default function Welcome(): JSX.Element {
   return (
     <Screen>
       <Panel padding={10} gap={8}>
-        <Text>{'Welcome to Bedrock UI!'}</Text>
+        <Text>{'Welcome to Bedrock UI'}</Text>
 
-        <Button onPress={() => console.log('clicked')}>
-          <Text>{'Click Me'}</Text>
+        <Button onPress={() => console.warn('pressed')}>
+          <Text>{'Press me'}</Text>
         </Button>
       </Panel>
     </Screen>
   );
 }
+```
+
+Show it to a player with [`render()`](./api/render.md):
+
+```ts title="packs/BP/scripts/main.ts"
+import { render } from '@bedrock-core/ui';
+import '@bedrock-core/generated/ui';
+import Welcome from './welcome.screen';
+import { world, type Entity, type Player, type ButtonPushAfterEvent } from '@minecraft/server';
+import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
 
 const isPlayer = (source: Entity): source is Player => source.typeId === MinecraftEntityTypes.Player;
 
-// Render it to a player
 world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
   if (isPlayer(source)) {
-    render(WelcomeScreen, source);
+    render(Welcome, source);
   }
 });
 ```
 
-## How it works
+The `@bedrock-core/generated/ui` import is what runs the build's registrations. Without it `render()` throws `UncompiledScreenError`, because nothing in the pack answers to the screen's title.
 
-1. **Write JSX Components**: Use familiar React-like syntax to define your UI
-2. **Serialization**: The framework converts your component tree into a serialized protocol and injects it into @minecraft/server-ui form components
-3. **JSON UI Decoding**: The render pack's JSON UI files decode the serialized data
-4. **Rendering**: Players see rich, interactive UIs in Minecraft
+## What you get
+
+**A layout solved once** — [`@bedrock-core/flexbox`](/docs/flexbox) solves every rect at build time against a fixed 320 × 210 canvas. No geometry is measured in game, and a host that serves the screen cannot move a control the layout placed.
+
+**Refusals with names** — each host declares what every kind of component becomes on it. A `<Form.Slider>` outside a `<Form>` or a `<Slot>` outside a container screen fails the build, in that host's own words, instead of drawing something inert.
+
+**Screens other addons can show** — a [static](./guides/navigation.md#static-screens) screen is described by its title, its entry values and one target per press. Publish that table and a realm running none of your script still shows your screens, because the layout is in the pack every client holds.
+
+**Switches that cost nothing** — [`<Tabs>`](./components/Tabs.md) and [`<Disclosure>`](./components/Disclosure.md) change what is drawn entirely on the client. No press, no re-present, no payload.
+
+## Differences from React
+
+A `@minecraft/server-ui` form cannot be mutated while open, so a state change never repaints it: the player sees a new snapshot when they press. A container screen has no such limit.
+
+A compiled screen's **shape** is also frozen. Anything that varies declares itself — `maxLength` for a string, `<List max>` for a row count, `visible` for a branch — and everything else is baked. [State](./guides/state.md) covers what that costs.
+
+If you are new to React, [react.dev/learn](https://react.dev/learn) is the place to start.
 
 ## Next steps
 
-- [Installation](./installation.md) — Set up the framework in your project
-- [Components](/docs/ui/components) — Built-in components that you can use in your JSX
-- [ore-styled](/docs/ore-styled) — Themed component layer with vanilla Minecraft textures (optional)
-- [Hooks](/docs/ui/hooks) — Add state and effects to your components
-- [API](/docs/ui/api) — APIs that are useful for defining components
-- [i18n](/docs/i18n) — Localize your UI so each player reads it in their own language
+- [Installation](./installation.md) — the package, the render pack and the `tsconfig.json` entries
+- [Hosts](./guides/hosts.md) — the three screens and what each can carry
+- [Components](./components/components.md) — every built-in component
+- [Hooks](./hooks/hooks.md) — state, effects and the Minecraft-specific hooks
+- [Compiler](./compiler/index.md) — how a screen becomes JSON UI
+- [API](./api/api.md) — `render()`, contexts and the compiled-screen registry

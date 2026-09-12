@@ -1,38 +1,67 @@
 ---
 sidebar_position: 2
-description: "Learn how to install @bedrock-core/ui for your Minecraft Bedrock addon project."
+description: "Install @bedrock-core/ui, the render pack and the filter that compiles your screens."
 ---
 # Installation
 
-Learn how to install `@bedrock-core/ui` for your Minecraft Bedrock addon project.
+Three things have to be in place: the package, the render pack in the world, and the filter that compiles your screens into the pack.
 
 ## Prerequisites
 
-- Node.js 20+ and Yarn (or npm) https://nodejs.org/
-- Regolith (recommended) https://regolith-docs.readthedocs.io/en/stable
+- Node.js 20+ and Yarn or npm — https://nodejs.org
+- Regolith — https://regolith-docs.readthedocs.io/en/stable
+
+Regolith is not optional here. A screen is drawn from JSON UI the build writes, so a project with no build has no screens.
 
 ## Quick start with the CLI
 
-The [CLI](/docs/cli) scaffolds an addon with `@bedrock-core/ui` configured, TypeScript and ESLint, the Regolith build, the render pack and a working example screen.
+The [CLI](/docs/cli) scaffolds an addon with `@bedrock-core/ui` configured, TypeScript and ESLint, the Regolith filter stack, the render pack and a working example screen.
 
 <Exec cmd="@bedrock-core/cli" />
 
-The render pack decodes the runtime's wire format, so it must come from the **same release** as the library. See [Render pack](./guides/render-pack.md) for how to check which version a world is running.
-
 ## Manual installation
 
-If you're adding to an existing project, install the package:
+### 1. The package
 
 <Install pkg="@bedrock-core/ui" />
 
-Download the render pack from the [releases page](https://github.com/bedrock-core/ui/releases) — take it from the same release as the library, as [Render pack](./guides/render-pack.md#getting-the-matching-pack) explains — and add it as a dependency in your behavior pack's `manifest.json`:
+Everything an addon writes comes from the one entry point. Two subpaths carry the parts a screen file does not need:
 
-```json
+| Import | What it is |
+| --- | --- |
+| `@bedrock-core/ui` | components, hooks, `render()`, navigation |
+| `@bedrock-core/ui/container` | `createContainerScreen()`, for serving a [container screen](./guides/container-screens.md) |
+| `@bedrock-core/ui-runtime/compile` | the build half the [compiler](./compiler/index.md) reads; no addon reaches for it |
+
+### 2. The filter
+
+Add the [`ui-compiler` filter](/docs/filters/ui-compiler) to the Regolith stack. It has to run **after** `i18n` and **before** `bundler`.
+
+```json title="config.json"
+{
+  "filter": "ui-compiler",
+  "settings": { "namespace": "my_addon" }
+}
+```
+
+The [`core` filter](/docs/filters/core) runs the whole stack in the right order with the namespace declared once, which is what the CLI scaffolds.
+
+The filter writes `@bedrock-core/generated/ui`. Import it once from your entry module so the registrations run:
+
+```ts title="packs/BP/scripts/main.ts"
+import '@bedrock-core/generated/ui';
+```
+
+### 3. The render pack
+
+The render pack decodes what the build wrote, so it must come from the **same release** as the library. Download it from the [releases page](https://github.com/bedrock-core/ui/releases) and add it as a dependency in your behavior pack's `manifest.json`:
+
+```json title="packs/BP/manifest.json"
 {
   "dependencies": [
     {
-        "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
-        "version": [1, 10, 0]
+      "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
+      "version": [1, 11, 0]
     }
   ]
 }
@@ -47,23 +76,9 @@ pack.mcaddon
 └── core-ui-vx.y.z.mcpack   (render pack from releases)
 ```
 
-### Optional: ore-styled
-
-[`@bedrock-core/ore-styled`](/docs/ore-styled) is a themed component layer that pairs with `@bedrock-core/ui` to give you vanilla-Minecraft-styled buttons, cards, checkboxes, and more. It's entirely optional — skip this section if you'd rather hand-style each primitive yourself.
-
-If you installed `@bedrock-core/ui`, `ore-styled` is already included — no separate install needed. If you're on a minimal install (`@bedrock-core/ui-runtime` only), add it explicitly:
-
-<Install pkg="@bedrock-core/ore-styled" />
-
-Then import from `@bedrock-core/ore-styled` whenever you want a themed variant:
-
-```tsx
-import { Button, Card } from '@bedrock-core/ore-styled';
-```
+[Render pack](./guides/render-pack.md#getting-the-matching-pack) explains how to check which version a world is running.
 
 ## TypeScript configuration
-
-Add JSX support to your `tsconfig.json`:
 
 ```jsonc title="tsconfig.json"
 {
@@ -74,36 +89,43 @@ Add JSX support to your `tsconfig.json`:
 }
 ```
 
-If you also run the i18n Regolith filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [tsconfig](/docs/filters/i18n#tsconfig).
+If you also run the i18n filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [tsconfig](/docs/filters/i18n#tsconfig).
 
-## Quick test
+## Optional: ore-styled
 
-Test your installation with a simple render:
+[`@bedrock-core/ore-styled`](/docs/ore-styled) is a themed component layer giving you vanilla-styled buttons, cards, checkboxes and more. Installing `@bedrock-core/ui` already includes it; on a minimal install add it explicitly:
+
+<Install pkg="@bedrock-core/ore-styled" />
 
 ```tsx
-import { render, Panel, Screen, Text } from '@bedrock-core/ui';
-import { world, Player, Entity, ButtonPushAfterEvent } from '@minecraft/server';
-import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
-
-const HelloWorld = (
-  <Screen>
-    <Panel padding={20}>
-      <Text>{'Hello from @bedrock-core/ui!'}</Text>
-    </Panel>
-  </Screen>
-);
-
-const isPlayer = (source: Entity): source is Player => source.typeId === MinecraftEntityTypes.Player;
-
-world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void => {
-  if (isPlayer(source)) {
-    render(HelloWorld, source);
-  }
-});
+import { Button, Card } from '@bedrock-core/ore-styled';
 ```
 
+## Check it works
+
+Write a screen, build, then show it.
+
+```tsx title="packs/BP/scripts/hello.screen.tsx"
+import { Panel, Screen, Text } from '@bedrock-core/ui';
+
+export default function Hello(): JSX.Element {
+  return (
+    <Screen>
+      <Panel padding={20}>
+        <Text>{'Hello from @bedrock-core/ui'}</Text>
+      </Panel>
+    </Screen>
+  );
+}
+```
+
+<Exec cmd="regolith run" />
+
+The filter logs one line per screen it compiled. If `render()` throws `UncompiledScreenError` instead, the build did not see the file or `@bedrock-core/generated/ui` was never imported.
+
 ## Next steps
-- [Components](./components/components.md) — Built-in components that you can use in your JSX
-- [ore-styled](/docs/ore-styled) — Themed component layer with vanilla Minecraft textures (optional)
-- [Hooks](./hooks/hooks.md) — Add state and effects to your components
-- [API](./api/api.md) — APIs that are useful for defining components
+
+- [Hosts](./guides/hosts.md) — which root to write, and what each screen can carry
+- [Components](./components/components.md) — every built-in component
+- [Hooks](./hooks/hooks.md) — state and effects
+- [`ui-compiler` filter](/docs/filters/ui-compiler) — every setting the build takes

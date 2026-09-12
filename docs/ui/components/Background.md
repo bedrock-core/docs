@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 9
 description: "Draw a full-screen texture behind everything in a form."
 ---
 # Background
@@ -30,8 +30,6 @@ If a tree contains more than one `<Background>`, only the first is rendered; the
 :::
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

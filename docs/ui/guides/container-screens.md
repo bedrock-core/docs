@@ -1,11 +1,11 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 description: "A container screen is a custom entity's chest screen, written in JSX with the same components as a form."
 ---
 
 # Container screens
 
-A **container screen** is a custom entity's chest screen, written in JSX with the same components as a form. The [ui-compile Regolith filter](/docs/filters/ui-compile) compiles it into static JSON UI at build time; at runtime `createContainerScreen` serves it to every player who opens the entity, and everything alive in it — text, buttons, entities, the items in its slots — travels through the container's own slots.
+A **container screen** is a custom entity's chest screen, written in JSX with the same components as a form. The [ui-compiler Regolith filter](/docs/filters/ui-compiler) compiles it into static JSON UI at build time; at runtime `createContainerScreen` serves it to every player who opens the entity, and everything alive in it — text, buttons, entities, the items in its slots — travels through the container's own slots.
 
 It is the second backend of `@bedrock-core/ui`. A form is serialized per player when it is shown. A container screen cannot be: the chest screen has no string channel wide enough to carry a layout, so the layout is baked once and only state moves at runtime. What you get in exchange is what a form cannot give — real item slots the player drags into, a screen that stays open while its values change, and state that belongs to a thing in the world.
 
@@ -51,7 +51,7 @@ Three things make it a container screen: the file name ends in `.screen.tsx` (th
 The build runs the component once to decide the **shape**; the runtime runs it again, per viewer, to decide the **values**. The two walks line up position for position because a compiled screen cannot change shape — so nothing is named, nothing is registered, and there is no second file describing the same screen.
 
 :::caution A screen must not touch the world at import time
-The build evaluates the module once, on the build machine, with `@minecraft/server` replaced by a stub. Hooks are fine; module-scope code that reaches for the game (`world.afterEvents.*.subscribe`, `system.run`, a dynamic property read next to an `import`) is not. Keep that in the module that calls `createContainerScreen` — see [the filter page](/docs/filters/ui-compile#the-one-rule).
+The build evaluates the module once, on the build machine, with `@minecraft/server` replaced by a stub. Hooks are fine; module-scope code that reaches for the game (`world.afterEvents.*.subscribe`, `system.run`, a dynamic property read next to an `import`) is not. Keep that in the module that calls `createContainerScreen` — see [the filter page](/docs/filters/ui-compiler#the-one-rule).
 :::
 
 ## Serving it
@@ -163,9 +163,9 @@ Plus one for the marker slot the router reads. A screen with three slots, two bu
 - Live `Text` inside a `Button`.
 - `usePlayer`. (`useExit` works, as the close button — see above.)
 
-## In this section
+## Next steps
 
-| Page | Description |
-| --- | --- |
-| [ui-compile Regolith filter](/docs/filters/ui-compile) | How a screen is discovered, what the build generates and where, the entity it stamps, the one authoring rule, settings |
-| [JSON UI and container facts](./container-screens.md) | The measured rules behind the design — collection addressing, binding types, what the Script API does and does not allow, which official schemas are worth validating against |
+- [`<Container>`](../components/Container.md) — the root, its entity and its viewer handlers
+- [`<Slot>`](../components/Slot.md) — a cell, its role, and what a foreign collection changes
+- [Hosts](./hosts.md) — what the chest can carry that a form cannot, and the reverse
+- [`ui-compiler` filter](/docs/filters/ui-compiler) — how a screen is discovered, what the build generates, and the entity it stamps

@@ -2,7 +2,7 @@
 sidebar_position: 4
 description: "These props belong to the legacy one-modal-per-field components."
 ---
-# Modal Field Props
+# Modal field props
 
 :::caution Deprecated
 These props belong to the legacy one-modal-per-field components. New [`Form`](../Form/Form.md) fields configure modal chrome differently — there's no per-field `label`/`title`/`body`/`submitLabel`/`tooltip`, since a `Form` has one shared modal and headings are authored as a `Text` node.

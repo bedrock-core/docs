@@ -6,7 +6,7 @@ description: "Atomic modal form."
 
 Atomic modal form. Renders one native `ModalFormData` — every field is shown at once, and nothing comes back until the player presses submit, at which point every value arrives together, keyed by each field's `name`, in `onSubmit`.
 
-This replaces the older one-modal-per-field pattern ([`Input`](../deprecated/Input.md), [`Dropdown`](../deprecated/Dropdown.md), [`Slider`](../deprecated/Slider.md)), which opens a separate single-control modal per field. Those components are now deprecated — for new screens with more than one field, use `Form`.
+The [deprecated](../deprecated/Input.md) `Input`, `Dropdown` and `Slider` components open a separate single-control modal per field. Use `Form` for any screen with more than one field.
 
 ## Import
 
@@ -47,11 +47,11 @@ Values only arrive once, in `onSubmit`, keyed by each field's `name`:
 
 ## Props
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `onSubmit` | `(event: SubmitEvent) => void` | Called once when the player presses the submit button. `event.values` holds every field's value keyed by its `name` (`FormValues = Record<string, ModalValue>`, where `ModalValue = string \| number \| boolean \| undefined`), and `event.player` is who submitted. Destructure it: `onSubmit={({ values }) => …}` |
-| `onCancel` | `(event: UiEvent) => void` | Called when the player dismisses the modal — the X button, Esc, or a `Form.Button type="exit"`. `event.player` is who dismissed it |
-| `children` | `JSX.Node` | Field declarations, decorative content, and the form's action buttons, in any order |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onSubmit` | `(event: SubmitEvent) => void` | — | Called once when the player presses the submit button. `event.values` holds every field's value keyed by its `name` (`FormValues = Record<string, ModalValue>`, where `ModalValue = string \| number \| boolean \| undefined`), and `event.player` is who submitted. Destructure it: `onSubmit={({ values }) => …}` |
+| `onCancel` | `(event: UiEvent) => void` | — | Called when the player dismisses the modal — the X button, Esc, or a `Form.Button type="exit"`. `event.player` is who dismissed it |
+| `children` | `JSX.Node` | — | Field declarations, decorative content, and the form's action buttons, in any order |
 
 ## Rules
 

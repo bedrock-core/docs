@@ -1,10 +1,10 @@
 ---
-sidebar_position: 5
-description: "Interactive button component that responds to player interactions."
+sidebar_position: 6
+description: "A press, textured per state, with an onPress handler."
 ---
 # Button
 
-Interactive button component that responds to player interactions.
+A press.
 
 ## Import
 
@@ -15,45 +15,41 @@ import { Button } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Button onPress={() => console.log('Button clicked!')}>
-  <Text>{'Click Me'}</Text>
+<Button onPress={() => console.warn('pressed')}>
+  <Text>{'Press me'}</Text>
 </Button>
 ```
 
-Buttons are sized intrinsically from their content plus the button's built-in padding. Drop them inside a `Panel` and use flex props (`flex`, `flexDirection`, `gap`, …) to lay them out.
+Buttons are sized intrinsically from their content plus the button's built-in padding. Drop them inside a `Panel` and use flex props to lay them out.
 
 ## Props
 
-### Component-Specific props
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Runs when the player presses the button |
+| `children` | `JSX.Node` | — | What the button shows, typically a `Text` or an `Image` |
+| `backgroundHover` | `string` | `background` | Texture drawn while the player hovers |
+| `backgroundPressed` | `string` | `background` | Texture drawn while the button is being pressed |
+| `backgroundLocked` | `string` | `background` | Texture drawn while the button is disabled |
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | Runs when the player presses the button. `event.player` is who pressed; on a [container screen](../guides/container-screens.md) `event.host` is the entity that owns the screen, and on a form there is none. Every handler in the library takes one event object — see [Handler events](../guides/handler-events.md) |
-| `children` | `JSX.Node` | Child components — typically a `Text` (label) or `Image` (icon) |
-| `backgroundHover` | `string` | Texture path used while the player hovers over the button |
-| `backgroundPressed` | `string` | Texture path used while the button is being pressed |
-| `backgroundLocked` | `string` | Texture path used when the button is disabled (`enabled={false}`) |
+Inherits [control props](./control-props.md). Every state texture falls back to `background`, and `background` falls back to the blank-canvas placeholder, so one texture styles all four states.
 
-Combine these with `background` (from control props) to fully texture the button across every state. This is the foundation that [`@bedrock-core/ore-styled`'s `Button`](/docs/ore-styled/Button) builds on top of.
+This is the primitive [`@bedrock-core/ore-styled`'s `Button`](/docs/ore-styled/Button) is built on.
 
-### Control props
+## What a press is
 
-Button inherits all standard [control props](./control-props.md).
+`event.player` is who pressed. On a [container screen](../guides/container-screens.md) `event.host` is the entity that owns the screen; on a form there is none. Every handler in the library takes one event object — see [Handler events](../guides/handler-events.md).
+
+What the press *costs* depends on the [host](../guides/hosts.md): a form entry the engine reports back by index on an action form, an item taken and put straight back on a container screen. A native modal has no generic button at all — use [`<Form.Button>`](./Form/FormButton.md) there.
+
+When the destination is another screen rather than a handler, reach for [`<Link>`](./Link.md): its target is data the build can read, which is what makes the screen describable to other addons.
 
 ## Examples
 
-### Basic button
+### With state
 
 ```tsx
-<Button onPress={() => console.log('Clicked')}>
-  <Text>{'Click Me'}</Text>
-</Button>
-```
-
-### Button with state
-
-```tsx
-function ToggleButton() {
+function ToggleButton(): JSX.Element {
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -64,7 +60,7 @@ function ToggleButton() {
 }
 ```
 
-### Disabled button
+### Disabled
 
 ```tsx
 <Button enabled={false}>
@@ -72,28 +68,28 @@ function ToggleButton() {
 </Button>
 ```
 
-### Row of buttons
+### A row sharing the width
 
 ```tsx
 <Panel flexDirection={'row'} padding={10} gap={8}>
-  <Button flex={1} onPress={() => console.log('cancel')}>
+  <Button flex={1} onPress={() => console.warn('cancel')}>
     <Text>{'Cancel'}</Text>
   </Button>
-  <Button flex={1} onPress={() => console.log('confirm')}>
+  <Button flex={1} onPress={() => console.warn('confirm')}>
     <Text>{'Confirm'}</Text>
   </Button>
 </Panel>
 ```
 
-### Icon button
+### An icon
 
 ```tsx
-<Button onPress={() => console.log('clicked icon')}>
+<Button onPress={() => console.warn('pressed')}>
   <Image width={32} height={32} texture={'textures/items/diamond'} />
 </Button>
 ```
 
-### Fully themed button
+### Fully themed
 
 ```tsx
 <Button
@@ -101,7 +97,7 @@ function ToggleButton() {
   backgroundHover={'textures/ui/button_hover'}
   backgroundPressed={'textures/ui/button_pressed'}
   backgroundLocked={'textures/ui/button_locked'}
-  onPress={() => console.log('themed')}
+  onPress={() => console.warn('pressed')}
 >
   <Text>{'Themed'}</Text>
 </Button>
@@ -109,7 +105,8 @@ function ToggleButton() {
 
 ## Notes
 
-- Don't hardcode `width`/`height` — let buttons size to their content unless you need a specific footprint.
-- Inside a row, use `flex={1}` on each button to distribute the space evenly.
-- Use descriptive labels that clearly indicate the action.
-- Disable buttons when an action is unavailable rather than hiding them.
+Let buttons size to their content rather than hardcoding `width` and `height`, unless the layout needs a specific footprint. Inside a row, `flex={1}` on each button distributes the space evenly.
+
+Disable a button when its action is unavailable rather than hiding it: a hidden control leaves its box behind on a compiled screen unless the row is a [`<Panel stack>`](./Panel.md#stack).
+
+An `onPress` that returns a promise keeps the press's transaction open until it settles, which is what makes an async handoff flash-free. See [State](../guides/state.md#one-ui-slot-per-player).

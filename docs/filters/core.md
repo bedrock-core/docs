@@ -12,7 +12,7 @@ One filter that runs the whole stack in the order the filters depend on, with th
 | 2 | [`generator`](./generator.md) | opt-in: templates become JSON before the scripts are bundled |
 | 3 | [`guides`](./guides.md) | guide keys have to land before i18n collects them |
 | 4 | [`i18n`](./i18n.md) | `.lang` files, the runtime bundle and the key types |
-| 5 | [`ui-compile`](./ui-compile.md) | screens bake against the keys i18n emitted |
+| 5 | [`ui-compiler`](./ui-compiler.md) | screens bake against the keys i18n emitted |
 | 6 | [`bundler`](./bundler.md) | last: it inlines the generated bundles and strips the sources |
 
 Each stage runs in its own Node process, exactly as Regolith runs it: same temp workspace, same `ROOT_DIR`, same settings JSON, same exit code. A stage whose inputs are absent says it has nothing to do and the run continues, so the full stack is a safe default for a project that uses part of it. A project that needs a step of its own between two stages lists the filters one by one in `config.json` and puts its own filter where it belongs.
@@ -23,7 +23,7 @@ Register the resolver once per machine, then install the whole set — `core` ru
 
 ```bash
 regolith config resolvers --append github.com/bedrock-core/regolith-filters/resolver.json
-regolith install core manifest generator guides i18n ui-compile bundler
+regolith install core manifest generator guides i18n ui-compiler bundler
 ```
 
 Then one entry per profile replaces the six:
@@ -38,7 +38,7 @@ Then one entry per profile replaces the six:
             "filter": "core",
             "settings": {
               "shared": { "namespace": "drav0011_economy" },
-              "ui-compile": { "screens": ["@bedrock-core/config/compiled"] },
+              "ui-compiler": { "screens": ["@bedrock-core/config/compiled"] },
               "bundler": { "debug": true }
             }
           }
@@ -51,7 +51,7 @@ Then one entry per profile replaces the six:
             "settings": {
               "shared": { "namespace": "drav0011_economy" },
               "manifest": { "manifestPath": "BP/manifest.test.json" },
-              "ui-compile": { "screens": ["@bedrock-core/config/compiled"] },
+              "ui-compiler": { "screens": ["@bedrock-core/config/compiled"] },
               "bundler": { "debug": true, "tsConfigPath": "tsconfig.test.json" }
             }
           }
@@ -67,7 +67,7 @@ Then one entry per profile replaces the six:
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
 | `shared` | `object` | `{}` | Merged into every stage. The addon's `namespace` belongs here; a stage that does not read a key ignores it |
-| `manifest`, `guides`, `i18n`, `ui-compile`, `bundler` | `object \| false` | `{}` | Settings for that stage, merged over `shared`. `false` skips the stage |
+| `manifest`, `guides`, `i18n`, `ui-compiler`, `bundler` | `object \| false` | `{}` | Settings for that stage, merged over `shared`. `false` skips the stage |
 | `generator` | `object \| true` | off | The generator runs only when this key is present — it writes schema types into the project, so a project opts in. `true` runs it with defaults |
 
 Each stage's own settings are documented on its page; the keys are unchanged here.

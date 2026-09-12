@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Form onSubmit={v => console.log(v.team)}>
+<Form onSubmit={v => console.warn(v.team)}>
   <Form.InlineSelect name={'team'} defaultValue={'red'}>
     <Form.Option value={'red'} label={'Red'} />
     <Form.Option value={'blue'} label={'Blue'} />
@@ -30,8 +30,6 @@ Just like [`Form.Dropdown`](./FormDropdown.md), `Form.InlineSelect` reports the 
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
@@ -41,11 +39,9 @@ Just like [`Form.Dropdown`](./FormDropdown.md), `Form.InlineSelect` reports the 
 | `bullet` / `bulletSelected` | `string` | — | Unselected/selected bullet glyph texture (e.g. a radio dot). Leave both empty for a segmented, bullet-less look |
 | `bulletHover` / `bulletSelectedHover` | `string` | falls back to `bullet` / `bulletSelected` | Bullet glyph shown on hover |
 | `bulletWidth` / `bulletHeight` | `number` | `12` | Bullet glyph size (px) |
-| `optionFont` | `LabelFont` / `number` / `'left' \| 'center' \| 'right'` | — | Group-level default label styling for option rows. Any `Form.Option` can override its own |
+| `optionFont` / `optionScale` / `optionAlign` | `LabelFont` / `number` / `'left' \| 'center' \| 'right'` | — | Group-level default label styling for option rows. Any `Form.Option` can override its own |
 
-### Control props
-
-`Form.InlineSelect` inherits all standard [control props](../control-props.md).
+Inherits [control props](../control-props.md).
 
 ## Examples
 

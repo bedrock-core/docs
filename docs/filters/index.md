@@ -33,9 +33,11 @@ Filters run in dependency order. [`core`](./core.md) runs the whole chain as one
 | 2 | [`generator`](./generator.md) | Writes Minecraft JSON from TypeScript templates typed against Mojang's schemas (opt-in) |
 | 3 | [`guides`](./guides.md) | Compiles MDX guides into a manifest and auto-localized `.lang` entries |
 | 4 | [`i18n`](./i18n.md) | Turns TypeScript resources into `.lang` files, a typed runtime bundle and vanilla-key types |
-| 5 | [`ui-compile`](./ui-compile.md) | Compiles `*.screen.tsx` into static JSON UI and routes the chest screen to it |
+| 5 | [`ui-compiler`](./ui-compiler.md) | Compiles `*.screen.tsx` into static JSON UI and registers each screen with the host that serves it |
 | 6 | [`bundler`](./bundler.md) | Bundles `BP/scripts/` into one `main.js` with esbuild |
 
-`guides`, `i18n` and `ui-compile` share one `namespace` setting: the addon's `creator_pack` string, the same one passed to `core.register()`. Each of them reads it from the register call in `BP/scripts` and needs no settings when that scan succeeds; set `namespace` only to override it.
+`guides`, `i18n` and `ui-compiler` share one `namespace` setting: the addon's `creator_pack` string, the same one passed to `core.register()`. Each of them reads it from the register call in `BP/scripts` and needs no settings when that scan succeeds; set `namespace` only to override it.
+
+The compiler `ui-compiler` runs is a library of its own; its passes, layers and entry points are in [Compiler](/docs/ui/compiler).
 
 For GitHub Actions, [Running in CI](./ci.md) sets up the Regolith CLI and the resolver.

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 10
 description: "A logical grouping component that doesn't render any visual container."
 ---
 # Fragment
@@ -33,11 +33,11 @@ import { Fragment } from '@bedrock-core/ui';
 </>
 ```
 
-### Component-Specific props
+## Props
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `children` | `JSX.Node` | The children components inside the fragment |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `children` | `JSX.Node` | — | What the fragment groups |
 
 ## Examples
 
@@ -71,7 +71,7 @@ function StatusDisplay({ isOnline }: { isOnline: boolean }) {
 - Don't use Fragment when you need a visual container or its own flex layout (use `Panel` instead).
 - Fragment participates in the parent's flex flow — its children are lifted into the parent's layout.
 
-## Fragment vs Panel
+## Fragment vs panel
 
 | Aspect | Fragment | Panel |
 |--------|----------|-------|

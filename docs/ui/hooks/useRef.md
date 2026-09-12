@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description: "Create a mutable reference that persists across executions"
 ---
 # useRef
@@ -122,10 +122,10 @@ function FirstExecutionDetector() {
 
   useEffect(() => {
     if (isFirstExecution.current) {
-      console.log('First execution!');
+      console.warn('First execution!');
       isFirstExecution.current = false;
     } else {
-      console.log('Subsequent execution');
+      console.warn('Subsequent execution');
     }
   });
 

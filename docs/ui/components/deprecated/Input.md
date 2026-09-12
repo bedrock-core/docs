@@ -22,7 +22,7 @@ import { Input } from '@bedrock-core/ui';
 <Input
   label={'Name'}
   placeholder={'type your name'}
-  onChange={(value) => console.log(value)}
+  onChange={(value) => console.warn(value)}
 />
 ```
 
@@ -33,8 +33,6 @@ Native `ActionFormData` can't take typed input, so `Input` renders as a [`Button
 This is the unstyled runtime primitive — supply a `background` or compose a styled wrapper for a field-like appearance.
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -49,9 +47,7 @@ This is the unstyled runtime primitive — supply a `background` or compose a st
 
 Input inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
 
-### Control props
-
-Input inherits all standard [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
+Inherits [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
 
 ## Examples
 
@@ -80,7 +76,7 @@ function NameField() {
 ### Uncontrolled
 
 ```tsx
-<Input defaultValue={'Steve'} onChange={(v) => console.log(v)} />
+<Input defaultValue={'Steve'} onChange={(v) => console.warn(v)} />
 ```
 
 ### Disabled

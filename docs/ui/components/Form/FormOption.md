@@ -28,8 +28,6 @@ import { Form } from '@bedrock-core/ui';
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value`<Req /> | `string` | — | The option's stable identifier — what a parent's `defaultValue` is matched against. The parent reports the SELECTED option's index on submit, not this value |
@@ -39,9 +37,7 @@ import { Form } from '@bedrock-core/ui';
 | `bullet` / `bulletSelected` / `bulletHover` / `bulletSelectedHover` | `string` | falls back to the parent's matching group prop | Per-option bullet glyph override (only meaningful under `Form.InlineSelect`) |
 | `bulletWidth` / `bulletHeight` | `number` | falls back to the parent's `bulletWidth` / `bulletHeight` | Per-option bullet size override |
 
-### Control props
-
-Under `Form.InlineSelect`, `Form.Option` inherits all standard [control props](../control-props.md) for real flex layout. Under `Form.Dropdown`, layout props are accepted but ignored — popup rows flow at a fixed height.
+Inherits [control props](../control-props.md), which lay out real flex rows under `Form.InlineSelect`. Under `Form.Dropdown`, layout props are accepted but ignored — popup rows flow at a fixed height.
 
 ## Examples
 

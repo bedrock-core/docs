@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description: "Run Regolith in GitHub Actions with the setup-regolith action."
 ---
 # Running in CI

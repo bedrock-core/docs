@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Form onSubmit={v => console.log(v.mode)}>
+<Form onSubmit={v => console.warn(v.mode)}>
   <Form.Dropdown name={'mode'} defaultValue={'Normal'}>
     <Form.Option value={'Easy'} label={'Easy'} />
     <Form.Option value={'Normal'} label={'Normal'} />
@@ -31,8 +31,6 @@ import { Form } from '@bedrock-core/ui';
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
@@ -40,16 +38,14 @@ import { Form } from '@bedrock-core/ui';
 | `children` | `JSX.Node` | — | The selectable options, authored as [`Form.Option`](./FormOption.md) elements. Popup rows flow at a fixed row height, so an option's own layout props are ignored here — only its `value`/`label`/style are read |
 | `popupBackground` | `string` | the unstyled placeholder texture | Background texture for the popup surface behind the option list |
 | `optionBackground` / `optionHover` / `optionSelected` | `string` | — | Group-level default row textures for idle/hover/selected states. Any `Form.Option` can override its own |
-| `optionFont` | `LabelFont` / `number` / `'left' \| 'center' \| 'right'` | `'mojangles'` / `1.0` / `'left'` | Group-level default label styling for option rows. Any `Form.Option` can override its own |
+| `optionFont` / `optionScale` / `optionAlign` | `LabelFont` / `number` / `'left' \| 'center' \| 'right'` | `'mojangles'` / `1.0` / `'left'` | Group-level default label styling for option rows. Any `Form.Option` can override its own |
 | `currentColor` | `string` | `''` | Color code prefix (e.g. `'§0'`) applied to the closed-box current-value text |
 | `currentFont` / `currentScale` | `LabelFont` / `number` | `'mojangles'` / `1.0` | Font and scale for the closed-box current-value label |
 | `currentInsetX` / `currentInsetY` | `number` | `8` / vertically centered | Position offset (px) of the current-value label from the closed box's left-middle frame |
 
 The closed box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
 
-### Control props
-
-`Form.Dropdown` inherits all standard [control props](../control-props.md).
+Inherits [control props](../control-props.md).
 
 ## Examples
 
@@ -82,7 +78,7 @@ const options = ['Easy', 'Normal', 'Hard'];
 
 <Form onSubmit={v => {
   const selected = options[v.mode as number];
-  console.log(selected);
+  console.warn(selected);
 }}>
   <Form.Dropdown name={'mode'} defaultValue={'Normal'}>
     {options.map(o => <Form.Option key={o} value={o} label={o} />)}

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: "Request the UI to be closed."
 ---
 # useExit
@@ -7,7 +7,7 @@ description: "Request the UI to be closed."
 Request the UI to be closed.
 
 :::note Closing, not switching
-`exit()` closes the UI back to the game. You do **not** need it to hand off to another screen or app — calling [`render()`](../api/render.md#one-ui-slot-per-player) (or an opener like `openUi`) while a UI is up swaps the new app into the running session by itself.
+`exit()` closes the UI back to the game. You do **not** need it to hand off to another screen or app — calling [`render()`](../guides/state.md#one-ui-slot-per-player) (or an opener like `openUi`) while a UI is up swaps the new app into the running session by itself.
 :::
 
 ## Import

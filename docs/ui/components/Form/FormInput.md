@@ -15,7 +15,7 @@ import { Form } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Form onSubmit={v => console.log(v.nickname)}>
+<Form onSubmit={v => console.warn(v.nickname)}>
   <Form.Input name={'nickname'} placeholder={'§7type here'} />
   <Form.Button type={'submit'} />
 </Form>
@@ -26,8 +26,6 @@ import { Form } from '@bedrock-core/ui';
 `Form.Input` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.textField` control; the result (`string`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -41,9 +39,7 @@ import { Form } from '@bedrock-core/ui';
 
 The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md); `backgroundPressed` doubles as the focused-field state.
 
-### Control props
-
-`Form.Input` inherits all standard [control props](../control-props.md).
+Inherits [control props](../control-props.md).
 
 ## Examples
 

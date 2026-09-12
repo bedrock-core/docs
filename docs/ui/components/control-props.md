@@ -1,8 +1,8 @@
 ---
-sidebar_position: 15
+sidebar_position: 21
 description: "Common layout and styling properties shared by all components."
 ---
-# Control Props
+# Control props
 
 Common layout and styling properties shared by all components.
 
@@ -12,12 +12,12 @@ The library uses a **flexbox-based layout system**. You compose UIs by nesting `
 
 ### Sizing
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `width` | `number \| Percent` (e.g. `200` or `'50%'`) | Width in pixels or as a percentage of the parent's content box. Omit to derive from content / flex rules |
-| `height` | `number \| Percent` | Height in pixels or as a percentage of the parent's content box. Omit to derive from content / flex rules |
-| `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| Percent` | Lower / upper bounds the layout engine will respect when sizing the element |
-| `aspectRatio` | `number` (width ÷ height) | Derives whichever axis you left auto from the one that is definite. Ignored when both `width` and `height` are set |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `width` | `number \| Percent` (e.g. `200` or `'50%'`) | — | Width in pixels or as a percentage of the parent's content box. Omit to derive from content / flex rules |
+| `height` | `number \| Percent` | — | Height in pixels or as a percentage of the parent's content box. Omit to derive from content / flex rules |
+| `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| Percent` | — | Lower / upper bounds the layout engine will respect when sizing the element |
+| `aspectRatio` | `number` (width ÷ height) | — | Derives whichever axis you left auto from the one that is definite. Ignored when both `width` and `height` are set |
 
 ### Positioning
 
@@ -55,10 +55,10 @@ These apply to a component **as a child** inside a flex container.
 
 ### Spacing
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` | `number \| Percent` | Inner spacing in texels or as a percentage of the parent's content-box width |
-| `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` | `number \| Percent` | Outer spacing in texels or as a percentage of the parent's content-box width |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` | `number \| Percent` | — | Inner spacing in texels or as a percentage of the parent's content-box width |
+| `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` | `number \| Percent` | — | Outer spacing in texels or as a percentage of the parent's content-box width |
 
 ### Appearance
 
@@ -76,6 +76,29 @@ Interactive primitives (`Button`, the `Form.*` fields) extend `background` with 
 | --- | --- | --- | --- |
 | `visible` | `boolean` | `true` | Whether the element is drawn. `false` removes it and its children entirely, but keeps the space it was laid out in. Use `display={'none'}` to remove it from layout too |
 | `enabled` | `boolean` | `true` | Whether the control accepts input. Set per element |
+| `liveVisible` | `boolean` | `false` | Carry `visible` on a compiled screen whether or not the build's liveness probe sees it flip. The [conditional sugar](#conditional-rendering) sets it on every `{cond && <X/>}` it rewrites; set it by hand for a `visible` that is false in every state the probe tries |
+
+## Conditional rendering
+
+A compiled screen's shape is frozen, so a branch that adds or drops an element cannot be a runtime decision. The build rewrites the two React idioms into a carried `visible` instead, at source level, so what you write stays idiomatic:
+
+```tsx
+{isAdmin && <Button onPress={ban}><Text>{'Ban'}</Text></Button>}
+```
+
+becomes `<Button visible={isAdmin} liveVisible …>`. An element ternary becomes **both** branches with opposite `visible`:
+
+```tsx
+{online ? <Text>{'Online'}</Text> : <Text>{'Offline'}</Text>}
+```
+
+Both are constructed and both share the same space, so position them accordingly — a stack is usually what you want, since only the shown one then takes room. The rewrite also marks the element `liveVisible`, so the visibility is carried whether or not the build's probe happens to flip it.
+
+This applies only when each branch is a single element or nullish. A string or fragment branch stays an ordinary runtime conditional, which a compiled screen refuses as a shape change — wrap a conditional string in a `<Text>` instead:
+
+```tsx
+<Text>{online ? 'Online' : 'Offline'}</Text>
+```
 
 ## Examples
 
@@ -124,7 +147,7 @@ function ConditionalUI({ showButton }: { showButton: boolean }) {
 }
 ```
 
-### Display None vs Visible
+### display none vs visible
 
 ```tsx
 {/* visible={false} keeps the space reserved */}
@@ -145,12 +168,12 @@ function ConditionalUI({ showButton }: { showButton: boolean }) {
   <Text>{'Main content'}</Text>
   {/* Pinned to top-right, outside normal flow */}
   <Panel position={'absolute'} top={4} right={4}>
-    <Text>{'✕'}</Text>
+    <Text>{'Close'}</Text>
   </Panel>
 </Panel>
 ```
 
-## Visibility vs Display
+## Visibility vs display
 
 | | `visible={false}` | `display={'none'}` |
 |---|---|---|

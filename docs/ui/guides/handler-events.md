@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 6
 description: "Every handler takes one event object; which fields each event carries."
 ---
 # Handler events

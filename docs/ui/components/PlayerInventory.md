@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 17
 description: "The player's own inventory — the 9 × 3 grid every container screen shows under its content — inside a container screen."
 ---
 # PlayerInventory
@@ -29,9 +29,7 @@ A container screen owns the whole chest screen, so the grid is **not free**: lea
 
 ## Props
 
-### Control props
-
-PlayerInventory inherits all standard [control props](./control-props.md). Its size is fixed by the engine's cell; use `alignSelf`, margins and the surrounding panel to place it.
+Inherits [control props](./control-props.md). Its size is fixed by the engine's cell; use `alignSelf`, margins and the surrounding panel to place it.
 
 ## Notes
 

@@ -168,7 +168,7 @@ world.afterEvents.itemUse.subscribe(({ source, itemStack }) => {
 
 The UI itself stays fully available — `openUi` is the same funnel the commands go through, permission clamp included — and any *other* installed bedrock-core addon's `:list` still shows your row. It frees the four names, not the namespace: your own commands still belong under `core.id`.
 
-`openUi` returns a `Promise<void>` that settles once the screen is handed to the renderer. From a ui-runtime presser, **return it** — `onPress={() => openUi(core, player, target)}` — so the handoff lands inside the press's interactive transaction: deterministic, flash-free, and no `useExit` call needed, because the renderer [swaps the running app out itself](/docs/ui/api/render#one-ui-slot-per-player). Outside a presser (commands, events), `void openUi(...)` is fine — the promise never rejects.
+`openUi` returns a `Promise<void>` that settles once the screen is handed to the renderer. From a ui-runtime presser, **return it** — `onPress={() => openUi(core, player, target)}` — so the handoff lands inside the press's interactive transaction: deterministic, flash-free, and no `useExit` call needed, because the renderer [swaps the running app out itself](/docs/ui/guides/state#one-ui-slot-per-player). Outside a presser (commands, events), `void openUi(...)` is fine — the promise never rejects.
 
 ## Permissions
 

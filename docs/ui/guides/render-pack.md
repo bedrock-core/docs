@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 7
 description: "@bedrock-core/ui renders through Minecraft's own server forms: the runtime serializes each component's props into a byte-addressed payload string, and the…"
 ---
 

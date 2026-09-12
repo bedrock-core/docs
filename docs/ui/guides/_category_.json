@@ -6,6 +6,6 @@
   "link": {
     "type": "generated-index",
     "title": "Guides",
-    "description": "The render pack, container screens and native components."
+    "description": "The three hosts, navigation, state, container screens, the render pack and native components."
   }
 }

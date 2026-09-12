@@ -1,8 +1,8 @@
 ---
-sidebar_position: 3
+sidebar_position: 5
 description: "Register your own native component type that the runtime serializes and your"
 ---
-# Custom Native Components
+# Custom native components
 
 Register your own native component `type` that the runtime serializes and your
 **own resource pack's JSON UI decodes and renders** — extending the framework

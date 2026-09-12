@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 description: "Subscribe to global Minecraft events within your UI components."
 ---
 # useEvent
@@ -154,7 +154,7 @@ function EventHandler() {
     world.afterEvents.playerJoin,
     (event) => {
       // No external dependencies used
-      console.log(`${event.playerName} joined`);
+      console.warn(`${event.playerName} joined`);
     }
     // deps not needed
   );

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 3
 description: "The root of a container screen: names the entity the screen opens from, and is the screen's own panel."
 ---
 # Container
@@ -27,11 +27,9 @@ export default function Furnace() {
 }
 ```
 
-Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compile filter](/docs/filters/ui-compile), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
+Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -40,9 +38,7 @@ Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a scr
 | `onClose` | `(event: ContainerEvent) => void` | `undefined` | Ran when a player closes the screen, or leaves the world with it open. `event.player` is who left, `event.host` the entity it belonged to |
 | `children` | `JSX.Node` | — | The screen. Anything a form can hold except the [form-only components](../guides/container-screens.md#not-supported), plus [`Slot`](./Slot.md), [`PlayerInventory`](./PlayerInventory.md) and [`Hotbar`](./Hotbar.md) |
 
-### Control props
-
-Container inherits all standard [control props](./control-props.md). It is the screen's root panel, so `background` draws the frame and `padding` / `gap` / `flexDirection` lay the children out — the same way they would on a `Panel`.
+Inherits [control props](./control-props.md). It is the screen's root panel, so `background` draws the frame and `padding` / `gap` / `flexDirection` lay the children out — the same way they would on a `Panel`.
 
 ## Rules
 

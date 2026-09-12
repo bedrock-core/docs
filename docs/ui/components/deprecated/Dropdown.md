@@ -23,7 +23,7 @@ import { Dropdown } from '@bedrock-core/ui';
   label={'Difficulty'}
   options={['Peaceful', 'Easy', 'Normal', 'Hard']}
   defaultValue={'Normal'}
-  onChange={(value) => console.log(value)}
+  onChange={(value) => console.warn(value)}
 />
 ```
 
@@ -34,8 +34,6 @@ import { Dropdown } from '@bedrock-core/ui';
 The native modal works on item *indices*; `Dropdown` maps the selected index back to the matching `options` entry, so its public API stays value-based like [`Input`](./Input.md).
 
 ## Props
-
-### Component-Specific props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -50,9 +48,7 @@ The native modal works on item *indices*; `Dropdown` maps the selected index bac
 
 Dropdown inherits all [modal field props](./modal-field-props.md) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
 
-### Control props
-
-Dropdown inherits all standard [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
+Inherits [control props](../control-props.md). Use `enabled={false}` to make the field inert (no modal opens).
 
 ## Examples
 
@@ -83,7 +79,7 @@ function DifficultySetting() {
 ```tsx
 <Dropdown
   options={['Red', 'Green', 'Blue']}
-  onChange={(value, index) => console.log(index, value)}
+  onChange={(value, index) => console.warn(index, value)}
 />
 ```
 

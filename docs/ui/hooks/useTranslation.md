@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 12
 description: "Bind an addon's typed translation verbs to the player viewing the UI."
 ---
 # useTranslation

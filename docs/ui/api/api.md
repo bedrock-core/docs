@@ -1,25 +1,55 @@
 ---
 sidebar_position: 1
-description: "Core functions and utilities for building and displaying UI."
+description: "render(), the contexts, the compiled-screen registry and the error classes."
 ---
 # API
 
-Core functions and utilities for building and displaying UI.
+The top-level surface: showing a screen, the contexts around it, and the records the build leaves behind.
 
-## Functions
+## Showing a screen
 
-- [`render(root, player)`](./render.md) — Entry point for all UI. Displays a component tree to a player.
-- [`createContext(defaultValue)`](./createContext.md) — Create a context object for passing values down the component tree without prop drilling.
+- [`render(root, player, options?)`](./render.md) — show a compiled screen to one player and keep it shown across its state changes
+- [`navigate(key, player, options?)`](../guides/navigation.md) — open a screen by key, including one another addon built
+- `back(player)` — return to the screen the player came from
+- `closeUi(player)` — close what a player is looking at, from outside the screen
+- `createContainerScreen(Screen)` — serve a [container screen](../guides/container-screens.md), from `@bedrock-core/ui/container`
 
 ## Contexts
 
-- [`TranslationContext`](./TranslationContext.md) — The context carrying how localized text resolves for a component subtree. `render()` provides it at every root, so you rarely provide it yourself.
+- [`createContext(defaultValue)`](./createContext.md) — pass a value down the tree without prop drilling
+- [`TranslationContext`](./TranslationContext.md) — how localized text resolves for a subtree; `render()` provides it at every root, so you rarely provide it yourself
+- `ModalContext` — marks that a subtree is inside a `<Form>`; read by the build's restriction pass
+
+## Build records
+
+- [Compiled screens](./compiled-screens.md) — the component-to-title registry, the snapshot a `debug` render is diffed against, and the reference table a static screen publishes
+
+## Errors
+
+- [Errors](./errors.md) — every error class the library throws and the fix each one names
+
+## Types
+
+```ts
+import type {
+  ControlProps, LayoutProps,
+  FunctionComponent, JSX,
+  NavigateOptions, RenderOptions, ScreenKey, ScreenKeys,
+  PressEvent, SlotEvent, SubmitEvent, UiEvent, ContainerEvent,
+  CompiledScreen, CompiledSnapshot,
+  AddonReference, ScreenReference, ReferenceTarget, WalkResult,
+} from '@bedrock-core/ui';
+```
+
+Every component's props type is exported beside it — `ButtonProps`, `TextProps`, `ListProps`, `TabsProps` and the rest — and every flex primitive through [`@bedrock-core/ui/flexbox`](/docs/flexbox).
 
 ## Advanced
 
-- [Custom Native Components](../guides/custom-native-components.md) — register your own native component `type` that the runtime serializes and your resource pack's JSON UI decodes. Requires JSON UI **and** serialization knowledge.
+- [Custom native components](../guides/custom-native-components.md) — register your own native component `type` that the runtime serializes and your resource pack's JSON UI decodes
+- [`@bedrock-core/ui-compiler`](../compiler/api.md) — the build-time library, for tooling rather than for addons
 
 ## Next steps
 
-- [Components](../components/components.md) — Built-in components that you can use in your JSX
-- [Hooks](../hooks/hooks.md) — Add state and effects to your components
+- [Components](../components/components.md) — every built-in component
+- [Hooks](../hooks/hooks.md) — state and effects
+- [Hosts](../guides/hosts.md) — what each screen can carry

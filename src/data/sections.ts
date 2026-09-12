@@ -127,7 +127,6 @@ export const sections: Section[] = [
     icon: 'layout-grid',
     repo: `${GH}/ui`,
   },
-
   // Content
   {
     id: 'config',
@@ -167,7 +166,7 @@ export const sections: Section[] = [
     pkg: 'bedrock-core/regolith-filters',
     category: 'tooling',
     status: 'beta',
-    description: 'Regolith filters: manifest, generator, guides, i18n, ui-compile, bundler.',
+    description: 'Regolith filters: manifest, generator, guides, i18n, ui-compiler, bundler.',
     icon: 'funnel',
     repo: `${GH}/regolith-filters`,
   },

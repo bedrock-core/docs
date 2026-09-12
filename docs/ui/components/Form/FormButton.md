@@ -29,16 +29,12 @@ A `Form` enforces the cardinality of these buttons at build time (see [`Form`'s 
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `type`<Req /> | `'submit' \| 'exit'` | — | `'submit'` presses the native submit — field values return via the form's `onSubmit`. `'exit'` closes the form like Esc — no values, the form's `onCancel` fires instead |
 | `label` | `string` | `'Submit'` for `type="submit"`, `'Close'` for `type="exit"` | Button text |
 
-### Control props
-
-`Form.Button` inherits all standard [control props](../control-props.md), plus `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md). Defaults to `width: '100%'` when no explicit sizing is given.
+Inherits [control props](../control-props.md), plus `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md). Defaults to `width: '100%'` when no explicit sizing is given.
 
 ## Examples
 
