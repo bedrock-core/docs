@@ -17,8 +17,10 @@ import { createGuide } from '@bedrock-core/guides';
 // state, so recreating it each render resets the guide to its home.
 const Guide = createGuide(guides, { title: 'My Addon' });
 
-function GuideScreen({ navigation }: ScreenProps<Routes, 'Guide'>) {
-  return <Guide onExit={() => navigation.goBack()} />;
+export default function GuideScreen(): JSX.Element {
+  const { back } = useNavigation();
+
+  return <Guide onExit={() => back()} />;
 }
 ```
 
@@ -36,7 +38,7 @@ Or, if you already depend on `@bedrock-core/ui`:
 import { createGuide } from '@bedrock-core/ui/guides';
 ```
 
-Peer dependencies: `@bedrock-core/ui-runtime`, `@bedrock-core/navigation`, `@bedrock-core/ore-styled`.
+Peer dependencies: `@bedrock-core/ui-runtime`, `@bedrock-core/ore-styled`, `@bedrock-core/i18n`.
 
 ## `createGuide(manifest, options?)`
 
@@ -190,7 +192,7 @@ import { GuideBlockList } from '@bedrock-core/guides';
 <GuideBlockList
   blocks={manifest.pages['intro'].blocks}
   ns={manifest.ns}
-  onNavigate={(pageId) => navigation.navigate('GuidePage', { pageId })}
+  onNavigate={(pageId) => navigate(`guide:${pageId}`, { replace: true })}
 />
 ```
 
@@ -250,7 +252,7 @@ type GuideTreeNode
 
 ## Publishing a guide
 
-Pass the manifest to the server runtime's [registration](/docs/server/api/registry) and every realm in the world can render it — the [`GuidesRegistry`](/docs/server/api/guides) replicates it, which is how your guide reaches the [shared addon list](/docs/config):
+Publish your compiled screens once and every realm in the world can render the guide — [`screens(core)`](/docs/navigation/references) replicates the references, which is how your guide reaches the [shared addon list](/docs/config):
 
 ```ts
 import guides from '@bedrock-core/generated/guides';

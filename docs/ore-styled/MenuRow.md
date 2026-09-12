@@ -17,12 +17,18 @@ import { MenuRow } from '@bedrock-core/ore-styled';
 ## Usage
 
 ```tsx
-<MenuRow
-  icon={'textures/items/diamond'}
-  title={'Diamond'}
-  subtitle={'A rare gem'}
-  onPress={() => navigation.navigate('Details', { id: 'diamond' })}
-/>
+function Row(): JSX.Element {
+  const { navigate } = useNavigation();
+
+  return (
+    <MenuRow
+      icon={'textures/items/diamond'}
+      title={'Diamond'}
+      subtitle={'A rare gem'}
+      onPress={() => navigate('shop:details', { params: { id: 'diamond' } })}
+    />
+  );
+}
 ```
 
 ## Props
@@ -59,7 +65,7 @@ const { key, raw } = useTranslation(i18n);
 <MenuRow
   title={key($ => $.shop.title)}
   subtitle={raw($ => $.shop.stock, { count })}
-  onPress={() => navigation.navigate('Shop')}
+  onPress={() => navigate('shop:home')}
 />
 ```
 
@@ -116,7 +122,7 @@ Drop the chevron for rows that pick a value rather than navigating deeper.
   title={'Server settings'}
   subtitle={'Operators only'}
   enabled={isOperator}
-  onPress={() => navigation.navigate('ServerConfig')}
+  onPress={() => navigate('shop:server_config')}
 />
 ```
 

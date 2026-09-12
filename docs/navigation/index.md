@@ -2,109 +2,77 @@
 slug: /
 sidebar_position: 1
 sidebar_label: Overview
-description: "@bedrock-core/navigation is a stack-based navigation system for Minecraft Bedrock UI, inspired by React Navigation and adapted for @bedrock-core/ui's…"
+description: "@bedrock-core/navigation moves a player from one compiled screen to another by key, across addons."
 ---
-
 # navigation
 
-`@bedrock-core/navigation` is a stack-based navigation system for Minecraft Bedrock UI, inspired by React Navigation and adapted for `@bedrock-core/ui`'s single-render-per-player model.
-
-:::caution MVP scope
-This package covers stack navigation only. There is no support for animations, tab navigators, nested navigators, or deep linking in the current release.
-:::
-
-## Install
-
-<Install pkg="@bedrock-core/navigation" />
-
-## Quick start
-
-The example below wires up a two-screen stack: a `Home` screen that navigates to a `Details` screen and back.
-
-```tsx
-import { render, Panel, Screen, Text, Button } from '@bedrock-core/ui';
-import {
-  NavigationContainer,
-  createStackNavigator,
-  type ScreenProps,
-} from '@bedrock-core/navigation';
-import { world } from '@minecraft/server';
-
-// 1. Define your route map — key = route name, value = params type
-type Routes = {
-  Home:    undefined;
-  Details: { id: number; title: string };
-};
-
-// 2. Create the navigator once, outside any component
-const Stack = createStackNavigator<Routes>({
-  screens: {
-    Home:    { screen: HomeScreen },
-    Details: { screen: DetailsScreen },
-  },
-  initialRouteName: 'Home',
-});
-
-// 3. Screen components receive navigation + route as props. Each is a whole
-//    screen, so each starts with a root: <Screen> here, <Form> for a modal.
-function HomeScreen({ navigation }: ScreenProps<Routes, 'Home'>) {
-  return (
-    <Screen>
-      <Panel padding={10} gap={8}>
-        <Text>{'Home Screen'}</Text>
-        <Button onPress={() => navigation.navigate('Details', { id: 1, title: 'First' })}>
-          <Text>{'Open Details'}</Text>
-        </Button>
-      </Panel>
-    </Screen>
-  );
-}
-
-function DetailsScreen({ navigation, route }: ScreenProps<Routes, 'Details'>) {
-  return (
-    <Screen>
-      <Panel padding={10} gap={8}>
-        <Text>{`Details — ${route.params.title}`}</Text>
-        <Button onPress={() => navigation.goBack()}>
-          <Text>{'Go Back'}</Text>
-        </Button>
-      </Panel>
-    </Screen>
-  );
-}
-
-// 4. Wrap Navigator in NavigationContainer and render to a player
-function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator />
-    </NavigationContainer>
-  );
-}
-
-world.afterEvents.playerSpawn.subscribe(({ player }) => {
-  render(App, player);
-});
-```
-
-## How it works
-
-Navigation state is a plain stack — an array of `{ name, params }` route entries plus an `index` pointing to the active screen. All transitions (navigate, push, goBack, reset) dispatch an action to a pure reducer that produces a new state, which triggers `ui-runtime`'s re-render cycle and presents the updated UI to the player.
-
-```
-NavigationContainer   — provides the navigation context
-  └─ Stack.Navigator  — owns the stack state, renders the active screen
-       └─ ActiveScreen({ navigation, route })
-```
-
-## In this section
+`@bedrock-core/navigation` moves a player from one screen to another by **key**, and keeps a stack of where they have been.
 
 :::caution Pre-1.0
 `@bedrock-core/navigation` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
 :::
 
-| Page | Description |
-|---|---|
-| [createStackNavigator](./createStackNavigator.md) | Set up a typed stack navigator with screens, params, and initial routes |
-| [useNavigation](./useNavigation.md) | Access navigation helpers (`navigate`, `push`, `goBack`, …) from any screen |
-| [useRoute](./useRoute.md) | Read the current route name and params inside a screen |
+## What is @bedrock-core/navigation?
+
+A [compiled screen](/docs/ui/compiler) is drawn from the resource pack by its title, and its shape is frozen at build. That rules out the navigator every React app has — a stack of components swapped inside one root — because there is no root to swap into.
+
+What fits is a stack of **keys**. `navigate('shop:catalog', player)` shows that screen and puts the one the player was on behind them; `back(player)` returns to it.
+
+The key is `<addon>:<name>`, and that is what makes this work across addons: a key for a screen nobody in this realm compiled still resolves, through the reference its owner replicated.
+
+## Install
+
+<Install pkg="@bedrock-core/navigation" />
+
+Peer dependency: `@bedrock-core/ui-runtime`, which an addon already has through [`@bedrock-core/ui`](/docs/ui).
+
+## Quick start
+
+```ts title="packs/BP/scripts/main.ts"
+import { core } from '@bedrock-core/server';
+import { navigate, provideReferences, screens } from '@bedrock-core/navigation';
+import { uiReference } from '@bedrock-core/generated/ui';
+import '@bedrock-core/generated/ui';
+
+core.register({ manifest });
+
+// Publish this addon's screens so other realms can show them.
+screens(core).provide(uiReference());
+
+// Resolve a key this bundle did not compile, from whoever owns it.
+provideReferences(key => screens(core).find(key));
+
+export function openCatalog(player: Player): void {
+  navigate('shop:catalog', player);
+}
+```
+
+Inside a screen, reach for the hook instead — the player is already in hand:
+
+```tsx
+function Row(): JSX.Element {
+  const { navigate, back, canGoBack } = useNavigation();
+
+  return (
+    <Panel flexDirection={'row'} gap={4}>
+      <Button onPress={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
+      <Button visible={canGoBack} onPress={() => back()}><Text>{'Back'}</Text></Button>
+    </Panel>
+  );
+}
+```
+
+## What you get
+
+**A stack that survives a frozen layout** — it holds keys, not trees. Going back means showing that screen again, drawn from its own initial state; the state of the screen being returned to went with its fibers.
+
+**Screens other addons can open** — publish your static screens once and `navigate('<you>:<screen>')` works in any realm in the world, whether or not your script runs there. The client draws it from the pack it already holds.
+
+**A press that is data** — [`<Link to>`](/docs/ui/components/Link) puts the destination on the element rather than in a closure, so the build can read where it leads and describe the screen to other addons.
+
+## Next steps
+
+- [Moving between screens](./navigate.md) — `navigate`, `back`, `replace`, `reset` and what each does to the stack
+- [`useNavigation`](./useNavigation.md) — the same calls inside a screen, bound to its player
+- [References](./references.md) — publishing your screens and resolving another addon's
+- [Navigation in the ui docs](/docs/ui/guides/navigation) — screen keys, `<Link>` and static screens

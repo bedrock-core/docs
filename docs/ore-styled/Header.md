@@ -17,12 +17,18 @@ import { Header } from '@bedrock-core/ore-styled';
 ## Usage
 
 ```tsx
-<Header
-  title={'Settings'}
-  breadcrumbs={['Server', 'Pricing']}
-  onBack={() => navigation.goBack()}
-  onClose={() => close()}
-/>
+function Settings(): JSX.Element {
+  const { back } = useNavigation();
+
+  return (
+    <Header
+      title={'Settings'}
+      breadcrumbs={['Server', 'Pricing']}
+      onBack={() => back()}
+      onClose={() => closeUi(player)}
+    />
+  );
+}
 ```
 
 Renders as `Settings > Server > Pricing`, centered between the two icon buttons.
@@ -57,7 +63,7 @@ const { key, raw } = useTranslation(i18n);
 <Header
   title={key($ => $.settings.title)}
   breadcrumbs={[raw($ => $.settings.forPlayer, { name: player.name })]}
-  onBack={() => navigation.goBack()}
+  onBack={() => back()}
 />
 ```
 
@@ -79,7 +85,7 @@ Omit `onBack` on the first screen of a stack. The slot still reserves its width,
 <Header
   title={'Config'}
   breadcrumbs={['Server', 'Economy', 'Tax rate']}
-  onBack={() => navigation.goBack()}
+  onBack={() => back()}
   onClose={() => close()}
 />
 ```
@@ -90,7 +96,7 @@ Pair it with a [`Scroll`](/docs/ui/components/Scroll) so the header stays put wh
 
 ```tsx
 <Panel flexDirection={'column'} width={'100%'} height={'100%'}>
-  <Header title={'Shop'} onBack={() => navigation.goBack()} />
+  <Header title={'Shop'} onBack={() => back()} />
   <Scroll flexGrow={1} gap={4} padding={8}>
     {items.map(item => (
       <MenuRow title={item.name} subtitle={item.price} onPress={() => buy(item)} />
