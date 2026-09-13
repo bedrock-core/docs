@@ -188,7 +188,7 @@ Lookup falls back `_<category>` → `_other`, so a category a locale never autho
 type DisplayText = string | RawMessage;
 ```
 
-`DisplayText` is **the** player-facing text union — every channel that shows a player something shares it: [`Text`](/docs/ui/components/Text) children, [`Header`](/docs/ore-styled/Header) and [`MenuRow`](/docs/ore-styled/MenuRow) labels, registry display fields, `display()` input.
+`DisplayText` is **the** player-facing text union — every channel that shows a player something shares it: [`Text`](/docs/ui/components/content/Text) children, [`Header`](/docs/ore-styled/Header) and [`MenuRow`](/docs/ore-styled/MenuRow) labels, registry display fields, `display()` input.
 
 Which shape a string is — a literal or a `.lang` key — is decided **lazily by the active resolver**, never declared:
 
@@ -408,7 +408,7 @@ The verbs above are bound to a player. Inside a component these hooks do that fo
 | [`useTranslation(i18n)`](/docs/ui/hooks/useTranslation) | Your addon's fully typed verbs (`t`, `key`, `raw`, `display`, `resolve`, `locale`) bound to the viewing player. The one you want almost always. |
 | [`useTranslationResolver()`](/docs/ui/hooks/useTranslationResolver) | The active `TranslationResolver` on its own, for components that build display strings themselves rather than calling verbs. |
 | [`TranslationContext`](/docs/ui/api/TranslationContext) | Overrides which resolver a subtree uses — for hosts resolving beyond their own bundle, or a subtree pinned to custom data. Seeded automatically at every root. |
-| [`<Text>`](/docs/ui/components/Text) | The consumer: its `children` accept `DisplayText`, so `key()` and `raw()` output goes straight in. |
+| [`<Text>`](/docs/ui/components/content/Text) | The consumer: its `children` accept `DisplayText`, so `key()` and `raw()` output goes straight in. |
 
 ## In this section
 

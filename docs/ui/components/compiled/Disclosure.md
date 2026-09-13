@@ -1,5 +1,5 @@
 ---
-sidebar_position: 14
+sidebar_position: 2
 description: "A header that folds the rows under it entirely on the client, reflowing what is below."
 ---
 # Disclosure
@@ -34,7 +34,7 @@ import { Disclosure } from '@bedrock-core/ui';
 | `headerHeight` | `number` | `20` | Height of the header box in texels |
 | `defaultOpen` | `boolean` | `true` | Whether the rows show when the screen opens |
 
-Inherits [control props](./control-props.md). The flow props — `flexDirection`, `gap`, `justifyContent`, `alignItems`, `alignContent`, `wrap` — apply to the **rows**, since that is what an author writing `gap` on a disclosure means; everything else sizes and places the fold itself.
+Inherits [control props](../control-props.md). The flow props — `flexDirection`, `gap`, `justifyContent`, `alignItems`, `alignContent`, `wrap` — apply to the **rows**, since that is what an author writing `gap` on a disclosure means; everything else sizes and places the fold itself.
 
 ## What folding costs
 

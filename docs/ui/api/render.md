@@ -22,7 +22,7 @@ function render(root: JSX.Element | FunctionComponent, player: Player, options?:
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root`<Req /> | `FunctionComponent \| JSX.Element` | — | The screen: a component or element whose root is [`<Screen>`](../components/Screen.md) or [`<Form>`](../components/Form/Form.md) |
+| `root`<Req /> | `FunctionComponent \| JSX.Element` | — | The screen: a component or element whose root is [`<Screen>`](../components/roots/Screen.md) or [`<Form>`](../components/Form/Form.md) |
 | `player`<Req /> | `Player` | — | Who sees it |
 | `options` | `RenderOptions` | `{}` | See below |
 
@@ -41,7 +41,7 @@ A screen is drawn from its layout in the pack, picked by the title the build reg
 - the [`ui-compiler` filter](/docs/filters/ui-compiler) seeing the screen — a `*.screen.tsx` under `BP/scripts`, or one of the screens a build compiles from what the addon declared
 - `@bedrock-core/generated/ui` being imported once so the build's registrations run
 
-A [`<Container>`](../components/Container.md) is refused too, with `ContainerScreenError`: a container screen belongs to an entity and is served by `createContainerScreen` instead.
+A [`<Container>`](../components/roots/Container.md) is refused too, with `ContainerScreenError`: a container screen belongs to an entity and is served by `createContainerScreen` instead.
 
 ## debug
 
@@ -67,7 +67,7 @@ export function openWelcome(player: Player): void {
 
 ## Scrolls
 
-Content renders into a single full-screen **root scroll** by default, which scrolls when it overflows. For independent scroll regions compose [`<Scroll>`](../components/Scroll.md); a form supports two of them beside the root.
+Content renders into a single full-screen **root scroll** by default, which scrolls when it overflows. For independent scroll regions compose [`<Scroll>`](../components/layout/Scroll.md); a form supports two of them beside the root.
 
 ## Notes
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 1
 description: "Display text content in your UI."
 ---
 # Text
@@ -30,14 +30,14 @@ import { Text } from '@bedrock-core/ui';
 | `wordBreak` | `'normal' \| 'break-word'` | — | When set to `'break-word'`, text automatically wraps at word boundaries (with hyphens for mid-word breaks). Width comes from the container — no explicit `maxWidth` needed |
 | `overflow` | `'ellipsis'` | — | When set, text that overflows its container is truncated with `…` |
 | `maxLines` | `number` | — | Limit rendered text to N lines. The last line is always ellipsized when content overflows |
-| `maxLength` | `number` | — | The most characters the text will ever need. In a [container screen](../guides/container-screens.md) this is what makes the text **live**: a compiled layout cannot grow, so a string that changes at runtime reserves its cells before the build knows what it will say — one container slot per character, decoded through a 64-glyph table (space, `A–Z`, `a–z`, `0–9`, `.`; anything else, formatting codes included, draws as a blank). Leave it off for text that never changes, which is baked and may use any character at all. In a server form the text is live anyway; a literal string is cut to this length so the two backends agree on what fits, while keys and `RawMessage`s the client resolves are left whole |
+| `maxLength` | `number` | — | The most characters the text will ever need. In a [container screen](../../guides/container-screens.md) this is what makes the text **live**: a compiled layout cannot grow, so a string that changes at runtime reserves its cells before the build knows what it will say — one container slot per character, decoded through a 64-glyph table (space, `A–Z`, `a–z`, `0–9`, `.`; anything else, formatting codes included, draws as a blank). Leave it off for text that never changes, which is baked and may use any character at all. In a server form the text is live anyway; a literal string is cut to this length so the two backends agree on what fits, while keys and `RawMessage`s the client resolves are left whole |
 | `shadow` | `boolean` | `false` | Draw a drop shadow behind the glyphs. Purely visual — it does not affect layout or text metrics |
 | `color` | `[number, number, number]` | — | Glyph color as RGB in `0..1`. For text a `§` code cannot color: a localization key, whose value the client resolves. Compiled screens only |
 | `textAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Where the glyphs sit in the label's box. Only shows when the box is wider than the text: give the text a `width`, or let it grow. Compiled screens only |
 | `offsetX` / `offsetY` | `number` | `0` | Fine-tune the pixel nudge of the rendered label inside its layout box. The box itself does not move |
-| `hug` | `boolean` | `false` | Draw the label at the width of its glyphs rather than in the box the layout solved, and let the engine place what follows. Only inside a [`<Panel stack>`](./Panel.md#stack) |
+| `hug` | `boolean` | `false` | Draw the label at the width of its glyphs rather than in the box the layout solved, and let the engine place what follows. Only inside a [`<Panel stack>`](../layout/Panel.md#stack) |
 
-Inherits [control props](./control-props.md).
+Inherits [control props](../control-props.md).
 
 ## Examples
 
@@ -174,7 +174,7 @@ import { createI18n } from '@bedrock-core/i18n';
 export const i18n = createI18n(bundle);
 ```
 
-Inside components, bind [the typed verbs](/docs/i18n#the-three-verbs) with [`useTranslation(i18n)`](../hooks/useTranslation.md); outside them, use `i18n.forPlayer(player)` / `i18n.forLocale(locale)`.
+Inside components, bind [the typed verbs](/docs/i18n#the-three-verbs) with [`useTranslation(i18n)`](../../hooks/useTranslation.md); outside them, use `i18n.forPlayer(player)` / `i18n.forLocale(locale)`.
 
 The bundle comes from the [i18n filter](/docs/filters/i18n); a [CLI](/docs/cli) scaffold has both wired.
 :::

@@ -1,10 +1,10 @@
 ---
-sidebar_position: 16
+sidebar_position: 2
 description: "A grid of cells over a JSON UI collection the screen does not own, inside a container screen: the player's own inventory, another container's items, or any…"
 ---
 # SlotGrid
 
-A grid of cells over a JSON UI collection the screen does not own, inside a [container screen](../guides/container-screens.md): the player's own inventory, another container's items, or any collection the engine exposes.
+A grid of cells over a JSON UI collection the screen does not own, inside a [container screen](../../guides/container-screens.md): the player's own inventory, another container's items, or any collection the engine exposes.
 
 ## Import
 
@@ -33,7 +33,7 @@ Its size is fixed by the cell: `columns × rows` cells of 18 texels each. Lay it
 | `interactive` | `boolean` | `true` | Whether the player can move items through the cells. `false` makes the grid inert — no take, no place, no drop |
 | `hideOwned` | `boolean` | `false` | Draw the cell that hides the runtime's transport item. Only relevant for the player's own inventory and hotbar, where a button's transport is auto-placed for the tick it takes the runtime to reclaim it — otherwise it would flash there |
 
-Inherits [control props](./control-props.md). Its size is fixed by the cell; use `alignSelf`, margins and the surrounding panel to place it.
+Inherits [control props](../control-props.md). Its size is fixed by the cell; use `alignSelf`, margins and the surrounding panel to place it.
 
 A container slot's take and place are one combined engine action, so there is no take-only or place-only grid: interactivity is all-or-nothing, and `false` is the way to make a grid purely a display.
 

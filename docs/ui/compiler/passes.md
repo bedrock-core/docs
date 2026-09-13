@@ -73,7 +73,7 @@ A behavior is client-only logic a primitive carries: still static, still in the 
 | `states` | which children a control draws per state |
 | `follows` | a sibling drawn while a swap beside it is on |
 
-A swap is the one mechanism a compiled screen owns outright: a toggle changes its own content with nothing reaching script. So everything built on it — a tab change, a fold, a choice between options — costs no press, no re-present and no payload. [`<Tabs>`](../components/Tabs.md) is a group of swaps whose panes are drawn; [`<Disclosure>`](../components/Disclosure.md) is one swap with a panel that follows it.
+A swap is the one mechanism a compiled screen owns outright: a toggle changes its own content with nothing reaching script. So everything built on it — a tab change, a fold, a choice between options — costs no press, no re-present and no payload. [`<Tabs>`](../components/compiled/Tabs.md) is a group of swaps whose panes are drawn; [`<Disclosure>`](../components/compiled/Disclosure.md) is one swap with a panel that follows it.
 
 Content a swap shows lives inside the look, which is what keeps a look that is not showing from being built. Two things follow. A look may **draw** a sibling of its swap, which the compile moves inside it and re-bases from the swap's own corner — for content too big to solve inside the control that switches to it, such as a tab's whole pane. And `follows` is the one read in the other direction, for the one case that cannot nest: a fold's rows have to reflow what is under them, and a stack gives a hidden child no space, which is the reflow.
 

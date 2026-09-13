@@ -37,7 +37,7 @@ Returning `false` means nothing resolved the key — a screen that did not compi
 
 ## Link
 
-[`<Link>`](../components/Link.md) is the same thing as data. The destination is a prop on the element rather than a closure, so the build can read it straight off the tree — which is what lets a screen of links be described to another addon.
+[`<Link>`](../components/controls/Link.md) is the same thing as data. The destination is a prop on the element rather than a closure, so the build can read it straight off the tree — which is what lets a screen of links be described to another addon.
 
 ```tsx
 <Link to={'shop:catalog'}><Text>{'Catalog'}</Text></Link>
@@ -88,6 +88,6 @@ A press running the owner's own handler cannot be described, so its target is `n
 ## Next steps
 
 - [State](./state.md) — what happens to a screen's state when the player moves on
-- [`<Link>`](../components/Link.md) — the component reference
+- [`<Link>`](../components/controls/Link.md) — the component reference
 - [Compiled screens](../api/compiled-screens.md) — the registry a key resolves through
 - [`@bedrock-core/navigation`](/docs/navigation) — the per-player stack

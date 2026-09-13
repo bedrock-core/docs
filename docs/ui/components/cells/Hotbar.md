@@ -1,10 +1,10 @@
 ---
-sidebar_position: 18
+sidebar_position: 4
 description: "The player's hotbar — the 9 × 1 grid — inside a container screen."
 ---
 # Hotbar
 
-The player's hotbar — the 9 × 1 grid — inside a [container screen](../guides/container-screens.md).
+The player's hotbar — the 9 × 1 grid — inside a [container screen](../../guides/container-screens.md).
 
 ## Import
 
@@ -27,7 +27,7 @@ The same redrawn grid as [`PlayerInventory`](./PlayerInventory.md), one row tall
 
 ## Props
 
-Inherits [control props](./control-props.md). Its size is fixed by the engine's cell; use `alignSelf`, margins and the surrounding panel to place it.
+Inherits [control props](../control-props.md). Its size is fixed by the engine's cell; use `alignSelf`, margins and the surrounding panel to place it.
 
 ## Notes
 

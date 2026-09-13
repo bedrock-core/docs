@@ -1,10 +1,10 @@
 ---
-sidebar_position: 15
+sidebar_position: 1
 description: "A real container cell inside a container screen: the player moves items through it, and the screen sees what arrives."
 ---
 # Slot
 
-A real container cell inside a [container screen](../guides/container-screens.md): the player moves items through it, and the screen sees what arrives.
+A real container cell inside a [container screen](../../guides/container-screens.md): the player moves items through it, and the screen sees what arrives.
 
 ## Import
 
@@ -36,7 +36,7 @@ Handlers are props, like everywhere else in this library. They are matched to th
 | `collection` | `string` | — | A JSON UI collection to read instead of the screen's own — `inventory_items`, `hotbar_items`, or any collection the engine exposes. Given one, the slot is **foreign**: it draws `collection[index]`, takes no slot of the screen's own container, and the runtime never polls it |
 | `index` | `number` | — | The cell within `collection` to draw. Required, and only legal, alongside `collection`; an integer `>= 0` |
 
-Inherits [control props](./control-props.md). Leave `width` and `height` alone — the cell is 18 × 18 whatever the layout asks for — and use margins and `alignSelf` to place it.
+Inherits [control props](../control-props.md). Leave `width` and `height` alone — the cell is 18 × 18 whatever the layout asks for — and use margins and `alignSelf` to place it.
 
 ### Roles
 

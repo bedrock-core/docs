@@ -1,10 +1,10 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 description: "The root of a container screen: names the entity the screen opens from, and is the screen's own panel."
 ---
 # Container
 
-The root of a [container screen](../guides/container-screens.md): names the entity the screen opens from, and is the screen's own panel.
+The root of a [container screen](../../guides/container-screens.md): names the entity the screen opens from, and is the screen's own panel.
 
 ## Import
 
@@ -27,7 +27,7 @@ export default function Furnace() {
 }
 ```
 
-Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
+Its presence decides the backend, the way [`<Form>`](../Form/Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
 
 ## Props
 
@@ -36,9 +36,9 @@ Its presence decides the backend, the way [`<Form>`](./Form/Form.md) makes a scr
 | `entity`<Req /> | `string` | — | Type of the entity the screen opens from, e.g. `'core:furnace'`. The build sizes that entity's `minecraft:inventory` and stamps it with the screen's layout key; the runtime serves the screen when a player interacts with it. The entity must exist in the behavior pack, or the build fails |
 | `onOpen` | `(event: ContainerEvent) => void` | `undefined` | Ran when a player opens the screen, and again for every further viewer. `event.player` is who opened it and `event.host` the entity it opened. One layout serves everyone looking, so this is where a screen learns who is there — keep what it needs in state |
 | `onClose` | `(event: ContainerEvent) => void` | `undefined` | Ran when a player closes the screen, or leaves the world with it open. `event.player` is who left, `event.host` the entity it belonged to |
-| `children` | `JSX.Node` | — | The screen. Anything a form can hold except the [form-only components](../guides/container-screens.md#not-supported), plus [`Slot`](./Slot.md), [`PlayerInventory`](./PlayerInventory.md) and [`Hotbar`](./Hotbar.md) |
+| `children` | `JSX.Node` | — | The screen. Anything a form can hold except the [form-only components](../../guides/container-screens.md#not-supported), plus [`Slot`](../cells/Slot.md), [`PlayerInventory`](../cells/PlayerInventory.md) and [`Hotbar`](../cells/Hotbar.md) |
 
-Inherits [control props](./control-props.md). It is the screen's root panel, so `background` draws the frame and `padding` / `gap` / `flexDirection` lay the children out — the same way they would on a `Panel`.
+Inherits [control props](../control-props.md). It is the screen's root panel, so `background` draws the frame and `padding` / `gap` / `flexDirection` lay the children out — the same way they would on a `Panel`.
 
 ## Rules
 

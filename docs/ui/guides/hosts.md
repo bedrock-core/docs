@@ -8,9 +8,9 @@ A host is one Minecraft screen the library draws on, plus the transport that scr
 
 | Root | Host | Owner | Served by | What an interaction is |
 | --- | --- | --- | --- | --- |
-| [`<Screen>`](../components/Screen.md) | `form-action` | the player | `render(Screen, player)` | a form entry the engine reports back by index |
+| [`<Screen>`](../components/roots/Screen.md) | `form-action` | the player | `render(Screen, player)` | a form entry the engine reports back by index |
 | [`<Form>`](../components/Form/Form.md) | `form-modal` | the player | `render(Form, player)` | a native field the engine owns, returned in one answer on submit |
-| [`<Container entity>`](../components/Container.md) | `chest` | the entity | `createContainerScreen(Screen)` | an item moving through a slot of the entity's own container |
+| [`<Container entity>`](../components/roots/Container.md) | `chest` | the entity | `createContainerScreen(Screen)` | an item moving through a slot of the entity's own container |
 
 All three lay out against the same 320 × 210 canvas. A tree that starts with anything else throws `ScreenRootError` listing the roots.
 
@@ -38,7 +38,7 @@ That is also what makes the refusals precise. The same `<Form.Slider>` is "put i
 
 ## Writing a fragment for a host you do not own
 
-A root names the host, so anything under it already knows what it becomes. [`<Expect host>`](../components/Expect.md) is for the other case: a component library that renders *into* a screen it does not own — a set of fields meant for a modal, exported as a fragment for an addon to place.
+A root names the host, so anything under it already knows what it becomes. [`<Expect host>`](../components/cross-pack/Expect.md) is for the other case: a component library that renders *into* a screen it does not own — a set of fields meant for a modal, exported as a fragment for an addon to place.
 
 ```tsx
 import { Expect, Form } from '@bedrock-core/ui';

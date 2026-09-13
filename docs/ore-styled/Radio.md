@@ -37,8 +37,8 @@ The options are an array, not children — this layer owns them and maps each en
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
 | [`<Form>`](/docs/ui/components/Form) | the engine's own [inline select](/docs/ui/components/Form/FormInlineSelect) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
-| [`<Screen>`](/docs/ui/components/Screen) | a button per row | `onChange`, with the chosen **value** |
-| [`<Container>`](/docs/ui/components/Container) | a row whose press is an item taken and put back | `onChange`, with the chosen **value** |
+| [`<Screen>`](/docs/ui/components/roots/Screen) | a button per row | `onChange`, with the chosen **value** |
+| [`<Container>`](/docs/ui/components/roots/Container) | a row whose press is an item taken and put back | `onChange`, with the chosen **value** |
 
 So `name` is the modal's prop, and `value` / `onChange` only do anything where a press reaches script. Note the asymmetry: the modal answers with an index, a press answers with the value.
 

@@ -4,7 +4,7 @@ description: "Themed container that wraps the Panel primitive with a Minecraft c
 ---
 # Card
 
-Themed container that wraps the [`Panel`](/docs/ui/components/Panel) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Six visual variants cover the flat and raised surfaces in default, light, and dark tones.
+Themed container that wraps the [`Panel`](/docs/ui/components/layout/Panel) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Six visual variants cover the flat and raised surfaces in default, light, and dark tones.
 
 ![Card](/img/ore-styled/Card.png)
 

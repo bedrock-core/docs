@@ -4,7 +4,7 @@ description: "Themed button with seven visual variants."
 ---
 # Button
 
-Themed button with seven visual variants. Built on top of the [`Button`](/docs/ui/components/Button) primitive and the [theme](./theme.md) token map.
+Themed button with seven visual variants. Built on top of the [`Button`](/docs/ui/components/controls/Button) primitive and the [theme](./theme.md) token map.
 
 ![Button](/img/ore-styled/Button.png)
 
@@ -31,7 +31,7 @@ When `children` is a string the button automatically wraps it in a `Text` styled
 | `variant` | `'hero' \| 'primary' \| 'secondary' \| 'contrast' \| 'danger' \| 'realm' \| 'transparent'` | `'primary'` | The texture set and text style. `hero` is the primary texture with the `minecraftTen` heading font; `transparent` has no shell, for icon-only or inline actions |
 | `children` | `string \| JSX.Node` | — | A string is auto-wrapped in a themed `Text`; any other node is rendered as-is |
 | `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Runs on a press. Use `to` instead when the press opens another screen |
-| `to` | `ScreenKey` | — | The screen this button opens, `<addon>:<name>`. A button with one is a [`<Link>`](/docs/ui/components/Link) |
+| `to` | `ScreenKey` | — | The screen this button opens, `<addon>:<name>`. A button with one is a [`<Link>`](/docs/ui/components/controls/Link) |
 | `replace` | `boolean` | `false` | With `to`: take the place of the screen this button is on rather than stacking over it |
 | `back` | `boolean` | `false` | The way back, in place of `to` — the player's own stack decides where |
 | `enabled` | `boolean` | `true` | `false` draws the disabled texture, ignores the press, and applies the disabled text color to string children |

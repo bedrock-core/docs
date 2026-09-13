@@ -1,0 +1,11 @@
+{
+  "position": 7,
+  "label": "Container cells",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Container cells",
+    "description": "Item cells. Only on a container screen."
+  }
+}

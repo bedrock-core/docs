@@ -109,7 +109,7 @@ Omit `onBack` on the first screen of a stack. The slot still reserves its width,
 
 ### As a fixed screen header
 
-Pair it with a [`Scroll`](/docs/ui/components/Scroll) so the header stays put while the content moves.
+Pair it with a [`Scroll`](/docs/ui/components/layout/Scroll) so the header stays put while the content moves.
 
 ```tsx
 <Panel flexDirection={'column'} width={'100%'} height={'100%'}>

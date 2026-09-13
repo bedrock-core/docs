@@ -32,7 +32,7 @@ Which host a screen compiles for is decided by its root element, and there is no
 
 **A drawable document with no host behind it** — the face pass produces a complete screen on its own. That is what the static rules run over, what the [gallery](/docs/filters/ui-compiler#the-gallery) shows, and why nothing hidden can evaluate a binding that is not there.
 
-**A frozen shape** — a compiled screen cannot add or drop a control at runtime. Everything that varies says so in the source: [`<List max>`](../components/List.md) for a count, [`maxLength`](../components/Text.md) for a string, `visible` for a branch. A render that drifts from what the build measured is reported by `render(screen, player, { debug: true })` rather than silently drawn wrong.
+**A frozen shape** — a compiled screen cannot add or drop a control at runtime. Everything that varies says so in the source: [`<List max>`](../components/compiled/List.md) for a count, [`maxLength`](../components/content/Text.md) for a string, `visible` for a branch. A render that drifts from what the build measured is reported by `render(screen, player, { debug: true })` rather than silently drawn wrong.
 
 ## Next steps
 

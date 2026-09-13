@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 description: "The root of an action form: buttons, decoration and the lists and scrolls between them, shown to one player with render()."
 ---
 # Screen
 
-The root of an action form: buttons, decoration and the lists and scrolls between them, shown to one player with [`render()`](../api/render.md).
+The root of an action form: buttons, decoration and the lists and scrolls between them, shown to one player with [`render()`](../../api/render.md).
 
 ## Import
 
@@ -29,7 +29,7 @@ export default function Players(): JSX.Element {
 }
 ```
 
-A screen's root names its [host](../guides/hosts.md), and there is no default. `<Screen>` makes it an action form the way [`<Form>`](./Form/Form.md) makes it a native modal and [`<Container>`](./Container.md) a container screen. It has no box of its own: its children are laid out against the form canvas exactly as they would be at the top of the tree.
+A screen's root names its [host](../../guides/hosts.md), and there is no default. `<Screen>` makes it an action form the way [`<Form>`](../Form/Form.md) makes it a native modal and [`<Container>`](./Container.md) a container screen. It has no box of its own: its children are laid out against the form canvas exactly as they would be at the top of the tree.
 
 ## Props
 
@@ -38,11 +38,11 @@ A screen's root names its [host](../guides/hosts.md), and there is no default. `
 | `static` | `boolean` | `false` | Declare that the screen carries no live value and no press of its own |
 | `children` | `JSX.Node` | — | The screen's content |
 
-`Screen` takes no [control props](./control-props.md): it is a marker, not a panel. Put a `Panel` inside it for a background, padding or a direction.
+`Screen` takes no [control props](../control-props.md): it is a marker, not a panel. Put a `Panel` inside it for a background, padding or a direction.
 
 ## static
 
-A screen is static when every string it shows is baked and every press is a [`<Link>`](./Link.md) or the way out. Such a screen needs nothing at runtime — the build already knows its title, the value each entry is shown with, and where each press leads — so the addon ships that table instead of the component, and any realm can show it. See [static screens](../guides/navigation.md#static-screens).
+A screen is static when every string it shows is baked and every press is a [`<Link>`](../controls/Link.md) or the way out. Such a screen needs nothing at runtime — the build already knows its title, the value each entry is shown with, and where each press leads — so the addon ships that table instead of the component, and any realm can show it. See [static screens](../../guides/navigation.md#static-screens).
 
 Setting `static` both asks for that and **proves** it. A qualifying screen is detected either way; declaring it fails the build the moment the screen starts carrying live text, a carried `visible`, or a handler the build cannot read.
 
@@ -65,7 +65,7 @@ The build and `render()` enforce these, with a message naming the fix.
 
 ### An embedded page
 
-A page drawn into an area another screen leaves is still a screen of its own, so it starts with `<Screen>`; the [`<Embed>`](./Embed.md) inside it is what fills the area.
+A page drawn into an area another screen leaves is still a screen of its own, so it starts with `<Screen>`; the [`<Embed>`](../cross-pack/Embed.md) inside it is what fills the area.
 
 ```tsx
 export default function FrameworkPage(): JSX.Element {
@@ -79,4 +79,4 @@ export default function FrameworkPage(): JSX.Element {
 
 ## Notes
 
-A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) compiles, and the filename without the suffix is the screen's [key](../guides/navigation.md#screen-keys).
+A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) compiles, and the filename without the suffix is the screen's [key](../../guides/navigation.md#screen-keys).

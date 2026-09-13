@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
 description: "A flex container for grouping other elements, optionally a stack that reflows hidden children."
 ---
 # Panel
@@ -27,7 +27,7 @@ import { Panel } from '@bedrock-core/ui';
 | `stack` | `boolean` | `false` | Draw the column as a stack, so a hidden child takes no space and the children after it move up |
 | `children` | `JSX.Node` | — | What the panel contains |
 
-Inherits [control props](./control-props.md), including the full set of flex container properties (`flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding`, …) and flex item properties (`flex`, `flexGrow`, `flexShrink`, …).
+Inherits [control props](../control-props.md), including the full set of flex container properties (`flexDirection`, `justifyContent`, `alignItems`, `gap`, `padding`, …) and flex item properties (`flex`, `flexGrow`, `flexShrink`, …).
 
 ## stack
 
@@ -46,7 +46,7 @@ A stack is the one thing the engine reflows on its own, which is what makes the 
 
 The cost is a background. A stack has nowhere to draw one, so put it on a panel around this one — which is what the example above does.
 
-[`<List>`](./List.md) and [`<Disclosure>`](./Disclosure.md) are built on the same reflow.
+[`<List>`](../compiled/List.md) and [`<Disclosure>`](../compiled/Disclosure.md) are built on the same reflow.
 
 ## Examples
 

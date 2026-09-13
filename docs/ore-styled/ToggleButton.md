@@ -38,8 +38,8 @@ The same choice a [`Radio`](./Radio.md) makes, in the shape a segmented control 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
 | [`<Form>`](/docs/ui/components/Form) | the engine's own [inline select](/docs/ui/components/Form/FormInlineSelect) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
-| [`<Screen>`](/docs/ui/components/Screen) | a button per segment | `onChange`, with the chosen **value** |
-| [`<Container>`](/docs/ui/components/Container) | a segment whose press is an item taken and put back | `onChange`, with the chosen **value** |
+| [`<Screen>`](/docs/ui/components/roots/Screen) | a button per segment | `onChange`, with the chosen **value** |
+| [`<Container>`](/docs/ui/components/roots/Container) | a segment whose press is an item taken and put back | `onChange`, with the chosen **value** |
 
 The segments are laid out by the library's own flex system either way — equal widths, and a one-pixel overlap so adjacent borders fuse — so the geometry belongs to this layer and no JSON UI edit follows a change here.
 

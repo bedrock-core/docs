@@ -1,5 +1,5 @@
 ---
-sidebar_position: 13
+sidebar_position: 1
 description: "Several panes on one screen, switched on the client with nothing reaching script."
 ---
 # Tabs
@@ -40,7 +40,7 @@ import { Tabs } from '@bedrock-core/ui';
 | `header`<Req /> | `JSX.Element` | — | The header while this tab is not the chosen one |
 | `headerSelected` | `JSX.Element` | `header` | The header while it is |
 
-Both inherit [control props](./control-props.md).
+Both inherit [control props](../control-props.md).
 
 ## What it costs
 
@@ -50,7 +50,7 @@ What you pay instead is pack size. Every tab's content is in the tree at once, s
 
 ## When it is a screen instead
 
-What you give up is exactly what "the server never hears it" means: no handler runs on a switch, and nothing outside the group can know which tab is open. A tab whose content depends on the switch is a screen change, not a tab — use [`<Link>`](./Link.md) or `navigate()`.
+What you give up is exactly what "the server never hears it" means: no handler runs on a switch, and nothing outside the group can know which tab is open. A tab whose content depends on the switch is a screen change, not a tab — use [`<Link>`](../controls/Link.md) or `navigate()`.
 
 ## Notes
 

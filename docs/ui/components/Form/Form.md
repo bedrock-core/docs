@@ -57,7 +57,7 @@ These are enforced at build time — violating them throws a `ModalFormError`, n
 
 - Exactly **one** `Form.Button type="submit"` is required. The native modal has no built-in submit control.
 - At most **one** `Form.Button type="exit"` is allowed.
-- A `Form` is a root, the way [`Screen`](../Screen.md) and [`Container`](../Container.md) are: it sits at the top of the tree, and no root sits inside another. A `Form` inside a `Form` or a `Screen` is refused as a root.
+- A `Form` is a root, the way [`Screen`](../roots/Screen.md) and [`Container`](../roots/Container.md) are: it sits at the top of the tree, and no root sits inside another. A `Form` inside a `Form` or a `Screen` is refused as a root.
 - A plain `Button` cannot appear inside a `Form` — only `Form.*` field members and decorative nodes are allowed. If you need a `Screen` with regular buttons, use a separate screen (switch via navigation) instead of nesting form kinds.
 
 ## Notes

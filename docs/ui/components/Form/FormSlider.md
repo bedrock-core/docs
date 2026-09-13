@@ -40,7 +40,7 @@ import { Form } from '@bedrock-core/ui';
 | `trackHeight` | `number` | `10` | Height (px) of the track + progress fill. The track always spans the full control width and is vertically centered |
 | `thumbWidth` / `thumbHeight` | `number` | `16` | Size (px) of the draggable thumb. The interactive hitbox is a fixed 16×16, so keep the visual thumb at the default size unless you've confirmed the mismatch is acceptable |
 
-The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
+The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../controls/Button.md).
 
 Inherits [control props](../control-props.md). Defaults to `width: '100%'` when no explicit sizing is given.
 

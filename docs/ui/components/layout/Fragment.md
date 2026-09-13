@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 3
 description: "A logical grouping component that doesn't render any visual container."
 ---
 # Fragment

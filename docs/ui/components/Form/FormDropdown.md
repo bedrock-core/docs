@@ -43,7 +43,7 @@ import { Form } from '@bedrock-core/ui';
 | `currentFont` / `currentScale` | `LabelFont` / `number` | `'mojangles'` / `1.0` | Font and scale for the closed-box current-value label |
 | `currentInsetX` / `currentInsetY` | `number` | `8` / vertically centered | Position offset (px) of the current-value label from the closed box's left-middle frame |
 
-The closed box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md).
+The closed box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../controls/Button.md).
 
 Inherits [control props](../control-props.md).
 

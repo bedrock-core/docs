@@ -37,7 +37,7 @@ import { Form } from '@bedrock-core/ui';
 | `textOffsetX` / `textOffsetY` | `number` | `8` / vertically centered | Typed-value position offset (px) from the box's left-middle frame |
 | `placeholderOffsetX` / `placeholderOffsetY` | `number` | `8` / vertically centered | Placeholder position offset (px), same frame as the typed value |
 
-The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md); `backgroundPressed` doubles as the focused-field state.
+The box uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../controls/Button.md); `backgroundPressed` doubles as the focused-field state.
 
 Inherits [control props](../control-props.md).
 

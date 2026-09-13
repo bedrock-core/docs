@@ -1,0 +1,11 @@
+{
+  "position": 6,
+  "label": "Compiled",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Compiled",
+    "description": "What only exists because the screen is compiled: client-side switches, and a row count on a frozen shape."
+  }
+}

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 19
+sidebar_position: 1
 description: "States which screen a fragment is written for, and fails the build by name when it is drawn on another."
 ---
 # Expect
@@ -39,4 +39,4 @@ Written at the top of that fragment, it says what the library assumed. An addon 
 
 ## Notes
 
-The host ids are the same three [Hosts](../guides/hosts.md) names a root resolves to.
+The host ids are the same three [Hosts](../../guides/hosts.md) names a root resolves to.

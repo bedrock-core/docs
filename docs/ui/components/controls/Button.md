@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 1
 description: "A press, textured per state, with an onPress handler."
 ---
 # Button
@@ -32,15 +32,15 @@ Buttons are sized intrinsically from their content plus the button's built-in pa
 | `backgroundPressed` | `string` | `background` | Texture drawn while the button is being pressed |
 | `backgroundLocked` | `string` | `background` | Texture drawn while the button is disabled |
 
-Inherits [control props](./control-props.md). Every state texture falls back to `background`, and `background` falls back to the blank-canvas placeholder, so one texture styles all four states.
+Inherits [control props](../control-props.md). Every state texture falls back to `background`, and `background` falls back to the blank-canvas placeholder, so one texture styles all four states.
 
 This is the primitive [`@bedrock-core/ore-styled`'s `Button`](/docs/ore-styled/Button) is built on.
 
 ## What a press is
 
-`event.player` is who pressed. On a [container screen](../guides/container-screens.md) `event.host` is the entity that owns the screen; on a form there is none. Every handler in the library takes one event object — see [Handler events](../guides/handler-events.md).
+`event.player` is who pressed. On a [container screen](../../guides/container-screens.md) `event.host` is the entity that owns the screen; on a form there is none. Every handler in the library takes one event object — see [Handler events](../../guides/handler-events.md).
 
-What the press *costs* depends on the [host](../guides/hosts.md): a form entry the engine reports back by index on an action form, an item taken and put straight back on a container screen. A native modal has no generic button at all — use [`<Form.Button>`](./Form/FormButton.md) there.
+What the press *costs* depends on the [host](../../guides/hosts.md): a form entry the engine reports back by index on an action form, an item taken and put straight back on a container screen. A native modal has no generic button at all — use [`<Form.Button>`](../Form/FormButton.md) there.
 
 When the destination is another screen rather than a handler, reach for [`<Link>`](./Link.md): its target is data the build can read, which is what makes the screen describable to other addons.
 
@@ -107,6 +107,6 @@ function ToggleButton(): JSX.Element {
 
 Let buttons size to their content rather than hardcoding `width` and `height`, unless the layout needs a specific footprint. Inside a row, `flex={1}` on each button distributes the space evenly.
 
-Disable a button when its action is unavailable rather than hiding it: a hidden control leaves its box behind on a compiled screen unless the row is a [`<Panel stack>`](./Panel.md#stack).
+Disable a button when its action is unavailable rather than hiding it: a hidden control leaves its box behind on a compiled screen unless the row is a [`<Panel stack>`](../layout/Panel.md#stack).
 
-An `onPress` that returns a promise keeps the press's transaction open until it settles, which is what makes an async handoff flash-free. See [State](../guides/state.md#one-ui-slot-per-player).
+An `onPress` that returns a promise keeps the press's transaction open until it settles, which is what makes an async handoff flash-free. See [State](../../guides/state.md#one-ui-slot-per-player).

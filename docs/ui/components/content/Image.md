@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 2
 description: "A texture from a resource pack, baked into the screen or carried at runtime."
 ---
 # Image
@@ -27,7 +27,7 @@ Unlike `Text` and `Button`, `Image` is **not** intrinsically sized — give it `
 | `texture` | `string` | `'textures/ui/unstyled'` | Path to the texture in the resource pack, without the file extension |
 | `live` | `boolean` | `false` | Carry the texture path at runtime rather than baking it |
 
-Inherits [control props](./control-props.md). The default is the blank-canvas placeholder, so an `Image` with no `texture` draws a plain box.
+Inherits [control props](../control-props.md). The default is the blank-canvas placeholder, so an `Image` with no `texture` draws a plain box.
 
 ## live
 

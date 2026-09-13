@@ -35,7 +35,7 @@ import { Form } from '@bedrock-core/ui';
 | `checkedHover` | `string` | the resolved checked base texture | Checked hover texture |
 | `checkedLocked` | `string` | the resolved checked base texture | Checked texture when `enabled={false}` |
 
-The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../Button.md) (the toggle RP has no pressed state to show `backgroundPressed`, but the prop is still accepted).
+The unchecked (off) side uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](../controls/Button.md) (the toggle RP has no pressed state to show `backgroundPressed`, but the prop is still accepted).
 
 Inherits [control props](../control-props.md) for layout and visibility — geometry is computed by the layout phase like any other component.
 

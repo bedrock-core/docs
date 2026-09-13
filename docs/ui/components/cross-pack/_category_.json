@@ -1,0 +1,11 @@
+{
+  "position": 9,
+  "label": "Cross-pack",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Cross-pack",
+    "description": "Drawing into, or being drawn into, another addon's screen."
+  }
+}

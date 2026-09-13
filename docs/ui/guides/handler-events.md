@@ -24,6 +24,6 @@ Every handler in the library takes **one event object**, never a positional argu
 
 ## Next steps
 
-- [`Button`](../components/Button.md) — `onPress` and the press event
+- [`Button`](../components/controls/Button.md) — `onPress` and the press event
 - [`Form`](../components/Form/Form.md) — `onSubmit` and `onCancel`
 - [Container screens](./container-screens.md) — where `host` comes from

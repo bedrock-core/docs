@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 3
 description: "Draw a full-screen texture behind everything in a form."
 ---
 # Background
@@ -23,7 +23,7 @@ import { Background } from '@bedrock-core/ui';
 
 `Background` occupies no layout space — it takes no width/height, participates in no flexbox flow, and is invisible to its siblings. It simply renders the given texture across the whole screen, behind all other form content.
 
-Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](./Form/Form.md) modal.
+Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](../Form/Form.md) modal.
 
 :::note Only the first `<Background>` wins
 If a tree contains more than one `<Background>`, only the first is rendered; the rest are ignored.
@@ -83,4 +83,4 @@ function Menu() {
 
 - The texture path is capped at 80 UTF-8 bytes and cannot contain `;`.
 - Only the first `<Background>` in a tree is drawn.
-- The texture always covers the entire screen — there is no partial or positioned mode. For a bounded background, use a [`<Panel>`](./Panel.md) or [`<Image>`](./Image.md) instead.
+- The texture always covers the entire screen — there is no partial or positioned mode. For a bounded background, use a [`<Panel>`](../layout/Panel.md) or [`<Image>`](./Image.md) instead.

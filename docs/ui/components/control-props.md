@@ -1,5 +1,5 @@
 ---
-sidebar_position: 21
+sidebar_position: 10
 description: "Common layout and styling properties shared by all components."
 ---
 # Control props

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 2
 description: "A button whose destination is data, so the build can read where it leads."
 ---
 # Link
@@ -29,11 +29,11 @@ import { Link } from '@bedrock-core/ui';
 | `params` | `Record<string, unknown>` | — | Props the target screen is rendered with; they fill what the layout already reserved |
 | `replace` | `boolean` | `false` | Take the place of this screen rather than stacking over it |
 
-Inherits every prop of [`<Button>`](./Button.md) except `onPress`, and through it [control props](./control-props.md).
+Inherits every prop of [`<Button>`](./Button.md) except `onPress`, and through it [control props](../control-props.md).
 
 ## Why not a button that renders
 
-The difference from a `<Button onPress={() => render(Other, player)}>` is that the destination is **data**: a key on the element, which the build reads straight off the tree. That is what lets a screen of links be described to another addon — its [reference](../guides/navigation.md#static-screens) is the title, the entry values and one target per entry — and shown by a realm running none of the owner's script.
+The difference from a `<Button onPress={() => render(Other, player)}>` is that the destination is **data**: a key on the element, which the build reads straight off the tree. That is what lets a screen of links be described to another addon — its [reference](../../guides/navigation.md#static-screens) is the title, the entry values and one target per entry — and shown by a realm running none of the owner's script.
 
 A press resolves through the installed navigator, so where it leads is decided per realm: this bundle's own screen when it has one, a replicated reference otherwise.
 

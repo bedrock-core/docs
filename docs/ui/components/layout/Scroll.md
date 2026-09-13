@@ -1,5 +1,5 @@
 ---
-sidebar_position: 11
+sidebar_position: 2
 description: "One independent vertical scroll region, laid out in the parent flow like a panel."
 ---
 
@@ -24,7 +24,7 @@ scroll, so simple UIs need none.
 | --- | --- | --- | --- |
 | `children` | `JSX.Node` | — | The content laid out inside this scroll's viewport |
 
-Inherits [control props](./control-props.md) and they size and
+Inherits [control props](../control-props.md) and they size and
 position its **viewport** in the parent's flex flow, exactly like a `<Panel>`. An un-sized,
 non-absolute scroll defaults to `flexGrow: 1` so bare `<Scroll>`s share the parent's space;
 `width`/`height` override that, and `position={'absolute'}` + `top`/`left` take it out of the flow.

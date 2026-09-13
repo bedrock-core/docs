@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20
+sidebar_position: 2
 description: "A screen one pack draws into another pack's screen, over an area the host reserves."
 ---
 # Embed
@@ -36,7 +36,7 @@ Neither side renders the other. The one contract is the host's frame, the area's
 | `frame`<Req /> | `{ width: number; height: number }` | — | The canvas the host bakes its own screen against |
 | `area`<Req /> | `{ x: number; y: number; width: number; height: number }` | — | The area of that frame this component fills |
 
-Inherits [control props](./control-props.md) except `width` and `height`, which come from `area`.
+Inherits [control props](../control-props.md) except `width` and `height`, which come from `area`.
 
 ## The host side
 

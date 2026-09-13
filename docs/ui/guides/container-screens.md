@@ -46,7 +46,7 @@ export default function Furnace() {
 }
 ```
 
-Three things make it a container screen: the file name ends in `.screen.tsx` (that is how the filter finds it), the module default-exports the component, and the root is a [`<Container>`](../components/Container.md) naming the entity it opens from. Everything else is the component set you already know.
+Three things make it a container screen: the file name ends in `.screen.tsx` (that is how the filter finds it), the module default-exports the component, and the root is a [`<Container>`](../components/roots/Container.md) naming the entity it opens from. Everything else is the component set you already know.
 
 The build runs the component once to decide the **shape**; the runtime runs it again, per viewer, to decide the **values**. The two walks line up position for position because a compiled screen cannot change shape — so nothing is named, nothing is registered, and there is no second file describing the same screen.
 
@@ -88,15 +88,15 @@ The same set as a form, with four additions and a few container-specific behavio
 
 | Component | In a container screen |
 | --- | --- |
-| [`Container`](../components/Container.md) | The root. Names the entity, and is the screen's own panel: `padding`, `gap` and `background` apply. |
-| [`Slot`](../components/Slot.md) | A container cell of the screen's own container. `role` is `both` (storage), `input` (in only) or `output` (out only), enforced server-side; `interactive={false}` locks it inert. `onInsert(event)` and `onRemove(event)` fire after a move, with `event.stack`, `event.player` and `event.host`. Given a `collection`, it instead reads a foreign cell — see [Rendering other containers](#rendering-other-containers). |
-| [`SlotGrid`](../components/SlotGrid.md) | A grid of cells over a foreign collection — any collection the engine exposes. Not part of the screen's own container. |
-| [`PlayerInventory`](../components/PlayerInventory.md), [`Hotbar`](../components/Hotbar.md) | The player's own grids — thin `SlotGrid` wrappers over `inventory_items` / `hotbar_items`. Placed by the layout engine. Not free: a screen owns the whole chest screen, so leave them out and they are gone. |
-| [`Text`](../components/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
-| [`Image`](../components/Image.md) | A texture, baked into the layout. |
-| [`Scroll`](../components/Scroll.md) | A region laid out at its own height that the client scrolls. Not inside another scroll. |
-| [`Button`](../components/Button.md) | A container slot with the item hidden: a press reaches script only as an item move, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their color, which is why an [ore-styled](/docs/ore-styled) button's caption keeps its enabled color while its background swaps to the disabled one. |
-| [`Background`](../components/Background.md) | A full-screen texture behind everything, as in a form. |
+| [`Container`](../components/roots/Container.md) | The root. Names the entity, and is the screen's own panel: `padding`, `gap` and `background` apply. |
+| [`Slot`](../components/cells/Slot.md) | A container cell of the screen's own container. `role` is `both` (storage), `input` (in only) or `output` (out only), enforced server-side; `interactive={false}` locks it inert. `onInsert(event)` and `onRemove(event)` fire after a move, with `event.stack`, `event.player` and `event.host`. Given a `collection`, it instead reads a foreign cell — see [Rendering other containers](#rendering-other-containers). |
+| [`SlotGrid`](../components/cells/SlotGrid.md) | A grid of cells over a foreign collection — any collection the engine exposes. Not part of the screen's own container. |
+| [`PlayerInventory`](../components/cells/PlayerInventory.md), [`Hotbar`](../components/cells/Hotbar.md) | The player's own grids — thin `SlotGrid` wrappers over `inventory_items` / `hotbar_items`. Placed by the layout engine. Not free: a screen owns the whole chest screen, so leave them out and they are gone. |
+| [`Text`](../components/content/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
+| [`Image`](../components/content/Image.md) | A texture, baked into the layout. |
+| [`Scroll`](../components/layout/Scroll.md) | A region laid out at its own height that the client scrolls. Not inside another scroll. |
+| [`Button`](../components/controls/Button.md) | A container slot with the item hidden: a press reaches script only as an item move, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their color, which is why an [ore-styled](/docs/ore-styled) button's caption keeps its enabled color while its background swaps to the disabled one. |
+| [`Background`](../components/content/Background.md) | A full-screen texture behind everything, as in a form. |
 | `Panel`, `Fragment`, contexts | Exactly as in a form. |
 
 [ore-styled](/docs/ore-styled) components compose the same way: the `Button` above is ore-styled's, with `enabled` driving its disabled look.
@@ -158,14 +158,14 @@ Plus one for the marker slot the router reads. A screen with three slots, two bu
 ## Not supported
 
 - [`<Form>`](../components/Form/Form.md) and every `Form.*` field: a container has no native form. The build rejects them by name.
-- A [`<Scroll>`](../components/Scroll.md) inside a `<Scroll>`: a region is laid out as one flat box. Sibling scrolls are fine, and there is no limit on how many.
+- A [`<Scroll>`](../components/layout/Scroll.md) inside a `<Scroll>`: a region is laid out as one flat box. Sibling scrolls are fine, and there is no limit on how many.
 - A `<Container>` inside a `<Container>`. One entity opens one screen.
 - Live `Text` inside a `Button`.
 - `usePlayer`. (`useExit` works, as the close button — see above.)
 
 ## Next steps
 
-- [`<Container>`](../components/Container.md) — the root, its entity and its viewer handlers
-- [`<Slot>`](../components/Slot.md) — a cell, its role, and what a foreign collection changes
+- [`<Container>`](../components/roots/Container.md) — the root, its entity and its viewer handlers
+- [`<Slot>`](../components/cells/Slot.md) — a cell, its role, and what a foreign collection changes
 - [Hosts](./hosts.md) — what the chest can carry that a form cannot, and the reverse
 - [`ui-compiler` filter](/docs/filters/ui-compiler) — how a screen is discovered, what the build generates, and the entity it stamps

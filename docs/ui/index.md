@@ -18,7 +18,7 @@ description: "@bedrock-core/ui writes Minecraft Bedrock screens in JSX and compi
 
 A screen is a component. You write it with JSX, flexbox props and hooks, and the build [compiles](./compiler/index.md) it once into the JSON UI that ships in the pack. At runtime nothing sends a layout: showing a screen sends its title and the values that changed, and the client draws it from the pack it already holds.
 
-Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/Screen.md) is an action form, [`<Form>`](./components/Form/Form.md) a native modal, [`<Container>`](./components/Container.md) a custom entity's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
+Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/roots/Screen.md) is an action form, [`<Form>`](./components/Form/Form.md) a native modal, [`<Container>`](./components/roots/Container.md) a custom entity's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
 
 For a pre-themed component set matching vanilla Minecraft's look, see [`@bedrock-core/ore-styled`](/docs/ore-styled). It is optional — pick it up for batteries-included visuals, skip it to style every primitive yourself.
 
@@ -80,7 +80,7 @@ The `@bedrock-core/generated/ui` import is what runs the build's registrations. 
 
 **Screens other addons can show** — a [static](./guides/navigation.md#static-screens) screen is described by its title, its entry values and one target per press. Publish that table and a realm running none of your script still shows your screens, because the layout is in the pack every client holds.
 
-**Switches that cost nothing** — [`<Tabs>`](./components/Tabs.md) and [`<Disclosure>`](./components/Disclosure.md) change what is drawn entirely on the client. No press, no re-present, no payload.
+**Switches that cost nothing** — [`<Tabs>`](./components/compiled/Tabs.md) and [`<Disclosure>`](./components/compiled/Disclosure.md) change what is drawn entirely on the client. No press, no re-present, no payload.
 
 ## Differences from React
 

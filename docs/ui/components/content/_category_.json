@@ -1,0 +1,11 @@
+{
+  "position": 4,
+  "label": "Content",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Content",
+    "description": "What a screen shows: labels, textures and the backdrop behind them."
+  }
+}

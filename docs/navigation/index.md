@@ -68,7 +68,7 @@ function Row(): JSX.Element {
 
 **Screens other addons can open** — publish your static screens once and `navigate('<you>:<screen>')` works in any realm in the world, whether or not your script runs there. The client draws it from the pack it already holds.
 
-**A press that is data** — [`<Link to>`](/docs/ui/components/Link) puts the destination on the element rather than in a closure, so the build can read where it leads and describe the screen to other addons.
+**A press that is data** — [`<Link to>`](/docs/ui/components/controls/Link) puts the destination on the element rather than in a closure, so the build can read where it leads and describe the screen to other addons.
 
 ## Next steps
 

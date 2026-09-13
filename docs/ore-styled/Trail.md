@@ -56,7 +56,7 @@ The coloring follows from the same rule: a literal takes the trail color as a `Â
 
 ## Why it hugs
 
-The row is a [`<Panel stack>`](/docs/ui/components/Panel#stack) of hugging labels. A compiled screen solves a box for each segment as wide as the longest string it may ever hold, so a shorter one would leave the rest of that box as air and the trail would drift off-center.
+The row is a [`<Panel stack>`](/docs/ui/components/layout/Panel#stack) of hugging labels. A compiled screen solves a box for each segment as wide as the longest string it may ever hold, so a shorter one would leave the rest of that box as air and the trail would drift off-center.
 
 Each label instead draws at the width of its own glyphs, the engine packs them, an empty segment takes no room at all, and the stack hangs from the middle â€” so the trail stays centered on what it actually says.
 

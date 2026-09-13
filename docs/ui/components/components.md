@@ -1,49 +1,56 @@
 ---
 sidebar_position: 1
-description: "Every built-in component, grouped by what it is for."
+description: "Every built-in component, grouped by what it is and what the host spends on it."
 ---
 # Components
 
-Built-in JSX components for layout, text, interaction and the two switches a compiled screen owns.
+Built-in JSX components, in the groups the sidebar uses.
 
 ## Roots
 
 A screen's root names its [host](../guides/hosts.md), and there is no default: a tree that starts with anything else is refused with the list of roots.
 
-- [`<Screen>`](./Screen.md) — an action form: buttons, decoration, lists and scrolls, shown with `render()`
-- [`<Form>`](./Form/Form.md) — a native modal form, shown with `render()`
-- [`<Container>`](./Container.md) — a container screen an entity owns, served with `createContainerScreen()`
+- [`<Screen>`](./roots/Screen.md) — an action form: buttons, decoration, lists and scrolls, shown with `render()`
+- [`<Form>`](./Form/Form.md) — a native modal form, shown with `render()`; it heads the Form group
+- [`<Container>`](./roots/Container.md) — a container screen an entity owns, served with `createContainerScreen()`
 
-## Layout and decoration
+## Layout
 
-Every one of these draws on all three hosts and asks for nothing.
+Boxes and flow. Each draws on all three hosts and asks for nothing.
 
-- [`<Panel>`](./Panel.md) — a box with an optional background and flexbox layout, or a stack that reflows hidden children
-- [`<Text>`](./Text.md) — a label, literal or localized, baked or live
-- [`<Image>`](./Image.md) — a texture from a resource pack
-- [`<Background>`](./Background.md) — a full-screen texture drawn behind the screen
-- [`<Scroll>`](./Scroll.md) — an independent vertical scroll region
-- [`<Fragment>`](./Fragment.md) — group children without a wrapper node (`<>…</>`)
+- [`<Panel>`](./layout/Panel.md) — a box with an optional background and flexbox layout, or a stack that reflows hidden children
+- [`<Scroll>`](./layout/Scroll.md) — an independent vertical scroll region
+- [`<Fragment>`](./layout/Fragment.md) — group children without a wrapper node (`<>…</>`)
 
-## Interaction
+## Content
 
-- [`<Button>`](./Button.md) — a press, with an `onPress` handler
-- [`<Link>`](./Link.md) — a press whose destination is data, so the build can read where it leads
+What a screen shows. Also free on every host.
 
-## Compiled switches
+- [`<Text>`](./content/Text.md) — a label, literal or localized, baked or live with `maxLength`
+- [`<Image>`](./content/Image.md) — a texture from a resource pack, baked or carried with `live`
+- [`<Background>`](./content/Background.md) — a full-screen texture drawn behind the screen
 
-Client-side state: no press, no re-present, no payload. Both are compiled-only.
+## Controls
 
-- [`<Tabs>`](./Tabs.md) — several panes on one screen, switched by a header row
-- [`<Disclosure>`](./Disclosure.md) — a header that folds the rows under it and reflows what is below
+- [`<Button>`](./controls/Button.md) — a press, with an `onPress` handler
+- [`<Link>`](./controls/Link.md) — a press whose destination is data, so the build can read where it leads
 
-## Variable content
+## Compiled
 
-A compiled screen's shape is frozen, so anything that varies declares its capacity.
+What only exists because the screen is compiled. The two switches are client-side state — no press, no re-present, no payload — and are compiled-only.
 
-- [`<List>`](./List.md) — `max` compiled rows and a carried count
-- [`<Text maxLength>`](./Text.md) — a string that changes, and the width it reserves
-- [`<Image live>`](./Image.md) — a texture path carried at runtime
+- [`<Tabs>`](./compiled/Tabs.md) — several panes on one screen, switched by a header row
+- [`<Disclosure>`](./compiled/Disclosure.md) — a header that folds the rows under it and reflows what is below
+- [`<List>`](./compiled/List.md) — `max` compiled rows and a carried count, for a variable row count on a frozen shape
+
+## Container cells
+
+Only on a container screen. See [Container screens](../guides/container-screens.md).
+
+- [`<Slot>`](./cells/Slot.md) — a real container cell, with a role and handlers for what moves through it
+- [`<SlotGrid>`](./cells/SlotGrid.md) — a grid over a collection the engine already publishes
+- [`<PlayerInventory>`](./cells/PlayerInventory.md) — the player's 9 × 3 inventory grid
+- [`<Hotbar>`](./cells/Hotbar.md) — the player's hotbar
 
 ## Modal fields
 
@@ -58,23 +65,14 @@ A compiled screen's shape is frozen, so anything that varies declares its capaci
 - [`<Form.Input>`](./Form/FormInput.md) — a single-line text field
 - [`<Form.Button>`](./Form/FormButton.md) — the form's submit and exit actions
 
-## Container cells
-
-Only on a container screen. See [Container screens](../guides/container-screens.md).
-
-- [`<Slot>`](./Slot.md) — a real container cell, with a role and handlers for what moves through it
-- [`<SlotGrid>`](./SlotGrid.md) — a grid over a collection the engine already publishes
-- [`<PlayerInventory>`](./PlayerInventory.md) — the player's 9 × 3 inventory grid
-- [`<Hotbar>`](./Hotbar.md) — the player's hotbar
-
 ## Cross-pack
 
-- [`<Expect>`](./Expect.md) — states which screen a fragment is written for, and fails the build when it lands elsewhere
-- [`<Embed>`](./Embed.md) — a screen one pack draws into an area another pack's screen reserves
+- [`<Expect>`](./cross-pack/Expect.md) — states which screen a fragment is written for, and fails the build when it lands elsewhere
+- [`<Embed>`](./cross-pack/Embed.md) — a screen one pack draws into an area another pack's screen reserves
 
 ## Shared props
 
-- [Control props](./control-props.md) — the flexbox properties, `position={'absolute'}` placement, `visible`, `enabled` and `background`, on every component
+- [Control props](./control-props.md) — the flexbox properties, `position={'absolute'}` placement, `visible`, `enabled` and `background`, on every component, plus how a conditional becomes a carried `visible`
 - [Handler events](../guides/handler-events.md) — the one event object every handler takes
 
 ## Next steps

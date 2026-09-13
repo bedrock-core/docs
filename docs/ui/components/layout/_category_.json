@@ -1,0 +1,11 @@
+{
+  "position": 3,
+  "label": "Layout",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Layout",
+    "description": "Boxes and flow: the panel, the scroll region and the wrapper that draws nothing."
+  }
+}

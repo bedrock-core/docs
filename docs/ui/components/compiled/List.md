@@ -1,5 +1,5 @@
 ---
-sidebar_position: 12
+sidebar_position: 3
 description: "A variable row count on a screen whose shape is frozen."
 ---
 # List
@@ -31,13 +31,13 @@ import { List } from '@bedrock-core/ui';
 | `items`<Req /> | `readonly T[]` | — | The data; only the first `max` are shown |
 | `row`<Req /> | `(item: T \| undefined, index: number) => JSX.Element` | — | One row, called for every compiled slot |
 
-Inherits [control props](./control-props.md).
+Inherits [control props](../control-props.md).
 
 ## How it works
 
 A compiled screen cannot add or drop a row at runtime — the build numbered every cell once — so `<List>` is the one legal way to render a variable count. `max` copies of the row are compiled, a carried int says how many are real, and the compiled gates hide the rest client-side. The shape never moves; only the count does.
 
-Hidden rows take **no space**: the list compiles to a stack panel, which gives an invisible child no room, so the visible rows pack from the top and a [`<Scroll>`](./Scroll.md) over the list scrolls exactly as far as the real rows. That is the one runtime reflow a compiled screen has, and it is the engine's own.
+Hidden rows take **no space**: the list compiles to a stack panel, which gives an invisible child no room, so the visible rows pack from the top and a [`<Scroll>`](../layout/Scroll.md) over the list scrolls exactly as far as the real rows. That is the one runtime reflow a compiled screen has, and it is the engine's own.
 
 ## The row contract
 

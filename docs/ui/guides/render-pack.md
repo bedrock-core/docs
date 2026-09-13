@@ -74,7 +74,7 @@ A key and a literal share that wire format, both read by a `localize: true` labe
 
 `children` is `DisplayText` (`string | RawMessage`). A string is auto-detected: if the active resolver knows it as a key, it is localized; otherwise it paints literally, which is what Bedrock does with an unmatched `.lang` key. A `RawMessage` with arguments travels as a rawtext pair, `[{ text: <fixed fields> }, <tail>]`, and the client resolves and fills it: its own language, no length cap, `score` / `selector` parts included. Every other string field in a payload (`Background` and state textures, fonts, form labels routed through native channels) is a fixed 83-byte field with an 80-byte content budget, and exceeding it throws a `SerializationError` at serialize time.
 
-See [`Text`](../components/Text.md) for the component and [i18n](/docs/i18n) for where `key()` / `raw()` come from.
+See [`Text`](../components/content/Text.md) for the component and [i18n](/docs/i18n) for where `key()` / `raw()` come from.
 
 `fontType` is a common control field so the merged label cell, which mounts for every cell type, decodes a valid font alias at a fixed offset whatever the cell is — non-text components carry `'default'`. `#font_type` is engine-reserved and validated the moment it is written, so a texture path in that slot would log a `Could not find font alias` line per cell to `NonAssertErrorLog`, which blocks Marketplace submission.
 

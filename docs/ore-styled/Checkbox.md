@@ -27,8 +27,8 @@ import { Checkbox } from '@bedrock-core/ore-styled';
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
 | [`<Form>`](/docs/ui/components/Form) | a native [`Form.Toggle`](/docs/ui/components/Form/FormToggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
-| [`<Screen>`](/docs/ui/components/Screen) | a press that holds its own state | `onChange`, on every press |
-| [`<Container>`](/docs/ui/components/Container) | an item taken and put straight back | `onChange`, on every press |
+| [`<Screen>`](/docs/ui/components/roots/Screen) | a press that holds its own state | `onChange`, on every press |
+| [`<Container>`](/docs/ui/components/roots/Container) | an item taken and put straight back | `onChange`, on every press |
 
 So `name` is the modal's prop and required there — a native field with no name has nothing to report under — while `on` and `onChange` only do anything where a press reaches script. You can write all of them and move the control between screens; each host uses the ones it can.
 
