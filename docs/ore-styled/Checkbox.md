@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 8
 description: "A themed boolean that draws as a native field on a modal and a press everywhere else."
 ---
 # Checkbox

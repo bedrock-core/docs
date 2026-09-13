@@ -62,4 +62,4 @@ Inherits [control props](../control-props.md).
 
 - Always provide a `placeholder` — it's the only hint the player gets about what to type.
 - Keep `name` stable across renders; it's the only key you get back on submit.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Form/FormInput)'s `Form.Input` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Input)'s `Form.Input` over styling this primitive by hand.

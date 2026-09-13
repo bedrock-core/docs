@@ -17,7 +17,7 @@ import { Button } from '@bedrock-core/ore-styled';
 ## Usage
 
 ```tsx
-<Button onPress={() => console.log('clicked')}>
+<Button onPress={() => console.warn('clicked')}>
   {'Click Me'}
 </Button>
 ```
@@ -26,18 +26,28 @@ When `children` is a string the button automatically wraps it in a `Text` styled
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `variant` | `'hero' \| 'primary' \| 'secondary' \| 'contrast' \| 'danger' \| 'realm' \| 'transparent'` | `'primary'` | Selects the texture set and text style applied to the button. `hero` uses the same primary texture but with the `minecraftTen` heading font. `transparent` has no visible shell — useful for icon-only or inline actions that should blend into the background |
-| `enabled` | `boolean` | `true` | When `false`, the button renders with the disabled texture and ignores `onPress`. The disabled `textStyle` color is automatically applied to string children |
-| `onPress` | `() => void \| Promise<void>` | — | Callback invoked when the player presses the button |
-| `children` | `string \| JSX.Node` | — | A string is auto-wrapped in a themed `Text`. Any other node is rendered as-is |
+| `variant` | `'hero' \| 'primary' \| 'secondary' \| 'contrast' \| 'danger' \| 'realm' \| 'transparent'` | `'primary'` | The texture set and text style. `hero` is the primary texture with the `minecraftTen` heading font; `transparent` has no shell, for icon-only or inline actions |
+| `children` | `string \| JSX.Node` | — | A string is auto-wrapped in a themed `Text`; any other node is rendered as-is |
+| `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Runs on a press. Use `to` instead when the press opens another screen |
+| `to` | `ScreenKey` | — | The screen this button opens, `<addon>:<name>`. A button with one is a [`<Link>`](/docs/ui/components/Link) |
+| `replace` | `boolean` | `false` | With `to`: take the place of the screen this button is on rather than stacking over it |
+| `back` | `boolean` | `false` | The way back, in place of `to` — the player's own stack decides where |
+| `enabled` | `boolean` | `true` | `false` draws the disabled texture, ignores the press, and applies the disabled text color to string children |
 
-### Control props
+Inherits [control props](/docs/ui/components/control-props).
 
-Button inherits all standard [control props](/docs/ui/components/control-props).
+## A press or a destination
+
+`onPress` is script: only this realm can run it. `to` and `back` are **data** the build reads off the element, which is what lets a screen of buttons be [described to another addon](/docs/ui/guides/navigation#static-screens) and shown by a realm running none of your script.
+
+Reach for `to` whenever the press simply opens a screen, and keep `onPress` for the presses that do something.
+
+```tsx
+<Button to={'shop:catalog'}>{'Catalog'}</Button>
+<Button back variant={'secondary'}>{'Back'}</Button>
+```
 
 ## Examples
 

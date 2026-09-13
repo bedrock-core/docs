@@ -92,4 +92,4 @@ const options = ['Easy', 'Normal', 'Hard'];
 - Keep `Form.Option` children order stable across renders — the result is an index, so reordering shifts what a saved index means.
 - Read `values[name]` as an index and map it back to your own array if you need the string; don't assume it's the `value` you passed in.
 - Prefer [`Form.InlineSelect`](./FormInlineSelect.md) instead when you want every option visible without an extra tap (e.g. a short radio-style choice).
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Form/FormDropdown)'s `Form.Dropdown` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Dropdown)'s `Form.Dropdown` over styling this primitive by hand.

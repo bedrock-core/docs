@@ -62,4 +62,4 @@ Inherits [control props](../control-props.md). Defaults to `width: '100%'` when 
 
 - Keep `step` a clean divisor of `max - min` so every reachable value looks intentional on the track.
 - Don't resize `thumbWidth`/`thumbHeight` far from the 16×16 default — the interactive hitbox stays fixed at 16×16 regardless, so a larger visual thumb can look pressable in places it isn't.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Form/FormSlider)'s `Form.Slider` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Slider)'s `Form.Slider` over styling this primitive by hand.

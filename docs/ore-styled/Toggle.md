@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 9
 description: "A themed on/off switch that draws as a native field on a modal and a press everywhere else."
 ---
 # Toggle

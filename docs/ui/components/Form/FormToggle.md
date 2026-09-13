@@ -62,4 +62,4 @@ Inherits [control props](../control-props.md) for layout and visibility — geom
 
 - Pick clear, unambiguous boolean `name`s (`sound`, not `s`) — it's the only thing you get back on submit.
 - Only override `checkedBackground`/`checkedHover`/`checkedLocked` when the default on/off face doesn't match your theme; otherwise a single `background` styles both states.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Form/FormToggle)'s `Form.Toggle` (or `Form.Checkbox` for checkbox-style rows) over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Toggle)'s `Form.Toggle` (or `Form.Checkbox` for checkbox-style rows) over styling this primitive by hand.

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 4
 description: "Thin horizontal or vertical separator."
 ---
 # Divider
@@ -28,16 +28,12 @@ The divider stretches along the cross-axis of its parent. Inside a column `Panel
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Direction of the divider. Horizontal dividers take their width from the container; vertical dividers take their height from the container |
 | `variant` | `'default' \| 'light' \| 'dark'` | `'default'` | Visual weight. `default` is 2px thick; `light` and `dark` are 1px each |
 
-### Control props
-
-Divider inherits all standard [control props](/docs/ui/components/control-props).
+Inherits [control props](/docs/ui/components/control-props).
 
 ## Examples
 

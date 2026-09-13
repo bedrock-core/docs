@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 7
 description: "The browse-screen row: leading thumbnail, title, one-line subtitle, and a trailing chevron, drawn on the dropdown-option face."
 ---
 # MenuRow
@@ -33,27 +33,39 @@ function Row(): JSX.Element {
 
 ## Props
 
-### Component-Specific props
-
-| Prop | Type | Description |
-| --- | --- | --- |
-| `title` | [`DisplayText`](/docs/i18n#displaytext) (`string \| RawMessage`) |  |
-- Required
-- Description: First line — the row's name.
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
+| `title`<Req /> | [`DisplayText`](/docs/i18n#displaytext) | — | First line — the row's name |
 | `subtitle` | `DisplayText` | — | Second line, rendered muted. Omit for a single-line row |
 | `icon` | `string` | — | Leading thumbnail texture path. Omit for a text-only row |
-| `iconSize` | `number` | `16` (the theme's row icon size) | Thumbnail edge in px |
-| `chevron` | `boolean` | `true` | Trailing `>` affordance. Set `false` for rows that **select** rather than navigate |
-| `depth` | `number` | `0` | Indent level for nested index rows. Each step insets the row's whole **box** by `theme.tokens.spacing.lg` (12 px), not just its contents, so a child row is visibly narrower than its section header |
-| `onPress` | `() => unknown \| Promise<unknown>` | — | Press handler |
-| `enabled` | `boolean` | `true` | A disabled row keeps its face and greys its text instead |
+| `iconSize` | `number` | the theme's row icon size | Thumbnail edge in px |
+| `chevron` | `boolean` | `true` | Trailing `>` affordance. Set `false` for rows that select rather than navigate |
+| `selected` | `boolean` | `false` | Whether this row is the list's current selection. For a selecting list, where one row stands after the press |
+| `depth` | `number` | `0` | Indent level for nested index rows. Each step insets the row's whole box, not its contents, so a child row is visibly narrower than its section header |
+| `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Press handler. Use `to` instead when the press opens another screen |
+| `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/ui/components/Link) |
+| `replace` | `boolean` | `false` | With `to`: take the place of the screen this row is on rather than stacking over it |
+| `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
+| `subtitleMaxLength` | `number` | — | Characters the subtitle reserves. Setting it also keeps the subtitle line when the subtitle is empty, so the row has one shape |
+| `enabled` | `boolean` | `true` | A disabled row keeps its face and greys its text |
 
-### Control props
+Inherits [control props](/docs/ui/components/control-props). It sets `alignSelf: 'stretch'` rather than an explicit width, so do not hard-code a `width` alongside `depth`.
 
-MenuRow inherits all standard [control props](/docs/ui/components/control-props). It sets `alignSelf: 'stretch'` rather than an explicit width, so don't hard-code a `width` alongside `depth`.
+## An index other addons can show
+
+A row with `to` is a link, so where it leads is data rather than a handler — which is what lets an index of rows be shown by an addon running none of this one's script. A row with `onPress` cannot be described that way, and does nothing in a foreign realm.
+
+```tsx
+<MenuRow icon={'textures/items/diamond'} title={'Diamond'} subtitle={'A rare gem'} to={'shop:diamond'} />
+```
+
+## Reserving room for live text
+
+A compiled screen bakes a row's text unless told how long a live one may be. Give `titleMaxLength` — and `subtitleMaxLength` where there is a second line — for a row whose text comes from data:
+
+```tsx
+<MenuRow title={addon.name} titleMaxLength={24} subtitle={addon.version} subtitleMaxLength={12} to={key} />
+```
 
 ## Localized labels
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 description: "Ore-styled header bar: icon-only back button, a breadcrumb trail, and a close button."
 ---
 # Header
@@ -35,23 +35,40 @@ Renders as `Settings > Server > Pricing`, centered between the two icon buttons.
 
 ## Props
 
-### Component-Specific props
-
-| Prop | Type | Description |
-| --- | --- | --- |
-| `title` | [`DisplayText`](/docs/i18n#displaytext) (`string \| RawMessage`) |  |
-- Required
-- Description: The screen's own name, first in the trail.
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `breadcrumbs` | `DisplayText[]` | `[]` | The trail after the title — scope and entity labels, for example — joined as `title > … > …` |
-| `onBack` | `() => void` | — | Press handler for the back control. **Omit to hide it** — the slot keeps its width, so the title stays centered |
-| `onClose` | `() => void` | — | Press handler for the close control. Omit to hide it |
+| `title` | [`DisplayText`](/docs/i18n#displaytext) | — | The screen's own name, first in the trail. Optional only with `segments` |
+| `breadcrumbs` | `DisplayText[]` | `[]` | The trail after the title, joined as `title > … > …` |
+| `segments` | `readonly TrailSegment[]` | — | The whole [trail](./Trail.md) as segments, live ones included, in place of `title` and `breadcrumbs` |
+| `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
+| `onBack` | `(event: PressEvent) => unknown` | — | Press handler for the back control. Omit to hide it — the slot keeps its width, so the title stays centered |
+| `backTo` | `ScreenKey` | — | The screen the back control returns to, in place of `onBack`: a link rather than a handler |
+| `back` | `boolean` | `false` | A back control that returns wherever the player came from, without naming it |
+| `cancel` | `string` | — | The back control as a modal's labeled dismiss. Only inside a `<Form>` |
+| `cancelWidth` | `number` | — | Room the cancel control takes; wide enough for its word |
+| `onClose` | `(event: PressEvent) => unknown` | — | Press handler for the close control. Omit to hide it |
 
-### Control props
+Inherits [control props](/docs/ui/components/control-props). It already sets `marginTop`, `marginLeft` and `marginRight` to `1` and takes the theme's header background; your own layout props override them.
 
-Header inherits all standard [control props](/docs/ui/components/control-props). It already sets `marginTop`, `marginLeft` and `marginRight` to `1` and takes the theme's header background; spreading your own layout props overrides them.
+## Which back control
+
+Three ways out, and which one you can use depends on what the screen knows about where it came from.
+
+| Prop | The press is | Use it when |
+| --- | --- | --- |
+| `onBack` | script | the screen is only ever reached one way, from code you own |
+| `backTo` | a link to a named screen | the destination is fixed, and the screen should be backable out of even when another addon shows it |
+| `back` | a link to the player's stack | the screen is reachable from several places, or opened by another addon entirely |
+
+`backTo` and `back` are data the build reads, so a screen shown from its [reference](/docs/ui/guides/navigation#static-screens) can still be left. An `onBack` handler cannot be described, so it does nothing in a foreign realm.
+
+## Inside a modal
+
+A modal has two controls of its own, its submit and its dismiss, and the dismiss is the only one left to leave the screen with. `cancel` puts it in the back slot with a word on it, since leaving a form abandons what was typed into it:
+
+```tsx
+<Header title={'Settings'} cancel={'Cancel'} cancelWidth={44} />
+```
 
 ## Localized titles
 

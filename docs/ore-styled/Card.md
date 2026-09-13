@@ -27,16 +27,12 @@ Cards lay their children out as a column with the theme's standard `gap`. Overri
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `variant` | `'default' \| 'light' \| 'dark' \| 'raised' \| 'raised-light' \| 'raised-dark'` | `'raised'` | Selects the background texture. The `raised` prefix lifts the card visually above the screen surface. The suffix sets the tint: `light` for a lighter fill, `dark` for a darker fill, or none for the neutral base. `default` is the flat neutral card |
 | `children` | `JSX.Node` | — | Content rendered inside the card |
 
-### Control props
-
-Card inherits all standard [control props](/docs/ui/components/control-props). Use them to size the card, override the default padding, or change the flex direction.
+Inherits [control props](/docs/ui/components/control-props). Use them to size the card, override the default padding, or change the flex direction.
 
 ## Examples
 

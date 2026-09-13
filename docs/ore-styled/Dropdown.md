@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 13
 description: "A themed dropdown for a modal form, with the options given as a string array."
 ---
 # Dropdown

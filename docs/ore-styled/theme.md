@@ -1,5 +1,5 @@
 ---
-sidebar_position: 15
+sidebar_position: 16
 description: "ore-styled ships a single theme object that holds every visual token it uses — spacing scale, font colors, and per-component texture paths plus sizing."
 ---
 # Theme
@@ -88,7 +88,7 @@ Each entry under `theme.components` holds the textures, sizing, padding, and (wh
 ### `radio`
 - `size`, `gap`, and a full set of `textures` (unselected/selected × default/hover/disabled).
 
-[`Form.Radio`](./Form/FormRadio.md) reuses this same section — there's no separate Form-specific radio theme.
+[`Form.Radio`](./Radio.md) reuses this same section — there's no separate Form-specific radio theme.
 
 ### `tabs`
 - `height`, `padding.{x,y}`, `textures` (`active`, `inactive`, `inactiveHover`, `bar`).
@@ -101,17 +101,17 @@ Tokens only — `ore-styled` exports no `Tabs` component yet. Read them if you'r
 ### `toggleButton`
 - `height`, `paddingX`, `textures` (`normal`, `hover`, `pressed`, `disabled`, `disabledPressed`), and `textStyle.{selected,unselected}`.
 
-[`Form.ToggleButton`](./Form/FormToggleButton.md) reuses this same section — there's no separate Form-specific toggle-button theme.
+[`Form.ToggleButton`](./ToggleButton.md) reuses this same section — there's no separate Form-specific toggle-button theme.
 
 ### `field`
 - `padding: { top, bottom, x }`, `gap`.
 - `textStyle`: `font`, `scale`, and color codes for `value`/`placeholder`/`disabled` text.
-- `textures.{background,backgroundHover,backgroundDisabled}` — the [`Input`](./Input.md) / [`Form.Input`](./Form/FormInput.md) field box.
+- `textures.{background,backgroundHover,backgroundDisabled}` — the [`Input`](./Input.md) / [`Form.Input`](./Input.md) field box.
 
 ### `dropdown`
 - `padding: { top, bottom, x }`, `arrow: { width, height }`.
 - `textStyle`: `font`, `scale`, and color codes for `value`/`disabled` text.
-- `textures`: `background`/`backgroundHover`/`backgroundDisabled` (closed box), `arrow`/`arrowDisabled`, and `popup`/`option`/`optionHover`/`optionSelected` — used by [`Dropdown`](./Dropdown.md) / [`Form.Dropdown`](./Form/FormDropdown.md).
+- `textures`: `background`/`backgroundHover`/`backgroundDisabled` (closed box), `arrow`/`arrowDisabled`, and `popup`/`option`/`optionHover`/`optionSelected` — used by [`Dropdown`](./Dropdown.md) / [`Form.Dropdown`](./Dropdown.md).
 
 ### `form`
 - `labelGap` — vertical gap (px) between a field's label and its control.
@@ -120,7 +120,7 @@ Tokens only — `ore-styled` exports no `Tabs` component yet. Read them if you'r
 ### `slider`
 - `height`, `trackHeight`, `thumb: { width, height }`.
 - `textStyle`: `font`, `scale`, and color codes for `value`/`disabled` text.
-- `textures`: `track`/`trackDisabled`, `progress`/`progressDisabled`, `thumb`/`thumbHover`/`thumbDisabled` — used by [`Slider`](./Slider.md) / [`Form.Slider`](./Form/FormSlider.md).
+- `textures`: `track`/`trackDisabled`, `progress`/`progressDisabled`, `thumb`/`thumbHover`/`thumbDisabled` — used by [`Slider`](./Slider.md) / [`Form.Slider`](./Slider.md).
 
 ## Types
 
