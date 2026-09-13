@@ -1,10 +1,10 @@
 ---
 sidebar_position: 6
-description: "Labeled boolean control."
+description: "A themed boolean that draws as a native field on a modal and a press everywhere else."
 ---
 # Checkbox
 
-Labeled boolean control. Supports controlled and uncontrolled usage.
+A labeled boolean: the box, then the caption.
 
 ![Checkbox](/img/ore-styled/Checkbox.png)
 
@@ -17,52 +17,65 @@ import { Checkbox } from '@bedrock-core/ore-styled';
 ## Usage
 
 ```tsx
-<Checkbox label={'Enable notifications'} defaultChecked={true} onChange={(v) => console.log(v)} />
+<Checkbox name={'notify'} label={'Enable notifications'} defaultValue={true} />
 ```
+
+## It depends on the screen
+
+`Checkbox` asks [`useMechanism('Toggle')`](/docs/ui/hooks/useMechanism) what a boolean becomes on the screen it is being drawn on, and draws that. Which props matter follows from the answer:
+
+| Screen | What it becomes | What reaches script |
+| --- | --- | --- |
+| [`<Form>`](/docs/ui/components/Form) | a native [`Form.Toggle`](/docs/ui/components/Form/FormToggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
+| [`<Screen>`](/docs/ui/components/Screen) | a press that holds its own state | `onChange`, on every press |
+| [`<Container>`](/docs/ui/components/Container) | an item taken and put straight back | `onChange`, on every press |
+
+So `name` is the modal's prop and required there — a native field with no name has nothing to report under — while `on` and `onChange` only do anything where a press reaches script. You can write all of them and move the control between screens; each host uses the ones it can.
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `checked` | `boolean` | — | Controlled value. When provided, the component renders this state and `onChange` is your only way to update it. Omit to use the uncontrolled `defaultChecked` form |
-| `defaultChecked` | `boolean` | `false` | Initial state when running uncontrolled |
-| `onChange` | `(checked: boolean) => void` | — | Called with the next state every time the player toggles the checkbox |
-| `label` | `string` | — | Text rendered next to the checkbox. Omit for a plain box with no label |
-| `disabled` | `boolean` | `false` | When `true`, the checkbox renders the disabled texture and ignores presses |
+| `name` | `string` | — | Result key on a modal, where it is required; ignored where the press itself is the answer |
+| `label` | `string` | — | The caption beside it. Without one, the control is drawn bare |
+| `defaultValue` | `boolean` | `false` | Which way it starts |
+| `on` | `boolean` | — | Held by the caller instead of by the control. Only where a press reaches script |
+| `onChange` | `(on: boolean) => void` | — | Called with the new state, on the hosts where a press reaches script |
+| `enabled` | `boolean` | `true` | `false` draws the disabled texture and ignores presses |
 
-### Control props
-
-Checkbox inherits all standard [control props](/docs/ui/components/control-props).
+The theme's textures are defaults, not a lock: `background`, `backgroundHover`, `backgroundPressed`, `backgroundLocked`, `checkedBackground`, `checkedHover` and `checkedLocked` are all accepted and yours wins. Inherits [control props](/docs/ui/components/control-props).
 
 ## Examples
 
-### Controlled
+### In a modal
 
 ```tsx
-function NotifySetting() {
+<Form onSubmit={({ values }) => apply(values.notify === true)}>
+  <Checkbox name={'notify'} label={'Enable notifications'} defaultValue={true} />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
+```
+
+### On a screen of buttons
+
+```tsx
+function NotifySetting(): JSX.Element {
   const [enabled, setEnabled] = useState(false);
 
-  return (
-    <Checkbox checked={enabled} onChange={setEnabled} label={'Enable notifications'} />
-  );
+  return <Checkbox label={'Enable notifications'} on={enabled} onChange={setEnabled} />;
 }
 ```
 
-### Uncontrolled
-
-```tsx
-<Checkbox defaultChecked={true} label={'Auto-save'} onChange={(v) => console.log('auto-save', v)} />
-```
+A press re-presents the screen, so the new state is what the player sees next — the same rule as every other state change on a form.
 
 ### Disabled
 
 ```tsx
-<Checkbox checked={true} disabled label={'Locked option'} />
+<Checkbox label={'Locked option'} defaultValue={true} enabled={false} />
 ```
 
 ## Notes
 
-- Reach for the uncontrolled form (`defaultChecked` + `onChange`) when the parent doesn't need to read the value every render.
-- Pair related checkboxes in a [`Card`](./Card.md) or a `Panel` with `gap` to keep their hitboxes legible.
+Pair related checkboxes in a [`Card`](./Card.md), or a `Panel` with `gap`, to keep their hitboxes legible.
+
+[`Toggle`](./Toggle.md) is the same control with the theme's switch faces and the caption on the left.

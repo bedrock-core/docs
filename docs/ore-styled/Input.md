@@ -1,14 +1,10 @@
 ---
 sidebar_position: 11
-description: "Single-line text field."
+description: "A themed single-line text field for a modal form."
 ---
 # Input
 
-Single-line text field. Pressing it opens a modal to edit the value. Supports controlled and uncontrolled usage.
-
-:::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Input`](./Form/FormInput.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
-:::
+A themed single-line text field.
 
 ![Input](/img/ore-styled/Input.png)
 
@@ -20,75 +16,52 @@ import { Input } from '@bedrock-core/ore-styled';
 
 ## Usage
 
+Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+
 ```tsx
-<Input
-  label={'Name'}
-  placeholder={'type your name'}
-  onChange={(value) => console.log(value)}
-/>
+<Form onSubmit={({ values }) => console.warn(values.nickname)}>
+  <Input name={'nickname'} label={'Name'} placeholder={'type your name'} width={160} />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
 ```
 
-Built on top of the [`Input`](/docs/ui/components/deprecated/Input) primitive and the [theme](./theme.md) token map. The current value (or the `placeholder`, shown muted) is rendered inside the Ore-UI field frame; pressing it opens a single-field modal — confirm commits the typed value, cancel keeps the current one.
+It is [`Form.Input`](/docs/ui/components/Form/FormInput) with the [theme](./theme.md)'s field textures and font applied, plus a caption above the box. The widget itself is the engine's — it is owned by the client while the form is open, and every field's value comes back at once on submit.
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `string` | — | Controlled value. When provided, the face reflects this on every render and `onChange` is your only way to update it |
-| `defaultValue` | `string` | `''` | Initial value when running uncontrolled |
-| `onChange` | `(value: string) => void` | — | Called with the new text when the player confirms the modal |
-| `onCancel` | `() => void` | — | Called when the player cancels (X / Esc) the modal. The value is left unchanged |
-| `placeholder` | `string` | — | Shown (muted) on the field face when the value is empty, and inside the modal text field |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `label` | `string` | — | Caption rendered above the field |
+| `placeholder` | `string` | — | Text shown inside the field when it is empty |
+| `defaultValue` | `string` | `''` | Initial text |
 
-### Modal field props
-
-Input inherits all [modal field props](/docs/ui/components/deprecated/modal-field-props) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
-
-### Control props
-
-Input inherits all standard [control props](/docs/ui/components/control-props). Use `enabled={false}` to render the disabled texture and make the field inert (no modal opens).
+Inherits every prop of [`Form.Input`](/docs/ui/components/Form/FormInput) — the font, the scale, the text offsets and the per-state box textures — with the theme's values as defaults rather than a lock: pass one and yours wins. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
-### Controlled
+### Two fields in one form
 
 ```tsx
-function NameField() {
-  const [name, setName] = useState('');
-
-  return (
-    <Panel flexDirection={'column'} gap={6}>
-      <Input
-        width={160}
-        label={'Name'}
-        placeholder={'type your name'}
-        value={name}
-        onChange={setName}
-        title={'Edit name'}
-        submitLabel={'Save'}
-      />
-      <Text>{`Hello, ${name !== '' ? name : 'stranger'}`}</Text>
-    </Panel>
-  );
-}
-```
-
-### Uncontrolled
-
-```tsx
-<Input defaultValue={'Steve'} onChange={(v) => console.log(v)} />
+<Form onSubmit={({ values }) => save(values.nickname, values.motto)}>
+  <Input name={'nickname'} label={'Name'} placeholder={'type your name'} />
+  <Input name={'motto'} label={'Motto'} defaultValue={'hello'} />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
 ```
 
 ### Disabled
 
 ```tsx
-<Input value={'locked'} enabled={false} />
+<Input name={'locked'} label={'Name'} defaultValue={'Steve'} enabled={false} />
 ```
 
 ## Notes
 
-- Give the field a `width` (or let it stretch in a column) so the framed box reads as a field even when empty.
-- Provide a `placeholder` so an empty field still reads as editable.
-- Set `title` (or rely on `label`) so the modal has a clear heading.
+Give the field a `width`, or let it stretch in a column, so the framed box reads as a field even when empty. A `placeholder` keeps an empty one reading as editable.
+
+There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open. For a value the screen reacts to immediately, use a press — [`Checkbox`](./Checkbox.md) and [`Toggle`](./Toggle.md) do that on the hosts where a press reaches script.
+
+## Limits
+
+Modal-only. The engine draws no text field on an action form or a container screen, so [`useMechanism('Input')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.

@@ -1,14 +1,10 @@
 ---
-sidebar_position: 12
-description: "Select field with a chevron."
+sidebar_position: 10
+description: "A themed dropdown for a modal form, with the options given as a string array."
 ---
 # Dropdown
 
-Select field with a chevron. Pressing it opens a modal to choose one of a fixed set of options. Supports controlled and uncontrolled usage.
-
-:::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Dropdown`](./Form/FormDropdown.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
-:::
+A themed dropdown: the current selection with a chevron, and a popup listing the options.
 
 ![Dropdown](/img/ore-styled/Dropdown.png)
 
@@ -20,73 +16,64 @@ import { Dropdown } from '@bedrock-core/ore-styled';
 
 ## Usage
 
+Render it inside a [`<Form>`](/docs/ui/components/Form). The selection arrives in the form's `onSubmit`, keyed by `name`.
+
 ```tsx
-<Dropdown
-  label={'Difficulty'}
-  options={['Peaceful', 'Easy', 'Normal', 'Hard']}
-  defaultValue={'Normal'}
-  onChange={(value) => console.log(value)}
-/>
+<Form onSubmit={({ values }) => console.warn(values.difficulty)}>
+  <Dropdown
+    name={'difficulty'}
+    label={'Difficulty'}
+    options={['Peaceful', 'Easy', 'Normal', 'Hard']}
+    defaultValue={'Normal'}
+  />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
 ```
 
-Built on top of the [`Dropdown`](/docs/ui/components/deprecated/Dropdown) primitive and the [theme](./theme.md) token map. The current selection sits on the left with a chevron on the right, inside the Ore-UI field frame; pressing it opens a single-dropdown modal — confirm commits the choice, cancel keeps the current one.
+It is [`Form.Dropdown`](/docs/ui/components/Form/FormDropdown) with the [theme](./theme.md)'s closed-box, popup and option-row textures applied, plus a caption above the box. The ore layer owns the option children: it maps each entry of `options` to a `Form.Option` whose value and label are both that string, which is why `children` is not accepted here.
+
+:::caution The result is an index
+Like the primitive, the submitted value is the selected option's **index** (a `number`), not the string — that is the native modal dropdown's behavior. Read it back as `options[values[name]]`.
+:::
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `options`<Req /> | `string[]` | — | The selectable options. The face shows the current one; the modal lists them all |
-| `value` | `string` | — | Controlled selection — should match one of `options`. When provided, the face reflects it on every render and `onChange` is your only way to update it |
-| `defaultValue` | `string` | the first option | Initial selection when running uncontrolled |
-| `onChange` | `(value: string, index: number) => void` | — | Called with the chosen option and its index in `options` when the player confirms the modal |
-| `onCancel` | `() => void` | — | Called when the player cancels (X / Esc) the modal. The selection is left unchanged |
+| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `options`<Req /> | `string[]` | — | The selectable options; each becomes a `Form.Option` with its value and label set to the string |
+| `label` | `string` | — | Caption rendered above the closed box |
+| `defaultValue` | `string` | the first option | Initial selection, matched against one of `options` |
 
-### Modal field props
-
-Dropdown inherits all [modal field props](/docs/ui/components/deprecated/modal-field-props) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
-
-### Control props
-
-Dropdown inherits all standard [control props](/docs/ui/components/control-props). Use `enabled={false}` to render the disabled texture (including a dimmed chevron) and make the field inert (no modal opens).
+Inherits every prop of [`Form.Dropdown`](/docs/ui/components/Form/FormDropdown) except `children` — the popup background, the option row faces, the option and current-value text styles — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
-### Controlled
+### Reading the selection back
 
 ```tsx
-function DifficultySetting() {
-  const [difficulty, setDifficulty] = useState('Normal');
+const MODES = ['Peaceful', 'Easy', 'Normal', 'Hard'];
 
-  return (
-    <Panel flexDirection={'column'} gap={6}>
-      <Dropdown
-        width={160}
-        label={'Difficulty'}
-        options={['Peaceful', 'Easy', 'Normal', 'Hard']}
-        value={difficulty}
-        onChange={setDifficulty}
-        title={'Select difficulty'}
-        submitLabel={'Save'}
-      />
-      <Text>{`Selected: ${difficulty}`}</Text>
-    </Panel>
-  );
-}
+<Form onSubmit={({ values }) => console.warn(MODES[Number(values.difficulty)])}>
+  <Dropdown name={'difficulty'} label={'Difficulty'} options={MODES} defaultValue={'Normal'} />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
 ```
 
-### Uncontrolled
+### Disabled
 
 ```tsx
-<Dropdown
-  options={['Red', 'Green', 'Blue']}
-  onChange={(value, index) => console.log(index, value)}
-/>
+<Dropdown name={'mode'} label={'Mode'} options={['A', 'B']} enabled={false} />
 ```
+
+`enabled={false}` draws the disabled texture, dims the chevron and makes the box inert.
 
 ## Notes
 
-- Keep `options` stable across renders; deriving it inline from changing data can shift indices unexpectedly.
-- A controlled `value` should always be one of `options` — an unknown value falls back to the first option on the face.
-- For two-state choices use a [`Toggle`](./Toggle.md) instead of a two-item dropdown.
+There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open.
+
+For the same selection model drawn inline, with no popup, use [`Form.InlineSelect`](/docs/ui/components/Form/FormInlineSelect) — or [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) for its themed forms.
+
+## Limits
+
+Modal-only. The engine draws no dropdown on an action form or a container screen, so [`useMechanism('Dropdown')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.

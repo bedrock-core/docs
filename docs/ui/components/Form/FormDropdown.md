@@ -26,7 +26,7 @@ import { Form } from '@bedrock-core/ui';
 ```
 
 :::caution Result is an index, not a value
-`Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string — this is the native modal dropdown's behavior. If you need the string back, map the index into your own options array yourself. This is different from the legacy [`Dropdown`](../deprecated/Dropdown.md), which resolves the index back to a value string for you.
+`Form.Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string — this is the native modal dropdown's behavior. If you need the string back, map the index into your own options array yourself.
 :::
 
 ## Props

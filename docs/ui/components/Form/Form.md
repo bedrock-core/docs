@@ -6,8 +6,6 @@ description: "Atomic modal form."
 
 Atomic modal form. Renders one native `ModalFormData` — every field is shown at once, and nothing comes back until the player presses submit, at which point every value arrives together, keyed by each field's `name`, in `onSubmit`.
 
-The [deprecated](../deprecated/Input.md) `Input`, `Dropdown` and `Slider` components open a separate single-control modal per field. Use `Form` for any screen with more than one field.
-
 ## Import
 
 ```tsx

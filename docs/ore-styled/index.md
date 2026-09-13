@@ -26,20 +26,20 @@ import { Button, Card, Header, MenuRow, Checkbox, Toggle, RadioGroup, Radio, Tog
 - [**`<Card>`**](./Card.md) — container with the standard panel background, padding, and gap, in six variants.
 - [**`<Header>`**](./Header.md) — screen header bar: back button, breadcrumb trail, and close button.
 - [**`<MenuRow>`**](./MenuRow.md) — browse-list row: thumbnail, title, subtitle, and trailing chevron.
-- [**`<Checkbox>`**](./Checkbox.md) — labeled checkbox, controlled or uncontrolled.
-- [**`<Toggle>`**](./Toggle.md) — on/off switch.
+- [**`<Checkbox>`**](./Checkbox.md) — labeled boolean: a native field on a modal, a press everywhere else.
+- [**`<Toggle>`**](./Toggle.md) — the same boolean with the switch faces and the caption on the left.
 - [**`<RadioGroup>` / `<Radio>`**](./Radio.md) — single-choice radio set.
 - [**`<ToggleButtonGroup>` / `<ToggleButtonItem>`**](./ToggleButton.md) — segmented button group with single selection.
 - [**`<Divider>`**](./Divider.md) — horizontal or vertical divider line in three variants.
-- [**`<Input>`**](./Input.md) — single-line text field; pressing it opens the native modal text field. **Deprecated**, see [`Form.Input`](./Form/FormInput.md).
-- [**`<Dropdown>`**](./Dropdown.md) — select field with a chevron; pressing it opens the native modal dropdown. **Deprecated**, see [`Form.Dropdown`](./Form/FormDropdown.md).
-- [**`<Slider>`**](./Slider.md) — field drawn as a track + thumb; pressing it opens the native modal slider. **Deprecated**, see [`Form.Slider`](./Form/FormSlider.md).
+- [**`<Input>`**](./Input.md) — themed single-line text field, for use inside a `<Form>`.
+- [**`<Dropdown>`**](./Dropdown.md) — themed select field with a chevron and a popup, for use inside a `<Form>`.
+- [**`<Slider>`**](./Slider.md) — themed numeric slider, for use inside a `<Form>`.
 
 ## Form
 
 Atomic modal form — one native `ModalFormData` for the whole screen, all values arriving together on submit. See the [`Form`](./Form/Form.md) page for the full namespace.
 
-- [**`<Form>`**](./Form/Form.md) — the root component, plus its themed field members: `Form.Toggle`, `Form.Checkbox`, `Form.Radio`, `Form.ToggleButton`, `Form.Slider`, `Form.Dropdown`, `Form.Input`, `Form.Button`.
+- [**`<Form>`**](./Form/Form.md) — the themed root, plus [**`Form.Button`**](./Form/FormButton.md) for its submit and exit actions. The fields themselves are the components above: each asks what it becomes on the screen it is drawn on, so there is no separate themed modal variant.
 
 ## Theme
 

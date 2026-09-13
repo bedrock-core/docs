@@ -1,14 +1,10 @@
 ---
-sidebar_position: 13
-description: "Numeric field drawn as a track with a thumb."
+sidebar_position: 12
+description: "A themed numeric slider for a modal form."
 ---
 # Slider
 
-Numeric field drawn as a track with a thumb. The thumb shows the value's position along the track; pressing it opens a modal to pick a value within the range. Supports controlled and uncontrolled usage.
-
-:::caution Deprecated
-This is the legacy one-modal-per-field pattern. For new screens, use [`Form.Slider`](./Form/FormSlider.md) inside a [`Form`](./Form/Form.md). Still fully supported for existing screens.
-:::
+A themed numeric slider.
 
 ![Slider](/img/ore-styled/Slider.png)
 
@@ -20,74 +16,54 @@ import { Slider } from '@bedrock-core/ore-styled';
 
 ## Usage
 
+Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+
 ```tsx
-<Slider
-  label={'Volume'}
-  min={0}
-  max={100}
-  step={5}
-  onChange={(value) => console.log(value)}
-/>
+<Form onSubmit={({ values }) => console.warn(values.volume)}>
+  <Slider name={'volume'} label={'Volume'} min={0} max={100} step={5} />
+  <Form.Button type={'submit'} label={'Save'} />
+</Form>
 ```
 
-Built on top of the [`Slider`](/docs/ui/components/deprecated/Slider) primitive and the [theme](./theme.md) token map. The thumb only displays the current value; pressing the field opens a single-slider modal where the value is actually chosen — confirm commits, cancel keeps the current one.
+It is [`Form.Slider`](/docs/ui/components/Form/FormSlider) with the [theme](./theme.md)'s track, progress fill and thumb textures applied, plus a caption above it. The widget is the engine's: the player drags it while the form is open, and the value comes back with every other field on submit.
 
 ## Props
 
-### Component-Specific props
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
+| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `label` | `string` | — | Caption rendered above the slider |
 | `min`<Req /> | `number` | — | Minimum selectable value; the left end of the track |
 | `max`<Req /> | `number` | — | Maximum selectable value; the right end of the track |
-| `step` | `number` | `1` | Increment between selectable values in the modal |
-| `value` | `number` | — | Controlled value. When provided, the thumb reflects it on every render and `onChange` is your only way to update it |
-| `defaultValue` | `number` | `min` | Initial value when running uncontrolled |
-| `onChange` | `(value: number) => void` | — | Called with the new value when the player confirms the modal |
-| `onCancel` | `() => void` | — | Called when the player cancels (X / Esc) the modal. The value is left unchanged |
+| `step` | `number` | `1` | Increment between selectable values |
+| `defaultValue` | `number` | `min` | Initial value |
 
-### Modal field props
-
-Slider inherits all [modal field props](/docs/ui/components/deprecated/modal-field-props) (`label`, `title`, `body`, `submitLabel`, `tooltip`) for configuring the modal.
-
-### Control props
-
-Slider inherits all standard [control props](/docs/ui/components/control-props). Use `enabled={false}` to render the disabled track/thumb textures and make the field inert (no modal opens).
+Inherits every prop of [`Form.Slider`](/docs/ui/components/Form/FormSlider) — the track, progress and thumb textures, `trackHeight`, `thumbWidth` / `thumbHeight` — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
-### Controlled
+### A settings form
 
 ```tsx
-function VolumeSetting() {
-  const [volume, setVolume] = useState(50);
-
-  return (
-    <Panel flexDirection={'row'} alignItems={'center'} gap={8}>
-      <Slider
-        label={'Volume'}
-        min={0}
-        max={100}
-        step={5}
-        value={volume}
-        onChange={setVolume}
-        title={'Set volume'}
-        submitLabel={'Save'}
-      />
-      <Text>{`${volume}`}</Text>
-    </Panel>
-  );
-}
+<Form onSubmit={({ values }) => apply(values)}>
+  <Slider name={'volume'} label={'Volume'} min={0} max={100} step={5} defaultValue={70} />
+  <Slider name={'render'} label={'Render distance'} min={2} max={32} />
+  <Form.Button type={'submit'} label={'Apply'} />
+</Form>
 ```
 
-### Uncontrolled
+### Disabled
 
 ```tsx
-<Slider min={1} max={10} defaultValue={3} onChange={(v) => console.log(v)} />
+<Slider name={'locked'} label={'Volume'} min={0} max={10} defaultValue={5} enabled={false} />
 ```
 
 ## Notes
 
-- The thumb only *shows* the value — pair the slider with a `Text` echo if you want the exact number visible without opening the modal.
-- Choose a `step` that matches the precision you actually need — players can only land on `min + n * step`.
-- Make sure `defaultValue` (or a controlled `value`) sits within `[min, max]` so the thumb stays on the track.
+The interactive hitbox of the thumb is a fixed 16 × 16, so keep the visual thumb at its default size unless a mismatch is acceptable — a larger one looks draggable in places it is not.
+
+There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open.
+
+## Limits
+
+Modal-only. The engine draws no slider on an action form or a container screen, so [`useMechanism('Slider')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.

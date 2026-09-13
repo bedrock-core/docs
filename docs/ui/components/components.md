@@ -72,10 +72,6 @@ Only on a container screen. See [Container screens](../guides/container-screens.
 - [`<Expect>`](./Expect.md) — states which screen a fragment is written for, and fails the build when it lands elsewhere
 - [`<Embed>`](./Embed.md) — a screen one pack draws into an area another pack's screen reserves
 
-## Deprecated
-
-[`Input`](./deprecated/Input.md), [`Dropdown`](./deprecated/Dropdown.md) and [`Slider`](./deprecated/Slider.md) are one-modal-per-field components kept until the code removes them; new screens use [`<Form>`](./Form/Form.md).
-
 ## Shared props
 
 - [Control props](./control-props.md) — the flexbox properties, `position={'absolute'}` placement, `visible`, `enabled` and `background`, on every component
