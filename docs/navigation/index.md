@@ -55,8 +55,8 @@ function Row(): JSX.Element {
 
   return (
     <Panel flexDirection={'row'} gap={4}>
-      <Button onPress={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
-      <Button visible={canGoBack} onPress={() => back()}><Text>{'Back'}</Text></Button>
+      <Button action={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
+      <Button visible={canGoBack} action={() => back()}><Text>{'Back'}</Text></Button>
     </Panel>
   );
 }

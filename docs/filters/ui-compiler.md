@@ -62,7 +62,7 @@ export default function Counter(): JSX.Element {
     <Screen>
       <Panel padding={8} gap={6}>
         <Text maxLength={16}>{`count ${count}`}</Text>
-        <Button enabled={count < 9} onPress={() => setCount(value => value + 1)}>{'+'}</Button>
+        <Button enabled={count < 9} action={() => setCount(value => value + 1)}>{'+'}</Button>
       </Panel>
     </Screen>
   );

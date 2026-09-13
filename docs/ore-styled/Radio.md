@@ -28,7 +28,7 @@ import { Radio } from '@bedrock-core/ore-styled';
 />
 ```
 
-The options are an array, not children — this layer owns them and maps each entry to a `Form.Option`, so a caller-supplied child could only fight the array.
+The options are an array, not children — this layer owns them and maps each entry to a `Option`, so a caller-supplied child could only fight the array.
 
 ## It depends on the screen
 
@@ -36,7 +36,7 @@ The options are an array, not children — this layer owns them and maps each en
 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
-| [`<Form>`](/docs/ui/components/Form) | the engine's own [inline select](/docs/ui/components/Form/FormInlineSelect) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
+| [`<Form>`](/docs/ui/components/roots/Form) | the engine's own [inline select](/docs/ui/components/controls/Select) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
 | [`<Screen>`](/docs/ui/components/roots/Screen) | a button per row | `onChange`, with the chosen **value** |
 | [`<Container>`](/docs/ui/components/roots/Container) | a row whose press is an item taken and put back | `onChange`, with the chosen **value** |
 
@@ -65,7 +65,7 @@ interface RadioOption {
 }
 ```
 
-Inherits every prop of [`Form.InlineSelect`](/docs/ui/components/Form/FormInlineSelect) except `children` — the bullet glyphs per state, their size, the option row faces and the label style — with the theme's values as defaults. Row surfaces default to nothing: the bullet carries the look. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Select`](/docs/ui/components/controls/Select) except `children` — the bullet glyphs per state, their size, the option row faces and the label style — with the theme's values as defaults. Row surfaces default to nothing: the bullet carries the look. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -76,7 +76,7 @@ const TEAMS = [{ value: 'red', label: 'Red' }, { value: 'blue', label: 'Blue' }]
 
 <Form onSubmit={({ values }) => join(TEAMS[Number(values.team)].value)}>
   <Radio name={'team'} label={'Team'} options={TEAMS} defaultValue={'red'} />
-  <Form.Button type={'submit'} label={'Join'} />
+  <Button action={'submit'}>{'Join'}</Button>
 </Form>
 ```
 

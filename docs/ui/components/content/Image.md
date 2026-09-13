@@ -82,7 +82,7 @@ function Icons(): JSX.Element {
 ### An icon that presses
 
 ```tsx
-<Button onPress={() => console.warn('pressed')}>
+<Button action={() => console.warn('pressed')}>
   <Image width={32} height={32} texture={'textures/ui/icon'} />
 </Button>
 ```

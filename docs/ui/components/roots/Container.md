@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 description: "The root of a container screen: names the entity the screen opens from, and is the screen's own panel."
 ---
 # Container
@@ -27,7 +27,7 @@ export default function Furnace() {
 }
 ```
 
-Its presence decides the backend, the way [`<Form>`](../Form/Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
+Its presence decides the backend, the way [`<Form>`](./Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the entity it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
 
 ## Props
 

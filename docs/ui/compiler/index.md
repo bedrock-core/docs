@@ -28,7 +28,7 @@ Which host a screen compiles for is decided by its root element, and there is no
 
 **One geometry** — the layout pass owns every `size`, `offset`, `anchor_from` and `anchor_to`, and the host pass is diffed against it after it emits. A host can replace what a control is; it can never move it, so a mechanism cannot quietly break a layout that was signed off.
 
-**A capability model with names** — each host declares what every kind of component becomes on it. A `<Form.Slider>` outside a `<Form>`, a `<Slot>` outside a container screen: refused at build, by name, in that host's own words, instead of drawn inert.
+**A capability model with names** — each host declares what every kind of component becomes on it. A `<Slider>` outside a `<Form>`, a `<Slot>` outside a container screen: refused at build, by name, in that host's own words, instead of drawn inert.
 
 **A drawable document with no host behind it** — the face pass produces a complete screen on its own. That is what the static rules run over, what the [gallery](/docs/filters/ui-compiler#the-gallery) shows, and why nothing hidden can evaluate a binding that is not there.
 

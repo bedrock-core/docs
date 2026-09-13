@@ -1,10 +1,10 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 description: "Numeric field drawn as a track + thumb, for use inside a Form."
 ---
-# Form.Slider
+# Slider
 
-Numeric field drawn as a track + thumb, for use inside a [`Form`](./Form.md).
+Numeric field drawn as a track + thumb, for use inside a [`Form`](../roots/Form.md).
 
 ## Import
 
@@ -16,14 +16,14 @@ import { Form } from '@bedrock-core/ui';
 
 ```tsx
 <Form onSubmit={v => console.warn(v.volume)}>
-  <Form.Slider name={'volume'} min={0} max={10} defaultValue={5} />
-  <Form.Button type={'submit'} />
+  <Slider name={'volume'} min={0} max={10} defaultValue={5} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
 ## How it works
 
-`Form.Slider` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.slider` control; the result (`number`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
+`Slider` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.slider` control; the result (`number`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
 
 ## Props
 
@@ -49,17 +49,21 @@ Inherits [control props](../control-props.md). Defaults to `width: '100%'` when 
 ### Basic slider
 
 ```tsx
-<Form.Slider name={'volume'} min={0} max={10} defaultValue={5} />
+<Slider name={'volume'} min={0} max={10} defaultValue={5} />
 ```
 
 ### With a step
 
 ```tsx
-<Form.Slider name={'brightness'} min={0} max={100} step={5} defaultValue={50} />
+<Slider name={'brightness'} min={0} max={100} step={5} defaultValue={50} />
 ```
 
 ## Notes
 
 - Keep `step` a clean divisor of `max - min` so every reachable value looks intentional on the track.
 - Don't resize `thumbWidth`/`thumbHeight` far from the 16×16 default — the interactive hitbox stays fixed at 16×16 regardless, so a larger visual thumb can look pressable in places it isn't.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Slider)'s `Form.Slider` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Slider)'s `Slider` over styling this primitive by hand.
+
+## Limits
+
+Modal-only. The engine draws no slider on an action form or a container screen, so writing one there is a build error naming the fix rather than a control drawn inert. [`<Toggle>`](../controls/Toggle.md) and [`<Select>`](../controls/Select.md) are the controls that serve all three hosts.

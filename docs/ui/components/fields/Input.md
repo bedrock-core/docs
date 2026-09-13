@@ -1,10 +1,10 @@
 ---
-sidebar_position: 4
+sidebar_position: 1
 description: "Single-line text field, for use inside a Form."
 ---
-# Form.Input
+# Input
 
-Single-line text field, for use inside a [`Form`](./Form.md).
+Single-line text field, for use inside a [`Form`](../roots/Form.md).
 
 ## Import
 
@@ -16,14 +16,14 @@ import { Form } from '@bedrock-core/ui';
 
 ```tsx
 <Form onSubmit={v => console.warn(v.nickname)}>
-  <Form.Input name={'nickname'} placeholder={'§7type here'} />
-  <Form.Button type={'submit'} />
+  <Input name={'nickname'} placeholder={'§7type here'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
 ## How it works
 
-`Form.Input` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.textField` control; the result (`string`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
+`Input` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.textField` control; the result (`string`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
 
 ## Props
 
@@ -46,15 +46,15 @@ Inherits [control props](../control-props.md).
 ### Basic input
 
 ```tsx
-<Form.Input name={'nickname'} placeholder={'§7type here'} />
+<Input name={'nickname'} placeholder={'§7type here'} />
 ```
 
 ### Two inputs side by side
 
 ```tsx
 <Panel flexDirection={'row'} gap={4}>
-  <Form.Input name={'first'} placeholder={'§7first'} flex={1} />
-  <Form.Input name={'second'} placeholder={'§7second'} flex={1} />
+  <Input name={'first'} placeholder={'§7first'} flex={1} />
+  <Input name={'second'} placeholder={'§7second'} flex={1} />
 </Panel>
 ```
 
@@ -62,4 +62,8 @@ Inherits [control props](../control-props.md).
 
 - Always provide a `placeholder` — it's the only hint the player gets about what to type.
 - Keep `name` stable across renders; it's the only key you get back on submit.
-- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Input)'s `Form.Input` over styling this primitive by hand.
+- For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Input)'s `Input` over styling this primitive by hand.
+
+## Limits
+
+Modal-only. The engine draws no text field on an action form or a container screen, so writing one there is a build error naming the fix rather than a control drawn inert. [`<Toggle>`](../controls/Toggle.md) and [`<Select>`](../controls/Select.md) are the controls that serve all three hosts.

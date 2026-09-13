@@ -153,13 +153,13 @@ function VolumeControl() {
       <Panel flexDirection={'row'} gap={8}>
         <Button
           flex={1}
-          onPress={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}
+          action={() => updateSettings({ volume: Math.min(settings.volume + 10, 100) })}
         >
           <Text>{'Volume +'}</Text>
         </Button>
         <Button
           flex={1}
-          onPress={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}
+          action={() => updateSettings({ volume: Math.max(settings.volume - 10, 0) })}
         >
           <Text>{'Volume -'}</Text>
         </Button>

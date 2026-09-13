@@ -16,16 +16,16 @@ import { Input } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+Render it inside a [`<Form>`](/docs/ui/components/roots/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.nickname)}>
   <Input name={'nickname'} label={'Name'} placeholder={'type your name'} width={160} />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
-It is [`Form.Input`](/docs/ui/components/Form/FormInput) with the [theme](./theme.md)'s field textures and font applied, plus a caption above the box. The widget itself is the engine's — it is owned by the client while the form is open, and every field's value comes back at once on submit.
+It is [`Input`](/docs/ui/components/fields/Input) with the [theme](./theme.md)'s field textures and font applied, plus a caption above the box. The widget itself is the engine's — it is owned by the client while the form is open, and every field's value comes back at once on submit.
 
 ## Props
 
@@ -36,7 +36,7 @@ It is [`Form.Input`](/docs/ui/components/Form/FormInput) with the [theme](./them
 | `placeholder` | `string` | — | Text shown inside the field when it is empty |
 | `defaultValue` | `string` | `''` | Initial text |
 
-Inherits every prop of [`Form.Input`](/docs/ui/components/Form/FormInput) — the font, the scale, the text offsets and the per-state box textures — with the theme's values as defaults rather than a lock: pass one and yours wins. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Input`](/docs/ui/components/fields/Input) — the font, the scale, the text offsets and the per-state box textures — with the theme's values as defaults rather than a lock: pass one and yours wins. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -46,7 +46,7 @@ Inherits every prop of [`Form.Input`](/docs/ui/components/Form/FormInput) — th
 <Form onSubmit={({ values }) => save(values.nickname, values.motto)}>
   <Input name={'nickname'} label={'Name'} placeholder={'type your name'} />
   <Input name={'motto'} label={'Motto'} defaultValue={'hello'} />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 

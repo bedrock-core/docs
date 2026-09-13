@@ -21,14 +21,14 @@ function SettingsButton(): JSX.Element {
   const player = usePlayer();
 
   return (
-    <Button onPress={() => render(SettingsApp, player)}>
+    <Button action={() => render(SettingsApp, player)}>
       <Text>{'Settings'}</Text>
     </Button>
   );
 }
 ```
 
-When the handoff goes through an async opener, **return the promise from `onPress`** so the swap lands inside the press's transaction. Fired and forgotten it still converges; worst case the screen re-locks for a frame.
+When the handoff goes through an async opener, **return the promise from `action`** so the swap lands inside the press's transaction. Fired and forgotten it still converges; worst case the screen re-locks for a frame.
 
 ## A form change is a new present
 

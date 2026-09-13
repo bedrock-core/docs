@@ -16,7 +16,7 @@ import { Dropdown } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The selection arrives in the form's `onSubmit`, keyed by `name`.
+Render it inside a [`<Form>`](/docs/ui/components/roots/Form). The selection arrives in the form's `onSubmit`, keyed by `name`.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.difficulty)}>
@@ -26,11 +26,11 @@ Render it inside a [`<Form>`](/docs/ui/components/Form). The selection arrives i
     options={['Peaceful', 'Easy', 'Normal', 'Hard']}
     defaultValue={'Normal'}
   />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
-It is [`Form.Dropdown`](/docs/ui/components/Form/FormDropdown) with the [theme](./theme.md)'s closed-box, popup and option-row textures applied, plus a caption above the box. The ore layer owns the option children: it maps each entry of `options` to a `Form.Option` whose value and label are both that string, which is why `children` is not accepted here.
+It is [`Dropdown`](/docs/ui/components/fields/Dropdown) with the [theme](./theme.md)'s closed-box, popup and option-row textures applied, plus a caption above the box. The ore layer owns the option children: it maps each entry of `options` to a `Option` whose value and label are both that string, which is why `children` is not accepted here.
 
 :::caution The result is an index
 Like the primitive, the submitted value is the selected option's **index** (a `number`), not the string — that is the native modal dropdown's behavior. Read it back as `options[values[name]]`.
@@ -41,11 +41,11 @@ Like the primitive, the submitted value is the selected option's **index** (a `n
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
-| `options`<Req /> | `string[]` | — | The selectable options; each becomes a `Form.Option` with its value and label set to the string |
+| `options`<Req /> | `string[]` | — | The selectable options; each becomes a `Option` with its value and label set to the string |
 | `label` | `string` | — | Caption rendered above the closed box |
 | `defaultValue` | `string` | the first option | Initial selection, matched against one of `options` |
 
-Inherits every prop of [`Form.Dropdown`](/docs/ui/components/Form/FormDropdown) except `children` — the popup background, the option row faces, the option and current-value text styles — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Dropdown`](/docs/ui/components/fields/Dropdown) except `children` — the popup background, the option row faces, the option and current-value text styles — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -56,7 +56,7 @@ const MODES = ['Peaceful', 'Easy', 'Normal', 'Hard'];
 
 <Form onSubmit={({ values }) => console.warn(MODES[Number(values.difficulty)])}>
   <Dropdown name={'difficulty'} label={'Difficulty'} options={MODES} defaultValue={'Normal'} />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
@@ -72,7 +72,7 @@ const MODES = ['Peaceful', 'Easy', 'Normal', 'Hard'];
 
 There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open.
 
-For the same selection model drawn inline, with no popup, use [`Form.InlineSelect`](/docs/ui/components/Form/FormInlineSelect) — or [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) for its themed forms.
+For the same selection model drawn inline, with no popup, use [`Select`](/docs/ui/components/controls/Select) — or [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) for its themed forms.
 
 ## Limits
 

@@ -23,7 +23,7 @@ import { Background } from '@bedrock-core/ui';
 
 `Background` occupies no layout space — it takes no width/height, participates in no flexbox flow, and is invisible to its siblings. It simply renders the given texture across the whole screen, behind all other form content.
 
-Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](../Form/Form.md) modal.
+Place one anywhere in the tree (conventionally first, at the root). It works on both backends — a plain `ActionForm` tree and inside a [`<Form>`](../roots/Form.md) modal.
 
 :::note Only the first `<Background>` wins
 If a tree contains more than one `<Background>`, only the first is rendered; the rest are ignored.
@@ -50,9 +50,9 @@ function Settings({ onSubmit }) {
 
       <Text>{'§lSettings'}</Text>
       <Text>{'Music'}</Text>
-      <Form.Toggle name={'music'} />
-      <Form.Input name={'nickname'} />
-      <Form.Button type={'submit'} label={'Save'} />
+      <Toggle name={'music'} />
+      <Input name={'nickname'} />
+      <Button action={'submit'}>{'Save'}</Button>
     </Form>
   );
 }
@@ -70,7 +70,7 @@ function Menu() {
 
       <Panel padding={12} gap={8}>
         <Text>{'§lMain Menu'}</Text>
-        <Button onPress={play}>
+        <Button action={play}>
           <Text>{'Play'}</Text>
         </Button>
       </Panel>

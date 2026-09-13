@@ -98,10 +98,10 @@ function LanguagePicker() {
 
   return (
     <Panel flexDirection={'row'} gap={4}>
-      <Button onPress={() => i18n.setLocale(player, 'es_ES')}>
+      <Button action={() => i18n.setLocale(player, 'es_ES')}>
         <Text>{t($ => $.settings.spanish)}</Text>
       </Button>
-      <Button onPress={() => i18n.clearLocale(player)}>
+      <Button action={() => i18n.clearLocale(player)}>
         <Text>{t($ => $.settings.systemLanguage)}</Text>
       </Button>
     </Panel>
@@ -119,7 +119,7 @@ function BuyButton({ item }: { item: Item }) {
   const { display, key, raw } = useTranslation(i18n);
 
   return (
-    <Button onPress={() => {
+    <Button action={() => {
       const prefix = display(key($ => $.shop.chatPrefix));
       player.sendMessage(`${prefix} ${display(raw($ => $.shop.bought, { item: item.name, price: item.price }))}`);
     }}>

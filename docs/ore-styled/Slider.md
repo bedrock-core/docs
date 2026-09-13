@@ -16,16 +16,16 @@ import { Slider } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+Render it inside a [`<Form>`](/docs/ui/components/roots/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.volume)}>
   <Slider name={'volume'} label={'Volume'} min={0} max={100} step={5} />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 
-It is [`Form.Slider`](/docs/ui/components/Form/FormSlider) with the [theme](./theme.md)'s track, progress fill and thumb textures applied, plus a caption above it. The widget is the engine's: the player drags it while the form is open, and the value comes back with every other field on submit.
+It is [`Slider`](/docs/ui/components/fields/Slider) with the [theme](./theme.md)'s track, progress fill and thumb textures applied, plus a caption above it. The widget is the engine's: the player drags it while the form is open, and the value comes back with every other field on submit.
 
 ## Props
 
@@ -38,7 +38,7 @@ It is [`Form.Slider`](/docs/ui/components/Form/FormSlider) with the [theme](./th
 | `step` | `number` | `1` | Increment between selectable values |
 | `defaultValue` | `number` | `min` | Initial value |
 
-Inherits every prop of [`Form.Slider`](/docs/ui/components/Form/FormSlider) — the track, progress and thumb textures, `trackHeight`, `thumbWidth` / `thumbHeight` — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Slider`](/docs/ui/components/fields/Slider) — the track, progress and thumb textures, `trackHeight`, `thumbWidth` / `thumbHeight` — with the theme's values as defaults rather than a lock. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -48,7 +48,7 @@ Inherits every prop of [`Form.Slider`](/docs/ui/components/Form/FormSlider) — 
 <Form onSubmit={({ values }) => apply(values)}>
   <Slider name={'volume'} label={'Volume'} min={0} max={100} step={5} defaultValue={70} />
   <Slider name={'render'} label={'Render distance'} min={2} max={32} />
-  <Form.Button type={'submit'} label={'Apply'} />
+  <Button action={'submit'}>{'Apply'}</Button>
 </Form>
 ```
 

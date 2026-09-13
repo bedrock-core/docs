@@ -27,14 +27,14 @@ No extra resource pack: the theme's textures live in the same [render pack](/doc
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Divider, Dropdown, Form, Header, Input, MenuRow, Radio, Slider, Toggle, ToggleButtonGroup, Trail } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Divider, Dropdown, Header, Input, MenuRow, Radio, Slider, Toggle, ToggleButtonGroup, Trail } from '@bedrock-core/ore-styled';
 ```
 
 ## One component per host
 
-A field here is written once and serves every screen it can be drawn on. [`Checkbox`](./Checkbox.md), [`Toggle`](./Toggle.md), [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) ask [`useMechanism`](/docs/ui/hooks/useMechanism) what they become: the engine's own field inside a [`<Form>`](./Form/Form.md), a press on a screen of buttons or a container screen. A screen that can draw neither refuses them at build, in that host's own words.
+A field here is written once and serves every screen it can be drawn on. [`Checkbox`](./Checkbox.md), [`Toggle`](./Toggle.md), [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) ask [`useMechanism`](/docs/ui/hooks/useMechanism) what they become: the engine's own field inside a [`<Form>`](/docs/ui/components/roots/Form), a press on a screen of buttons or a container screen. A screen that can draw neither refuses them at build, in that host's own words.
 
-So there is no themed modal variant of each field, and `Form` has one member — its [action button](./Form/FormButton.md). [Input](./Input.md), [Dropdown](./Dropdown.md) and [Slider](./Slider.md) are the exception: the engine draws no text field, popup or slider outside a modal, so those three are modal-only.
+So there is no themed modal variant of each field, and no themed modal root: a submit is `<Button action={'submit'}>`. [Input](./Input.md), [Dropdown](./Dropdown.md) and [Slider](./Slider.md) are the exception: the engine draws no text field, popup or slider outside a modal, so those three are modal-only.
 
 ## Layout and chrome
 
@@ -61,9 +61,19 @@ So there is no themed modal variant of each field, and `Form` has one member —
 - [**`<Dropdown>`**](./Dropdown.md) — the current selection with a chevron, and a popup
 - [**`<Slider>`**](./Slider.md) — a track, a progress fill and a thumb
 
-## Form
+## Captions
 
-- [**`<Form>`**](./Form/Form.md) — the themed modal root, plus [`Form.Button`](./Form/FormButton.md) for its submit and exit actions, and `fieldLabel` for a caption of your own
+The runtime's controls are deliberately label-free — a caption is composed in this layer, and every themed component above does it for you when you pass `label`. `fieldLabel` is that composition, exported for a control of your own:
+
+```tsx
+import { fieldLabel } from '@bedrock-core/ore-styled';
+
+fieldLabel('Volume', true);   // the caption, in the theme's field-label style
+```
+
+It takes the label and whether the control is enabled. A literal string carries the state color as a `§` prefix; a string the active resolver knows as a `.lang` key passes through untouched, because a prefix in front of a key stops it resolving.
+
+The modal root itself draws nothing, so it is not themed: import [`<Form>`](/docs/ui/components/roots/Form) from `@bedrock-core/ui` and put these components inside it.
 
 ## Theme
 
@@ -71,6 +81,6 @@ So there is no themed modal variant of each field, and `Form` has one member —
 
 ## Next steps
 
-- [`<Form>`](./Form/Form.md) — a whole settings modal in one example
+- [`<Button>`](./Button.md) — the variants, and a form's two actions
 - [Hosts](/docs/ui/guides/hosts) — what each screen can carry, and why a field refuses some of them
 - [Control props](/docs/ui/components/control-props) — the layout props every component here accepts

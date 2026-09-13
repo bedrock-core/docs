@@ -223,7 +223,7 @@ match — a mismatched header means your control reads garbage.
 ## Modal form controls
 
 Everything above covers the `ActionFormData` backend (`button_router`/`label_router`).
-[`Form`](../components/Form/Form.md) renders through a **second** backend — native
+[`Form`](../components/roots/Form.md) renders through a **second** backend — native
 `ModalFormData` — which has its own typed controls and its own set of writer
 helpers. A decorative custom component (`emitLabel`) works unchanged on both
 backends, since `form.label()` exists on `ActionFormData` and `ModalFormData` alike.
@@ -245,7 +245,7 @@ for the native default step (`1`).
 #### `emitDropdown(payload, form, ctx, name, options, defaultValueIndex)`
 Emits a `ModalFormData.dropdown`. `options: string[]`, `defaultValueIndex: number`.
 The native control returns the selected **index**, not a value — see
-[`Form.Dropdown`](../components/Form/FormDropdown.md)'s result gotcha.
+[`Dropdown`](../components/fields/Dropdown.md)'s result gotcha.
 
 #### `emitInput(payload, form, ctx, name, placeholder, defaultValue)`
 Emits a `ModalFormData.textField`. `placeholder: string`, `defaultValue: string`.
@@ -269,7 +269,7 @@ through the writer's 6th argument, `nativeArgs?: Record<string, unknown>` — a
 side channel that's never serialized:
 
 ```ts
-export const FormToggle: FunctionComponent<FormToggleProps> = ({ name, defaultValue, ...layout }) => ({
+export const FormToggle: FunctionComponent<ToggleProps> = ({ name, defaultValue, ...layout }) => ({
   type: MODAL_TOGGLE_SLOT_TYPE,
   props: { ...withControl(layout) /* control-block payload, decoded by the RP */ },
   nativeArgs: { name, defaultValue: defaultValue ?? false }, // writer-only, never serialized
@@ -286,7 +286,7 @@ it has similarly non-primitive or purely-internal data to pass its writer.
 
 ### Dropdown popup architecture
 
-If your custom modal control needs a floating popup (like `Form.Dropdown`'s option
+If your custom modal control needs a floating popup (like `Dropdown`'s option
 list), note that the popup is **not** rendered inside the control's own subtree —
 Bedrock's native dropdown popup box ignores its host's anchors, so the built-in
 dropdown renders its popup through a separate overlay:
@@ -373,8 +373,8 @@ helpers accept both, so a writer that just forwards `payload` needs no special c
 `isActionForm`/`isModalForm` before calling a backend-specific method. `nativeArgs`
 and `children` are almost always `undefined` for an ActionForm-only component; they
 exist for [modal form controls](#modal-form-controls) that need a side channel for
-non-primitive data or post-layout child geometry (e.g. `Form.Radio` reading each
-`Form.Option`'s computed position).
+non-primitive data or post-layout child geometry (e.g. `Select` reading each
+`Option`'s computed position).
 
 #### `emitButton` / `emitLabel` / `emitHeader`
 Slot helpers for ActionForm writers — see [step 2](#2-write-the-writer). For modal

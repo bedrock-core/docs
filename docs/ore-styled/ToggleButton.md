@@ -37,7 +37,7 @@ The same choice a [`Radio`](./Radio.md) makes, in the shape a segmented control 
 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
-| [`<Form>`](/docs/ui/components/Form) | the engine's own [inline select](/docs/ui/components/Form/FormInlineSelect) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
+| [`<Form>`](/docs/ui/components/roots/Form) | the engine's own [inline select](/docs/ui/components/controls/Select) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
 | [`<Screen>`](/docs/ui/components/roots/Screen) | a button per segment | `onChange`, with the chosen **value** |
 | [`<Container>`](/docs/ui/components/roots/Container) | a segment whose press is an item taken and put back | `onChange`, with the chosen **value** |
 
@@ -64,7 +64,7 @@ interface ToggleButtonOption {
 }
 ```
 
-Inherits every prop of [`Form.InlineSelect`](/docs/ui/components/Form/FormInlineSelect) except `children`, with the theme's segment faces and text styles as defaults. Segments are glyph-less by default; pass a `bullet` to opt into one and the primitive's per-state fallbacks apply. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Select`](/docs/ui/components/controls/Select) except `children`, with the theme's segment faces and text styles as defaults. Segments are glyph-less by default; pass a `bullet` to opt into one and the primitive's per-state fallbacks apply. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -79,7 +79,7 @@ const MODES = [
 
 <Form onSubmit={({ values }) => setMode(MODES[Number(values.difficulty)].value)}>
   <ToggleButtonGroup name={'difficulty'} label={'Difficulty'} options={MODES} defaultValue={'normal'} />
-  <Form.Button type={'submit'} label={'Start'} />
+  <Button action={'submit'}>{'Start'}</Button>
 </Form>
 ```
 

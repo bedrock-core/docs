@@ -37,7 +37,7 @@ function CloseButton() {
   const exit = useExit();
 
   return (
-    <Button onPress={() => exit()}>
+    <Button action={() => exit()}>
       <Text>{'Close UI'}</Text>
     </Button>
   );
@@ -57,12 +57,12 @@ function ConditionalClose() {
     <Panel padding={10} gap={8}>
       <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} onPress={() => setIsSaved(true)}>
+        <Button flex={1} action={() => setIsSaved(true)}>
           <Text>{'Save'}</Text>
         </Button>
         <Button
           flex={1}
-          onPress={() => {
+          action={() => {
             if (isSaved) {
               exit();
             }
@@ -95,7 +95,7 @@ function ExitAfterSave() {
   return (
     <Panel padding={10} gap={8}>
       <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
-      <Button onPress={() => setIsSaved(true)}>
+      <Button action={() => setIsSaved(true)}>
         <Text>{'Save and Close'}</Text>
       </Button>
     </Panel>

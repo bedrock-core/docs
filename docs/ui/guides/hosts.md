@@ -9,7 +9,7 @@ A host is one Minecraft screen the library draws on, plus the transport that scr
 | Root | Host | Owner | Served by | What an interaction is |
 | --- | --- | --- | --- | --- |
 | [`<Screen>`](../components/roots/Screen.md) | `form-action` | the player | `render(Screen, player)` | a form entry the engine reports back by index |
-| [`<Form>`](../components/Form/Form.md) | `form-modal` | the player | `render(Form, player)` | a native field the engine owns, returned in one answer on submit |
+| [`<Form>`](../components/roots/Form.md) | `form-modal` | the player | `render(Form, player)` | a native field the engine owns, returned in one answer on submit |
 | [`<Container entity>`](../components/roots/Container.md) | `chest` | the entity | `createContainerScreen(Screen)` | an item moving through a slot of the entity's own container |
 
 All three lay out against the same 320 × 210 canvas. A tree that starts with anything else throws `ScreenRootError` listing the roots.
@@ -20,13 +20,30 @@ A host declares what every kind of component *becomes* on it. A kind the table d
 
 | Component | `form-action` | `form-modal` | `chest` |
 | --- | --- | --- | --- |
-| `Button` | a press | ❌ | an item taken and put back |
-| `Toggle`, `Select`, `Option` | a press | a native field | an item taken and put back |
-| `Slider`, `Dropdown`, `Input` | ❌ | a native field | ❌ |
-| `Slot` | ❌ | ❌ | a cell the player fills |
-| `SlotGrid` | ❌ | ❌ | a collection the engine already publishes |
+| [`Button`](../components/controls/Button.md) | a press | its `'submit'` and `'exit'` only | an item taken and put back |
+| [`Toggle`](../components/controls/Toggle.md) | a press that flips and re-presents | a native field | a cell of the entity's container |
+| [`Select`](../components/controls/Select.md), [`Option`](../components/controls/Option.md) | a press per option | a native field | a cell per option |
+| [`Slider`](../components/fields/Slider.md), [`Dropdown`](../components/fields/Dropdown.md), [`Input`](../components/fields/Input.md) | ❌ | a native field | ❌ |
+| [`Slot`](../components/cells/Slot.md) | ❌ | ❌ | a cell the player fills |
+| [`SlotGrid`](../components/cells/SlotGrid.md) | ❌ | ❌ | a collection the engine already publishes |
 
 Components absent from the table — `Panel`, `Text`, `Image`, `Background`, `Fragment`, `Scroll` — draw on every host and ask for nothing.
+
+## A root has no members
+
+This table is the whole reason there is no `Form.Toggle`. A root names a host and nothing more: every control is a top-level component, and the row above is what decides where it can be written.
+
+So `<Toggle>` is one component with three mechanisms — on `<Screen>` a press that flips its state and renders the screen again, on `<Form>` a field the engine owns until submit, on `<Container>` a cell whose press is an item taken and put straight back. The same source moves between all three:
+
+```tsx
+import { Toggle } from '@bedrock-core/ui';
+
+<Toggle name={'music'} defaultValue={true} on={music} onChange={setMusic} />
+```
+
+Each host uses the props it can — `name` is what a modal reports under, `on` and `onChange` are what the two press hosts give back — and ignores the rest.
+
+`<Input>`, `<Slider>` and `<Dropdown>` are the other shape: one host each, because the engine draws no text field, slider or popup outside a modal. Writing one elsewhere is a build error naming the fix, not a control drawn inert.
 
 Live values travel on carriers: `bool`, `int`, `enum` and `text` on both form hosts, and `bool`, `int` and `text` on the chest. A container publishes no text of its own, so a string crosses one character per slot.
 
@@ -34,7 +51,7 @@ Live values travel on carriers: `bool`, `int`, `enum` and `text` on both form ho
 
 [`useMechanism`](../hooks/useMechanism.md) is the seam: a component asks what its kind becomes here and draws that, so a toggle is a native field on a modal and a pressed button on a screen of buttons without knowing which screen it is on. What differs between hosts is the mechanism, never the component.
 
-That is also what makes the refusals precise. The same `<Form.Slider>` is "put it inside a `<Form>`" on an action form and "a container has no native form" on a container screen, because the fix is different and the host is the one that knows it.
+That is also what makes the refusals precise. The same `<Slider>` is "put it inside a `<Form>`" on an action form and "a container has no native form" on a container screen, because the fix is different and the host is the one that knows it.
 
 ## Writing a fragment for a host you do not own
 
@@ -45,8 +62,8 @@ import { Expect, Form } from '@bedrock-core/ui';
 
 export const AccountFields = (): JSX.Element => (
   <Expect host={'form-modal'}>
-    <Form.Input name={'nickname'} />
-    <Form.Toggle name={'notify'} />
+    <Input name={'nickname'} />
+    <Toggle name={'notify'} />
   </Expect>
 );
 ```

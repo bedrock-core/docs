@@ -28,7 +28,7 @@ Two things produce a registration: the [`ui-compiler` filter](/docs/filters/ui-c
 
 The tree has no host root, or a root below its root.
 
-A screen's root names its [host](../guides/hosts.md) — [`<Screen>`](../components/roots/Screen.md), [`<Form>`](../components/Form/Form.md) or [`<Container>`](../components/roots/Container.md) — and there is no default, so a tree that starts with a `Panel`, a themed card, or two elements side by side has no screen to be. Providers and fragments above the root are looked through.
+A screen's root names its [host](../guides/hosts.md) — [`<Screen>`](../components/roots/Screen.md), [`<Form>`](../components/roots/Form.md) or [`<Container>`](../components/roots/Container.md) — and there is no default, so a tree that starts with a `Panel`, a themed card, or two elements side by side has no screen to be. Providers and fragments above the root are looked through.
 
 It is also what a component throws when it asks [`useMechanism`](../hooks/useMechanism.md) and nothing above it names a host at all.
 

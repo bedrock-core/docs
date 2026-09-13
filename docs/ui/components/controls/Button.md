@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-description: "A press, textured per state, with an onPress handler."
+description: "A press. Its action is a handler, the form's submit, or the way out."
 ---
 # Button
 
@@ -15,7 +15,7 @@ import { Button } from '@bedrock-core/ui';
 ## Usage
 
 ```tsx
-<Button onPress={() => console.warn('pressed')}>
+<Button action={() => console.warn('pressed')}>
   <Text>{'Press me'}</Text>
 </Button>
 ```
@@ -26,56 +26,63 @@ Buttons are sized intrinsically from their content plus the button's built-in pa
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Runs when the player presses the button |
-| `children` | `JSX.Node` | — | What the button shows, typically a `Text` or an `Image` |
+| `action` | `(event: PressEvent) => unknown \| Promise<unknown>` \| `'submit'` \| `'exit'` | — | What the press does; see below |
+| `children` | `JSX.Node` | — | What the button shows — a `Text`, an `Image`, or a row of both |
 | `backgroundHover` | `string` | `background` | Texture drawn while the player hovers |
 | `backgroundPressed` | `string` | `background` | Texture drawn while the button is being pressed |
 | `backgroundLocked` | `string` | `background` | Texture drawn while the button is disabled |
 
 Inherits [control props](../control-props.md). Every state texture falls back to `background`, and `background` falls back to the blank-canvas placeholder, so one texture styles all four states.
 
-This is the primitive [`@bedrock-core/ore-styled`'s `Button`](/docs/ore-styled/Button) is built on.
+## What the action is
 
-## What a press is
+`action` is the one prop a press is given, and it takes three kinds of thing.
 
-`event.player` is who pressed. On a [container screen](../../guides/container-screens.md) `event.host` is the entity that owns the screen; on a form there is none. Every handler in the library takes one event object — see [Handler events](../../guides/handler-events.md).
+| `action` | What happens | Where |
+| --- | --- | --- |
+| a handler | your function runs, with the player who pressed | [`<Screen>`](../roots/Screen.md) and [`<Container>`](../roots/Container.md) |
+| `'submit'` | the native modal submits, and [`<Form onSubmit>`](../roots/Form.md) receives every value | [`<Form>`](../roots/Form.md) |
+| `'exit'` | the screen is left — the modal's dismiss, or the way out of a container screen | `<Form>` and `<Container>` |
 
-What the press *costs* depends on the [host](../../guides/hosts.md): a form entry the engine reports back by index on an action form, an item taken and put straight back on a container screen. A native modal has no generic button at all — use [`<Form.Button>`](../Form/FormButton.md) there.
+A handler is **script**: only this realm can run it, so the build cannot describe where the press leads. `'submit'` and `'exit'` are routed by the engine itself, so nothing reaches script for them at all.
 
-When the destination is another screen rather than a handler, reach for [`<Link>`](./Link.md): its target is data the build can read, which is what makes the screen describable to other addons.
+When the press simply opens another screen, reach for [`<Link>`](./Link.md) instead — its destination is data the build reads off the tree, which is what lets a screen of presses be [described to another addon](../../guides/navigation.md#static-screens).
+
+## What a press costs
+
+What the press *is* depends on the [host](../../guides/hosts.md):
+
+- On `<Screen>` it is a form entry the engine reports back by index.
+- On `<Container>` it is an item taken and put straight back — which is also why `event.host` is the entity that owns the screen there, and why there is none on a form.
+- On `<Form>` there is no generic press at all: a modal has its own two actions and nothing else, so a handler is refused there by name.
+
+Every handler in the library takes one event object — see [Handler events](../../guides/handler-events.md).
 
 ## Examples
 
-### With state
+### A form's two actions
+
+Exactly one `'submit'` is required, and at most one `'exit'` beside it.
 
 ```tsx
-function ToggleButton(): JSX.Element {
-  const [isActive, setIsActive] = useState(false);
+<Form onSubmit={({ values }) => apply(values)} onCancel={() => back(player)}>
+  <Toggle name={'music'} defaultValue={true} />
 
-  return (
-    <Button onPress={() => setIsActive(!isActive)}>
-      <Text>{isActive ? '§aActive' : '§7Inactive'}</Text>
-    </Button>
-  );
-}
-```
-
-### Disabled
-
-```tsx
-<Button enabled={false}>
-  <Text>{'Disabled'}</Text>
-</Button>
+  <Panel flexDirection={'row'} gap={4}>
+    <Button action={'submit'} flex={2}>{'Save'}</Button>
+    <Button action={'exit'} flex={1}>{'Cancel'}</Button>
+  </Panel>
+</Form>
 ```
 
 ### A row sharing the width
 
 ```tsx
 <Panel flexDirection={'row'} padding={10} gap={8}>
-  <Button flex={1} onPress={() => console.warn('cancel')}>
+  <Button flex={1} action={() => console.warn('cancel')}>
     <Text>{'Cancel'}</Text>
   </Button>
-  <Button flex={1} onPress={() => console.warn('confirm')}>
+  <Button flex={1} action={() => console.warn('confirm')}>
     <Text>{'Confirm'}</Text>
   </Button>
 </Panel>
@@ -84,8 +91,16 @@ function ToggleButton(): JSX.Element {
 ### An icon
 
 ```tsx
-<Button onPress={() => console.warn('pressed')}>
+<Button action={() => console.warn('pressed')}>
   <Image width={32} height={32} texture={'textures/items/diamond'} />
+</Button>
+```
+
+### Disabled
+
+```tsx
+<Button enabled={false}>
+  <Text>{'Disabled'}</Text>
 </Button>
 ```
 
@@ -97,7 +112,7 @@ function ToggleButton(): JSX.Element {
   backgroundHover={'textures/ui/button_hover'}
   backgroundPressed={'textures/ui/button_pressed'}
   backgroundLocked={'textures/ui/button_locked'}
-  onPress={() => console.warn('pressed')}
+  action={() => console.warn('pressed')}
 >
   <Text>{'Themed'}</Text>
 </Button>
@@ -105,8 +120,10 @@ function ToggleButton(): JSX.Element {
 
 ## Notes
 
-Let buttons size to their content rather than hardcoding `width` and `height`, unless the layout needs a specific footprint. Inside a row, `flex={1}` on each button distributes the space evenly.
+Let buttons size to their content rather than hardcoding `width` and `height`, unless the layout needs a specific footprint. Inside a row, `flex={1}` on each distributes the space evenly.
 
 Disable a button when its action is unavailable rather than hiding it: a hidden control leaves its box behind on a compiled screen unless the row is a [`<Panel stack>`](../layout/Panel.md#stack).
 
-An `onPress` that returns a promise keeps the press's transaction open until it settles, which is what makes an async handoff flash-free. See [State](../../guides/state.md#one-ui-slot-per-player).
+A handler that returns a promise keeps the press's transaction open until it settles, which is what makes an async handoff flash-free. See [State](../../guides/state.md#one-ui-slot-per-player).
+
+This is the primitive [`@bedrock-core/ore-styled`'s `Button`](/docs/ore-styled/Button) is built on.

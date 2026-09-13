@@ -83,7 +83,7 @@ Interactive primitives (`Button`, the `Form.*` fields) extend `background` with 
 A compiled screen's shape is frozen, so a branch that adds or drops an element cannot be a runtime decision. The build rewrites the two React idioms into a carried `visible` instead, at source level, so what you write stays idiomatic:
 
 ```tsx
-{isAdmin && <Button onPress={ban}><Text>{'Ban'}</Text></Button>}
+{isAdmin && <Button action={ban}><Text>{'Ban'}</Text></Button>}
 ```
 
 becomes `<Button visible={isAdmin} liveVisible …>`. An element ternary becomes **both** branches with opposite `visible`:

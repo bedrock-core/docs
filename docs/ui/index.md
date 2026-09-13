@@ -18,7 +18,7 @@ description: "@bedrock-core/ui writes Minecraft Bedrock screens in JSX and compi
 
 A screen is a component. You write it with JSX, flexbox props and hooks, and the build [compiles](./compiler/index.md) it once into the JSON UI that ships in the pack. At runtime nothing sends a layout: showing a screen sends its title and the values that changed, and the client draws it from the pack it already holds.
 
-Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/roots/Screen.md) is an action form, [`<Form>`](./components/Form/Form.md) a native modal, [`<Container>`](./components/roots/Container.md) a custom entity's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
+Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/roots/Screen.md) is an action form, [`<Form>`](./components/roots/Form.md) a native modal, [`<Container>`](./components/roots/Container.md) a custom entity's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
 
 For a pre-themed component set matching vanilla Minecraft's look, see [`@bedrock-core/ore-styled`](/docs/ore-styled). It is optional — pick it up for batteries-included visuals, skip it to style every primitive yourself.
 
@@ -43,7 +43,7 @@ export default function Welcome(): JSX.Element {
       <Panel padding={10} gap={8}>
         <Text>{'Welcome to Bedrock UI'}</Text>
 
-        <Button onPress={() => console.warn('pressed')}>
+        <Button action={() => console.warn('pressed')}>
           <Text>{'Press me'}</Text>
         </Button>
       </Panel>
@@ -76,7 +76,7 @@ The `@bedrock-core/generated/ui` import is what runs the build's registrations. 
 
 **A layout solved once** — [`@bedrock-core/flexbox`](/docs/flexbox) solves every rect at build time against a fixed 320 × 210 canvas. No geometry is measured in game, and a host that serves the screen cannot move a control the layout placed.
 
-**Refusals with names** — each host declares what every kind of component becomes on it. A `<Form.Slider>` outside a `<Form>` or a `<Slot>` outside a container screen fails the build, in that host's own words, instead of drawing something inert.
+**Refusals with names** — each host declares what every kind of component becomes on it. A `<Slider>` outside a `<Form>` or a `<Slot>` outside a container screen fails the build, in that host's own words, instead of drawing something inert.
 
 **Screens other addons can show** — a [static](./guides/navigation.md#static-screens) screen is described by its title, its entry values and one target per press. Publish that table and a realm running none of your script still shows your screens, because the layout is in the pack every client holds.
 

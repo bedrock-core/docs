@@ -20,7 +20,7 @@ export default function Players(): JSX.Element {
     <Screen>
       <Panel padding={10} gap={8}>
         <Text>{'Players online'}</Text>
-        <Button onPress={() => console.warn('pressed')}>
+        <Button action={() => console.warn('pressed')}>
           <Text>{'Refresh'}</Text>
         </Button>
       </Panel>
@@ -29,7 +29,7 @@ export default function Players(): JSX.Element {
 }
 ```
 
-A screen's root names its [host](../../guides/hosts.md), and there is no default. `<Screen>` makes it an action form the way [`<Form>`](../Form/Form.md) makes it a native modal and [`<Container>`](./Container.md) a container screen. It has no box of its own: its children are laid out against the form canvas exactly as they would be at the top of the tree.
+A screen's root names its [host](../../guides/hosts.md), and there is no default. `<Screen>` makes it an action form the way [`<Form>`](./Form.md) makes it a native modal and [`<Container>`](./Container.md) a container screen. It has no box of its own: its children are laid out against the form canvas exactly as they would be at the top of the tree.
 
 ## Props
 

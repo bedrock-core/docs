@@ -22,7 +22,7 @@ function render(root: JSX.Element | FunctionComponent, player: Player, options?:
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root`<Req /> | `FunctionComponent \| JSX.Element` | — | The screen: a component or element whose root is [`<Screen>`](../components/roots/Screen.md) or [`<Form>`](../components/Form/Form.md) |
+| `root`<Req /> | `FunctionComponent \| JSX.Element` | — | The screen: a component or element whose root is [`<Screen>`](../components/roots/Screen.md) or [`<Form>`](../components/roots/Form.md) |
 | `player`<Req /> | `Player` | — | Who sees it |
 | `options` | `RenderOptions` | `{}` | See below |
 

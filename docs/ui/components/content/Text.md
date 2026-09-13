@@ -60,7 +60,7 @@ function Counter() {
   return (
     <Panel padding={10} gap={8}>
       <Text>{`Count: ${count}`}</Text>
-      <Button onPress={() => setCount(count + 1)}>
+      <Button action={() => setCount(count + 1)}>
         <Text>{'Increment'}</Text>
       </Button>
     </Panel>

@@ -55,10 +55,10 @@ function Timer() {
     <Panel padding={10} gap={8}>
       <Text>{`Count: ${count}`}</Text>
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} onPress={startTimer}>
+        <Button flex={1} action={startTimer}>
           <Text>{'Start'}</Text>
         </Button>
-        <Button flex={1} onPress={stopTimer}>
+        <Button flex={1} action={stopTimer}>
           <Text>{'Stop'}</Text>
         </Button>
       </Panel>
@@ -84,7 +84,7 @@ function PreviousValue() {
     <Panel padding={10} gap={8}>
       <Text>{`Current: ${count}`}</Text>
       <Text>{`Previous: ${prevCountRef.current}`}</Text>
-      <Button onPress={() => setCount(count + 1)}>
+      <Button action={() => setCount(count + 1)}>
         <Text>{'Increment'}</Text>
       </Button>
     </Panel>
@@ -106,7 +106,7 @@ function ExecutionCounter() {
     <Panel padding={10} gap={8}>
       <Text>{`State: ${state}`}</Text>
       <Text>{`Executions: ${executionCount.current}`}</Text>
-      <Button onPress={() => setState(state + 1)}>
+      <Button action={() => setState(state + 1)}>
         <Text>{'Update State'}</Text>
       </Button>
     </Panel>

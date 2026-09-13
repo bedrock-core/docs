@@ -1,0 +1,11 @@
+{
+  "position": 6,
+  "label": "Modal fields",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Modal fields",
+    "description": "The three the engine only draws inside a `<Form>`: a text field, a slider and a popup. Anywhere else they are refused at build."
+  }
+}

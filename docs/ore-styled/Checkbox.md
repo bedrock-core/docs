@@ -26,7 +26,7 @@ import { Checkbox } from '@bedrock-core/ore-styled';
 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
-| [`<Form>`](/docs/ui/components/Form) | a native [`Form.Toggle`](/docs/ui/components/Form/FormToggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
+| [`<Form>`](/docs/ui/components/roots/Form) | a native [`Toggle`](/docs/ui/components/controls/Toggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
 | [`<Screen>`](/docs/ui/components/roots/Screen) | a press that holds its own state | `onChange`, on every press |
 | [`<Container>`](/docs/ui/components/roots/Container) | an item taken and put straight back | `onChange`, on every press |
 
@@ -52,7 +52,7 @@ The theme's textures are defaults, not a lock: `background`, `backgroundHover`, 
 ```tsx
 <Form onSubmit={({ values }) => apply(values.notify === true)}>
   <Checkbox name={'notify'} label={'Enable notifications'} defaultValue={true} />
-  <Form.Button type={'submit'} label={'Save'} />
+  <Button action={'submit'}>{'Save'}</Button>
 </Form>
 ```
 

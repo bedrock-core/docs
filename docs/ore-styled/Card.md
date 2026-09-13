@@ -80,8 +80,8 @@ Inherits [control props](/docs/ui/components/control-props). Use them to size th
   <Text>{'§lConfirm purchase'}</Text>
   <Text>{'Spend 32 emeralds?'}</Text>
   <Panel flexDirection={'row'} gap={6}>
-    <Button variant={'secondary'} flex={1} onPress={() => {}}>{'Cancel'}</Button>
-    <Button variant={'primary'} flex={1} onPress={() => {}}>{'Buy'}</Button>
+    <Button variant={'secondary'} flex={1} action={() => {}}>{'Cancel'}</Button>
+    <Button variant={'primary'} flex={1} action={() => {}}>{'Buy'}</Button>
   </Panel>
 </Card>
 ```

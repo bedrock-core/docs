@@ -7,7 +7,7 @@ description: "Every handler takes one event object; which fields each event carr
 Every handler in the library takes **one event object**, never a positional argument list:
 
 ```tsx
-<Button onPress={({ player }) => player.sendMessage('hi')} />
+<Button action={({ player }) => player.sendMessage('hi')} />
 <Slot onInsert={({ stack, host }) => count(host, stack)} />
 <Form onSubmit={({ values }) => save(values)} />
 ```
@@ -15,7 +15,7 @@ Every handler in the library takes **one event object**, never a positional argu
 | Type | Fields | Used by |
 | --- | --- | --- |
 | `UiEvent` | `player`, `host?` | `Form.onCancel` |
-| `PressEvent` | `player`, `host?` | `Button.onPress` |
+| `PressEvent` | `player`, `host?` | `Button.action` as a handler |
 | `ContainerEvent` | `player`, `host` | `Container.onOpen` / `onClose` |
 | `SlotEvent` | `player`, `host`, `stack` | `Slot.onInsert` / `onRemove` |
 | `SubmitEvent` | `player`, `values` | `Form.onSubmit` |
@@ -24,6 +24,6 @@ Every handler in the library takes **one event object**, never a positional argu
 
 ## Next steps
 
-- [`Button`](../components/controls/Button.md) — `onPress` and the press event
-- [`Form`](../components/Form/Form.md) — `onSubmit` and `onCancel`
+- [`Button`](../components/controls/Button.md) — `action` and the press event
+- [`Form`](../components/roots/Form.md) — `onSubmit` and `onCancel`
 - [Container screens](./container-screens.md) — where `host` comes from

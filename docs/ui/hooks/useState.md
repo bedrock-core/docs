@@ -40,7 +40,7 @@ function Counter() {
   return (
     <Panel padding={10} gap={8}>
       <Text>{`Count: ${count}`}</Text>
-      <Button onPress={() => setCount(count + 1)}>
+      <Button action={() => setCount(count + 1)}>
         <Text>{'Increment'}</Text>
       </Button>
     </Panel>
@@ -57,7 +57,7 @@ function Toggle() {
   const [isOn, setIsOn] = useState(false);
 
   return (
-    <Button onPress={() => setIsOn(!isOn)}>
+    <Button action={() => setIsOn(!isOn)}>
       <Text>{isOn ? '§aON' : '§7OFF'}</Text>
     </Button>
   );
@@ -94,10 +94,10 @@ function StatsDisplay() {
       <Text>{`Mana: ${stats.mana}`}</Text>
       <Text>{`Level: ${stats.level}`}</Text>
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} onPress={heal}>
+        <Button flex={1} action={heal}>
           <Text>{'Heal (+10)'}</Text>
         </Button>
-        <Button flex={1} onPress={levelUp}>
+        <Button flex={1} action={levelUp}>
           <Text>{'Level Up'}</Text>
         </Button>
       </Panel>
@@ -126,10 +126,10 @@ function TodoList() {
         <Text key={index}>{`${index + 1}. ${todo}`}</Text>
       ))}
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} onPress={addTodo}>
+        <Button flex={1} action={addTodo}>
           <Text>{'Add Todo'}</Text>
         </Button>
-        <Button flex={1} onPress={removeLast} enabled={todos.length > 0}>
+        <Button flex={1} action={removeLast} enabled={todos.length > 0}>
           <Text>{'Remove Last'}</Text>
         </Button>
       </Panel>

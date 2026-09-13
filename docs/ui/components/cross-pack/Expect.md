@@ -17,8 +17,8 @@ import { Expect } from '@bedrock-core/ui';
 ```tsx
 export const AccountFields = (): JSX.Element => (
   <Expect host={'form-modal'}>
-    <Form.Input name={'nickname'} />
-    <Form.Toggle name={'notify'} />
+    <Input name={'nickname'} />
+    <Toggle name={'notify'} />
   </Expect>
 );
 ```

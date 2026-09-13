@@ -10,9 +10,11 @@ Built-in JSX components, in the groups the sidebar uses.
 
 A screen's root names its [host](../guides/hosts.md), and there is no default: a tree that starts with anything else is refused with the list of roots.
 
-- [`<Screen>`](./roots/Screen.md) — an action form: buttons, decoration, lists and scrolls, shown with `render()`
-- [`<Form>`](./Form/Form.md) — a native modal form, shown with `render()`; it heads the Form group
+- [`<Screen>`](./roots/Screen.md) — an action form: presses, decoration, lists and scrolls, shown with `render()`
+- [`<Form>`](./roots/Form.md) — a native modal form, shown with `render()`
 - [`<Container>`](./roots/Container.md) — a container screen an entity owns, served with `createContainerScreen()`
+
+A root is **only** a host. None of them has members: every control below is a top-level component, and which hosts it works on is its own capability.
 
 ## Layout
 
@@ -32,8 +34,13 @@ What a screen shows. Also free on every host.
 
 ## Controls
 
-- [`<Button>`](./controls/Button.md) — a press, with an `onPress` handler
+Each of these works on more than one host, and draws differently on each — a `<Toggle>` is a native field on a modal, a press that flips on a screen, and a cell on a container.
+
+- [`<Button>`](./controls/Button.md) — a press: a handler, the form's `'submit'`, or the way `'exit'`
 - [`<Link>`](./controls/Link.md) — a press whose destination is data, so the build can read where it leads
+- [`<Toggle>`](./controls/Toggle.md) — a boolean
+- [`<Select>`](./controls/Select.md) — one choice out of several, every option visible
+- [`<Option>`](./controls/Option.md) — one entry for a `<Select>` or a `<Dropdown>`
 
 ## Compiled
 
@@ -54,16 +61,11 @@ Only on a container screen. See [Container screens](../guides/container-screens.
 
 ## Modal fields
 
-`<Form>` renders one native `ModalFormData`: every field is shown at once, and every value arrives together, keyed by `name`, on submit.
+The three the engine only draws inside a [`<Form>`](./roots/Form.md). Anywhere else they are refused at build, by name.
 
-- [`<Form>`](./Form/Form.md) — the root; wraps the whole modal
-- [`<Form.Toggle>`](./Form/FormToggle.md) — a boolean field
-- [`<Form.Slider>`](./Form/FormSlider.md) — a number within a range
-- [`<Form.Dropdown>`](./Form/FormDropdown.md) — one option from a popup
-- [`<Form.InlineSelect>`](./Form/FormInlineSelect.md) — the same selection model, drawn inline with no popup
-- [`<Form.Option>`](./Form/FormOption.md) — one entry for `Form.Dropdown` or `Form.InlineSelect`
-- [`<Form.Input>`](./Form/FormInput.md) — a single-line text field
-- [`<Form.Button>`](./Form/FormButton.md) — the form's submit and exit actions
+- [`<Input>`](./fields/Input.md) — a single-line text field
+- [`<Slider>`](./fields/Slider.md) — a number within a range
+- [`<Dropdown>`](./fields/Dropdown.md) — one option from a popup
 
 ## Cross-pack
 

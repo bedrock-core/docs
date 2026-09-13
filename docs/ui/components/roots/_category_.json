@@ -6,6 +6,6 @@
   "link": {
     "type": "generated-index",
     "title": "Roots",
-    "description": "The three roots. A screen's root names its host, and there is no default. The third, `<Form>`, heads the Form group."
+    "description": "The three roots. A screen's root names its host, and there is no default."
   }
 }
