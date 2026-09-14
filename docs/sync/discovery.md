@@ -9,6 +9,8 @@ description: "sync.discovery finds the other bedrock-core nodes in the world and
 
 Script events are ephemeral: a pack that loads after another has already announced never hears that announce. Discovery solves that two ways — every node re-announces on a heartbeat, and a freshly started node broadcasts a `whois` that prompts existing peers to announce straight back. A TTL sweep drops peers that go quiet.
 
+Who is present is a **value**, not a stream: `peers` is a [`ReadonlyObservable`](/docs/observable) list you read with `.get()`, watch with `.subscribe()`, or derive from with `computed()`. It republishes only when the world actually changes — a heartbeat repeating what a peer already said notifies nobody, so a listener can sit on the list without waking every five seconds per peer.
+
 ## Import
 
 ```ts
@@ -18,12 +20,16 @@ import type { PeerInfo, CollisionInfo, IncompatiblePeer, PeerListener, Collision
 ## Usage
 
 ```ts
+sync.discovery.peers.subscribe(peers => console.warn(`${peers.length} peers`));
+
 sync.discovery.onPeerUp(peer => console.warn(`${peer.id} v${peer.version} joined`));
 sync.discovery.onPeerDown(peer => console.warn(`${peer.id} left`));
 
-const peers = sync.discovery.peers;
+const peers = sync.discovery.peers.get();
 const economy = sync.discovery.getPeer('drav0011_economy');
 ```
+
+Subscribe to `peers` to react to **who is here**; use `onPeerUp` / `onPeerDown` to react to a single arrival or departure.
 
 From a runtime, the same information arrives pre-interpreted through [`core.registry`](/docs/server/api/registry), which turns each peer's `meta` into an addon manifest. Reach for `core.node.discovery` only when you want the raw peer records.
 
@@ -37,7 +43,6 @@ interface PeerInfo {
   protocol: number;
   caps: readonly string[];
   meta?: Record<string, unknown>;
-  lastSeen: number;
 }
 ```
 
@@ -49,7 +54,8 @@ interface PeerInfo {
 | `protocol` | The wire version this node and that peer [settled on](#protocol-negotiation). |
 | `caps` | Optional behaviors the peer can read, narrowed to what `protocol` allows. |
 | `meta` | The opaque blob it attached to its announce. `server-runtime` puts the addon manifest plus `runtimeVersion` here. |
-| `lastSeen` | The tick this peer was last heard from. |
+
+Liveness is deliberately **not** a field here. A tick that moves on every heartbeat inside an observable value would make the list republish every five seconds per peer; ask for it by id with [`lastSeen`](#lastseen) instead.
 
 ## Protocol negotiation
 
@@ -78,10 +84,18 @@ A capability is always narrowed by the negotiated version: one advertised by a n
 ### `peers`
 
 ```ts
-sync.discovery.peers: PeerInfo[]
+sync.discovery.peers: ReadonlyObservable<readonly PeerInfo[]>
 ```
 
-Known live peers. **Excludes self.**
+Known live peers, as an observable list. **Excludes self.** Each notification carries a fresh array; the `PeerInfo` objects inside it are never mutated.
+
+### `lastSeen`
+
+```ts
+sync.discovery.lastSeen(id: string): number | undefined
+```
+
+The tick a node was last heard from, or `undefined` if it has never been heard. Covers unreachable nodes as well as peers.
 
 ### `getPeer`
 
@@ -95,7 +109,7 @@ sync.discovery.getPeer(id: string): PeerInfo | undefined
 sync.discovery.onPeerUp(listener: PeerListener): Unsubscribe
 ```
 
-Fires when a peer is seen for the **first** time. Subsequent heartbeats from the same peer refresh `lastSeen` without re-firing.
+Fires when a peer is seen for the **first** time. Subsequent heartbeats from the same peer refresh its liveness without re-firing, and without republishing `peers` unless the peer said something new (a version bump, a changed `meta`).
 
 ### `onPeerDown`
 
@@ -103,7 +117,7 @@ Fires when a peer is seen for the **first** time. Subsequent heartbeats from the
 sync.discovery.onPeerDown(listener: PeerListener): Unsubscribe
 ```
 
-Fires when a peer expires — its `lastSeen` fell outside the TTL window during a sweep. Note that this is a **timeout**, not a graceful goodbye: there is no "leaving" message, so a peer that stops answering takes up to the TTL to disappear.
+Fires when a peer expires — it was last heard outside the TTL window when a sweep ran. `peers` is republished once for the whole sweep, before any listener runs, so a handler reading the list never sees a half-swept world. Note that this is a **timeout**, not a graceful goodbye: there is no "leaving" message, so a peer that stops answering takes up to the TTL to disappear.
 
 ### `onCollision`
 
@@ -123,13 +137,12 @@ At the runtime layer this is [`core.registry.onNamespaceCollision`](/docs/server
 ### `incompatiblePeers`
 
 ```ts
-sync.discovery.incompatiblePeers: IncompatiblePeer[]
+sync.discovery.incompatiblePeers: ReadonlyObservable<readonly IncompatiblePeer[]>
 
 interface IncompatiblePeer {
   id: string;
   pmin: number;
   pmax: number;
-  lastSeen: number;
 }
 ```
 

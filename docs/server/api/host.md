@@ -9,6 +9,8 @@ description: "core.host answers one question: should this realm do the work that
 
 Some jobs cannot be done by every addon at once — rendering a shared config or guide UI is the motivating one. Host election picks a single realm for those, deterministically, with no negotiation messages at all.
 
+The winner is a pure function of the [registry](./registry.md), so it is expressed as one: `core.host.id` is `computed` over `core.registry.addons` and re-derives itself whenever an addon appears or disappears.
+
 ## Import
 
 ```ts
@@ -23,15 +25,15 @@ import type { HostListener } from '@bedrock-core/server';
 if (core.host.isHost) {
   renderLocally(player);
 } else {
-  void core.rpc.request(core.host.hostId, 'core:ui.open', { playerId: player.id });
+  void core.rpc.request(core.host.id.get(), 'core:ui.open', { playerId: player.id });
 }
 
-core.host.subscribe(hostId => console.warn('UI host is now', hostId));
+core.host.id.subscribe(hostId => console.warn('UI host is now', hostId));
 ```
 
 ## Why it exists
 
-Bedrock's custom-command registry is **world-global** and has no unregister API, so whichever realm loads first *owns* a given command name for the life of the world. That ownership is immovable — who does the **rendering** is not. The election picks the realm running the newest `@bedrock-core/server-runtime`, and the command owner becomes a router: it forwards the request to `core.host.hostId` instead of rendering locally.
+Bedrock's custom-command registry is **world-global** and has no unregister API, so whichever realm loads first *owns* a given command name for the life of the world. That ownership is immovable — who does the **rendering** is not. The election picks the realm running the newest `@bedrock-core/server-runtime`, and the command owner becomes a router: it forwards the request to `core.host.id.get()` instead of rendering locally.
 
 The practical consequence: **installing one up-to-date bedrock-core addon upgrades the shared UI for every addon in the world**, including ones whose authors never shipped again.
 
@@ -58,13 +60,18 @@ core.host.isHost: boolean
 
 Whether this realm is the current host and should do the work itself.
 
-### `hostId`
+### `id`
 
 ```ts
-core.host.hostId: string
+core.host.id: ReadonlyObservable<string>
 ```
 
-Namespace of the realm running the newest runtime. Falls back to this addon's own id when the registry is somehow empty, so callers always have a target to address.
+Namespace of the realm running the newest runtime, as an observable. Falls back to this addon's own id when the registry is somehow empty, so callers always have a target to address.
+
+```ts
+core.host.id.get();                       // who hosts right now
+effect(() => refreshBanner(core.host.id.get()), [core.host.id]);
+```
 
 ### `host`
 
@@ -79,15 +86,15 @@ The elected host's [registry entry](./registry.md#registeredaddon), when it is s
 ```ts
 core.host.subscribe(listener: HostListener): Unsubscribe
 
-type HostListener = (hostId: string, previousHostId: string | undefined) => void;
+type HostListener = (hostId: string, previousHostId: string) => void;
 ```
 
-Notified when hosting **moves**. Fires only on an actual change — including the initial election, if you subscribe before peers appear. Returns an unsubscribe function.
+Notified when hosting **moves** — shorthand for `core.host.id.subscribe(...)`. Fires only on an actual change; subscribing does not deliver the current host, which `core.host.id` already has. Returns an unsubscribe function.
 
 ```ts
 core.host.subscribe((hostId, previousHostId) => {
   if (hostId === core.id) {
-    console.warn(`[economy] took over hosting from ${String(previousHostId)}`);
+    console.warn(`[economy] took over hosting from ${previousHostId}`);
   }
 });
 ```
@@ -105,7 +112,7 @@ function dispatch(player: Player, command: string, args: (string | undefined)[])
     return;
   }
 
-  void core.rpc.request(core.host.hostId, 'core:ui.open', {
+  void core.rpc.request(core.host.id.get(), 'core:ui.open', {
     playerId: player.id,
     command,
     args,

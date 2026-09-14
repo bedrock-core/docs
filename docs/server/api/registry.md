@@ -7,6 +7,8 @@ description: "core.registry is a live directory of every bedrock-core addon pres
 
 `core.registry` is a live directory of every bedrock-core addon present in the world — the local addon plus every peer [discovery](/docs/sync/discovery) can currently see. Each peer's announce `meta` blob is interpreted as an [`AddonManifest`](./runtime.md#manifest-fields), keyed by its namespace.
 
+The directory itself is [`addons`](#addons), a [`ReadonlyObservable`](/docs/observable) list derived from discovery. `all()`, `get()` and `has()` all read that one list, so there is never a cached answer to "who is here" that can disagree with the live one.
+
 ## Import
 
 ```ts
@@ -17,7 +19,9 @@ import type { RegisteredAddon, AddonListener, CollisionListener, IncompatibleLis
 ## Usage
 
 ```ts
-core.registry.all();                        // RegisteredAddon[] — self + all live peers
+core.registry.addons.subscribe(addons => redraw(addons));  // who is here, as a value
+
+core.registry.all();                        // readonly RegisteredAddon[] — self + all live peers
 core.registry.get('drav0011_economy');      // by namespace, or undefined
 core.registry.has('drav0011_economy');      // boolean
 
@@ -50,13 +54,27 @@ A peer's manifest is reconstructed from its discovery `meta`. A node that publis
 
 ## API
 
+### `addons`
+
+```ts
+core.registry.addons: ReadonlyObservable<readonly RegisteredAddon[]>
+```
+
+Every registered addon as an observable list, the local one first. Subscribe to it to track **who is present**; `computed()` over it to derive something from the set.
+
+```ts
+const addonCount = computed(() => core.registry.addons.get().length, [core.registry.addons]);
+```
+
+It republishes when an addon appears or disappears, and when a peer re-announces something new — never on the heartbeats that repeat what a peer already said.
+
 ### `all`
 
 ```ts
-core.registry.all(): RegisteredAddon[]
+core.registry.all(): readonly RegisteredAddon[]
 ```
 
-Every registered addon: the local one first, then every live peer.
+A snapshot of [`addons`](#addons): the local addon first, then every live peer.
 
 ```ts
 for (const addon of core.registry.all()) {
@@ -86,7 +104,7 @@ Whether an addon with that namespace is present. This is the predicate feature c
 core.registry.onRegister(listener: AddonListener): Unsubscribe
 ```
 
-Fires when a **peer** becomes visible. Returns an unsubscribe function.
+Fires when a **peer** becomes visible. Returns an unsubscribe function. This is a delta: to react to who is present rather than to each arrival, subscribe to [`addons`](#addons).
 
 ```ts
 const off = core.registry.onRegister((addon) => {
@@ -137,13 +155,12 @@ core.registry.onNamespaceCollision((info) => {
 ### `incompatible`
 
 ```ts
-core.registry.incompatible(): IncompatiblePeer[]
+core.registry.incompatible(): readonly IncompatiblePeer[]
 
 interface IncompatiblePeer {
   id: string;
   pmin: number;
   pmax: number;
-  lastSeen: number;
 }
 ```
 
@@ -181,13 +198,21 @@ core.register({
 });
 ```
 
+### `missing`
+
+```ts
+core.registry.missing: ReadonlyObservable<readonly string[]>
+```
+
+The declared dependencies that are not currently present, as an observable list. Empty means satisfied.
+
 ### `missingDependencies`
 
 ```ts
-core.registry.missingDependencies(): string[]
+core.registry.missingDependencies(): readonly string[]
 ```
 
-The declared dependencies that are not currently present.
+A snapshot of [`missing`](#missing).
 
 ```ts
 core.registry.missingDependencies();   // ['drav0011_economy'] until it registers
