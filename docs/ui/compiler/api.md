@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 6
 description: "@bedrock-core/ui-compiler: the entry points the ui-compiler filter calls, and the limits the compiled model imposes."
 ---
 # @bedrock-core/ui-compiler
@@ -7,6 +7,8 @@ description: "@bedrock-core/ui-compiler: the entry points the ui-compiler filter
 The build-time library the [`ui-compiler` filter](/docs/filters/ui-compiler) runs: a screen component goes in, the JSON UI document a host serves comes out.
 
 This page is for tooling. An addon never imports it — the filter does, and it bundles the compiler out of the **project's** `node_modules` rather than its own, so a screen is compiled by the version of the library the addon actually ships. An addon that compiles screens therefore depends on the compiler even though none of it reaches `main.js`.
+
+The same holds for `@bedrock-core/ui-runtime`: the pipeline runs inside that bundle, so the filter cannot drift from the library. Every value the emitted JSON UI shares with the runtime — the character table, the layout property, the highest layout key — is read off it for the same reason.
 
 ## Import
 
@@ -67,5 +69,3 @@ The IR node types, the JSON UI control types, and the result shapes (`CompiledSc
 Percentages, `%c` and anchors are not exposed to authors. The layout solver is the one source of geometry and it produces pixel rects against a canvas the host names; JSON UI's relative sizes appear only where the engine has to decide at draw time — a stack sized so hidden rows collapse, a fill inside a box the layout already sized. A screen-relative canvas is a host property, never a prop.
 
 Sharing one parameterized frame between a look's states does not work. A frame resolves `caption@$core_content` in its own scope, where the variable was never set, so the reference names nothing and the control has no type: the client refuses every caption in the world. Sharing has to happen at the mount, with each consumer carrying the caption name along with the frame.
-
-A config screen shaped for a schema is compiled into the **owning** addon's pack, and the host draws every addon's config — so a host has shaped screens for its own sections and none for anybody else's. The list item is answered by generic fallbacks that ship in the library set, `list_item_text` and `list_item_choice`, which the host falls back to whenever the owner's shaped screen is not in its bundle. Other shaped screens have no fallback.

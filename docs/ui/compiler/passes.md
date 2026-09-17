@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 description: "The face pass and the host pass, the three layers between the IR and the JSON UI, and the behaviors a primitive carries."
 ---
 # Faces and hosts
@@ -15,7 +15,7 @@ Every screen is compiled twice over, and one invariant separates the halves: the
 
 A **face** is a node's look with its static props. A **socket** is a node with at least one carried prop or one input: a button with a press, a label whose text is live, a slot, a native field, a subtree whose `visible` is carried.
 
-The face document draws every socket as its inert face — the button with no mappings, the label with its reference string, the slot as an empty cell frame, the field as its payload-free twin — so the document is complete and drawable with no host behind it at all. That is what the gallery shows, and what the static validator checks.
+The face document draws every socket as its inert face — the button with no mappings, the label with its reference string, the slot as an empty cell frame, the field as its payload-free twin — so the document is complete and drawable with no host behind it at all. That is what the static validator checks.
 
 The host then takes each socket, in document order, and either **wraps** its face (a gate reading a carried `visible`; a one-child `stack_panel` carrying an entry index) or **replaces** it (a cell over a container slot, a text carrier in place of a static label, a native field placed by its row). Nothing outside the sockets is touched.
 
@@ -73,7 +73,7 @@ A behavior is client-only logic a primitive carries: still static, still in the 
 | `states` | which children a control draws per state |
 | `follows` | a sibling drawn while a swap beside it is on |
 
-A swap is the one mechanism a compiled screen owns outright: a toggle changes its own content with nothing reaching script. So everything built on it — a tab change, a fold, a choice between options — costs no press, no re-present and no payload. [`<Tabs>`](../components/compiled/Tabs.md) is a group of swaps whose panes are drawn; [`<Disclosure>`](../components/compiled/Disclosure.md) is one swap with a panel that follows it.
+A swap is the one mechanism a compiled screen owns outright: a toggle changes its own content with nothing reaching script. So everything built on it — a tab change, a fold, a choice between options — costs no press, no re-present and no payload. [`<Tabs>`](../components/Tabs.md) is a group of swaps whose panes are drawn; [`<Disclosure>`](../components/Disclosure.md) is one swap with a panel that follows it.
 
 Content a swap shows lives inside the look, which is what keeps a look that is not showing from being built. Two things follow. A look may **draw** a sibling of its swap, which the compile moves inside it and re-bases from the swap's own corner — for content too big to solve inside the control that switches to it, such as a tab's whole pane. And `follows` is the one read in the other direction, for the one case that cannot nest: a fold's rows have to reflow what is under them, and a stack gives a hidden child no space, which is the reflow.
 

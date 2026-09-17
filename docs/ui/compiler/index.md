@@ -20,7 +20,7 @@ Four steps, each a pure function of the last.
 | Face | the IR | the face document — every control as its look alone, with no bindings at all |
 | Fill | the face document plus a host | the screen document the host serves |
 
-Layout is solved once, at build, by [`@bedrock-core/flexbox`](/docs/flexbox) against a fixed 320 × 210 canvas. No geometry is measured in game and no layout is sent to the client.
+Layout is solved at build, by [`@bedrock-core/flexbox`](/docs/flexbox) against a fixed 320 × 210 canvas. No geometry is measured in game and no layout is sent to the client. A screen with text composed per language — a [`<Trans>`](../components/Trans.md), a [`useComposed`](../hooks/useComposed.md) string — is laid out again at the widths the first layout gave that text.
 
 Which host a screen compiles for is decided by its root element, and there is no default — `<Screen>` is an action form, `<Form>` a native modal, `<Container>` a chest screen. What differs between them is in [Hosts](../guides/hosts.md).
 
@@ -30,13 +30,16 @@ Which host a screen compiles for is decided by its root element, and there is no
 
 **A capability model with names** — each host declares what every kind of component becomes on it. A `<Slider>` outside a `<Form>`, a `<Slot>` outside a container screen: refused at build, by name, in that host's own words, instead of drawn inert.
 
-**A drawable document with no host behind it** — the face pass produces a complete screen on its own. That is what the static rules run over, what the [gallery](/docs/filters/ui-compiler#the-gallery) shows, and why nothing hidden can evaluate a binding that is not there.
+**A drawable document with no host behind it** — the face pass produces a complete screen on its own. That is what the static rules run over, and why nothing hidden can evaluate a binding that is not there.
 
-**A frozen shape** — a compiled screen cannot add or drop a control at runtime. Everything that varies says so in the source: [`<List max>`](../components/compiled/List.md) for a count, [`maxLength`](../components/content/Text.md) for a string, `visible` for a branch. A render that drifts from what the build measured is reported by `render(screen, player, { debug: true })` rather than silently drawn wrong.
+**A frozen shape** — a compiled screen cannot add or drop a control at runtime. Everything that varies says so in the source: [`<List max>`](../components/List.md) for a count, [`maxLength`](../components/Text.md) for a string, `visible` for a branch. A render that drifts from what the build measured is reported by `render(screen, player, { debug: true })` rather than silently drawn wrong.
 
 ## Next steps
 
+- [Writing a screen](./screens.md) — the `*.screen.tsx` file, reserved values, carried visibility and static screens
+- [What the build writes](./output.md) — mounts, routing, host definitions and the text written per language
 - [Faces and hosts](./passes.md) — the two passes, the three layers, and the behaviors a primitive carries
+- [Build checks](./checks.md) — everything that stops a build, and what fails it
 - [`@bedrock-core/ui-compiler`](./api.md) — the programmatic entry points, for tooling rather than for addons
 - [Hosts](../guides/hosts.md) — the three screens the library draws on, and what each can carry
-- [`ui-compiler` filter](/docs/filters/ui-compiler) — running the compiler over a project
+- [`ui-compiler` filter](/docs/filters/ui-compiler) — installing the filter and its settings
