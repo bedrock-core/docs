@@ -1,10 +1,9 @@
 ---
-sidebar_position: 3
 description: "Themed container that wraps the Panel primitive with a Minecraft card background, standard padding, and gap."
 ---
 # Card
 
-Themed container that wraps the [`Panel`](/docs/ui/components/layout/Panel) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Six visual variants cover the flat and raised surfaces in default, light, and dark tones.
+Themed container that wraps the [`Panel`](/docs/ui/components/Panel) primitive with a Minecraft card background, standard padding, and gap. Use it to group related content into a single visual unit. Six visual variants cover the flat and raised surfaces in default, light, and dark tones.
 
 ![Card](/img/ore-styled/Card.png)
 
@@ -80,8 +79,8 @@ Inherits [control props](/docs/ui/components/control-props). Use them to size th
   <Text>{'§lConfirm purchase'}</Text>
   <Text>{'Spend 32 emeralds?'}</Text>
   <Panel flexDirection={'row'} gap={6}>
-    <Button variant={'secondary'} flex={1} action={() => {}}>{'Cancel'}</Button>
-    <Button variant={'primary'} flex={1} action={() => {}}>{'Buy'}</Button>
+    <Button variant={'secondary'} flex={1} onPress={() => {}}>{'Cancel'}</Button>
+    <Button variant={'primary'} flex={1} onPress={() => {}}>{'Buy'}</Button>
   </Panel>
 </Card>
 ```

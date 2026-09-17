@@ -1,5 +1,4 @@
 ---
-sidebar_position: 4
 description: "Thin horizontal or vertical separator."
 ---
 # Divider

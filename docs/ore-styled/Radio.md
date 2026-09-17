@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 description: "One choice out of several with every option visible: a bullet and a label per row."
 ---
 # Radio
@@ -36,9 +35,9 @@ The options are an array, not children — this layer owns them and maps each en
 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
-| [`<Form>`](/docs/ui/components/roots/Form) | the engine's own [inline select](/docs/ui/components/controls/Select) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
-| [`<Screen>`](/docs/ui/components/roots/Screen) | a button per row | `onChange`, with the chosen **value** |
-| [`<Container>`](/docs/ui/components/roots/Container) | a row whose press is an item taken and put back | `onChange`, with the chosen **value** |
+| [`<Form>`](/docs/ui/components/Form) | the engine's own [inline select](/docs/ui/components/Select) | nothing until submit — the chosen option's **index** arrives at `values[name]` |
+| [`<Screen>`](/docs/ui/components/Screen) | a button per row | `onChange`, with the chosen **value** |
+| [`<Container>`](/docs/ui/components/Container) | a row whose press is an item taken and put back | `onChange`, with the chosen **value** |
 
 So `name` is the modal's prop, and `value` / `onChange` only do anything where a press reaches script. Note the asymmetry: the modal answers with an index, a press answers with the value.
 
@@ -65,7 +64,7 @@ interface RadioOption {
 }
 ```
 
-Inherits every prop of [`Select`](/docs/ui/components/controls/Select) except `children` — the bullet glyphs per state, their size, the option row faces and the label style — with the theme's values as defaults. Row surfaces default to nothing: the bullet carries the look. Through it, [control props](/docs/ui/components/control-props) as well.
+Inherits every prop of [`Select`](/docs/ui/components/Select) except `children` — the bullet glyphs per state, their size, the option row faces and the label style — with the theme's values as defaults. Row surfaces default to nothing: the bullet carries the look. Through it, [control props](/docs/ui/components/control-props) as well.
 
 ## Examples
 
@@ -76,7 +75,7 @@ const TEAMS = [{ value: 'red', label: 'Red' }, { value: 'blue', label: 'Blue' }]
 
 <Form onSubmit={({ values }) => join(TEAMS[Number(values.team)].value)}>
   <Radio name={'team'} label={'Team'} options={TEAMS} defaultValue={'red'} />
-  <Button action={'submit'}>{'Join'}</Button>
+  <Form.Button type={'submit'}>{'Join'}</Form.Button>
 </Form>
 ```
 
@@ -98,7 +97,7 @@ function TeamPicker(): JSX.Element {
 
 ## Notes
 
-Use `Radio` when the options read as a list and each needs its own line. [`ToggleButtonGroup`](./ToggleButton.md) is the same choice drawn as side-by-side segments, for when a button-sized hit target suits better.
+Use `Radio` when the options read as a list and each needs its own line. [`ToggleButtons`](./ToggleButtons.md) is the same choice drawn as side-by-side segments, for when a button-sized hit target suits better.
 
 ## Limits
 

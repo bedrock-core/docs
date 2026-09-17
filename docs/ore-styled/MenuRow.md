@@ -1,5 +1,4 @@
 ---
-sidebar_position: 7
 description: "The browse-screen row: leading thumbnail, title, one-line subtitle, and a trailing chevron, drawn on the dropdown-option face."
 ---
 # MenuRow
@@ -35,7 +34,7 @@ function Row(): JSX.Element {
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `title`<Req /> | [`DisplayText`](/docs/i18n#displaytext) | — | First line — the row's name |
+| `title`<Req /> | [`DisplayText`](/docs/i18n/api#displaytext) | — | First line — the row's name |
 | `subtitle` | `DisplayText` | — | Second line, rendered muted. Omit for a single-line row |
 | `icon` | `string` | — | Leading thumbnail texture path. Omit for a text-only row |
 | `iconSize` | `number` | the theme's row icon size | Thumbnail edge in px |
@@ -43,7 +42,7 @@ function Row(): JSX.Element {
 | `selected` | `boolean` | `false` | Whether this row is the list's current selection. For a selecting list, where one row stands after the press |
 | `depth` | `number` | `0` | Indent level for nested index rows. Each step insets the row's whole box, not its contents, so a child row is visibly narrower than its section header |
 | `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Press handler. Use `to` instead when the press opens another screen |
-| `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/ui/components/controls/Link) |
+| `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/ui/components/Link) |
 | `replace` | `boolean` | `false` | With `to`: take the place of the screen this row is on rather than stacking over it |
 | `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
 | `subtitleMaxLength` | `number` | — | Characters the subtitle reserves. Setting it also keeps the subtitle line when the subtitle is empty, so the row has one shape |
@@ -162,4 +161,4 @@ Read from `theme.components.menuRow`:
 - Keep subtitles to one short line; both lines are clipped with an ellipsis at one line each.
 - Use `depth` for hierarchy instead of nesting `Panel`s with padding — the inset box is what communicates the level.
 - Set `chevron={false}` whenever pressing the row does not open another screen.
-- Pair with [`Header`](./Header.md) above and a [`Scroll`](/docs/ui/components/layout/Scroll) around the rows for a standard browse screen.
+- Pair with [`Header`](./Header.md) above and a [`Scroll`](/docs/ui/components/Scroll) around the rows for a standard browse screen.

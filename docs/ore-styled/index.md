@@ -8,8 +8,8 @@ description: "@bedrock-core/ore-styled is a themed component layer over the @bed
 
 `@bedrock-core/ore-styled` is a themed component layer over the [`@bedrock-core/ui`](/docs/ui/components) primitives.
 
-:::caution Pre-1.0
-`@bedrock-core/ore-styled` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/ore-styled` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## What is @bedrock-core/ore-styled?
@@ -27,23 +27,19 @@ No extra resource pack: the theme's textures live in the same [render pack](/doc
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Divider, Dropdown, Header, Input, MenuRow, Radio, Slider, Toggle, ToggleButtonGroup, Trail } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Divider, Dropdown, Header, Input, MenuRow, Radio, Slider, Tabs, Toggle, ToggleButtons, Trail } from '@bedrock-core/ore-styled';
 ```
-
-## One component per host
-
-A field here is written once and serves every screen it can be drawn on. [`Checkbox`](./Checkbox.md), [`Toggle`](./Toggle.md), [`Radio`](./Radio.md) and [`ToggleButtonGroup`](./ToggleButton.md) ask [`useMechanism`](/docs/ui/hooks/useMechanism) what they become: the engine's own field inside a [`<Form>`](/docs/ui/components/roots/Form), a press on a screen of buttons or a container screen. A screen that can draw neither refuses them at build, in that host's own words.
-
-So there is no themed modal variant of each field, and no themed modal root: a submit is `<Button action={'submit'}>`. [Input](./Input.md), [Dropdown](./Dropdown.md) and [Slider](./Slider.md) are the exception: the engine draws no text field, popup or slider outside a modal, so those three are modal-only.
 
 ## Layout and chrome
 
-- [**`<Button>`**](./Button.md) — a button in seven variants, or a themed [`<Link>`](/docs/ui/components/controls/Link) when given `to`
+- [**`<Button>`**](./Button.md) — a button in seven variants, or a themed [`<Link>`](/docs/ui/components/Link) when given `to`
 - [**`<Card>`**](./Card.md) — the standard panel background, padding and gap, in six variants
 - [**`<Divider>`**](./Divider.md) — a horizontal or vertical rule in three variants
 - [**`<Header>`**](./Header.md) — a screen header bar: back control, breadcrumb trail, close control
 - [**`<Trail>`**](./Trail.md) — the breadcrumb trail on its own, with live segments that take no room when empty
 - [**`<MenuRow>`**](./MenuRow.md) — a browse-list row: thumbnail, title, subtitle, trailing chevron
+- [**`<Tabs>`**](./Tabs.md) — panes switched on the client, each header a label on the theme's faces
+- **`FRAME`, `PADDING`, `PADDING_BOTTOM`, `HEADER_HEIGHT`, `HEADER_GAP`, `BODY`** — the canvas every bedrock-core screen is baked at and the card inside it, so two packs that meet in one frame agree on its geometry without asking each other
 
 ## Booleans
 
@@ -53,7 +49,7 @@ So there is no themed modal variant of each field, and no themed modal root: a s
 ## One choice out of several
 
 - [**`<Radio>`**](./Radio.md) — a bullet and a label per row
-- [**`<ToggleButtonGroup>`**](./ToggleButton.md) — side-by-side segments with fused borders
+- [**`<ToggleButtons>`**](./ToggleButtons.md) — side-by-side segments with fused borders, one choice or several
 
 ## Modal fields
 
@@ -63,7 +59,7 @@ So there is no themed modal variant of each field, and no themed modal root: a s
 
 ## Captions
 
-The runtime's controls are deliberately label-free — a caption is composed in this layer, and every themed component above does it for you when you pass `label`. `fieldLabel` is that composition, exported for a control of your own:
+The runtime's controls are deliberately label-free — a caption is composed in this layer, and every themed component above does it for you when you pass `label`. [`fieldLabel`](./fieldLabel.md) is that composition, exported for a control of your own:
 
 ```tsx
 import { fieldLabel } from '@bedrock-core/ore-styled';
@@ -73,7 +69,7 @@ fieldLabel('Volume', true);   // the caption, in the theme's field-label style
 
 It takes the label and whether the control is enabled. A literal string carries the state color as a `§` prefix; a string the active resolver knows as a `.lang` key passes through untouched, because a prefix in front of a key stops it resolving.
 
-The modal root itself draws nothing, so it is not themed: import [`<Form>`](/docs/ui/components/roots/Form) from `@bedrock-core/ui` and put these components inside it.
+The modal root itself draws nothing, so it is not themed: import [`<Form>`](/docs/ui/components/Form) from `@bedrock-core/ui` and put these components inside it.
 
 ## Theme
 

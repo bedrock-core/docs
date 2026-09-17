@@ -1,5 +1,4 @@
 ---
-sidebar_position: 16
 description: "ore-styled ships a single theme object that holds every visual token it uses — spacing scale, font colors, and per-component texture paths plus sizing."
 ---
 # Theme
@@ -91,17 +90,17 @@ Each entry under `theme.components` holds the textures, sizing, padding, and (wh
 [`Radio`](./Radio.md) reuses this same section — there's no separate Form-specific radio theme.
 
 ### `tabs`
-- `height`, `padding.{x,y}`, `textures` (`active`, `inactive`, `inactiveHover`, `bar`).
+- `height`, `paddingX`, `selectedDrop`, `textures` (`normal`, `hover`, `pressed`, `disabled`, `disabledPressed`), and `textStyle`: `font`, `scale`, and a colour per state as RGB in 0..1 (`selected`, `unselected`, `disabled`).
 
-Tokens only — `ore-styled` exports no `Tabs` component yet. Read them if you're building your own tabbed strip and want it to match the rest of the set.
+[`Tabs`](./Tabs.md) reads this section. Its values and its textures under `textures/ui/ore-styled/tabs` started as copies of the [`toggleButton`](#togglebutton) section's.
 
 ### `toggle`
 - `width`, `height`, full `textures` set (off/on × default/hover/disabled).
 
 ### `toggleButton`
-- `height`, `paddingX`, `textures` (`normal`, `hover`, `pressed`, `disabled`, `disabledPressed`), and `textStyle.{selected,unselected}`.
+- `height`, `paddingX`, `selectedDrop` (how far a chosen segment's label sits lower), `textures` (`normal`, `hover`, `pressed`, `disabled`, `disabledPressed`), and `textStyle`: `font`, `scale`, and a colour per state as RGB in 0..1 (`selected`, `unselected`, `disabled`).
 
-[`ToggleButton`](./ToggleButton.md) reuses this same section — there's no separate Form-specific toggle-button theme.
+[`ToggleButtons`](./ToggleButtons.md) reads this section in both of its modes.
 
 ### `field`
 - `padding: { top, bottom, x }`, `gap`.
@@ -115,7 +114,7 @@ Tokens only — `ore-styled` exports no `Tabs` component yet. Read them if you'r
 
 ### `form`
 - `labelGap` — vertical gap (px) between a field's label and its control.
-- `labelStyle`: `font`, `scale`, `color`, `disabledColor` — the caption style every [`Form.*`](/docs/ui/components/roots/Form) field composes its `label` with.
+- `labelStyle`: `font`, `scale`, `color`, `disabledColor` — the caption style every [`Form.*`](/docs/ui/components/Form) field composes its `label` with.
 
 ### `slider`
 - `height`, `trackHeight`, `thumb: { width, height }`.
@@ -129,7 +128,7 @@ import type { OreTheme, ButtonTextStyle } from '@bedrock-core/ore-styled';
 ```
 
 - `OreTheme` — the full theme shape.
-- `ButtonTextStyle` — `{ font, scale, color, disabledColor }`, the same shape used inside button and toggle-button variants.
+- `ButtonTextStyle` — `{ font, scale, color, disabledColor }`, the shape used inside the button variants.
 
 ## Example: reusing the spacing scale
 

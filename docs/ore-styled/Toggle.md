@@ -1,5 +1,4 @@
 ---
-sidebar_position: 9
 description: "A themed on/off switch that draws as a native field on a modal and a press everywhere else."
 ---
 # Toggle
@@ -26,9 +25,9 @@ import { Toggle } from '@bedrock-core/ore-styled';
 
 | Screen | What it becomes | What reaches script |
 | --- | --- | --- |
-| [`<Form>`](/docs/ui/components/roots/Form) | a native [`Toggle`](/docs/ui/components/controls/Toggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
-| [`<Screen>`](/docs/ui/components/roots/Screen) | a press that holds its own state | `onChange`, on every press |
-| [`<Container>`](/docs/ui/components/roots/Container) | an item taken and put straight back | `onChange`, on every press |
+| [`<Form>`](/docs/ui/components/Form) | a native [`Toggle`](/docs/ui/components/Toggle) the engine owns | nothing until submit — the value arrives at `values[name]` |
+| [`<Screen>`](/docs/ui/components/Screen) | a press that holds its own state | `onChange`, on every press |
+| [`<Container>`](/docs/ui/components/Container) | an item taken and put straight back | `onChange`, on every press |
 
 `name` is the modal's prop and required there; `on` and `onChange` only do anything where a press reaches script.
 
@@ -53,7 +52,7 @@ The theme's switch textures are defaults, not a lock: `background`, `backgroundH
 <Form onSubmit={({ values }) => apply(values)}>
   <Toggle name={'sound'} label={'Sound'} defaultValue={true} />
   <Toggle name={'hints'} label={'Show hints'} />
-  <Button action={'submit'}>{'Save'}</Button>
+  <Form.Button type={'submit'}>{'Save'}</Form.Button>
 </Form>
 ```
 

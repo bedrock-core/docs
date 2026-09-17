@@ -1,5 +1,4 @@
 ---
-sidebar_position: 5
 description: "Ore-styled header bar: icon-only back button, a breadcrumb trail, and a close button."
 ---
 # Header
@@ -37,15 +36,13 @@ Renders as `Settings > Server > Pricing`, centered between the two icon buttons.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `title` | [`DisplayText`](/docs/i18n#displaytext) | — | The screen's own name, first in the trail. Optional only with `segments` |
-| `breadcrumbs` | `DisplayText[]` | `[]` | The trail after the title, joined as `title > … > …` |
-| `segments` | `readonly TrailSegment[]` | — | The whole [trail](./Trail.md) as segments, live ones included, in place of `title` and `breadcrumbs` |
-| `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
+| `title` | [`DisplayText`](/docs/i18n/api#displaytext) | — | The screen's own name, first in the trail. Baked, with `breadcrumbs` |
+| `breadcrumbs` | `DisplayText[]` | `[]` | The trail after the title, joined as `title > ... > ...`. Baked, with `title` |
+| `trail` | [`DisplayText`](/docs/i18n/api#displaytext) | — | The whole [trail](./Trail.md) as one composed value, in place of `title` and `breadcrumbs`, for a trail only known when the screen is shown |
 | `onBack` | `(event: PressEvent) => unknown` | — | Press handler for the back control. Omit to hide it — the slot keeps its width, so the title stays centered |
 | `backTo` | `ScreenKey` | — | The screen the back control returns to, in place of `onBack`: a link rather than a handler |
 | `back` | `boolean` | `false` | A back control that returns wherever the player came from, without naming it |
 | `cancel` | `string` | — | The back control as a modal's labeled dismiss. Only inside a `<Form>` |
-| `cancelWidth` | `number` | — | Room the cancel control takes; wide enough for its word |
 | `onClose` | `(event: PressEvent) => unknown` | — | Press handler for the close control. Omit to hide it |
 
 Inherits [control props](/docs/ui/components/control-props). It already sets `marginTop`, `marginLeft` and `marginRight` to `1` and takes the theme's header background; your own layout props override them.
@@ -67,8 +64,24 @@ Three ways out, and which one you can use depends on what the screen knows about
 A modal has two controls of its own, its submit and its dismiss, and the dismiss is the only one left to leave the screen with. `cancel` puts it in the back slot with a word on it, since leaving a form abandons what was typed into it:
 
 ```tsx
-<Header title={'Settings'} cancel={'Cancel'} cancelWidth={44} />
+<Header title={'Settings'} cancel={'Cancel'} />
 ```
+
+The labeled dismiss is wider than the icon back, so a header wearing one leaves its [trail](./Trail.md) less room — which is what `trailText(segments, resolve, { back: 'cancel' })` is told.
+
+## A trail only known at show time
+
+`title` and `breadcrumbs` are composed by the build in every language, collapsed to the room the bar leaves. Where the trail is decided per player — the addon selected, the entity being edited — compose it instead and pass it as `trail`, which travels as one form entry:
+
+```tsx
+<Header
+  trail={trailText([addonName, scopeLabel, entityName], core.translations.forPlayer(player))}
+  onBack={() => back()}
+  onClose={() => close()}
+/>
+```
+
+Pass `trail` on every render, empty included: the entry it reserves is part of the screen's shape, and a shape that comes and goes moves every entry after it.
 
 ## Localized titles
 
@@ -109,7 +122,7 @@ Omit `onBack` on the first screen of a stack. The slot still reserves its width,
 
 ### As a fixed screen header
 
-Pair it with a [`Scroll`](/docs/ui/components/layout/Scroll) so the header stays put while the content moves.
+Pair it with a [`Scroll`](/docs/ui/components/Scroll) so the header stays put while the content moves.
 
 ```tsx
 <Panel flexDirection={'column'} width={'100%'} height={'100%'}>
@@ -139,7 +152,7 @@ Read from `theme.components.header`:
 ## Notes
 
 - Use the same `Header` on every screen of a stack so the chrome never jumps.
-- Keep the title short and put context in `breadcrumbs` — the trail is what gets clipped first when the row runs out of room.
+- Keep the title short and put context in `breadcrumbs` — a composed trail gives its middle up first when the row runs out of room.
 - Omit `onBack` rather than passing a no-op on a root screen; the layout already accounts for the missing control.
 - Prefer `key()` output over pre-resolved strings so each player reads the trail in their own language.
 - Pair with [`MenuRow`](./MenuRow.md) for the list below it — the two are designed as one browse screen.
