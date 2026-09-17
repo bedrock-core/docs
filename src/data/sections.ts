@@ -130,12 +130,22 @@ export const sections: Section[] = [
 
   // Content
   {
+    id: 'catalog',
+    label: 'catalog',
+    pkg: '@bedrock-core/catalog',
+    category: 'content',
+    status: 'beta',
+    description: 'Every addon in the world, each with the page it published.',
+    icon: 'layout-list',
+    repo: `${GH}/apps`,
+  },
+  {
     id: 'config',
     label: 'config',
     pkg: '@bedrock-core/config',
     category: 'content',
     status: 'beta',
-    description: 'The shared addon list, settings screens and guide viewer.',
+    description: 'Settings in three scopes, and the screens that edit them.',
     icon: 'sliders-horizontal',
     repo: `${GH}/apps`,
   },

@@ -1,6 +1,6 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { categories, publishedSections, sectionsOf } from './src/data/sections';
 import { redirects } from './src/data/redirects';
 import { bedrockPrism } from './src/prism/bedrock';
@@ -9,35 +9,6 @@ import { bedrockPrism } from './src/prism/bedrock';
 // registry (menus, home page) without an instance.
 const liveSections = publishedSections.filter((section) => existsSync(`docs/${section.id}`));
 const isLive = (id: string): boolean => liveSections.some((section) => section.id === id);
-
-// Search credentials come from the environment; a local .env fills them in for
-// development. Without them the algolia block is omitted, the search theme is
-// never loaded and the search box disappears instead of rendering inert.
-function envFile(): Record<string, string> {
-  if (!existsSync('.env')) return {};
-  return Object.fromEntries(
-    readFileSync('.env', 'utf8')
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#'))
-      .map((line) => {
-        const at = line.indexOf('=');
-        return [line.slice(0, at).trim(), line.slice(at + 1).trim().replace(/^["']|["']$/g, '')];
-      })
-      .filter(([key]) => key),
-  );
-}
-
-const env = { ...envFile(), ...process.env } as Record<string, string | undefined>;
-const algolia =
-  env.ALGOLIA_APP_ID && env.ALGOLIA_SEARCH_API_KEY && env.ALGOLIA_INDEX_NAME
-    ? {
-        appId: env.ALGOLIA_APP_ID,
-        apiKey: env.ALGOLIA_SEARCH_API_KEY,
-        indexName: env.ALGOLIA_INDEX_NAME,
-        contextualSearch: false,
-      }
-    : undefined;
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -116,6 +87,22 @@ const config: Config = {
         ],
       },
     ],
+    // Builds a search index at build time, so search works offline and on the
+    // deployed site with no external service or credentials.
+    [
+      '@easyops-cn/docusaurus-search-local',
+      {
+        hashed: true,
+        language: ['en'],
+        indexBlog: false,
+        indexPages: true,
+        docsRouteBasePath: liveSections.map((section) => `docs/${section.id}`),
+        // None of these sections are versioned; this only has to name a real
+        // plugin id so the search bar's version lookup has one to fall back
+        // on outside a docs route (the home page, the 404 page, /search).
+        docsPluginIdForPreferredVersion: 'server',
+      },
+    ],
   ],
 
   themeConfig: {
@@ -136,9 +123,6 @@ const config: Config = {
         { type: 'custom-iconLink', position: 'right', href: 'https://github.com/bedrock-core/', icon: 'github', label: 'GitHub' },
       ],
     },
-    // DocSearch: apply at https://docsearch.algolia.com/apply/, then set the
-    // three ALGOLIA_ variables. See .env.example.
-    ...(algolia ? { algolia } : {}),
     // Code blocks stay dark in both themes; one palette serves both.
     prism: {
       theme: bedrockPrism,

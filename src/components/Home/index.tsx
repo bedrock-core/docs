@@ -225,7 +225,7 @@ export function Cta(): ReactNode {
     <div className={styles.cta}>
       <section className={styles.wrap}>
         <h2 className={styles.ctaTitle}>Start with one package.</h2>
-        <p className={styles.ctaSub}>Pin an exact version while a package is in beta, and read the release notes before you upgrade.</p>
+        <p className={styles.ctaSub}>Pin an exact version, and read the changelog before you upgrade.</p>
         <div className={styles.actions}>
           <Button size="lg" iconRight="arrow-right" href="/docs/server">
             Read the docs

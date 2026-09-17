@@ -28,7 +28,7 @@ Links: relative `.md` inside a section, absolute `/docs/<section>/...` across se
 # ore-styled                       ← package name, lowercase
 One sentence.
 
-:::caution Pre-1.0 … :::           ← until this package ships 1.0
+:::caution Beta … :::              ← until this package ships 1.0
 
 ## What is @bedrock-core/ore-styled?
 ## Install

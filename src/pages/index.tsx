@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import PackageGrid from '@site/src/components/PackageGrid';
-import { CodeTour, Cta, Features, Hero } from '@site/src/components/Home';
+import PackageGrid from '../components/PackageGrid';
+import { CodeTour, Cta, Features, Hero } from '../components/Home';
 
 export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();

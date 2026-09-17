@@ -26,11 +26,6 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Build website
         run: yarn build
-        env:
-          # DocSearch. Unset means the site builds without a search box.
-          ALGOLIA_APP_ID: ${{ vars.ALGOLIA_APP_ID }}
-          ALGOLIA_SEARCH_API_KEY: ${{ secrets.ALGOLIA_SEARCH_API_KEY }}
-          ALGOLIA_INDEX_NAME: ${{ vars.ALGOLIA_INDEX_NAME }}
 
       # From v4 this action excludes dotfiles, so Docusaurus's `.nojekyll` is not in the artifact.
       # Harmless here: artifact deployments are served as-is and never run Jekyll, and the build

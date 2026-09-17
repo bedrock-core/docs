@@ -43,7 +43,7 @@ The existing docs voice is unusually good and this system preserves it verbatim 
 
 **Feature bullets** follow a strict shape: **bold noun** — em dash — one sentence that says what it does *and* what it protects you from. *"**RPC** — typed request/response calls to another addon, with a timeout so an absent peer can never hang your code."*
 
-**Honesty about maturity.** Every package overview opens with the same Pre-1.0 admonition. Limitations are stated as facts, not hidden: *"A state change on its own does not repaint their screen."* Optional layers are explicitly optional: *"It's optional — pick it up when you want batteries-included visuals, skip it when you'd rather style every primitive yourself."*
+**Honesty about maturity.** Every package overview opens with the same Beta admonition. Limitations are stated as facts, not hidden: *"A state change on its own does not repaint their screen."* Optional layers are explicitly optional: *"It's optional — pick it up when you want batteries-included visuals, skip it when you'd rather style every primitive yourself."*
 
 **Page rhythm.** Every docs page ends with a **Next Steps** list of `link — short description` pairs. Keep it.
 

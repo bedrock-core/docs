@@ -13,7 +13,7 @@ markup and class-free inline styling the design system expects.
 Mono-type status pill for release state and stability markers.
 
 ```jsx
-<Badge tone="warning">pre-1.0</Badge>
+<Badge tone="warning">beta</Badge>
 <Badge tone="accent">v0.9.2</Badge>
 ```
 
@@ -349,7 +349,7 @@ export declare function PaginationNav(props: PaginationNavProps): JSX.Element;
 Sidebar header that names the current docs section and drops down to switch. Pair it with `SidebarNav`'s `header` slot — it is the flat, searchable counterpart to `DocsMenu`.
 
 ```jsx
-<SidebarNav header={<SectionSwitcher sections={all} value={id} onChange={setId} status="pre-1.0" />} … />
+<SidebarNav header={<SectionSwitcher sections={all} value={id} onChange={setId} status="beta" />} … />
 ```
 
 <details><summary>Props contract</summary>
@@ -370,7 +370,7 @@ export interface SectionSwitcherProps {
   value?: string;
   onChange?: (id: string) => void;
   scope?: string;
-  /** Release badge shown on the closed trigger, e.g. "pre-1.0". */
+  /** Release badge shown on the closed trigger, e.g. "beta". */
   status?: string;
   style?: React.CSSProperties;
 }
@@ -462,10 +462,10 @@ export declare function TableOfContents(props: TableOfContentsProps): JSX.Elemen
 
 ### Callout
 
-Admonition block for the docs body — the "Pre-1.0" banner on every package overview is `kind="warning"`.
+Admonition block for the docs body — the "Beta" banner on every package overview is `kind="warning"`.
 
 ```jsx
-<Callout kind="warning" title="Pre-1.0">Breaking changes can still land until 1.0.0.</Callout>
+<Callout kind="warning" title="Beta">The API can change between releases.</Callout>
 ```
 
 <details><summary>Props contract</summary>
@@ -589,7 +589,7 @@ export declare function NextStepsList(props: NextStepsListProps): JSX.Element;
 Tile for one package in the homepage grid or a docs index.
 
 ```jsx
-<PackageCard name="server" icon="server" accent="var(--pkg-server)" status="pre-1.0"
+<PackageCard name="server" icon="server" accent="var(--pkg-server)" status="beta"
   description="Registry, RPC, replicated state and config across addon realms." />
 ```
 
@@ -608,7 +608,7 @@ export interface PackageCardProps {
   icon?: string;
   /** Package identity colour — pass a --pkg-* token. */
   accent?: string;
-  /** Short release-state label, e.g. "pre-1.0". */
+  /** Short release-state label, e.g. "beta". */
   status?: string;
   href?: string;
   style?: React.CSSProperties;

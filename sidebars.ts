@@ -2,6 +2,9 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 
 // Every docs instance reads this file and builds its `docs` sidebar from its
 // own folder: `_category_.json` files group pages, `sidebar_position` orders them.
+// A page without a position sorts after the positioned ones, by file name, with
+// uppercase before lowercase: ore-styled positions only its overview, so its
+// components list alphabetically and its helpers (`fieldLabel`, `theme`) last.
 const sidebars: SidebarsConfig = {
   docs: [
     {

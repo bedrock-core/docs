@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import { useLocation } from '@docusaurus/router';
@@ -10,6 +10,7 @@ import styles from './switcher.module.css';
 export default function SectionSwitcher(): ReactNode {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const id = pathname.startsWith('/docs/') ? pathname.split('/')[2] : undefined;
   const current = sections.find((s) => s.id === id);
@@ -28,6 +29,15 @@ export default function SectionSwitcher(): ReactNode {
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('keydown', onKey);
     };
+  }, [open]);
+
+  // Centre the active row before paint. Sets scrollTop on the list alone,
+  // since scrollIntoView would also scroll the sidebar and the page.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!open || !list) return;
+    const active = list.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (active) list.scrollTop = active.offsetTop - (list.clientHeight - active.offsetHeight) / 2;
   }, [open]);
 
   if (!current) return null;
@@ -49,7 +59,7 @@ export default function SectionSwitcher(): ReactNode {
         <Icon name="chevrons-up-down" size="sm" color="var(--text-faint)" />
       </button>
       {open ? (
-        <div className={styles.list} role="listbox">
+        <div ref={listRef} className={styles.list} role="listbox">
           {categories.map((category) =>
             sections
               .filter((s) => s.category === category.id)

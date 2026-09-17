@@ -1,29 +1,22 @@
 # @bedrock-core/docs
 
-Documentation for @bedrock-core, built using [Docusaurus](https://docusaurus.io/).
+Documentation for @bedrock-core, built with [Docusaurus](https://docusaurus.io/).
 
-Available in <https://bedrock-core.drav.dev>
+Available at <https://bedrock-core.drav.dev>
 
-## Installation
+## Install
 
 ```bash
 yarn
 ```
 
-## Local Development
+## Develop
 
 ```bash
 yarn start
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Search
-
-DocSearch is configured from the environment. Copy `.env.example` to `.env` and
-fill in the three values from the Algolia dashboard; without them the site builds
-with no search box. The deploy workflow reads the same names from repository
-variables and secrets.
+Starts a local dev server and opens a browser window. Most changes are reflected live without a restart.
 
 ## Build
 
@@ -31,20 +24,12 @@ variables and secrets.
 yarn build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+Generates static content into the `build` directory, servable by any static hosting service.
 
-## Deployment
+## Writing a page
 
-Using SSH:
+Every page under `docs/` follows [`STYLE.md`](./STYLE.md).
 
-```bash
-USE_SSH=true yarn deploy
-```
+## Sections
 
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+`src/data/sections.ts` is the registry of sections: id, category, status, description, icon and source repository. `docusaurus.config.ts` creates one docs-plugin instance per section that has a matching `docs/<id>` folder, and the navbar, sidebar switcher and home page all read the same registry.
