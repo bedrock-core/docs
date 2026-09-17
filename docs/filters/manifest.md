@@ -46,7 +46,7 @@ packs/BP/manifest.test.json   extends it, adds @minecraft/server-gametest
   "extends": "./manifest.json",
   "header": { "name": "DEV pack" },
   "dependencies": [
-    { "uuid": "5e0e2a5b-74e2-4dd6-9c11-8a4f3f6b2d90", "version": [0, 1, 0] },
+    { "uuid": "5e0e2a5b-74e2-4dd6-9c11-8a4f3f6b2d90", "version": "0.1.0" },
     { "module_name": "@minecraft/server", "version": "2.9.0-beta" },
     { "module_name": "@minecraft/server-gametest", "version": "1.0.0-beta" }
   ]
@@ -84,12 +84,29 @@ Do not list the filter twice in a profile. Every run sweeps the variants in `BP/
 
 After resolving, every `manifest.*.json` left in `BP/` and `RP/` is deleted from the temp workspace, both pack roots, whichever ones the profile named. `manifest.json` itself and files that merely look close (`manifest.json.bak`) are left alone. Nothing is written until every entry has resolved and validated, so a broken `extends` chain leaves the workspace as it was.
 
-The filter edits nothing it was not asked to: no UUID generation, no script-module injection, no version stamping.
+
+## Validation
+
+The resolved manifest is checked before anything is written, so a broken merge fails the build instead of shipping. Every check names the failing path.
+
+| Check | Fails when |
+| --- | --- |
+| `format_version` | Not the number `3` |
+| `header` | Missing, or its `uuid` is missing |
+| `header.version` | Present but not a SemVer string |
+| `header.min_engine_version` | Present but not a SemVer string |
+| `header.base_game_version` | Present but not a SemVer string |
+| `modules[].version` | Present but not a SemVer string, for any module |
+| `dependencies[].version` | Present but not a SemVer string, for any dependency |
+| `metadata.authors` | Missing, empty, or containing a value that is not a string |
+
+A version 3 manifest takes a SemVer string everywhere a version appears — `"1.0.0"`, never the `[major, minor, patch]` array form.
 
 ## Settings
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
 | `manifestPath` | `string \| string[]` | `"BP/manifest.json"` | Manifest to resolve. An array resolves one per pack |
+| `pretty` | `false \| { indent?, size? }` | `false` | How generated JSON is laid out. Absent or `false` writes it minified. An object lays it out: `indent` is `"tab"` or `"space"`, `size` the characters per level (2 for spaces, 1 for tabs when omitted) |
 
 Paths are relative to Regolith's temp workspace; a leading `packs/` is stripped, so `packs/BP/manifest.test.json` and `BP/manifest.test.json` both work. The result is always written as `manifest.json` beside its source — Bedrock accepts no other name.

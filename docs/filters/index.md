@@ -8,8 +8,8 @@ description: "The Regolith filters that build a bedrock-core addon."
 
 Regolith filters that build a bedrock-core addon: they resolve the manifest, compile guides, localization and screens, and bundle the scripts.
 
-:::caution Pre-1.0
-The filters are under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/regolith-filters` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## Install

@@ -68,18 +68,6 @@ Every other alias, and everything in `node_modules`, goes through esbuild's own 
 
 **Minecraft modules** are never bundled. `@minecraft/server`, `@minecraft/server-ui`, `@minecraft/server-gametest`, `@minecraft/server-net`, `@minecraft/server-admin` and `@minecraft/debug-utilities` stay external, provided by the game at runtime.
 
-## What it generates
-
-| Output | Where | Commit it? |
-| --- | --- | --- |
-| `main.js` | `BP/scripts/` in the temp workspace | no |
-| `main.js.map` | beside it, `debug` only | no |
-| build metadata | beside it, `debug` only | no |
-
-The output is ESM, targeting the `target` in `tsconfig.json` (default `es2020`), minified unless `debug` is on. After bundling, every `.ts` file and folder under `BP/scripts/` is removed from the output so sources never ship.
-
-`debug: true` keeps the output readable: source maps, no minification, function names preserved, verbose logging and build metadata.
-
 ## Settings
 
 | Setting | Type | Default | Description |

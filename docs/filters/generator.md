@@ -24,7 +24,13 @@ regolith install generator
 }
 ```
 
-It is not part of the default [`core`](./core.md) stack, because it emits schema types into the project; add it to `stages` before the bundler. Then add the generated types to `tsconfig.json`:
+Inside the [`core`](./core.md) stack it runs only when its key is present, because it writes schema types into the project. Add `generator` to core's settings, `true` for the defaults or an object with the settings below; core runs it after `manifest` and before the bundler:
+
+```jsonc title="config.json"
+{ "filter": "core", "settings": { "generator": true } }
+```
+
+Then add the generated types to `tsconfig.json`:
 
 ```jsonc title="tsconfig.json"
 {
@@ -117,7 +123,7 @@ The schemas trail the game by a version or two, so `strict` is off by default. W
 | --- | --- | --- | --- |
 | `include` | `string \| string[]` | `["BP/**/*.ts", "RP/**/*.ts"]` | Globs to scan |
 | `exclude` | `string \| string[]` | `["BP/scripts/**", "**/*.d.ts"]` | Globs to skip |
-| `pretty` | `boolean` | `true` | Indent the output JSON |
+| `pretty` | `false \| { indent?, size? }` | `false` | How generated JSON is laid out. Absent or `false` writes it minified. An object lays it out: `indent` is `"tab"` or `"space"`, `size` the characters per level (2 for spaces, 1 for tabs when omitted) |
 | `types` | `boolean` | `true` | Generate the Minecraft types. `false` skips the download entirely |
 | `schemaVersion` | `string` | `"latest"` | Dist-tag (`latest`, `beta`) or exact version. Pin it for reproducible builds |
 | `typesDir` | `string` | `<dataPath>/generated/mc` | Where the types land, relative to the project root |
