@@ -34,7 +34,7 @@ It is sugar over `useContext(TranslationContext)`, with the out-of-fiber case re
 
 ## What it is for
 
-The runtime already resolves localized [`Text`](../components/content/Text.md) children for you. This hook is for components that **build display strings themselves** and therefore have to know whether a string is a key before they touch it:
+The runtime already resolves localized [`Text`](../components/Text.md) children for you. This hook is for components that **build display strings themselves** and therefore have to know whether a string is a key before they touch it:
 
 [`Header`](/docs/ore-styled/Header) and [`MenuRow`](/docs/ore-styled/MenuRow) in ore-styled are the two built-in consumers.
 
@@ -75,7 +75,7 @@ function Truncated({ keyText }: { keyText: string }) {
   const resolver = useTranslationResolver();
   const display = resolver?.(keyText) ?? keyText;
 
-  return <Text>{display.length > 40 ? `${display.slice(0, 40)}…` : keyText}</Text>;
+  return <Text>{display.length > 40 ? `${display.slice(0, 40)}...` : keyText}</Text>;
 }
 ```
 
@@ -109,4 +109,4 @@ For an addon's own text, [`useTranslation(i18n)`](./useTranslation.md) gives ful
 
 - [useTranslation](./useTranslation.md) — typed verbs bound to the viewing player
 - [TranslationContext](../api/TranslationContext.md) — providing a different resolver for a subtree
-- [i18n](/docs/i18n) — `resolve()`, `display()` and the `DisplayText` union
+- [i18n](/docs/i18n/api) — `resolve()`, `display()` and the `DisplayText` union

@@ -126,4 +126,4 @@ The client always makes its own resolution attempt, so a resolver miss on a key 
 - [useTranslationResolver](../hooks/useTranslationResolver.md) — reading the active resolver
 - [useTranslation](../hooks/useTranslation.md) — typed verbs bound to the viewing player
 - [createContext](./createContext.md) — how context works in general
-- [i18n](/docs/i18n) — where resolvers come from
+- [i18n](/docs/i18n/api) — where resolvers come from

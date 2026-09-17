@@ -15,10 +15,16 @@ import {
   compiledScreens,
   compiledSnapshotOf,
   compiledTitleOf,
+  compiledValuesOf,
+  FLAG_OFF,
+  FLAG_ON,
+  isAddonReference,
+  isScreenReference,
   presentReference,
   registerCompiledScreen,
   registerStaticScreens,
   screenForKey,
+  showCompiledTitle,
 } from '@bedrock-core/ui';
 ```
 
@@ -63,6 +69,30 @@ interface CompiledSnapshot {
 
 `vis` is load-bearing: it is how the runtime marks the same elements the build compiled bool carriers for, by position in the shared visible walk — stable because the shape is frozen. `shape` and `baked` serve [`render`'s `debug`](./render.md#debug): a present that disagrees with either is a liveness miss the build could not see.
 
+## Showing a screen by title
+
+What `render()` and [`presentReference`](#references) are both built from underneath: a title picks the layout, and a list of entry values is the whole of what fills it.
+
+| Export | Kind | Description |
+| --- | --- | --- |
+| `compiledValuesOf` | function | Walks a screen's own tree and returns its entries with the value each is shown with — the same walk `render()` runs internally |
+| `showCompiledTitle` | function | Shows a title with a list of entry values, and resolves to which one was pressed, or `undefined` when the player dismissed it |
+
+```ts
+function showCompiledTitle(player: Player, title: string, values: readonly DisplayText[]): Promise<number | undefined>
+```
+
+Nothing of the screen's own script runs: the client draws whatever layout its pack holds for that title. That is what lets a realm holding only a static screen's title and its published values — a guide's replicated reference — show it without the addon that built it. `compiledValuesOf` is how a screen derives those values from its own tree in the first place; a realm relaying someone else's already has them.
+
+A carried `visible` and a press's `enabled` both write through the same two-letter alphabet:
+
+| Export | Value | Means |
+| --- | --- | --- |
+| `FLAG_ON` | `'t'` | Visible, or enabled |
+| `FLAG_OFF` | `'f'` | Hidden, or disabled |
+
+Letters rather than digits: a compiled control reads its entry with string arithmetic, and the engine types a `'0'` that arithmetic produces as a number — never equal to the `'0'` a gate compares it against.
+
 ## References
 
 | Export | Kind | Description |
@@ -71,8 +101,9 @@ interface CompiledSnapshot {
 | `presentReference` | function | Shows a foreign screen and follows its links until a press leads nowhere |
 | `isAddonReference` | function | Narrows a reference that arrived over the wire: the envelope |
 | `isScreenReference` | function | Narrows one screen's reference |
+| `whyNotPlainData` | function | Why a value would not come back unchanged from JSON, naming the first part that would not, or `undefined` when it would |
 
-A reference is the title, the value each entry is shown with, and where each press leads. That is all a realm needs to show a screen it did not build, because the prose, the textures and the layout are already in the pack every client holds.
+A reference is the title, the value each entry is shown with, and where each press leads, with the params it opens its target with. That is all a realm needs to show a screen it did not build, because the prose, the textures and the layout are already in the pack every client holds.
 
 Only a [static](../guides/navigation.md#static-screens) screen has one. A press running the owner's own handler cannot be described, so its target is `null` and it does nothing in a foreign realm — the screen still shows, and the presses that are links still work.
 

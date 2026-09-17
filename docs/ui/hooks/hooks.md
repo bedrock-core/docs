@@ -11,7 +11,7 @@ State and effects for your components, plus the few that reach outside them.
 - [`useState`](./useState.md) — component state
 - [`useReducer`](./useReducer.md) — state through a reducer
 - [`useContext`](./useContext.md) — read a context value
-- [`useObservable`](./useObservable.md) — re-render when an observable changes, optionally on a selected slice
+- [`useObservable`](./useObservable.md) — read an observable
 
 ## Effects and lifecycle
 
@@ -35,10 +35,11 @@ State and effects for your components, plus the few that reach outside them.
 
 - [`useTranslation`](./useTranslation.md) — bind an addon's typed translation verbs to the viewing player
 - [`useTranslationResolver`](./useTranslationResolver.md) — read the resolver active for this part of the tree
+- [`useComposed`](./useComposed.md) — compose a string in every language the pack ships, at the width the layout gives a box
 
 ## Where the state lives
 
-A form cannot be mutated while open, so a state change never repaints what the player is looking at — they see a new snapshot when they press. A container screen's state belongs to its entity and outlives every viewer. Both are covered in [State](../guides/state.md).
+A form cannot be mutated while open, so a state change never repaints what the player is looking at — they see a new snapshot when they press. A container screen's state belongs to its entity or block and outlives every viewer. Both are covered in [State](../guides/state.md).
 
 `usePlayer()` has no answer on a container screen: one compiled layout serves everyone, so the screen learns who is looking from `<Container onOpen>` instead.
 

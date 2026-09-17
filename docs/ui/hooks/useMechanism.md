@@ -48,7 +48,7 @@ function Checkbox({ name, label }: CheckboxProps): JSX.Element {
 
   return mechanism === 'field'
     ? <Toggle name={name} />
-    : <Button action={toggle}><Text>{label}</Text></Button>;
+    : <Button onPress={toggle}><Text>{label}</Text></Button>;
 }
 ```
 

@@ -34,9 +34,9 @@ A native component spans two packages you control:
 ```
 TypeScript (this runtime)                    Resource pack (your JSON UI)
 ─────────────────────────                    ────────────────────────────
-1. component → { type, props }
-2. Writer    → form.button()/label()/header()
-3. registerComponent(type, …)
+1. component -> { type, props }
+2. Writer    -> form.button()/label()/header()
+3. registerComponent(type, ...)
         │
         ▼  serialized payload (fixed-width binary, one form entry)
                                              4. a JSON UI control decodes the
@@ -103,7 +103,7 @@ mapping:
 import { emitLabel, type Writer } from '@bedrock-core/ui';
 
 const ratingWriter: Writer = (payload, form, ctx, callbacks, props) => {
-  emitLabel(payload, form, ctx); // static → label_router
+  emitLabel(payload, form, ctx); // static -> label_router
 };
 ```
 
@@ -182,7 +182,7 @@ and the router wiring — read them alongside the serializer:
 - Decode + `#type` gate pattern: `packages/resource-pack/packs/RP/ui/core-ui/components/text.json`
   (the merged `label_cell` + `cell_type_frame` gate frames) and `components/image.json`
 - Router shape: `core-ui/common/button_router.json`, `label_router.json`, `header_router.json`
-- Field layout & protocol `VERSION`: `packages/ui-runtime/src/core/serializer.ts`
+- Field layout & protocol `VERSION`: `packages/ui-runtime/src/core/payload.ts`
 
 ## Performance rules for custom components
 
@@ -215,7 +215,7 @@ instantiation:
    decode only your component-specific fields (at absolute offsets `[1024]+`).
 
 :::caution Keep the protocol in sync
-The payload format is versioned (`PROTOCOL_HEADER` / `VERSION` in `serializer.ts`).
+The payload format is versioned (`PROTOCOL_HEADER` / `VERSION` in `payload.ts`).
 If the runtime's protocol version changes, your decode bindings must be updated to
 match — a mismatched header means your control reads garbage.
 :::
@@ -223,7 +223,7 @@ match — a mismatched header means your control reads garbage.
 ## Modal form controls
 
 Everything above covers the `ActionFormData` backend (`button_router`/`label_router`).
-[`Form`](../components/roots/Form.md) renders through a **second** backend — native
+[`Form`](../components/Form.md) renders through a **second** backend — native
 `ModalFormData` — which has its own typed controls and its own set of writer
 helpers. A decorative custom component (`emitLabel`) works unchanged on both
 backends, since `form.label()` exists on `ActionFormData` and `ModalFormData` alike.
@@ -245,7 +245,7 @@ for the native default step (`1`).
 #### `emitDropdown(payload, form, ctx, name, options, defaultValueIndex)`
 Emits a `ModalFormData.dropdown`. `options: string[]`, `defaultValueIndex: number`.
 The native control returns the selected **index**, not a value — see
-[`Dropdown`](../components/fields/Dropdown.md)'s result gotcha.
+[`Dropdown`](../components/Dropdown.md)'s result gotcha.
 
 #### `emitInput(payload, form, ctx, name, placeholder, defaultValue)`
 Emits a `ModalFormData.textField`. `placeholder: string`, `defaultValue: string`.
@@ -256,7 +256,7 @@ Each also records `name` against the control's ordinal (so the presenter can re-
 `response.formValues[ordinal]` back into `{ name: value }` after submit) before
 making the typed `ModalFormData` call. A modal control writer must still throw a
 `ModalFormError` if `!isModalForm(form)` — see any built-in `Form.*` writer
-(e.g. `FormToggle.ts`) for the guard pattern.
+(e.g. `Toggle.ts`) for the guard pattern.
 
 ### The `nativeArgs` channel
 
@@ -269,14 +269,14 @@ through the writer's 6th argument, `nativeArgs?: Record<string, unknown>` — a
 side channel that's never serialized:
 
 ```ts
-export const FormToggle: FunctionComponent<ToggleProps> = ({ name, defaultValue, ...layout }) => ({
+export const MyToggle: FunctionComponent<ToggleProps> = ({ name, defaultValue, ...layout }) => ({
   type: MODAL_TOGGLE_SLOT_TYPE,
   props: { ...withControl(layout) /* control-block payload, decoded by the RP */ },
   nativeArgs: { name, defaultValue: defaultValue ?? false }, // writer-only, never serialized
 });
 ```
 
-The writer reads `nativeArgs` directly (`formToggleWriter` in the example above
+The writer reads `nativeArgs` directly (`toggleWriter` in the example above
 reads `nativeArgs.name`/`nativeArgs.defaultValue`) instead of decoding them from
 `props`. Most components never need this — it exists specifically for the built-in
 modal field controls, where a rich prop surface (state backgrounds, geometry,
@@ -357,7 +357,7 @@ type Writer = (
   payload: string | RawMessage,                     // serialized props
   form: FormTarget,                                 // ActionFormData or ModalFormData
   ctx: SerializationContext | undefined,             // button/ordinal index + callback map
-  callbacks: Record<string, (...args: unknown[]) => void>, // function props (onPress, …)
+  callbacks: Record<string, (...args: unknown[]) => void>, // function props (onPress, ...)
   props?: SerializableProps,                        // serialized values, if needed
   nativeArgs?: Record<string, unknown>,              // writer-only side channel, see below
   children?: unknown,                                // built children, for writers that read post-layout geometry

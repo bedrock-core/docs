@@ -59,11 +59,11 @@ import { createI18n } from '@bedrock-core/i18n';
 export const i18n = createI18n(bundle);
 ```
 
-See the [i18n guide](/docs/i18n) for what each verb does and when to prefer which.
+See the [i18n API reference](/docs/i18n/api) for what each verb does and when to prefer which.
 
 ## The locale it binds to
 
-The bound locale comes from the [locale resolution chain](/docs/i18n#locale-resolution): a persisted per-player override, then the client language, a sibling region, then the bundle's default.
+The bound locale comes from the [locale resolution chain](/docs/i18n/api#locale-resolution): a persisted per-player override, then the client language, a sibling region, then the bundle's default.
 
 `locale` on the returned set is the one that won, which is handy to show back to the player:
 
@@ -98,10 +98,10 @@ function LanguagePicker() {
 
   return (
     <Panel flexDirection={'row'} gap={4}>
-      <Button action={() => i18n.setLocale(player, 'es_ES')}>
+      <Button onPress={() => i18n.setLocale(player, 'es_ES')}>
         <Text>{t($ => $.settings.spanish)}</Text>
       </Button>
-      <Button action={() => i18n.clearLocale(player)}>
+      <Button onPress={() => i18n.clearLocale(player)}>
         <Text>{t($ => $.settings.systemLanguage)}</Text>
       </Button>
     </Panel>
@@ -119,7 +119,7 @@ function BuyButton({ item }: { item: Item }) {
   const { display, key, raw } = useTranslation(i18n);
 
   return (
-    <Button action={() => {
+    <Button onPress={() => {
       const prefix = display(key($ => $.shop.chatPrefix));
       player.sendMessage(`${prefix} ${display(raw($ => $.shop.bought, { item: item.name, price: item.price }))}`);
     }}>
@@ -173,6 +173,6 @@ const { t } = useTranslation(i18n);
 
 ## Related
 
-- [i18n](/docs/i18n) — the verbs, plurals, interpolation and locale chain
+- [i18n](/docs/i18n/api) — the verbs, plurals, interpolation and locale chain
 - [useTranslationResolver](./useTranslationResolver.md) — the active resolver, for components that build display strings themselves
 - [TranslationContext](../api/TranslationContext.md) — overriding which resolver a subtree sees

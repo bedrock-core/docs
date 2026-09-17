@@ -11,7 +11,6 @@ A screen holds state the way a React component does — [`useState`](../hooks/us
 Each player has a single live UI session. A second `render()` for that player does not stack a second one — it swaps the new tree into the running session:
 
 - The old tree unmounts first: its effect cleanups run, its hook state is discarded, and any form it has on screen is closed programmatically. That close is not the player dismissing, so a modal's `onCancel` does not fire for it.
-- The input lock carries over, so the camera never flashes free between screens.
 - The new tree presents with fresh, mount-phase state.
 
 That makes handoff from a press safe with no `useExit()` call — the swap replaces the running UI by itself:
@@ -21,14 +20,14 @@ function SettingsButton(): JSX.Element {
   const player = usePlayer();
 
   return (
-    <Button action={() => render(SettingsApp, player)}>
+    <Button onPress={() => render(SettingsApp, player)}>
       <Text>{'Settings'}</Text>
     </Button>
   );
 }
 ```
 
-When the handoff goes through an async opener, **return the promise from `action`** so the swap lands inside the press's transaction. Fired and forgotten it still converges; worst case the screen re-locks for a frame.
+When the handoff goes through an async opener, **return the promise from `onPress`** so the swap lands inside the press's transaction. Fired and forgotten it still converges; worst case the screen re-locks for a frame.
 
 ## A form change is a new present
 
@@ -36,21 +35,23 @@ When the handoff goes through an async opener, **return the promise from `action
 
 A container screen has no such limit: a handler renders and the slots settle in the same tick.
 
-## A container screen's state belongs to its entity
+## A container screen's state belongs to its entity or block
 
-One layout serves every viewer of a container screen. Its state is written to the entity after each render and read back at the next open, so it outlives every viewer — and effects run exactly while somebody is looking, because the fibers exist exactly then.
+One layout serves every viewer of a container screen. Its state is written to the host after each render and read back at the next open, so it outlives every viewer — and effects run exactly while somebody is looking, because the fibers exist exactly then.
 
 That is also why a container screen has no `usePlayer()`: one compiled layout serves everyone, and the screen learns who is looking from `onOpen` instead.
 
 ## Reacting to something outside the screen
 
-[`useObservable`](../hooks/useObservable.md) re-renders the component when an observable changes, which covers a config leaf, a db document, a query and anything else shaped like `@bedrock-core/observable`'s `ReadonlyObservable`.
+[`useObservable`](../hooks/useObservable.md) reads an observable into a component: a config leaf, a db document, a query, or anything else shaped like `@bedrock-core/observable`'s `ReadonlyObservable`.
+
+A change lands the way a state change does. A form keeps it and shows it on the player's next press; a container screen updates its live values at once.
 
 ```tsx
 const count = useObservable(playersObs, p => p.size);
 ```
 
-With a `select` the component only re-renders when the selected slice changes, so a screen showing a count is not woken by every mutation of the collection behind it.
+With a `select` only a change to the selected slice counts, so a screen showing a count is not woken by every mutation of the collection behind it.
 
 ## What a value costs
 
@@ -58,10 +59,10 @@ A compiled screen's shape is frozen, so anything that varies has to reserve room
 
 | Varies | Declared as | Reserves |
 | --- | --- | --- |
-| A string | [`maxLength`](../components/content/Text.md) on a `<Text>` | its width, and on the chest one slot per character |
-| A row count | [`max`](../components/compiled/List.md) on a `<List>` | `max` copies of the row, plus one int |
+| A string | [`maxLength`](../components/Text.md) on a `<Text>` | its width, and on the chest one slot per character |
+| A row count | [`max`](../components/List.md) on a `<List>` | `max` copies of the row, plus one int |
 | A branch | `visible` on the control | a carried bool |
-| A texture | [`live`](../components/content/Image.md) on an `<Image>` | one entry on a form |
+| A texture | [`live`](../components/Image.md) on an `<Image>` | one entry on a form |
 
 Everything else is baked. A baked string fed from data that changes is silently wrong, which is what `render(screen, player, { debug: true })` reports.
 

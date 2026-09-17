@@ -12,7 +12,7 @@ Every compiled form screen has a key, `<addon>:<name>`: the addon's namespace an
 
 A key with no `<addon>:` in front of it is one of this bundle's own, which is how a screen links to a sibling without repeating a namespace it does not choose.
 
-A container screen has **no key**. A chest is entered by walking up to an entity, not by a press somewhere else, so there is nothing for a key to open.
+A container screen has **no key**. A chest is entered by walking up to an entity or interacting with a placed block, not by a press somewhere else, so there is nothing for a key to open.
 
 ## navigate and back
 
@@ -25,7 +25,7 @@ closeUi(player: Player): void
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `params` | `Record<string, unknown>` | — | Props the target screen is rendered with; they fill what the layout already reserved and can never add or drop a cell |
+| `params` | `Record<string, unknown>` | — | Props the target screen is rendered with; they fill what the layout already reserved and can never add or drop a cell. A static screen takes none |
 | `replace` | `boolean` | `false` | Show the screen in place of the current one, so `back()` returns past it |
 | `debug` | `boolean` | `false` | Diff every present against the snapshot the build recorded and warn on drift |
 
@@ -37,7 +37,7 @@ Returning `false` means nothing resolved the key — a screen that did not compi
 
 ## Link
 
-[`<Link>`](../components/controls/Link.md) is the same thing as data. The destination is a prop on the element rather than a closure, so the build can read it straight off the tree — which is what lets a screen of links be described to another addon.
+[`<Link>`](../components/Link.md) is the same thing as data. The destination is a prop on the element rather than a closure, so the build can read it straight off the tree — which is what lets a screen of links be described to another addon.
 
 ```tsx
 <Link to={'shop:catalog'}><Text>{'Catalog'}</Text></Link>
@@ -56,7 +56,7 @@ import { provideReferences, screens } from '@bedrock-core/navigation';
 provideReferences(key => screens(core).find(key));
 ```
 
-An addon that mounts the [config](/docs/config) UI with `ui(core)` gets this, and the publishing below, done for it — writing either again is harmless but redundant.
+An addon that installs any of the [apps](/docs/catalog) gets this, and the publishing below, done for it by [`uiOf(core)`](/docs/navigation/realm); writing either again is harmless but redundant.
 
 The stack holds keys, not trees. Going back means showing that screen again, drawn from its own initial state — the state of the screen being returned to went with its fibers.
 
@@ -88,6 +88,6 @@ A press running the owner's own handler cannot be described, so its target is `n
 ## Next steps
 
 - [State](./state.md) — what happens to a screen's state when the player moves on
-- [`<Link>`](../components/controls/Link.md) — the component reference
+- [`<Link>`](../components/Link.md) — the component reference
 - [Compiled screens](../api/compiled-screens.md) — the registry a key resolves through
 - [`@bedrock-core/navigation`](/docs/navigation) — the per-player stack

@@ -64,13 +64,13 @@ function Counter() {
     <Panel padding={10} gap={8}>
       <Text>{`Count: ${state.count}`}</Text>
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} action={() => dispatch({ type: 'increment' })}>
+        <Button flex={1} onPress={() => dispatch({ type: 'increment' })}>
           <Text>{'+'}</Text>
         </Button>
-        <Button flex={1} action={() => dispatch({ type: 'decrement' })}>
+        <Button flex={1} onPress={() => dispatch({ type: 'decrement' })}>
           <Text>{'-'}</Text>
         </Button>
-        <Button flex={1} action={() => dispatch({ type: 'reset' })}>
+        <Button flex={1} onPress={() => dispatch({ type: 'reset' })}>
           <Text>{'Reset'}</Text>
         </Button>
       </Panel>
@@ -133,13 +133,13 @@ function TodoApp() {
 
   return (
     <Panel padding={10} gap={8}>
-      <Button action={() => dispatch({ type: 'add', text: 'New task' })}>
+      <Button onPress={() => dispatch({ type: 'add', text: 'New task' })}>
         <Text>{'Add Todo'}</Text>
       </Button>
       {state.todos.map(todo => (
         <Text key={todo.id}>{`${todo.completed ? '✓' : '○'} ${todo.text}`}</Text>
       ))}
-      <Button action={() => dispatch({ type: 'clear' })}>
+      <Button onPress={() => dispatch({ type: 'clear' })}>
         <Text>{'Clear All'}</Text>
       </Button>
     </Panel>

@@ -7,7 +7,7 @@ description: "Request the UI to be closed."
 Request the UI to be closed.
 
 :::note Closing, not switching
-`exit()` closes the UI back to the game. You do **not** need it to hand off to another screen or app — calling [`render()`](../guides/state.md#one-ui-slot-per-player) (or an opener like `openUi`) while a UI is up swaps the new app into the running session by itself.
+`exit()` closes the UI back to the game. You do **not** need it to hand off to another screen or app — calling [`render()`](../guides/state.md#one-ui-slot-per-player) (or an app's `open`) while a UI is up swaps the new app into the running session by itself.
 :::
 
 ## Import
@@ -37,7 +37,7 @@ function CloseButton() {
   const exit = useExit();
 
   return (
-    <Button action={() => exit()}>
+    <Button onPress={() => exit()}>
       <Text>{'Close UI'}</Text>
     </Button>
   );
@@ -57,12 +57,12 @@ function ConditionalClose() {
     <Panel padding={10} gap={8}>
       <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
       <Panel flexDirection={'row'} gap={8}>
-        <Button flex={1} action={() => setIsSaved(true)}>
+        <Button flex={1} onPress={() => setIsSaved(true)}>
           <Text>{'Save'}</Text>
         </Button>
         <Button
           flex={1}
-          action={() => {
+          onPress={() => {
             if (isSaved) {
               exit();
             }
@@ -95,7 +95,7 @@ function ExitAfterSave() {
   return (
     <Panel padding={10} gap={8}>
       <Text>{`Saved: ${isSaved ? 'Yes' : 'No'}`}</Text>
-      <Button action={() => setIsSaved(true)}>
+      <Button onPress={() => setIsSaved(true)}>
         <Text>{'Save and Close'}</Text>
       </Button>
     </Panel>

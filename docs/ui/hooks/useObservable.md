@@ -1,10 +1,10 @@
 ---
 sidebar_position: 5
-description: "Re-render the component when an observable changes, optionally only on a selected slice."
+description: "Read an observable into a component and keep it current, the way a state change is kept."
 ---
 # useObservable
 
-Re-renders the component when an observable changes.
+Reads an observable, and keeps the component's copy of it current. A change lands the way a [`useState`](./useState.md) change does.
 
 ## Import
 
@@ -24,7 +24,7 @@ function useObservable<T, S>(source: ObservableLike<T>, select: (value: T) => S)
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | `source`<Req /> | `ObservableLike<T>` | — | Anything with `get()` and `subscribe(listener)` |
-| `select` | `(value: T) => S` | — | Narrows what the component depends on, so it only re-renders when the slice changes |
+| `select` | `(value: T) => S` | — | Narrows what the component depends on, so only a change to the slice counts |
 
 ## Returns
 
@@ -41,7 +41,7 @@ interface ObservableLike<T> {
 }
 ```
 
-[`@bedrock-core/observable`](/docs/observable)'s `ReadonlyObservable`, a [config](/docs/config) leaf, a [db](/docs/db) document and a query all have that shape. Matching on shape rather than on an import is what keeps the UI free of a dependency on the server framework.
+[`@bedrock-core/observable`](/docs/observable)'s `ReadonlyObservable`, a [config](/docs/config) leaf, a [db](/docs/db) document and a query all have that shape.
 
 ## Usage
 
@@ -51,7 +51,7 @@ const phase = useObservable(phaseObs);
 
 ## Examples
 
-### Only re-render when the slice changes
+### Only react to a slice
 
 ```tsx
 function PlayerCount(): JSX.Element {
@@ -61,13 +61,15 @@ function PlayerCount(): JSX.Element {
 }
 ```
 
-A screen showing a count is not woken by every mutation of the collection behind it. Equality is `Object.is`, applied by the state slot, so a slice that reads equal schedules nothing.
+A change to the collection that leaves its size alone schedules nothing. Equality is `Object.is`, applied by the state slot.
 
 ### A config value
 
+With `config` the accessor `register()` handed back:
+
 ```tsx
 function Currency(): JSX.Element {
-  const symbol = useObservable(core.config.server.economy.currency);
+  const symbol = useObservable(config.server.economy.currency);
 
   return <Text maxLength={4}>{symbol}</Text>;
 }
@@ -75,8 +77,15 @@ function Currency(): JSX.Element {
 
 ## Notes
 
+A change from the observable is a state change, so when the player sees it depends on the screen:
+
+| Screen | A change |
+| --- | --- |
+| Form | Is kept, and shows on the next screen the player's press brings up: an open form cannot change |
+| Container screen | Updates the screen's live values at once: a `maxLength` text, a `<List>` count, a carried `visible` |
+
+What the build baked stays as the build drew it on both. See [State](../guides/state.md#a-form-change-is-a-new-present).
+
 `select` is read through a ref rather than a dependency, so passing an inline arrow — the usual way to write one — does not resubscribe on every render. The subscription is keyed on the observable alone.
 
 The value can move between a render and the subscription landing, so the hook reads once more before listening. An unchanged value costs nothing.
-
-On a form, a change still does not repaint what the player is looking at: a form cannot be mutated while open, so the new value shows on their next press. See [State](../guides/state.md#a-form-change-is-a-new-present).

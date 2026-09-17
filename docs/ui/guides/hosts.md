@@ -8,9 +8,9 @@ A host is one Minecraft screen the library draws on, plus the transport that scr
 
 | Root | Host | Owner | Served by | What an interaction is |
 | --- | --- | --- | --- | --- |
-| [`<Screen>`](../components/roots/Screen.md) | `form-action` | the player | `render(Screen, player)` | a form entry the engine reports back by index |
-| [`<Form>`](../components/roots/Form.md) | `form-modal` | the player | `render(Form, player)` | a native field the engine owns, returned in one answer on submit |
-| [`<Container entity>`](../components/roots/Container.md) | `chest` | the entity | `createContainerScreen(Screen)` | an item moving through a slot of the entity's own container |
+| [`<Screen>`](../components/Screen.md) | `form-action` | the player | `render(Screen, player)` | a form entry the engine reports back by index |
+| [`<Form>`](../components/Form.md) | `form-modal` | the player | `render(Form, player)` | a native field the engine owns, returned in one answer on submit |
+| [`<Container entity\|block>`](../components/Container.md) | `chest` | the entity or block | `createContainerScreen(Screen)` | an item moving through a slot of the host's own container |
 
 All three lay out against the same 320 × 210 canvas. A tree that starts with anything else throws `ScreenRootError` listing the roots.
 
@@ -20,18 +20,18 @@ A host declares what every kind of component *becomes* on it. A kind the table d
 
 | Component | `form-action` | `form-modal` | `chest` |
 | --- | --- | --- | --- |
-| [`Button`](../components/controls/Button.md) | a press | its `'submit'` and `'exit'` only | an item taken and put back |
-| [`Toggle`](../components/controls/Toggle.md) | a press that flips and re-presents | a native field | a cell of the entity's container |
-| [`Select`](../components/controls/Select.md), [`Option`](../components/controls/Option.md) | a press per option | a native field | a cell per option |
-| [`Slider`](../components/fields/Slider.md), [`Dropdown`](../components/fields/Dropdown.md), [`Input`](../components/fields/Input.md) | ❌ | a native field | ❌ |
-| [`Slot`](../components/cells/Slot.md) | ❌ | ❌ | a cell the player fills |
-| [`SlotGrid`](../components/cells/SlotGrid.md) | ❌ | ❌ | a collection the engine already publishes |
+| [`Button`](../components/Button.md) | a press | its `'submit'` and `'exit'` only | an item taken and put back |
+| [`Toggle`](../components/Toggle.md) | a press that flips and re-presents | a native field | a cell of the host's container |
+| [`Select`](../components/Select.md), [`Option`](../components/Option.md) | a press per option | a native field | a cell per option |
+| [`Slider`](../components/Slider.md), [`Dropdown`](../components/Dropdown.md), [`Input`](../components/Input.md) | ❌ | a native field | ❌ |
+| [`Slot`](../components/Slot.md) | ❌ | ❌ | a cell the player fills |
+| [`SlotGrid`](../components/SlotGrid.md) | ❌ | ❌ | a collection the engine already publishes |
 
 Components absent from the table — `Panel`, `Text`, `Image`, `Background`, `Fragment`, `Scroll` — draw on every host and ask for nothing.
 
 ## A root has no members
 
-This table is the whole reason there is no `Form.Toggle`. A root names a host and nothing more: every control is a top-level component, and the row above is what decides where it can be written.
+This table is why fields are top-level components rather than members of `Form`. A root names a host, and `Form.Button` is its one member: every field is a top-level component, and the row above is what decides where it can be written.
 
 So `<Toggle>` is one component with three mechanisms — on `<Screen>` a press that flips its state and renders the screen again, on `<Form>` a field the engine owns until submit, on `<Container>` a cell whose press is an item taken and put straight back. The same source moves between all three:
 
@@ -55,7 +55,7 @@ That is also what makes the refusals precise. The same `<Slider>` is "put it ins
 
 ## Writing a fragment for a host you do not own
 
-A root names the host, so anything under it already knows what it becomes. [`<Expect host>`](../components/cross-pack/Expect.md) is for the other case: a component library that renders *into* a screen it does not own — a set of fields meant for a modal, exported as a fragment for an addon to place.
+A root names the host, so anything under it already knows what it becomes. [`<Expect host>`](../components/Expect.md) is for the other case: a component library that renders *into* a screen it does not own — a set of fields meant for a modal, exported as a fragment for an addon to place.
 
 ```tsx
 import { Expect, Form } from '@bedrock-core/ui';
@@ -74,11 +74,11 @@ An addon that drops that fragment on the wrong screen is told where, once, inste
 
 Both form hosts are serialized for one player when the screen is shown, and `@minecraft/server-ui` forms cannot be mutated while open. So a state change never repaints a form on its own: the component logic keeps running, and the player sees a new snapshot when they press.
 
-A container screen has no such limit. A handler renders and the slots settle in the same tick, because everything alive in it travels through the entity's container rather than through a form payload.
+A container screen has no such limit. A handler renders and the slots settle in the same tick, because everything alive in it travels through the host's container rather than through a form payload.
 
 ## Next steps
 
 - [Navigation](./navigation.md) — opening another screen by key, and what a press can be described as
 - [State](./state.md) — where a screen's hook state lives, and how long it lasts
-- [Container screens](./container-screens.md) — serving a screen an entity owns
+- [Container screens](./container-screens.md) — serving a screen an entity or a block owns
 - [Compiler](../compiler/index.md) — how the screen in the pack was produced

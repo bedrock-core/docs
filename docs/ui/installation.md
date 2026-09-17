@@ -89,7 +89,7 @@ pack.mcaddon
 }
 ```
 
-If you also run the i18n filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [tsconfig](/docs/filters/i18n#tsconfig).
+If you also run the i18n filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [bundler](/docs/filters/bundler#authoring).
 
 ## Optional: ore-styled
 

@@ -28,7 +28,7 @@ Two things produce a registration: the [`ui-compiler` filter](/docs/filters/ui-c
 
 The tree has no host root, or a root below its root.
 
-A screen's root names its [host](../guides/hosts.md) — [`<Screen>`](../components/roots/Screen.md), [`<Form>`](../components/roots/Form.md) or [`<Container>`](../components/roots/Container.md) — and there is no default, so a tree that starts with a `Panel`, a themed card, or two elements side by side has no screen to be. Providers and fragments above the root are looked through.
+A screen's root names its [host](../guides/hosts.md) — [`<Screen>`](../components/Screen.md), [`<Form>`](../components/Form.md) or [`<Container>`](../components/Container.md) — and there is no default, so a tree that starts with a `Panel`, a themed card, or two elements side by side has no screen to be. Providers and fragments above the root are looked through.
 
 It is also what a component throws when it asks [`useMechanism`](../hooks/useMechanism.md) and nothing above it names a host at all.
 
@@ -37,8 +37,9 @@ It is also what a component throws when it asks [`useMechanism`](../hooks/useMec
 The tree breaks the container-screen rules. The cases:
 
 - a `<Container>` handed to `render()`, or a form handed to `createContainerScreen`
-- a container-only control — [`<Slot>`](../components/cells/Slot.md), [`<SlotGrid>`](../components/cells/SlotGrid.md) — outside a `<Container>`
-- a `<Container>` with no `entity`
+- a container-only control — [`<Slot>`](../components/Slot.md), [`<SlotGrid>`](../components/SlotGrid.md) — outside a `<Container>`
+- a `<Container>` naming neither `entity` nor `block`, or both
+- more container slots than a block-hosted screen's 54-slot cap
 - content that does not fit the 320 × 210 canvas, which a container screen cannot scroll past
 - a hook that needs a player where one compiled layout serves every player
 
