@@ -1,5 +1,4 @@
 ---
-sidebar_position: 10
 description: "Common layout and styling properties shared by all components."
 ---
 # Control props
@@ -24,7 +23,7 @@ The library uses a **flexbox-based layout system**. You compose UIs by nesting `
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `position` | `'absolute' \| 'relative'` | `'relative'` | `'relative'` participates in flex flow. `'absolute'` is removed from flow and positioned with `top` / `left` / `right` / `bottom` relative to the nearest positioned parent |
-| `top` / `right` / `bottom` / `left` | `number` (texels) | — | Edge offsets used when `position={'absolute'}`. Setting both `left` and `right` without an explicit `width` stretches the element horizontally; same for `top` + `bottom` and height |
+| `top` / `right` / `bottom` / `left` | `number` | — | Edge offsets used when `position={'absolute'}`. Setting both `left` and `right` without an explicit `width` stretches the element horizontally; same for `top` + `bottom` and height |
 | `zIndex` | `number` | `0` | Draw order, in a **container screen** only. There it becomes the control's baked `layer`, so a higher `zIndex` draws on top. A **server form** has no per-element layer — JSON UI cannot bind one, and its cells draw in fixed per-kind bands (a background below, a `Button` above it, `Text` above that) — so `zIndex` has no effect in a form |
 | `display` | `'flex' \| 'none'` | `'flex'` | `'none'` removes the element from layout entirely — siblings collapse to fill the gap. Different from `visible={false}` which hides the element but keeps its space |
 
@@ -83,7 +82,7 @@ Interactive primitives (`Button`, the `Form.*` fields) extend `background` with 
 A compiled screen's shape is frozen, so a branch that adds or drops an element cannot be a runtime decision. The build rewrites the two React idioms into a carried `visible` instead, at source level, so what you write stays idiomatic:
 
 ```tsx
-{isAdmin && <Button action={ban}><Text>{'Ban'}</Text></Button>}
+{isAdmin && <Button onPress={ban}><Text>{'Ban'}</Text></Button>}
 ```
 
 becomes `<Button visible={isAdmin} liveVisible …>`. An element ternary becomes **both** branches with opposite `visible`:
