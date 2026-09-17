@@ -39,7 +39,7 @@ function Footer(): JSX.Element {
   const { back, canGoBack } = useNavigation();
 
   return (
-    <Button visible={canGoBack} action={() => back()}>
+    <Button visible={canGoBack} onPress={() => back()}>
       <Text>{'Back'}</Text>
     </Button>
   );
@@ -56,8 +56,8 @@ function Menu(): JSX.Element {
 
   return (
     <Panel gap={4}>
-      <Button action={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
-      <Button action={() => navigate('shop:orders')}><Text>{'Orders'}</Text></Button>
+      <Button onPress={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
+      <Button onPress={() => navigate('shop:orders')}><Text>{'Orders'}</Text></Button>
     </Panel>
   );
 }
@@ -77,7 +77,7 @@ function Breadcrumb(): JSX.Element {
 
 ## Notes
 
-Prefer [`<Link to>`](/docs/ui/components/controls/Link) over a `navigate()` in a button's `action` when the destination is fixed. A link's target is data the build reads off the tree, which is what lets the screen be described to another addon; a closure is script only this realm can run.
+Prefer [`<Link to>`](/docs/ui/components/Link) over a `navigate()` in a button's `action` when the destination is fixed. A link's target is data the build reads off the tree, which is what lets the screen be described to another addon; a closure is script only this realm can run.
 
 `canGoBack` and `history` are read at render time. A form cannot change while it is open, so they are a snapshot of the moment the screen was presented — which is the same moment everything else on it was decided.
 

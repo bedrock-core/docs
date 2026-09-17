@@ -8,9 +8,13 @@ description: "@bedrock-core/navigation moves a player from one compiled screen t
 
 `@bedrock-core/navigation` moves a player from one screen to another by **key**, and keeps a stack of where they have been.
 
-:::caution Pre-1.0
-`@bedrock-core/navigation` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/navigation` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
+:::caution Author note
+The API for navigation *WILL* change, this a temp step while transitioning to hybrid screens from only runtime ones.
+:::
+
 
 ## What is @bedrock-core/navigation?
 
@@ -36,10 +40,10 @@ import '@bedrock-core/generated/ui';
 
 core.register({ manifest });
 
-// Publish this addon's screens so other realms can show them.
+// Publish this addon's screens so other realms can show them, and resolve a key this
+// bundle did not compile from whoever owns it. An addon that installs any of the apps
+// gets both done by `uiOf(core)`; this is the bundle that mounts none.
 screens(core).provide(uiReference());
-
-// Resolve a key this bundle did not compile, from whoever owns it.
 provideReferences(key => screens(core).find(key));
 
 export function openCatalog(player: Player): void {
@@ -55,8 +59,8 @@ function Row(): JSX.Element {
 
   return (
     <Panel flexDirection={'row'} gap={4}>
-      <Button action={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
-      <Button visible={canGoBack} action={() => back()}><Text>{'Back'}</Text></Button>
+      <Button onPress={() => navigate('shop:catalog')}><Text>{'Catalog'}</Text></Button>
+      <Button visible={canGoBack} onPress={() => back()}><Text>{'Back'}</Text></Button>
     </Panel>
   );
 }
@@ -68,11 +72,12 @@ function Row(): JSX.Element {
 
 **Screens other addons can open** — publish your static screens once and `navigate('<you>:<screen>')` works in any realm in the world, whether or not your script runs there. The client draws it from the pack it already holds.
 
-**A press that is data** — [`<Link to>`](/docs/ui/components/controls/Link) puts the destination on the element rather than in a closure, so the build can read where it leads and describe the screen to other addons.
+**A press that is data** — [`<Link to>`](/docs/ui/components/Link) puts the destination on the element rather than in a closure, so the build can read where it leads and describe the screen to other addons.
 
 ## Next steps
 
 - [Moving between screens](./navigate.md) — `navigate`, `back`, `replace`, `reset` and what each does to the stack
 - [`useNavigation`](./useNavigation.md) — the same calls inside a screen, bound to its player
 - [References](./references.md) — publishing your screens and resolving another addon's
+- [The realm](./realm.md) — `uiOf(core)`: the show methods, the way back, and where each player is
 - [Navigation in the ui docs](/docs/ui/guides/navigation) — screen keys, `<Link>` and static screens

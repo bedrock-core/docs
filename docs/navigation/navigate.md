@@ -38,7 +38,9 @@ Each returns whether a screen was shown. A `false` is a key nothing resolved: a 
 | `replace` | `boolean` | `false` | Show the screen in place of the current one; `replace()` is this with the flag already set |
 | `debug` | `boolean` | `false` | Diff every present against the snapshot the build recorded and warn on drift |
 
-`params` fill what the layout already reserved. A compiled screen's shape is frozen, so they can never add or drop a cell — a generic screen's labels and values, not its structure.
+`params` fill what the layout already reserved. A compiled screen's shape is frozen, so they can never add or drop a cell — a generic screen's labels and values, not its structure. A static screen is shown from its table and takes none.
+
+Params that reach another realm, or a static screen's table, are written as JSON, so they must be plain data: strings, finite numbers, booleans, null, and arrays and objects of those. A realm drops params that are not, with a warning, and still opens the screen.
 
 ## Which one to reach for
 
