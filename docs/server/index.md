@@ -9,8 +9,8 @@ description: "Get two Minecraft addons talking to each other."
 
 Get two Minecraft addons talking to each other.
 
-:::caution Pre-1.0
-The `@bedrock-core` server packages are under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/server` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## What is @bedrock-core/server?
@@ -34,7 +34,7 @@ None of them imported each other. They found each other at runtime.
 
 That is the answer for an addon. It is a meta package that pins a matching set of the stack and re-exports everything, so `import { core } from '@bedrock-core/server'` is all you need. Each package underneath stays reachable at its own subpath — `/sync`, `/db`, `/observable` — for when you reach past `core` to the thing itself.
 
-The packages underneath are strictly layered and installable on their own if you are building a framework layer of your own: [`@bedrock-core/server-runtime`](./api/runtime.md) (registry, features, config, shared, events, guides, translations, host election), [`@bedrock-core/sync`](/docs/sync) (bus, discovery, RPC, the mirror, events), [`@bedrock-core/db`](/docs/db) (persisted documents) and [`@bedrock-core/observable`](/docs/observable) (the reactive primitive every accessor is).
+The packages underneath are strictly layered and installable on their own if you are building a framework layer of your own: [`@bedrock-core/server-runtime`](./api/runtime.md) (registry, features, shared, events, db, translations, slots), [`@bedrock-core/sync`](/docs/sync) (bus, discovery, RPC, the mirror, events), [`@bedrock-core/db`](/docs/db) (persisted documents) and [`@bedrock-core/observable`](/docs/observable) (the reactive primitive every accessor is).
 
 ## What you get
 
@@ -43,7 +43,6 @@ The packages underneath are strictly layered and installable on their own if you
 - **[Shared](./api/shared.md)** — a flat shape every realm mirrors locally, one observable per key. Reads are synchronous; writes broadcast a delta; only the owner writes.
 - **[Events](./api/events.md)** — a broadcast delivered and forgotten, typed by its payload, so a peer hears that something happened without polling for it.
 - **[Db](./api/db.md)** — persisted documents keyed by target, on whatever dynamic properties the target itself can hold, with versions and lazy migrations. Local: a peer reaches one only through a method you wrote.
-- **[Config](./api/config.md)** — a declarative schema in three scopes (server, dimension, player), stored as documents and editable in game.
 - **[Features](./api/features.md)** — behavior that auto-enables when a condition over the registry becomes true, and auto-disables when it stops being true.
 - **[Translations](./api/translations.md)** — announce your i18n bundle so any addon's UI can resolve and measure your strings. Your screens and your list page are announced by [`@bedrock-core/navigation`](/docs/navigation/references).
 - **[Host election](./api/host.md)** — a deterministic rule for "which realm does the work only one realm may do".
@@ -53,6 +52,5 @@ The packages underneath are strictly layered and installable on their own if you
 - [Installation](./installation.md) — scaffold with the CLI, or install and register by hand
 - [Sharing data between addons](./guides/channels.md) — which of shared, events and RPC carries what, and what stays local
 - [Trust model](./guides/trust-model.md) — what the framework defends against, and what it cannot
-- [`core`](./api/runtime.md) — the runtime reference: registry, features, host, shared, events, db, config
+- [`core`](./api/runtime.md) — the runtime reference: `register()`, declarations, slots, registry, features, shared, events, db
 - [sync](/docs/sync) — the transport reference: nodes, discovery, RPC, the mirror, events
-- [UI integration](./guides/ui-integration.md) — how config, translations and guides feed the UI packages

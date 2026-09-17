@@ -115,7 +115,7 @@ const root = createNode(
 computeLayout(root);
 
 // Absolute child is excluded from flex flow.
-// top: 4, right: 4  →  x = 320 - 4 - 20 = 296, y = 4
+// top: 4, right: 4  ->  x = 320 - 4 - 20 = 296, y = 4
 root.children[1].layout // { x: 296, y: 4, width: 20, height: 20 }
 ```
 

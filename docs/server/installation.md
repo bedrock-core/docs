@@ -31,6 +31,7 @@ import { core } from '@bedrock-core/server';                  // the runtime
 import { computed } from '@bedrock-core/server/observable';   // the reactive primitive
 import { createEngineDb } from '@bedrock-core/server/db';     // documents beyond core.db, rarely needed
 import { createSync } from '@bedrock-core/server/sync';       // the raw transport, rarely needed
+import { createI18n } from '@bedrock-core/server/i18n';       // typed translations
 ```
 
 :::info The packages ship TypeScript sources
@@ -66,9 +67,9 @@ Calling `register()` a second time on the same runtime throws. So does an invali
 ```
 `${creator}_${pack}`
 
-  creator: 'test',   pack: 'demo_a'   →  test_demo_a
-  creator: 'drav0011', pack: 'economy' →  drav0011_economy
-  creator: 'bt',     pack: 'gc_graves' →  bt_gc_graves
+  creator: 'test',   pack: 'demo_a'   ->  test_demo_a
+  creator: 'drav0011', pack: 'economy' ->  drav0011_economy
+  creator: 'bt',     pack: 'gc_graves' ->  bt_gc_graves
 ```
 
 :::caution The id is `creator_pack`, never `creator:pack`
@@ -108,7 +109,7 @@ const configDef = {
   server: {
     economy: {
       startingBalance: { type: 'number', default: 100, min: 0, max: 10000, step: 1, label: 'Starting Balance' },
-      currency: { type: 'enum', default: 'emerald', options: ['emerald', 'gold', 'diamond'], label: 'Currency' },
+      currency: { type: 'select', default: 'emerald', options: ['emerald', 'gold', 'diamond'], label: 'Currency' },
     },
   },
   player: {
@@ -145,7 +146,7 @@ core.rpc.serve<EconomyRPC>({
 
 // Every scope is a dotted tree mirroring the schema — walk to the node and subscribe.
 config.server.economy.currency.subscribe((next, prev) => {
-  console.warn(`currency: ${String(prev)} → ${next}`);
+  console.warn(`currency: ${String(prev)} -> ${next}`);
 });
 
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
@@ -214,7 +215,5 @@ Addons load in undefined order and messages flush over ticks, so you will never 
 
 - [`core`](./api/runtime.md) — the full runtime reference
 - [Sharing data between addons](./guides/channels.md) — which of shared, events and RPC carries what
-- [`core.config`](./api/config.md) — schema types, scopes, cross-addon access and authorization
 - [`core.registry`](./api/registry.md) — enumerating peers, dependencies and collisions
 - [sync](/docs/sync) — the transport underneath, when you need it directly
-- [UI integration](./guides/ui-integration.md) — turning your schema and guides into player-facing screens

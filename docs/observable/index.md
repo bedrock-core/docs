@@ -9,8 +9,8 @@ description: "@bedrock-core/observable is the reactive primitive the stack notif
 
 `@bedrock-core/observable` is the reactive primitive the stack notifies through: a value with three verbs — `get` / `set` / `subscribe` — the same three a config leaf has, a shared key has, a db document has, and Minecraft's own data-driven UI observables have.
 
-:::caution Pre-1.0
-`@bedrock-core/observable` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/observable` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## What is @bedrock-core/observable?

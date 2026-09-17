@@ -10,7 +10,7 @@ description: "@bedrock-core/sync is the low-level cross-addon transport for Mine
 `@bedrock-core/sync` is the low-level cross-addon transport for Minecraft Bedrock. It layers a message bus, peer discovery, RPC, a replicated state mirror and a broadcast channel on top of script events, so addons in separate script realms can talk.
 
 :::warning For framework and library developers
-If you are building a Bedrock addon, you do not need this package directly — use [`@bedrock-core/server-runtime`](/docs/server/api/runtime) instead. The runtime creates and manages the one sync node for you, and raw transport access is available as `core.node` whenever you want it.
+If you are building a Bedrock addon, you do not need this package directly — use [`@bedrock-core/server`](/docs/server/api/runtime) instead. The runtime creates and manages the one sync node for you, and raw transport access is available as `core.node` whenever you want it.
 :::
 
 ## Install
@@ -64,8 +64,6 @@ interface SyncNodeOptions {
   version?: string;
   schemaVersion?: number;
   meta?: Record<string, unknown>;
-  ownedNamespaces?: string[];
-  strictOwnership?: boolean;
   maxMessage?: number;
   instanceId?: string;
 }
@@ -73,12 +71,10 @@ interface SyncNodeOptions {
 
 | Option | Default | What it does |
 |---|---|---|
-| `id` | — | Unique addon id. Used as the envelope `src`, the RPC address, and the default owned namespace. |
+| `id` | — | Unique addon id. Used as the envelope `src`, the RPC address, and the one namespace this node writes. |
 | `version` | `'0.0.0'` | Announced to peers as `PeerInfo.version`. |
 | `schemaVersion` | `0` | Announced alongside `version`, for higher layers that version their payloads. |
 | `meta` | — | Opaque metadata broadcast with every announce; surfaces on peers as `PeerInfo.meta`. `server-runtime` puts the addon manifest here. |
-| `ownedNamespaces` | `[id]` | Namespaces this node is authoritative for — the ones it answers snapshot requests for. |
-| `strictOwnership` | `false` | When `true`, `state.set()` / `state.delete()` throw for a namespace this node does not own. See [ownership](./state.md#ownership-and-strictownership). |
 | `maxMessage` | `2000` | Character budget for one script-event message — what the [chunker](./protocol.md#framing-and-chunking) splits against and what a batch is packed up to. Mainly for tests. |
 | `instanceId` | generated | Overrides the auto-generated instance id. Mainly for tests. |
 
@@ -110,10 +106,6 @@ class SyncNode {
 - **Load order is not a problem.** Every node re-announces on a heartbeat and broadcasts a `whois` at startup, so a late loader catches up and an early loader hears about it.
 
 ## In this section
-
-:::caution Pre-1.0
-`@bedrock-core/sync` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
-:::
 
 | Page | Description |
 |---|---|

@@ -46,10 +46,10 @@ Every entry carries the full manifest plus three fields the registry adds:
 |---|---|
 | `id` | The namespace, `creator_pack`. The key everything else uses. |
 | `self` | `true` for the local addon, `false` for a peer. |
-| `runtimeVersion` | The `@bedrock-core/server-runtime` version that addon was built against — **not** its own `version`. This is what the [host election](./host.md) compares. |
+| `runtimeVersion` | The `@bedrock-core/server-runtime` version that addon was built against — **not** its own `version`. This is what [`core.host`](./host.md) compares. |
 
 :::note Peers can be partially known
-A peer's manifest is reconstructed from its discovery `meta`. A node that published no meta keeps its whole namespace as `pack` and an empty string as `creator` — the id is never split back into halves. `runtimeVersion` defaults to `0.0.0` when absent or malformed, so that peer loses the host election rather than corrupting it.
+A peer's manifest is reconstructed from its discovery `meta`. A node that published no meta keeps its whole namespace as `pack` and an empty string as `creator` — the id is never split back into halves. `runtimeVersion` defaults to `0.0.0` when absent or malformed, so that peer loses an election rather than corrupting it.
 :::
 
 ## API
@@ -166,7 +166,7 @@ interface IncompatiblePeer {
 
 Addons heard on the bus that this build cannot talk to, because the [protocol ranges](/docs/sync/discovery#protocol-negotiation) the two were built with do not overlap. They are present in the world but absent from [`all()`](#all): without a conversation there is no manifest to read.
 
-They are listed rather than ignored because the alternative is worse than an error. An addon that cannot be reached, silently left out, looks exactly like an addon that was never installed — the addon list is confidently wrong instead of visibly incomplete.
+They are listed rather than ignored because the alternative is worse than an error. An addon that cannot be reached, silently left out, looks exactly like an addon that was never installed — the catalog is confidently wrong instead of visibly incomplete.
 
 ### `onIncompatible`
 

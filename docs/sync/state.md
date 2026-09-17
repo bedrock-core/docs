@@ -7,7 +7,7 @@ description: "sync.state is a replicated key/value store."
 
 `sync.state` is a **replicated** key/value store. Every node keeps a full in-memory mirror, so reads are local and synchronous; writes broadcast a delta that every other node applies to its own mirror.
 
-Any node may read any `namespace:key`. A mirror **applies** an entry for a namespace only when it came from the namespace's owner — the node whose id is the namespace — unless the owner wrote the key with `{ open: true }`, in which case any node's write is taken. Among accepted entries conflicts resolve last-write-wins on a logical clock (a higher version wins; on a tie, the lexicographically greater `src`), so every mirror converges regardless of delivery order. Refused entries are counted in `droppedForeign`.
+Any node may read any `namespace:key`. A mirror **applies** an entry for a namespace only when it came from the namespace's owner — the node whose id is the namespace. Among accepted entries conflicts resolve last-write-wins on a logical clock (a higher version wins; on a tie, the lexicographically greater `src`), so every mirror converges regardless of delivery order. Refused entries are counted in `droppedForeign`.
 
 :::tip From an addon, prefer `core.shared`
 [Shared](/docs/server/api/shared) declares a shape and gives you a typed tree over this store, with the framework's reserved keys hidden. Drop to `core.node.state` — the object documented here — when you need a raw key or a framework key.
@@ -17,18 +17,17 @@ Any node may read any `namespace:key`. A mirror **applies** an entry for a names
 
 ```ts
 import { State, stateKey } from '@bedrock-core/sync';
-import type { StateKey, StateChange, StateChangeListener, StateOptions, SnapshotEntry } from '@bedrock-core/sync';
+import type { StateKey, StateChange, StateChangeListener, SnapshotEntry } from '@bedrock-core/sync';
 ```
 
 ## Usage
 
 ```ts
 sync.state.set('mycoolitems', 'spawnRate', 5);
-sync.state.set('mycoolitems', 'votes', 0, { open: true });  // any node may write this key from now on
 const rate = sync.state.get('mycoolitems', 'spawnRate');   // 5
-const all = sync.state.getNamespace('drav0011_economy');   // { currency: 'gold', … }
+const all = sync.state.getNamespace('drav0011_economy');   // { currency: 'gold', ... }
 
-sync.state.subscribe(({ ns, key, value, deleted }) => { /* … */ });
+sync.state.subscribe(({ ns, key, value, deleted }) => { /* ... */ });
 sync.state.delete('mycoolitems', 'spawnRate');
 ```
 
@@ -62,13 +61,11 @@ Every namespace currently present in the mirror, in insertion order.
 ### `set`
 
 ```ts
-set<T = unknown>(ns: string, key: StateKey<T>, value: NoInfer<T>, options?: SetOptions): void
-set(ns: string, key: string, value: unknown, options?: SetOptions): void
-
-interface SetOptions { open?: boolean }
+set<T = unknown>(ns: string, key: StateKey<T>, value: NoInfer<T>): void
+set(ns: string, key: string, value: unknown): void
 ```
 
-Write a key, apply it locally, and broadcast a `state-delta`. Throws when [`strictOwnership`](#ownership-and-strictownership) is on and `ns` is not owned. `open: true`, honoured only when this node owns `ns`, marks the key writable by any node; a write to a namespace this node does not own is applied by every mirror — this one included — only if the owner opened the key.
+Write a key, apply it locally, and broadcast a `state-delta`. Only the namespace's owner writes it: a write to another node's namespace is dropped by every mirror, this one included, and counted in `droppedForeign`. See [ownership](#ownership).
 
 ### `delete`
 
@@ -143,7 +140,7 @@ sync.state.requestSync();                        // everything
 sync.state.requestSync('drav0011_economy');      // only that namespace
 ```
 
-Responders answer **only for namespaces they own** — `ownedNamespaces`, which defaults to `[id]`. A namespace with no live owner is not re-served by whoever happens to be mirroring it, so a stale mirror is never presented as authoritative.
+Responders answer **only for their own namespace**, the one named by their id. A namespace with no live owner is not re-served by whoever happens to be mirroring it, so a stale mirror is never presented as authoritative.
 
 Empty namespaces are skipped rather than answered with an empty snapshot.
 
@@ -180,58 +177,41 @@ Serialize a namespace, **including tombstones** — a snapshot that dropped them
 | Addressed | Broadcast | Broadcast at startup, direct reply to a request |
 | Applied | Last-write-wins per key | Last-write-wins per entry |
 
-## Ownership and `strictOwnership`
+## Ownership
 
-```ts
-const sync = createSync({
-  id: 'mycoolitems',
-  ownedNamespaces: ['mycoolitems', 'mycoolitems_shared'],
-  strictOwnership: true,
-});
-```
+A namespace has one writer: the node whose id is the namespace. Every mirror applies that rule, this node's own included, so a write to another node's namespace is dropped everywhere and counted in `droppedForeign`.
 
-`ownedNamespaces` (default `[id]`) does two things:
-
-1. It is the set this node answers snapshot requests for.
-2. With `strictOwnership: true`, it is the set this node is allowed to write.
-
-By default **writes are open** — any node may write any namespace. With `strictOwnership` enabled, a write outside the owned set throws:
-
-```
-[sync] cannot write to namespace 'drav0011_economy': not owned by this node (strictOwnership is enabled)
-```
-
-The runtime creates its node with `ownedNamespaces: [namespace]` and leaves `strictOwnership` at its default, so `core.node.state` can still write anywhere. [`core.shared`](/docs/server/api/shared) narrows that by construction — its trees only ever address your own namespace, and a peer's tree has no `set`.
+[`core.shared`](/docs/server/api/shared) never reaches another namespace: its trees only ever address your own, and a peer's tree has no `set`.
 
 :::note Ownership is a convention, not a security boundary
-`strictOwnership` guards *your* node against writing where it should not. It cannot stop another pack from writing your namespace — every addon in a world runs arbitrary script. Treat state as shared and cooperative; put anything that needs an authority check behind [RPC](./rpc.md), the way [config](/docs/server/api/config#authorization) does.
+A mirror trusts a delta's sender id, and no message carries an identity worth trusting; a pack can also write the underlying dynamic properties directly. Every addon in a world runs arbitrary script. Treat state as shared and cooperative; put anything that needs an authority check behind [RPC](./rpc.md), with [`authorize`](/docs/server/api/authorize) in front of it.
 :::
 
 ## Persistence is not sync's job
 
 sync is in-memory only, and it deliberately does **not** touch dynamic properties — those are pack-scoped, and each addon owns its own durability.
 
-To persist: call `subscribe`, write your namespace to your own dynamic properties, and re-publish on load. Defer all of it with `system.run`, since dynamic properties cannot be touched during early execution.
+To persist, keep the namespace in a [`@bedrock-core/db`](/docs/db) document: restore it on load, then save it on every change. Do both inside `system.run`, since dynamic properties cannot be read during early execution, and restore before subscribing, so the restore does not save straight back.
 
 ```ts
+import { schema } from '@bedrock-core/db';
+import { createEngineDb } from '@bedrock-core/db/minecraft';
 import { system, world } from '@minecraft/server';
 
-system.run(() => {
-  const NS = 'mycoolitems';
-  const saved = world.getDynamicProperty(`${NS}:save`);
+const NS = 'mycoolitems';
+const saved = createEngineDb(NS)
+  .collection('state', { schema: schema<Record<string, unknown>>() })
+  .for(world);
 
-  if (typeof saved === 'string') {
-    for (const [k, v] of Object.entries(JSON.parse(saved) as Record<string, unknown>)) {
-      sync.state.set(NS, k, v);
-    }
+system.run(() => {
+  for (const [key, value] of Object.entries(saved.get() ?? {})) {
+    sync.state.set(NS, key, value);
   }
 
   sync.state.subscribe((change) => {
-    if (change.ns !== NS) { return; }
-
-    world.setDynamicProperty(`${NS}:save`, JSON.stringify(sync.state.getNamespace(NS)));
+    if (change.ns === NS) { saved.set(sync.state.getNamespace(NS)); }
   });
 });
 ```
 
-From an addon, `@bedrock-core/db` does this per document, on whatever dynamic property the target itself can hold — which is what you want once a namespace can grow past one property's 32767-character ceiling. A [shared](/docs/server/api/shared) key that must survive a restart is one such document, mirrored across in a line.
+A db document is one JSON string, chunked past a property's 32 767-character ceiling, versioned and migrated on read. From an addon, [`core.db`](/docs/server/api/db) is that instance already keyed under the addon's namespace, and a [shared](/docs/server/api/shared) key that must survive a restart is one such document, mirrored across in a line.

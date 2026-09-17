@@ -51,7 +51,7 @@ const phase = observable<'lobby' | 'fight' | 'end'>('lobby');
 phase.get();                                   // 'lobby'
 
 const release = phase.subscribe((next, prev) => {
-  console.warn(`${prev} → ${next}`);
+  console.warn(`${prev} -> ${next}`);
 });
 
 phase.set('fight');                            // listener runs here, before set returns

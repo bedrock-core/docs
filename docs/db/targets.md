@@ -27,14 +27,14 @@ type TargetKind = 'world' | 'dimension' | 'entity' | 'block' | 'slot' | 'itemSta
 |---|---|---|
 | `World` | the world | ✅ |
 | `Player`, `Entity` | the entity; dies with it | ✅ |
-| `Block` whose type declares `minecraft:block_entity` | the block entity, about 950 bytes per pack; dies with the block | ✅ |
+| `Block` whose type declares `minecraft:block_entity` with `dynamic_properties: true` | the block entity, about 950 bytes per pack; dies with the block | ✅ |
 | `ContainerSlot` holding a non-stackable item | the slot's item | ✅ |
 | `Dimension` | the world, keyed by the dimension id | ❌ |
-| a vanilla block | the world, keyed by dimension and location | ❌ |
+| any other block | the world, keyed by dimension and location | ❌ |
 | `ItemStack` | refused — a detached copy; the write never reaches the world | — |
 | `ContainerSlot` holding a stackable item | refused — a stackable item cannot hold properties | — |
 
-See the [resolver](./resolver.md) for how the decision is made.
+See [Blocks](#blocks) for what a block needs, and the [resolver](./resolver.md) for how the decision is made.
 
 ## Acceptors
 
@@ -79,7 +79,7 @@ interface Requirements {
 }
 ```
 
-Only `true` is a demand; an omitted key is indifferent. A target whose host lacks a required capability is refused by `for()` with a reason — a vanilla block under `require: { own: true }` is refused instead of stored on the world.
+Only `true` is a demand; an omitted key is indifferent. A target whose host lacks a required capability is refused by `for()` with a reason — a block without dynamic properties under `require: { own: true }` is refused instead of stored on the world.
 
 The check also runs in the IDE: a requirement the acceptor's target type can *never* satisfy is a compile error whose missing-property name is the reason. `own` on a `dimensions()` collection and `readableWhenUnloaded` on an `entityTypes()` collection are both type errors.
 
@@ -93,7 +93,15 @@ db.collection('elevators', {
 
 ## Blocks
 
-A block document lives on the block entity, so the block's type must declare `minecraft:block_entity` in its JSON. Two more things a block collection needs from the pack:
+A block holds its own documents when its type turns dynamic properties on:
+
+```json
+"minecraft:block_entity": { "dynamic_properties": true }
+```
+
+The resolver probes for the `minecraft:dynamic_properties` component this gives the block, not for the block entity: a block entity without it is stored on the world like any other block.
+
+Two things a block collection needs from the pack:
 
 - **`blockCleanup`** — a custom component to register and list on every accepted block type. Its `onBreak` fires for every removal, `/setblock` and script `setPermutation` included, and is what keeps the [index](./collection.md#all) honest:
 

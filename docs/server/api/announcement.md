@@ -7,15 +7,18 @@ description: "Announcement is the shape of every cross-addon feed: one owner-wri
 
 `Announcement<T>` is the shape of every cross-addon feed the runtime publishes: one small, owner-written value under a framework key on the [mirror](/docs/sync/state), read from every realm's local copy.
 
-`core.translations` extends one, and so do the registries `@bedrock-core/navigation` builds over the same mirror — [`screens(core)` and `pages(core)`](/docs/navigation/references). `core.features.flags`, `core.config.schema`, `core.config.groups` and `core.shared.shape` are fields of one. Wherever you meet the five members below, they mean the same thing.
+`core.translations` extends one, and so do the registries `@bedrock-core/navigation` builds over the same mirror — [`screens(core)` and `pages(core)`](/docs/navigation/references). `core.features.flags` and `core.shared.shape` are fields of one. Wherever you meet the five members below, they mean the same thing.
 
 ## Import
 
 ```ts
-import type { Announcement, AnnouncementListener } from '@bedrock-core/server';
+import { Announcement, isRecord } from '@bedrock-core/server';
+import type { AnnouncementListener } from '@bedrock-core/server';
 ```
 
-The runtime constructs every announcement; an addon only reads and writes through them.
+The runtime constructs its own — `core.features.flags`, `core.shared.shape` — and so does a package that extends it: `@bedrock-core/navigation` builds `screens(core)` and `pages(core)` the same way, `new Announcement(node.state, addonId, name, guard)`, over a subsystem's own value and a guard for it. An ordinary addon only reads and writes through the announcements it is handed; it does not mint its own.
+
+`isRecord(value)` is the guard every announcement's own guard starts from — a non-null, non-array object, the envelope shape before checking any field. A [declaration](./runtime.md#writing-one) publishing something of its own composes a stricter guard on top of it.
 
 ## Members
 

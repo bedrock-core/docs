@@ -25,14 +25,13 @@ import type { I18nBundle, TranslationResolver } from '@bedrock-core/server';
 ```ts
 import bundle from '@bedrock-core/generated/i18n';
 
-core.translations.provide(bundle);   // publish up front
-core.translations.provide(bundle);                    // or publish/replace later
+core.translations.provide(bundle);                    // replace what register() published, or publish another
 
 core.translations.of('drav0011_shop');                // another addon's bundle
 core.translations.i18n('drav0011_shop');              // verbs over it: t(), key(), raw(), resolve()
 core.translations.forPlayer(player);                  // chained resolver for that player's locale
 core.translations.forLocale('en_US');                 // chained resolver for one locale
-core.translations.subscribe((namespace) => { … });   // an addon re-published
+core.translations.subscribe((namespace) => { ... });   // an addon re-published
 ```
 
 ## What travels
@@ -40,7 +39,7 @@ core.translations.subscribe((namespace) => { … });   // an addon re-published
 The bundle itself — the module the [i18n filter](/docs/filters/i18n) generates (`@bedrock-core/generated/i18n`), or `createResourceBundle`'s runtime equivalent. Templates stay in `{{var}}` form with their recorded argument order.
 
 ```
-<your namespace>  →  core-i18n/bundle  →  I18nBundle
+<your namespace>  ->  core-i18n/bundle  ->  I18nBundle
 ```
 
 A payload that fails structural validation reads as no bundle rather than replacing a good one.
@@ -53,7 +52,7 @@ A payload that fails structural validation reads as no bundle rather than replac
 core.translations.provide(bundle: I18nBundle): void
 ```
 
-Publish this addon's bundle. Usually declared up front through `register({ translations })`; call this directly to publish late or to replace the bundle at runtime.
+Publish this addon's bundle. `register()` does this for you on the first tick, with the bundle your default `createI18n` instance was created with, so an addon that draws nothing still has its display keys resolved everywhere. Call it directly to publish a different bundle or to replace it at runtime.
 
 ### `of`
 

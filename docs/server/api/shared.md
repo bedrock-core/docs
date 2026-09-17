@@ -41,7 +41,7 @@ const { shared } = core.register({
 });
 ```
 
-`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors, the same value `core.config.define()` returns) and `shared` (the tree).
+`register()` returns the typed accessors of what was declared, one key each: `config` (the scope accessors `registerConfig(definition)` installs) and `shared` (the tree).
 
 A key may not begin `core-`, which is the framework's own announcement prefix; `register()` throws if one does.
 
@@ -79,10 +79,10 @@ import type { EconomyShared } from '@drav0011/economy-types';
 const economy = core.shared.of<EconomyShared>('drav0011_economy');   // undefined until the peer has registered
 
 economy?.currency.get();                        // string | undefined
-economy?.event.subscribe(event => …);
+economy?.event.subscribe(event => ...);
 ```
 
-`of()` materializes the tree from the key names the owner announced under `core-shared/shape` when it registered; the type argument is the compile-time view over it, the same arrangement as `core.config.of<Def>()`. A peer's key reads `undefined` while its value has not arrived — a peer never knows what the owner declared — and a peer's tree has no `set` at all, in the type and at runtime.
+`of()` materializes the tree from the key names the owner announced under `core-shared/shape` when it registered; the type argument is the compile-time view over it. A peer's key reads `undefined` while its value has not arrived — a peer never knows what the owner declared — and a peer's tree has no `set` at all, in the type and at runtime.
 
 Peers that only have the namespace, not the type, still get an untyped tree from `core.shared.of(ns)`.
 
@@ -110,7 +110,6 @@ Your namespace carries more than you put there. The framework replicates its own
 
 | Key | Written by |
 |---|---|
-| `core-config/schema`, `core-config/groups` | [`core.config`](./config.md) — the announced config schema |
 | `core-i18n/bundle` | [`core.translations`](./translations.md) — this addon's i18n bundle |
 | `core-ui/reference` | [`screens(core)`](/docs/navigation/references) — this addon's compiled screens, as references |
 | `core-addon/page` | [`pages(core)`](/docs/navigation/references) — the addon's page in the shared list |
@@ -120,5 +119,5 @@ Your namespace carries more than you put there. The framework replicates its own
 Each is an [`Announcement`](./announcement.md). The shared tree never sees them; to reach the raw namespace, framework keys included, use `core.node.state`:
 
 ```ts
-core.node.state.get(core.id, 'core-config/schema');
+core.node.state.get(core.id, 'core-feature/flags');
 ```

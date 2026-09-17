@@ -17,6 +17,12 @@ Who is present is a **value**, not a stream: `peers` is a [`ReadonlyObservable`]
 import type { PeerInfo, CollisionInfo, IncompatiblePeer, PeerListener, CollisionListener, IncompatibleListener, DiscoveryOptions } from '@bedrock-core/sync';
 ```
 
+`negotiateProtocol` and `capsFor` are the standalone functions behind [protocol negotiation](#protocol-negotiation) below; `SELF_CAPS` is what this build broadcasts:
+
+```ts
+import { capsFor, negotiateProtocol, SELF_CAPS } from '@bedrock-core/sync';
+```
+
 ## Usage
 
 ```ts
@@ -59,7 +65,13 @@ Liveness is deliberately **not** a field here. A tick that moves on every heartb
 
 ## Protocol negotiation
 
-Discovery is also where two nodes agree on what to speak. Every announce carries the range its sender supports, and hearing one settles the pair on the newest version both know:
+Discovery is also where two nodes agree on what to speak. Every announce carries the range its sender supports, and hearing one settles the pair on the newest version both know, through the standalone function the bus calls for every peer:
+
+```ts
+function negotiateProtocol(theirMin: number | undefined, theirMax: number | undefined): number | undefined
+```
+
+`undefined` when the ranges do not overlap at all. Otherwise:
 
 ```ts
 agreed = min(PROTOCOL_MAX, theirMax)          // valid while agreed >= max(PROTOCOL_MIN, theirMin)
@@ -75,9 +87,17 @@ An announce with no range at all comes from a node built before the field existe
 
 ```ts
 Cap.Batch   // 'batch' — reads several envelopes packed into one message
+
+SELF_CAPS: readonly Cap[]   // everything this build can read; broadcast in every announce
 ```
 
-A capability is always narrowed by the negotiated version: one advertised by a node that also speaks something newer is still out of reach at the version actually in use.
+A capability is always narrowed by the negotiated version, through `capsFor`:
+
+```ts
+function capsFor(protocol: number, advertised: readonly string[] | undefined): readonly string[]
+```
+
+One advertised by a node that also speaks something newer is still out of reach at the version actually in use — `capsFor` is what applies that narrowing when a peer's announce carries no `caps` at all, on any protocol that implies `Cap.Batch` by version alone.
 
 ## API
 

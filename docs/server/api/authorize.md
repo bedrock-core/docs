@@ -88,5 +88,4 @@ Whether the player is a world operator. Reads `player.playerPermissionLevel`, wh
 
 ## Notes
 
-- Config's own nine `core:config.*` methods call `authorize` with the world, the dimension or the player's entity as the target — see [config authorization](./config.md#authorization).
 - The rule keys off the **actor**, never the calling pack. Script events carry no sender identity a rule could rest on.

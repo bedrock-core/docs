@@ -9,8 +9,8 @@ description: "@bedrock-core/db is persisted documents on dynamic properties: typ
 
 `@bedrock-core/db` is persisted documents on dynamic properties: typed collections keyed by target, stored on whatever dynamic properties the target itself can hold.
 
-:::caution Pre-1.0
-`@bedrock-core/db` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/db` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## What is @bedrock-core/db?

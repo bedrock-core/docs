@@ -7,7 +7,7 @@ description: "The resolver probes a target once per type for where its documents
 
 The resolver decides, per target, where a document can live: on the target's own dynamic properties through one of the engine's two ABIs, or on a world property keyed by the target's identity when it has none — or nowhere, with a reason.
 
-Nothing is declared. A target is probed once **per type** — a block type either has a `minecraft:block_entity` or it does not, an item type is either stackable or not — and the decision is cached; a throw (a block in an unloaded chunk) is never cached.
+Nothing is declared. A target is probed once **per type** — a block type either has the `minecraft:dynamic_properties` component or it does not, an item type is either stackable or not — and the decision is cached; a throw (a block in an unloaded chunk) is never cached.
 
 ## Import
 
@@ -53,8 +53,8 @@ interface Refused { ok: false; kind: TargetKind; reason: string }
 |---|---|---|
 | `World`, `Entity`, `Player` | `own`, direct ABI | six methods, 32 767 characters per value |
 | `ContainerSlot` with a non-stackable item | `own`, direct ABI | the slot is the item's place; a stackable item refuses properties |
-| block whose type declares `minecraft:block_entity` | `own`, component ABI | about 950 bytes per block, dies with the block |
-| `Dimension`, vanilla block | `proxied` | a world property keyed by the target's identity |
+| block whose type declares `minecraft:block_entity` with `dynamic_properties: true` | `own`, component ABI | about 950 bytes per block, dies with the block |
+| `Dimension`, any other block | `proxied` | a world property keyed by the target's identity |
 | `ItemStack` | **refused** | a detached copy — the write never reaches the world |
 
 A host's `caps` say what a collection may [`require`](./targets.md#require):

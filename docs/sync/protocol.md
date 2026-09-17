@@ -10,9 +10,11 @@ What actually goes over the wire: the bus, the envelope, framing and rate limiti
 ## Import
 
 ```ts
-import { Bus, Cap, MAX_MESSAGE, MessageType, PROTOCOL_MAX, PROTOCOL_MIN } from '@bedrock-core/sync';
+import { Bus, Cap, MAX_MESSAGE, MessageType, PROTOCOL_MAX, PROTOCOL_MIN, SELF_CAPS } from '@bedrock-core/sync';
 import type { Envelope, BusOptions, SendOptions, EnvelopeHandler, Unsubscribe } from '@bedrock-core/sync';
 ```
+
+`SELF_CAPS` is what this build broadcasts as `caps` on every announce; how a receiver narrows a peer's `caps` against the negotiated version is [`capsFor`, next to negotiation](./discovery.md#capabilities).
 
 ## One channel
 
@@ -67,7 +69,7 @@ Decoding accepts any `v` inside the window. Only a version below `PROTOCOL_MIN` 
 
 The window is two versions wide: a version stays readable for two releases after it stops being the newest. Raising `PROTOCOL_MIN` drops everything below it and is a breaking change.
 
-A node whose range does not overlap this build's at all cannot be addressed. It is reported through [`onIncompatible`](./discovery.md#onincompatible) and named in the addon list rather than quietly missing from it.
+A node whose range does not overlap this build's at all cannot be addressed. It is reported through [`onIncompatible`](./discovery.md#onincompatible) and named in the catalog rather than quietly missing from it.
 
 ## Message types
 
@@ -141,9 +143,9 @@ A message whose `dst` equals the sender's own id never goes over the wire — it
 One script-event message opens with a single tag character naming which of three shapes follows:
 
 ```text
-0{"v":2,"src":"shop",…}          one envelope, verbatim
-2[{"v":2,…},{"v":2,…}]           several envelopes packed into one message
-1{"c":"…","s":0,"t":9,"p":"…"}   one frame of an envelope too large to send whole
+0{"v":2,"src":"shop",...}          one envelope, verbatim
+2[{"v":2,...},{"v":2,...}]           several envelopes packed into one message
+1{"c":"...","s":0,"t":9,"p":"..."}   one frame of an envelope too large to send whole
 ```
 
 The tag exists to keep the common case cheap. Nesting an envelope inside a frame's `p` field means JSON-escaping the whole thing to sit inside a JSON string — every quote costs a backslash — and a one-piece message would carry a `c`/`s`/`t` header describing a split that never happened. Most bus traffic is one-piece, so the tag keeps the common case cheap.
@@ -217,7 +219,7 @@ To watch raw traffic from an addon:
 
 ```ts
 core.node.bus.on('state-delta', (envelope) => {
-  console.warn(`${envelope.src} → ${JSON.stringify(envelope.data)}`);
+  console.warn(`${envelope.src} -> ${JSON.stringify(envelope.data)}`);
 });
 ```
 

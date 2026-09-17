@@ -25,7 +25,7 @@ A value only some peers want, some of the time, is an RPC answer, not a shared k
 
 ## What stays local
 
-[`core.db`](../api/db.md) is local. A collection is this addon's; nothing in it is served, announced or mirrored by default. The same holds for config values: the schema is announced so a UI can build a form, but the values are fetched over the nine `core:config.*` methods the runtime serves, with the acting player checked on each.
+[`core.db`](../api/db.md) is local. A collection is this addon's; nothing in it is served, announced or mirrored by default. The same holds for [config](/docs/config/settings): its schema and values stay with the addon that declares them.
 
 That is deliberate. Storage and exposure are different decisions, and an addon that persists a document has not said anything about who may read it.
 
@@ -60,7 +60,7 @@ core.rpc.serve<EconomyApi>({
 });
 ```
 
-Config peers are not told when a value changes. An owner that wants them told does the same: mirrors the value on a shared key, or emits an event.
+A config setting is shared the same way: the owner mirrors it on a shared key, emits an event when it changes, or serves it.
 
 ## Reading from the other side
 
@@ -79,11 +79,11 @@ Each read is typed by what the owner exports — `typeof sharedDef`, `typeof eve
 
 ## Where each value can be seen
 
-| Place | Owner | Survives restart | Peers see it | Authoritative |
+| Place | Owner | Survives restart | Peers see it by default | Authoritative |
 |---|---|---|---|---|
 | an observable | this addon | no | no | yes, for what it holds |
-| a db document | this addon | yes | through an RPC method | yes |
-| the config accessor tree | this addon | yes | through the config methods | yes |
+| a db document | this addon | yes | no | yes |
+| the config accessor tree | this addon | yes | no | yes |
 | a shared key, own namespace | this addon | no — map a document onto it | yes, from their mirror | yes |
 | a shared key, a peer's namespace | the peer | no | — | no: a copy; writes are dropped |
 | an event | the sender | no | once, if listening | — |
