@@ -6,6 +6,7 @@ description: "The bc-bds commands, every run option, what a run does, exit codes
 
 ```text
 bc-bds run --packs <dir> --tag <tag> [options]   run a suite
+bc-bds optimize --packs <dir> --out <dir>        pack built packs into archives
 bc-bds fetch                                     download and cache the server
 bc-bds where                                     show which build will be used, and from where
 ```
@@ -46,6 +47,48 @@ Accepted by every command. See [Choosing the server build](./config.md#choosing-
 Either a directory containing `BP/` and optionally `RP/`, which is what Regolith exports, or a directory that is itself a single pack. A pack is treated as a behavior pack when its manifest declares a `script` or `data` module, and as a resource pack otherwise.
 
 Passing `--packs` more than once installs several addons into the same world. That is how a test which asserts that *another* addon is present can pass. Each pack is copied into the world under a folder named after the addon it came from, so two addons that both export `BP/` do not collide.
+
+## `optimize` options
+
+```text
+bc-bds optimize --packs <dir> --out <dir> [--unpack]
+```
+
+Runs the server's own pack optimizer over built packs. It minifies their JSON, packs each folder into a `.brarchive` under `__brarchive/`, and stamps `pack_optimization_version` into the manifest so the engine knows to read from there. The server converts and exits; it never serves.
+
+`--packs` is a directory whose *subdirectories* are each one pack. Regolith's `build/` already has that shape — one folder per pack, each with its own manifest — so the export needs no rearranging.
+
+| Option | Effect |
+| --- | --- |
+| `--packs <dir>` | Directory holding one subfolder per pack. Required |
+| `--out <dir>` | Where the converted packs are written. Has to sit outside `--packs`, which is read as a directory of packs. Required |
+| `--unpack` | The other direction: expand a converted tree back into loose files |
+| `--verbose` | Echo the converter's own per-file lines |
+| `--offline` | Never download. Fail if the server is not already cached |
+
+The build the conversion runs on decides the archive format it writes, so pin one in `bds-runner.json` rather than taking `latest`. See [Choosing the server build](./config.md#choosing-the-server-build).
+
+### What converting costs
+
+A converted pack needs a **1.26.40 or newer client**; older clients fail to load it. The converter does not raise `min_engine_version` to match, so nothing in the pack tells such a player why it failed. Decide that before shipping one.
+
+### What gets archived
+
+| Input | Result |
+| --- | --- |
+| `manifest.json` | copied out, plus `pack_optimization_version` in the header |
+| anything else at the pack root | copied out — only subdirectories are archived |
+| `**/*.json` | archived and minified, `//` comments stripped |
+| `**/*.png`, `**/*.js` | archived unchanged |
+| `texts/*.lang` | listed in the archive, and copied out unchanged |
+
+An entry that carries no bytes is a listing rather than content: the engine learns a directory's contents from one read and still loads that file from disk. Nothing about those files gets smaller, so the summary counts them apart from the archived ones.
+
+The saving is whitespace, so it lands on JSON and nothing else. A pack of compiled screens roughly halves; a pack whose weight is textures or a sourcemap barely moves.
+
+### `--unpack` is not an inverse
+
+It restores the file tree, not the sources: JSON comes back minified and without the comments it was written with. The build output is the original, not the unpacked copy.
 
 ## What a run does
 

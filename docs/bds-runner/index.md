@@ -8,8 +8,8 @@ description: "Run an addon's GameTests headlessly on a Bedrock Dedicated Server 
 
 Runs a Minecraft Bedrock addon's GameTests on a real Bedrock Dedicated Server, headless, and exits with a CI status code.
 
-:::caution Pre-1.0
-`@bedrock-core/bds-runner` is under active development. Breaking changes can still land until `1.0.0` — pin exact versions and read the release notes before upgrading.
+:::caution Beta
+`@bedrock-core/bds-runner` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
 ## What is @bedrock-core/bds-runner?

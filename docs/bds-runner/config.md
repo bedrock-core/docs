@@ -32,13 +32,15 @@ The schema file the `$schema` line points at is generated from the selected serv
 
 | Key | Value | Why |
 | --- | --- | --- |
+| `server-name` | `bc-bds-runner` | Identifies the server in its own properties file |
+| `transport` | `nethernet` | The transport every client uses from 1.26.50 on; a server left on `raknet` refuses players |
 | `gamemode`, `force-gamemode` | `creative`, `true` | Nothing wanders into a plot; a joining player can edit it |
 | `difficulty` | `peaceful` | No mob AI competes for ticks |
 | `default-player-permission-level` | `operator` | A joining player can run commands |
 | `allow-list` | `false` | Anyone on the LAN can join a held-open server |
 | `view-distance`, `tick-distance`, `max-threads`, `max-players` | `5`, `4`, `4`, `1` | The tests run in one plot; the rest is wasted simulation |
 | `player-idle-timeout` | `0` | A kick mid-run would look like a hang |
-| `content-log-file-enabled` | `true` | A second copy of the log on disk, next to the server |
+| `content-log-file-enabled`, `content-log-file-max-size-bytes` | `true`, `33554432` | A second copy of the log on disk, next to the server |
 | `script-watchdog-hang-threshold` | `60000` | A long test is not killed by the 10 s default |
 | `script-watchdog-enable-shutdown` | `false` | A hung script fails the run instead of taking the server down before it can report |
 | `enable-lan-visibility` | `false`, `true` with `--keep-alive` | Advertised on the LAN only when someone is meant to join |
@@ -47,7 +49,7 @@ Anything in `properties` is applied over those, so `"difficulty": "normal"` wins
 
 Five keys cannot be overridden because the runner depends on them: `level-name`, `server-port` and `server-portv6` (use `--port`), `allow-cheats`, and `online-mode`. Setting one is an error that names what controls it.
 
-The runner also writes `config/default/permissions.json` so the world's scripts may import `@minecraft/server`, `@minecraft/server-gametest`, `@minecraft/server-ui` and `@minecraft/debug-utilities`, whatever the build's default list says.
+The runner also writes `config/default/permissions.json`, listing `@minecraft/server`, `@minecraft/server-gametest`, `@minecraft/server-ui` and `@minecraft/debug-utilities` as modules the world's scripts may import — a fixed list, written explicitly so a run never depends on the build's own default `permissions.json`.
 
 ## World
 
@@ -69,9 +71,36 @@ Precedence, highest first:
 1. `--bds-version` / `--bds-channel`
 2. `BC_BDS_VERSION` / `BC_BDS_CHANNEL`
 3. The nearest `bds-runner.json`, or the file named by `--config`
-4. Newest `stable`
+4. The build your packs ask for — see below
+5. Newest `stable`
 
 `bc-bds where` prints the selected build, the config file it came from, the schema path, and the current upstream builds.
+
+### The first run writes the pin for you
+
+A project with no `bds-runner.json` does not silently get whatever is newest. Before the first
+download the runner reads the `min_engine_version` of every pack manifest in the project, takes
+the highest, and pins the newest build published in that line — `1.26.40` selects `1.26.40.8`.
+It writes the result and says so:
+
+```text
+  no bds-runner.json: 2 manifest(s) declare min_engine_version 1.26.40
+  pinned 1.26.40.8 (stable) in bds-runner.json
+```
+
+`min_engine_version` is the promise a pack makes to players: this is the oldest client that can
+load me. Running the tests on exactly that build tests the promise rather than something newer,
+and [converting packs](./cli.md#optimize-options) on it cannot emit an archive format older
+clients in that range would choke on.
+
+The scan skips `node_modules`, `build`, `dist`, `.bds` and other generated trees, so a dependency
+or a stale export cannot decide the project's build. A line that only ever shipped as preview
+pins the preview build. Nothing is written when no manifest declares a version, when the index is
+unreachable, or when a config file already exists — the newest stable build is used and the
+project stays as it was.
+
+This happens once. Edit or delete the file to change the pin; `bc-bds where` reports what would be
+detected without writing anything.
 
 Build metadata comes from [Bedrock-OSS/BDS-Versions](https://github.com/Bedrock-OSS/BDS-Versions); the download itself comes from minecraft.net and is checked against the published SHA-1. If the index is unreachable the run fails rather than falling back to a build it already has.
 
