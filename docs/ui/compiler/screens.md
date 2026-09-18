@@ -66,6 +66,12 @@ A compiled screen is baked, so a string that changes has to say how much room to
 
 The build renders the component with each state slot perturbed and fails on anything that moved without a reservation, naming the strings it saw and the `maxLength` each needs. The same probe fails a screen whose **shape** moved — a cell added, dropped or reordered — because the cells are numbered once, at build time.
 
+## Looks are discovered
+
+Everything else an element draws — a texture, a colour, an alignment, its size and its place — needs no marker. The probe perturbs each state slot and presses each button, and every element whose look moved is drawn once per look it can take, with the one worn chosen at runtime: by an entry on a form, by an item's durability on a container screen. Props moved by different causes are paired, so a word coloured by one control and moved by another has every combination drawn. A button draws its looks inside its face; any other element draws each version in place, with its children drawn once over them.
+
+An element the host draws itself — a press, a slot, a live string, a live image or a list — cannot be copied per look, so a prop that changes on one fails the build, naming the prop and the values it saw. Keep it the same for every state and put what changes on a plain element beside it.
+
 ## Conditionals become carried visibility
 
 `{cond && <X/>}` has already collapsed to `false` by the time any renderer sees it, and nothing can tell which element went missing. So the build rewrites the source text of every `.screen.tsx` before executing it, and ships the same rewrite to the runtime:

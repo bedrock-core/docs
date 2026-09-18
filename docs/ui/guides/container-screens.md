@@ -178,7 +178,7 @@ The same set as a form, with four additions and a few container-specific behavio
 | [`Text`](../components/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
 | [`Image`](../components/Image.md) | A texture, baked into the layout. |
 | [`Scroll`](../components/Scroll.md) | A region laid out at its own height that the client scrolls. Not inside another scroll. |
-| [`Button`](../components/Button.md) | A container slot with the item hidden: a press reaches script only as an item move, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their color, which is why an [ore-styled](/docs/ore-styled) button's caption keeps its enabled color while its background swaps to the disabled one. |
+| [`Button`](../components/Button.md) | A container slot with the item hidden: a press drops that item, which is how it reaches script and names the player who pressed, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their color, which is why an [ore-styled](/docs/ore-styled) button's caption keeps its enabled color while its background swaps to the disabled one. |
 | [`Background`](../components/Background.md) | A full-screen texture behind everything, as in a form. |
 | `Panel`, `Fragment`, contexts | Exactly as in a form. |
 
@@ -203,7 +203,7 @@ A `Slot` and a `SlotGrid` can read a collection the screen does **not** own — 
 
 ```tsx
 <Slot collection={'hotbar_items'} index={0} />                                  {/* one foreign cell */}
-<SlotGrid collection={'inventory_items'} columns={9} rows={3} hideOwned interactive={false} />  {/* a whole collection */}
+<SlotGrid collection={'inventory_items'} columns={9} rows={3} interactive={false} />  {/* a whole collection */}
 ```
 
 The difference between an **own** slot and a **foreign** one is where the value lives and who drives it:
@@ -211,7 +211,7 @@ The difference between an **own** slot and a **foreign** one is where the value 
 - An **own** `Slot` (no `collection`) is a cell of the screen's own container. It is allocated a container index, the runtime polls it every sweep, and its `role` — `input` / `output` — is enforced a tick later by undoing a move the engine already made. A container reports no events and offers no veto, so a role is a server-side runtime thing, never a baked one.
 - A **foreign** `Slot collection` / `SlotGrid` reads another collection at an author-given index. It costs no index in the screen's own container and the runtime never touches it: the engine's own take and place drive it directly. `role` has no meaning here (nothing polls it) and is refused.
 
-What *is* baked into the JSON UI is inertness. A container slot's take and place are a single combined engine action, so there is no take-only or place-only cell to express a one-directional `role` on the client — the runtime undoes the wrong direction a tick later. (Two things are baked: **no slot drops** — Q is not a route on any container cell, since dropping belongs outside a container and a dropped item lands out of the runtime's reach; and an output slot with no result holds the runtime's marker item while its compiled cell swaps to an empty fake — the slot is never empty, so shift-click auto-placement is blocked, and the marker is never rendered, hovered or takeable, because no real cell exists while it sits there.) A cell can also be made fully inert with `interactive={false}` — it withholds focus, so it can neither be taken from, placed into, nor dropped. A drawn-but-untouchable mirror of the player's inventory is exactly that.
+What *is* baked into the JSON UI is inertness. A container slot's take and place are a single combined engine action, so there is no take-only or place-only cell to express a one-directional `role` on the client — the runtime undoes the wrong direction a tick later. (Two things are baked: **no slot drops** — Q is not a route on any `Slot` cell, since a dropped item lands out of the runtime's reach (a `Button` is the exception: dropping its hidden item is its press); and an output slot with no result holds the runtime's marker item while its compiled cell swaps to an empty fake — the slot is never empty, so shift-click auto-placement is blocked, and the marker is never rendered, hovered or takeable, because no real cell exists while it sits there.) A cell can also be made fully inert with `interactive={false}` — it withholds focus, so it can neither be taken from, placed into, nor dropped. A drawn-but-untouchable mirror of the player's inventory is exactly that.
 
 ## State and handlers
 

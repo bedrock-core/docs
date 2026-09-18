@@ -60,7 +60,7 @@ Nothing above a host dispatches on a host, and nothing below a host dispatches o
 
 A node kind is one vertical slice: its IR shape, how a built element lowers into it, and how that shape draws. The walks stay dumb — the lowering walk owns order, geometry and naming; the face walk owns document assembly; the host walk owns socket order — and each dispatches through the definitions.
 
-A socket kind absent from a host's table is refused at build, by name, in that host's own words. That is the whole of the capability model: `press`, `text`, `texture`, `slot`, `grid`, `field`, `list` and `visible` are the kinds, and a host serving none of them draws faces alone, which is exactly what a preview is.
+A socket kind absent from a host's table is refused at build, by name, in that host's own words. That is the whole of the capability model: `press`, `text`, `texture`, `slot`, `grid`, `field`, `list`, `visible` and `look` are the kinds, and a host serving none of them draws faces alone, which is exactly what a preview is.
 
 ## Behaviors
 

@@ -12,6 +12,7 @@ A failed check stops the build with the compiler's own message, which the [`ui-c
 | Shape | A screen that adds, drops or reorders a cell when its state changes |
 | Live text | A `<Text>` whose string changes with no `maxLength`; the message names each string it saw and the length it needs |
 | Carried visibility | A `visible` that moves on a container screen, which bakes it |
+| Looks | A prop that changes with state on an element the host draws itself — a press, a slot, a live string, a live image or a list — naming each prop and the values it saw; or an element taking more than 63 looks on a container screen |
 | Static | `<Screen static>` on a screen that carries a live value or runs a handler of its own, naming which |
 | Trans | A tag left open or closed out of order, a placeholder in a `<Trans>` string, a `<Text>` component setting more than `color` and `shadow`, a press inside a press, or a component that is neither |
 | Canvas | Content laid out past 320 × 210, with the size it measured |

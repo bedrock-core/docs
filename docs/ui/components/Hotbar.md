@@ -22,7 +22,7 @@ import { Hotbar } from '@bedrock-core/ui';
 </Container>
 ```
 
-The same redrawn grid as [`PlayerInventory`](./PlayerInventory.md), one row tall: 162 × 18 — a thin [`SlotGrid`](./SlotGrid.md) wrapper, `<SlotGrid collection={'hotbar_items'} columns={9} rows={1} hideOwned />`. Placed by the layout engine at its natural size, and — like the inventory — not drawn unless asked for, because a container screen owns the whole chest screen.
+The same redrawn grid as [`PlayerInventory`](./PlayerInventory.md), one row tall: 162 × 18 — a thin [`SlotGrid`](./SlotGrid.md) wrapper, `<SlotGrid collection={'hotbar_items'} columns={9} rows={1} />`. Placed by the layout engine at its natural size, and — like the inventory — not drawn unless asked for, because a container screen owns the whole chest screen.
 
 ## Props
 
@@ -30,5 +30,4 @@ Inherits [control props](./control-props.md). Its size is fixed by the engine's 
 
 ## Notes
 
-- A button's transport item draws as nothing here too, for the tick it takes the runtime to reclaim it.
 - Vanilla stacks the hotbar four texels under the inventory; `marginTop={4}` reproduces that.

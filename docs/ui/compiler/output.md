@@ -24,7 +24,7 @@ A tree that starts with anything else — or a `<Container>` naming neither `ent
 Both hosts are reached the same way: one gated definition per screen under a root named for the addon, and one insert putting that root where the screen can see it. A gate compares the whole of what identifies the screen, so two screens can never both match.
 
 - **Form screens** gate on the form's title, which carries the protocol header and the screen's namespaced name. The library's own container is already gated on that header, so a compiled form needs no vanilla edit: the addon's root is inserted into the mount. The pack that *defines* the mount lists its root in the definition directly; every other pack inserts through `RP/ui/server_form.json`.
-- **Container screens** gate on a layout key. A marker item in the container's first two slots carries a protocol key — is this container a compiled screen at all? — and the layout key as two stack sizes, and the router shows the layout whose key matches. An entity-hosted screen inserts the addon's root into `RP/ui/chest_screen.json`, at vanilla's `chest.small_chest_panel_top_half`; a block-hosted screen inserts the same root into `RP/ui/data_driven_container_screen.json`, at `data_driven_container.panel_top_half`. A vanilla chest or data-driven container has no marker, fails the first check and renders untouched.
+- **Container screens** gate on a layout key. A marker item in the container's first slot carries a protocol key — is this container a compiled screen at all? — as its max durability, and the layout key as its current durability, and the router shows the layout whose key matches. An entity-hosted screen inserts the addon's root into `RP/ui/chest_screen.json`, at vanilla's `chest.small_chest_panel_top_half`; a block-hosted screen inserts the same root into `RP/ui/data_driven_container_screen.json`, at `data_driven_container.panel_top_half`. A vanilla chest or data-driven container has no marker, fails the first check and renders untouched.
 
 A screen's layout key is a hash of `<namespace>_<name>` folded into 1..3969. It depends on nothing but the screen's own name, so a rebuild never moves a key and an entity placed in a world keeps opening the screen it was stamped with; two addons built apart never claim the same key for their first screens. Two screens of one addon hashing alike is a build failure naming both.
 
@@ -57,10 +57,10 @@ A container screen names the entity or the block it opens from. The filter finds
 ```jsonc
 "description": {
   "states": {
-    // One value, because a block type opens one screen. A string, not a number: the engine
-    // stores an integer state by its value in the block's state bits, and a layout key does
-    // not fit them, while a single string value costs none.
-    "core:ui_layout": ["1094"]
+    // A string, not a number: the engine stores an integer state by its value in the block's
+    // state bits, and a layout key does not fit them. The key is the default; `none` is there
+    // because a one-value state needs zero bits, which the engine logs as out of range.
+    "core:ui_layout": ["1094", "none"]
   }
 },
 "components": {
