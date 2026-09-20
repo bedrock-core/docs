@@ -5,7 +5,7 @@ description: "One independent vertical scroll region, laid out in the parent flo
 # Scroll
 
 `<Scroll>` declares an independent scroll region. Arrange a group of scrolls with a
-concrete `<Panel flexDirection>` wrapper. A form supports up to 2 of them.
+ concrete `<Panel flexDirection>` wrapper.
 
 ## Import
 
@@ -47,8 +47,6 @@ non-absolute scroll defaults to `flexGrow: 1` so bare `<Scroll>`s share the pare
 
 ## Notes
 
-- A form supports at most **2 custom `<Scroll>`s** (3 total with the root scroll). Rendering
-  more **throws a `ScrollLimitError`** during layout.
 - Scrolls cost engine time on big screens. Use one only where you genuinely need an
   independent scrolling region; reach for a plain `<Panel>` when the single root scroll
   will do.

@@ -13,8 +13,10 @@ The ui-compiler filter reads the definition out of `core.register()` and bakes o
 
 | The level holds | It renders as |
 | --- | --- |
-| only sub-groups and/or lists | a **screen of buttons** — one row per sub-group, one per list |
-| at least one form field | a **form**, with any sub-groups drawn inline beneath it and indented |
+| only form fields | a **form** |
+| one or more sub-groups and/or lists | a **screen of buttons**, one row per sub-group or list |
+
+A level cannot mix form fields with sub-groups or lists. `registerConfig()` and the ui-compiler reject that shape with the path that needs restructuring. Put the form fields in a named child group instead. This keeps every screen unambiguous: it is either a form or a menu.
 
 Walking a schema shaped like the reference addon:
 
@@ -24,9 +26,11 @@ server: {
     balances: { /* fields */ }, //                 -> form
     currency: { /* fields */ }, //                 -> form
   },
-  display: {                    // has fields      -> form
-    prefix: { /* ... */ },
-    advanced: { /* fields */ }, //                 -> drawn INLINE, indented, inside display's form
+  display: {                    // only destinations -> screen of buttons
+    general: {                  //                   -> form
+      prefix: { /* ... */ },
+    },
+    advanced: { /* fields */ }, //                   -> own form, reached from display
   },
   moderation: {                 // only lists      -> screen of buttons, one row per list
     blockedItems: { type: 'list', /* ... */ },
@@ -37,7 +41,7 @@ server: {
 Depth is unbounded, and each level answers only for itself: a tree can be pure structure for three levels and then hold settings.
 
 :::note A list is not a form field
-Lists do not count toward "at least one form field". A list has no modal control either, so it never needed the form, which is why a level holding nothing but lists is a button screen and each list opens a real editor there. A list on a level that *does* have fields shows its items and the command that edits them, because there is genuinely no button to give it.
+Lists have no native modal control, so every level that holds one opens a screen of buttons and each list gets a real editor there. Put any form fields in a child group beside the list.
 :::
 
 ## What each entry becomes
@@ -63,7 +67,7 @@ Groups are nested objects, and may name themselves with [`$label` and `$descript
 
 Reached from a button screen, a list opens its own editor: current items as rows, a press to remove one, and an **Add** button. Adding presents a native modal with a text field. `maxItems` disables Add and says why.
 
-Edits stage locally and write on **Save**, the same as the settings form. Writing per press would be one write of the whole array per item touched, each replicated to everyone mid-edit.
+Each list change writes immediately. The list editor does not have a Save button because every add, edit, or removal is already a complete list value.
 
 ## Next steps
 

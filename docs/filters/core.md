@@ -26,6 +26,10 @@ regolith config resolvers --append github.com/bedrock-core/regolith-filters/reso
 regolith install core manifest generator guides i18n ui-compiler bundler
 ```
 
+Declare those same seven names in `regolith.filterDefinitions` with their released versions.
+`regolith install-all` reads only that object; it does not follow `core`'s chain. The
+[CLI template](/docs/cli) is a complete pinned example.
+
 Then one entry per profile replaces the six:
 
 ```jsonc title="config.json"

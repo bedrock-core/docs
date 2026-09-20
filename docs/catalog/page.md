@@ -18,7 +18,7 @@ Every string on it is a localization key the client resolves from the addon's ow
 | `packName` | the name, large |
 | `version` | under the name |
 | `icon` | the square icon above the name |
-| `thumbnail` | the 16:9 banner, when set |
+| `thumbnail` | the 16:6 banner, when set |
 | `description` | the card |
 | `creatorName`, or `creator` | after "Author(s):" |
 
@@ -26,7 +26,7 @@ Every string on it is a localization key the client resolves from the addon's ow
 
 The ui-compiler filter reads the manifest out of `core.register()` and writes a module that asks this package's `shape` for the page; that builds it and registers it, beside the addon's other compiled screens. The realm reads it back on the first tick and publishes its **reference**: per reserved entry, the value it is shown with and where a press leads. That is all another realm needs to draw the page out of the pack every client already holds.
 
-The page is generated for an addon that installed any of the three apps. An addon that installed none publishes no page, and its row shows the fallback area, the name and version alone.
+The page is generated only when the addon installs the catalog. An addon that installs another app without the catalog publishes no page yet, and its row shows the fallback area, the name and version alone.
 
 ## Where a press goes
 

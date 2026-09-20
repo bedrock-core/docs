@@ -8,7 +8,7 @@ Three things have to be in place: the package, the render pack in the world, and
 
 ## Prerequisites
 
-- Node.js 20+ and Yarn or npm — https://nodejs.org
+- Node.js 22.18.0+ and Yarn or npm — https://nodejs.org
 - Regolith — https://regolith-docs.readthedocs.io/en/stable
 
 Regolith is not optional here. A screen is drawn from JSON UI the build writes, so a project with no build has no screens.

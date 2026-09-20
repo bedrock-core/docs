@@ -62,7 +62,9 @@ const configDef = {
       currency: { type: 'select', default: 'emerald', options: ['emerald', 'gold', 'diamond'], label: 'Currency' },
       shopEnabled: { type: 'boolean', default: true, label: 'Shop Enabled' },
     },
-    bannedItems: { type: 'list', maxItems: 50, default: [], label: 'Banned Items', description: 'Item IDs that cannot be sold' },
+    moderation: {
+      bannedItems: { type: 'list', maxItems: 50, default: [], label: 'Banned Items', description: 'Item IDs that cannot be sold' },
+    },
   },
   dimension: {
     miningBonus: { type: 'number', default: 1, min: 0, max: 5, label: 'Mining Bonus' },
@@ -192,8 +194,8 @@ A **`list`** is open-ended — an addon can cap it with `maxItems` but cannot en
 A `list` entry is an ordered array of free strings, and the only array whose items are not drawn from `options`:
 
 ```ts
-config.server.bannedItems.get();   // string[]
-config.server.bannedItems.set(['minecraft:bedrock', 'minecraft:barrier']);
+config.server.moderation.bannedItems.get();   // string[]
+config.server.moderation.bannedItems.set(['minecraft:bedrock', 'minecraft:barrier']);
 ```
 
 `maxItems` caps the length. A setting whose items come from a fixed set is a `multiselect`.
@@ -220,7 +222,7 @@ A modal form has no control for a list, so whether the config screen can edit on
 config.server.get();
 // {
 //   pricing: { taxRate: number; currency: 'emerald' | 'gold' | 'diamond'; shopEnabled: boolean };
-//   bannedItems: string[];
+//   moderation: { bannedItems: string[] };
 // }
 ```
 
@@ -229,7 +231,7 @@ The accessor tree is built from the same machinery, so a node's `get()` returns 
 ```ts
 config.server.pricing.get();            // { taxRate: number; currency: 'emerald' | 'gold' | 'diamond'; shopEnabled: boolean }
 config.server.pricing.currency.get();   // 'emerald' | 'gold' | 'diamond'
-config.server.bannedItems.get();        // string[]
+config.server.moderation.bannedItems.get();   // string[]
 config.server.pricing.nope;             // compile error — not a schema key
 ```
 
@@ -258,7 +260,7 @@ const cfg = config.server.get();        // the whole scope, a fully typed nested
 config.server.patch({ pricing: { taxRate: 0.1 } });
 config.server.set({
   pricing: { taxRate: 0.1, currency: 'gold', shopEnabled: true },
-  bannedItems: [],
+  moderation: { bannedItems: [] },
 });
 ```
 

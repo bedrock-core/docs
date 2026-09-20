@@ -47,7 +47,7 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 
 ## What you get
 
-- **Screens shaped for your schema.** One compiled screen per section, baked into your own pack at build. A level of only groups is a screen of buttons, a level with a field is a form, and a list gets an editor of its own. Nothing about a section travels at runtime; only the values do.
+- **Screens shaped for your schema.** One compiled form per section with fields, baked into your own pack at build. A level is either a form or a screen of buttons, so every button names a real child section or list. Nothing about a section travels at runtime; only the values do.
 - **Two commands under your own namespace.** `<ns>:config` for a player's own settings and `<ns>:configat` for an operator reaching any scope, with generated autocomplete for every verb and every setting. Turn them off with `registerConfig(definition, { commands: false })`.
 - **Each addon draws its own settings.** A command or `config.open()` naming another addon hands the screens to that addon's realm, which draws them from its own pack and values, and the player comes back.
 - **Strings you can override.** Every label, hint and command reply is a `core.*` key folded into your bundle, so a rename or a locale you ship reaches every screen.

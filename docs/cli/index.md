@@ -51,7 +51,7 @@ The template scaffolds the **whole bedrock-core stack**, not just a UI: [server 
 
 ```txt
 my-addon/
-├── config.json                       Regolith: one `core` filter, four profiles
+├── config.json                       Regolith: `core` plus six declared stages, four profiles
 ├── package.json                      scripts: regolith-install / build / build:test / watch / watch:test / lint
 ├── tsconfig.json                     JSX + the two @bedrock-core/generated aliases
 ├── tsconfig.test.json                extends tsconfig.json; entry is scripts/gametest.ts
@@ -90,6 +90,10 @@ my-addon/
 ```
 
 ### The Regolith pipeline
+
+The template pins `core` and all six stages in `filterDefinitions`. Run `regolith install-all`
+before its first build: Regolith installs only declared filters, and does not automatically
+install the stages that `core` invokes.
 
 `config.json` runs one [`core`](/docs/filters/core) filter in every profile, which chains the six stages in dependency order — manifest, generator, guides, i18n, ui-compiler, bundler — with the namespace declared once as `shared.namespace`:
 
@@ -227,7 +231,7 @@ When the render pack download fails, the last line under "Render pack:" is repla
 
 | Script | What it runs |
 | --- | --- |
-| `regolith-install` | `regolith install-all` — fetches every filter the `core` filter chains |
+| `regolith-install` | `regolith install-all` — fetches every filter declared in `config.json` |
 | `build` | `regolith run build` — the read-only local export profile |
 | `build:test` | `regolith run build-test` — the read-only gametest export, for `bds-runner` |
 | `watch` | `regolith watch` — the development profile, redeploying on change |

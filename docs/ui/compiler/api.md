@@ -29,12 +29,12 @@ compileScreen(Screen, { name, namespace? }): CompiledScreen
 compileFormScreen(Screen, { name, namespace }): CompiledFormScreen
 ```
 
-Both take the **component**, not the result of calling it: the compiler renders it under its own owner, which is what makes the hooks inside it resolve. `compileScreen` serves the chest; `compileFormScreen` serves the action form and the modal, deciding which from the root. Each probes for liveness before anything is baked, and each returns the served document, the face document, the preview, and the counts the filter reports.
+Both take the **component**, not the result of calling it: the compiler renders it under its own owner, which is what makes the hooks inside it resolve. `compileScreen` serves the chest; `compileFormScreen` serves the action form and the modal, deciding which from the root. Each probes for liveness before anything is baked and returns the served document, face document, compiled entries and allocation data the filter needs.
 
 ## Compiling an addon
 
 ```ts
-buildRouter(screens): ChestRouting
+buildRouter(screens)
 formRouter(screens, addon): FormRouting
 ```
 
@@ -53,7 +53,6 @@ The addon-level documents: the hooks into vanilla files, and the router holding 
 | `fill` | function | A face document plus a host, to the served document |
 | `emit` | function | `faceOf` then `fill`, for a caller that wants only the result |
 | `facesNamespaceOf` | function | `<addon>_faces`, the namespace an addon's shared faces live in |
-| `previewNamespaceOf` | function | `<screen namespace>__preview`, a preview's own namespace |
 | `formRouterFileOf` | function | Pack path of an addon's form router |
 | `CHEST_HOST` | const | The chest host: its hooks, canvas, collection and container type |
 | `MOUNT_ANCHOR` | const | Where a compiled chest layout sits: centered both ways |
@@ -62,7 +61,7 @@ The addon-level documents: the hooks into vanilla files, and the router holding 
 | `BACKDROP_DEFINITION` | const | Name of the full-screen image mounted behind it |
 | `UnsupportedNodeError` | class | Thrown for a control with no compiled form |
 
-The IR node types, the JSON UI control types, and the result shapes (`CompiledScreen`, `CompiledFormScreen`, `FaceDocument`, `Preview`, `ScreenSpec`, `FormScreenSpec`, `ChestRouting`, `FormRouting`, `RoutedScreen`, `RoutedFormScreen`, `ToIrOptions`, `Allocation`) are exported as types beside them.
+The IR node types, the JSON UI control types, and the result shapes (`CompiledScreen`, `CompiledFormScreen`, `FaceDocument`, `ScreenSpec`, `FormScreenSpec`, `FormRouting`, `RoutedScreen`, `RoutedFormScreen`, `ToIrOptions`, `Allocation`) are exported as types beside them.
 
 ## Limits
 

@@ -25,11 +25,16 @@ jobs:
           resolvers: |
             github.com/bedrock-core/regolith-filters
 
+      - name: Install declared filters
+        run: regolith install-all
+
       - name: Run Regolith profile
         run: regolith run release
 ```
 
-After the step completes, `regolith` is on `PATH` for every later step in the same job. The action runs no profile itself.
+After the step completes, `regolith` is on `PATH` for every later step in the same job. The action
+only registers resolvers: `regolith install-all` installs the filters in the project's
+`filterDefinitions`. A `core` profile must declare `core` and its six delegated stages.
 
 ## Inputs
 

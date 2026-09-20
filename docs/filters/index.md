@@ -18,8 +18,12 @@ Register the repository as a Regolith resolver once per machine, then install fi
 
 ```bash
 regolith config resolvers --append github.com/bedrock-core/regolith-filters/resolver.json
-regolith install i18n
+regolith install core manifest generator guides i18n ui-compiler bundler
 ```
+
+For a `core` profile, declare those same seven names in `config.json` under
+`regolith.filterDefinitions`. `regolith install-all` reads that object; it does not
+install the filters that `core` invokes transitively.
 
 The filters run on **Node.js 22.18 or newer**. They are TypeScript files Regolith runs directly; nothing is compiled or published to npm.
 

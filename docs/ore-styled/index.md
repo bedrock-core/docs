@@ -27,7 +27,7 @@ No extra resource pack: the theme's textures live in the same [render pack](/doc
 ## Import
 
 ```tsx
-import { Button, Card, Checkbox, Divider, Dropdown, Header, Input, MenuRow, Radio, Slider, Tabs, Toggle, ToggleButtons, Trail } from '@bedrock-core/ore-styled';
+import { Button, Card, Checkbox, Divider, Dropdown, Form, Header, Input, MenuRow, Radio, Slider, Tabs, Toggle, ToggleButtons, Trail } from '@bedrock-core/ore-styled';
 ```
 
 ## Layout and chrome
@@ -51,7 +51,10 @@ import { Button, Card, Checkbox, Divider, Dropdown, Header, Input, MenuRow, Radi
 - [**`<Radio>`**](./Radio.md) — a bullet and a label per row
 - [**`<ToggleButtons>`**](./ToggleButtons.md) — side-by-side segments with fused borders, one choice or several
 
-## Modal fields
+## Forms and modal fields
+
+- **`<Form>`** — the native form root with the theme's button treatment
+- **`<Form.Button>`** — a submit or exit action with `primary`, `secondary`, `danger`, or `transparent` styling
 
 - [**`<Input>`**](./Input.md) — a single-line text field
 - [**`<Dropdown>`**](./Dropdown.md) — the current selection with a chevron, and a popup
@@ -69,7 +72,7 @@ fieldLabel('Volume', true);   // the caption, in the theme's field-label style
 
 It takes the label and whether the control is enabled. A literal string carries the state color as a `§` prefix; a string the active resolver knows as a `.lang` key passes through untouched, because a prefix in front of a key stops it resolving.
 
-The modal root itself draws nothing, so it is not themed: import [`<Form>`](/docs/ui/components/Form) from `@bedrock-core/ui` and put these components inside it.
+Use the themed `<Form>` from this package when you want its action buttons to match the rest of the screen. Its props match the runtime form root, so the field components above sit inside it in the usual way.
 
 ## Theme
 

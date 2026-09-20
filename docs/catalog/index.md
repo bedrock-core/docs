@@ -40,7 +40,7 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 
 - **A command.** `<namespace>:catalog` opens the list with this addon selected. `registerCatalog({ commands: false })` leaves the command out, so you can open it from an item or a block instead.
 - **Every addon in the world.** Each addon that called `core.register()`, in the same order everywhere, with the framework last.
-- **Each addon's page, drawn from its own pack.** The [page](./page.md) is built from the addon's manifest, so an addon with no catalog of its own still has one.
+- **Each catalog addon's page, drawn from its own pack.** The [page](./page.md) is built from the addon's manifest. Other registered addons remain visible in the list and use the fallback area until shared pages move below the catalog app.
 
 ## Next steps
 
