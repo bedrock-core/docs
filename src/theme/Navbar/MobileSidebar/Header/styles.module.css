@@ -1,0 +1,28 @@
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-2);
+}
+.links { grid-column: 2; display: none; justify-self: center; align-items: center; gap: var(--space-2); }
+@media (max-width: 996px) {
+  .links { display: inline-flex; }
+}
+.close {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 3;
+  justify-self: end;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--ifm-navbar-link-color);
+  cursor: pointer;
+  transition: var(--transition-control);
+}
+.close:hover { color: var(--text-strong); background: var(--bg-hover); }

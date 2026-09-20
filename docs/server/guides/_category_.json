@@ -1,0 +1,11 @@
+{
+  "position": 3,
+  "label": "Guides",
+  "collapsible": true,
+  "collapsed": false,
+  "link": {
+    "type": "generated-index",
+    "title": "Guides",
+    "description": "How the server side fits together and how other packages read it."
+  }
+}

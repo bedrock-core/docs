@@ -1,57 +1,20 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import Heading from '@theme/Heading';
-
-import styles from './index.module.css';
-
-function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
-  const logoSrc = useBaseUrl('img/logo/title.png');
-
-  return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container">
-        <Heading as="h1" className={clsx('hero__title', styles.heroTitle)}>
-          <img src={logoSrc} alt={siteConfig.title} className={styles.heroLogo} />
-        </Heading>
-
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <p>Developing a future where addons interact between them</p>
-
-        <p className={styles.startUsing}>Start using @bedrock-core/</p>
-
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/server/get-started/installation">
-            server
-          </Link>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/ui/get-started/installation">
-            ui
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
+import PackageGrid from '../components/PackageGrid';
+import { CodeTour, Cta, Features, Hero } from '../components/Home';
 
 export default function Home(): ReactNode {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <Layout
-      title={`${siteConfig.title}`}
-      description="A framework for Minecraft Bedrock">
-      <HomepageHeader />
+    <Layout title={siteConfig.title} description="A framework for Minecraft Bedrock addons that need to talk to each other.">
+      <Hero />
       <main>
-        <HomepageFeatures />
+        <PackageGrid />
+        <Features />
+        <CodeTour />
+        <Cta />
       </main>
     </Layout>
   );

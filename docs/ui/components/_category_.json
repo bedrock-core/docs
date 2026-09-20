@@ -1,0 +1,10 @@
+{
+  "position": 4,
+  "label": "Components",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "doc",
+    "id": "components/components"
+  }
+}

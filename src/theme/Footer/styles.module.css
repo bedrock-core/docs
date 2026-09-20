@@ -1,0 +1,73 @@
+.footer {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-sunken);
+  padding: var(--space-12) var(--space-8) var(--space-8);
+}
+.inner { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: var(--space-12); }
+.brand { min-width: 200px; max-width: 260px; }
+.wordmark { height: 22px; width: auto; image-rendering: pixelated; opacity: 0.85; }
+.tagline {
+  margin: var(--space-4) 0 0;
+  color: var(--text-faint);
+  font-family: var(--font-display);
+  font-size: var(--text-body-md);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-snug);
+}
+.author {
+  display: inline-block;
+  margin-top: var(--space-3);
+  color: var(--text-faint);
+  font-size: var(--text-body-sm);
+  text-decoration: none;
+  transition: var(--transition-control);
+}
+.author:hover { color: var(--text-muted); text-decoration: none; }
+/* The wordmark is scaled and dropped so its lettering shares the x-height and
+   baseline of the "by" beside it. In the 154-unit artwork the glyphs have a
+   49.34-unit x-height and sit on a baseline 48 units above the bottom edge. */
+.authorMark {
+  height: 3.121ex;
+  width: auto;
+  margin-left: 0.45em;
+  vertical-align: -0.973ex;
+  opacity: 0.75;
+  transition: var(--transition-control);
+}
+.author:hover .authorMark { opacity: 1; }
+.spacer { flex: 1; }
+.col { display: grid; gap: var(--space-2); align-content: start; }
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+}
+.link { color: var(--text-muted); font-size: var(--text-body-sm); text-decoration: none; font-family: var(--font-mono); transition: var(--transition-control); }
+.link:hover { color: var(--text-strong); text-decoration: none; }
+.bottom {
+  max-width: 1120px;
+  margin: var(--space-10) auto 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-faint);
+  font-size: var(--text-caption);
+}
+/* narrow: three columns, the wordmark keeps the first cell */
+@media (max-width: 996px) {
+  .inner { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8) var(--space-6); }
+  .brand { max-width: none; }
+  .spacer { display: none; }
+}
+/* phones: wordmark centered on its own row, then a centered pair of columns */
+@media (max-width: 768px) {
+  .inner { grid-template-columns: repeat(2, minmax(0, 150px)); justify-content: center; gap: var(--space-10) var(--space-8); }
+  .brand { grid-column: 1 / -1; justify-self: center; text-align: center; margin-bottom: var(--space-2); }
+  .col { justify-items: center; text-align: center; }
+  /* five columns in pairs leaves Community alone: give it the whole row */
+  .col:last-child { grid-column: 1 / -1; }
+  .bottom { text-align: center; }
+}

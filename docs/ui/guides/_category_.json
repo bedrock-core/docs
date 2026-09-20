@@ -1,11 +1,11 @@
 {
-  "position": 8,
-  "label": "guides",
-  "key": "guides",
+  "position": 3,
+  "label": "Guides",
   "collapsible": true,
-  "collapsed": true,
+  "collapsed": false,
   "link": {
-    "type": "doc",
-    "id": "guides"
+    "type": "generated-index",
+    "title": "Guides",
+    "description": "The three hosts, navigation, state, container screens, the render pack and native components."
   }
 }

@@ -1,0 +1,450 @@
+/* ============================================================
+   @bedrock-core design system → Infima bridge
+   Maps the design-system tokens onto the Docusaurus/Infima
+   variables. Pure theming: no swizzles, no layout changes,
+   no new DOM. Safe to delete to revert.
+   ============================================================ */
+
+:root,
+[data-theme='light'] {
+  /* type */
+  --ifm-font-family-base: var(--font-sans);
+  --ifm-font-family-monospace: var(--font-mono);
+  --ifm-heading-font-family: var(--font-display);
+  --ifm-font-size-base: 15px;
+  --ifm-line-height-base: 1.72;
+  --ifm-heading-font-weight: var(--weight-bold);
+  --ifm-h1-font-size: var(--text-h1);
+  --ifm-h2-font-size: var(--text-h2);
+  --ifm-h3-font-size: var(--text-h3);
+  --ifm-h4-font-size: var(--text-h4);
+  --ifm-heading-line-height: var(--leading-snug);
+  --ifm-code-font-size: var(--text-code);
+
+  /* surfaces + ink */
+  --ifm-background-color: var(--bg-canvas);
+  --ifm-background-surface-color: var(--bg-surface);
+  --ifm-color-content: var(--text-body);
+  --ifm-color-content-secondary: var(--text-muted);
+  --ifm-heading-color: var(--text-strong);
+  --ifm-link-color: var(--text-link);
+  --ifm-link-hover-color: var(--text-link-hover);
+  --ifm-link-decoration: none;
+  --ifm-link-hover-decoration: underline;
+
+  /* the brand primary — diamond #3cb9be */
+  --ifm-color-primary: var(--ore-diamond-600);
+  --ifm-color-primary-dark: var(--ore-diamond-600);
+  --ifm-color-primary-darker: var(--ore-diamond-700);
+  --ifm-color-primary-darkest: var(--ore-diamond-700);
+  --ifm-color-primary-light: var(--ore-diamond-500);
+  --ifm-color-primary-lighter: var(--ore-diamond-400);
+  --ifm-color-primary-lightest: var(--ore-diamond-300);
+
+  /* geometry */
+  --ifm-global-radius: var(--radius-sm);
+  --ifm-code-border-radius: var(--radius-xs);
+  --ifm-alert-border-radius: var(--radius-md);
+  --ifm-button-border-radius: var(--radius-sm);
+  --ifm-navbar-height: var(--layout-header-h);
+  --ifm-navbar-padding-horizontal: var(--space-6);
+  --ifm-spacing-horizontal: var(--space-6);
+  --ifm-global-spacing: var(--space-6);
+  --ifm-toc-padding-vertical: var(--space-4);
+
+  /* rules + shadows */
+  --ifm-color-emphasis-200: var(--border-subtle);
+  --ifm-color-emphasis-300: var(--border-default);
+  --ifm-hr-border-color: var(--border-subtle);
+  --ifm-toc-border-color: var(--border-subtle);
+  --ifm-table-border-color: var(--border-subtle);
+  --ifm-table-stripe-background: transparent;
+  --ifm-global-shadow-lw: var(--shadow-xs);
+  --ifm-global-shadow-md: var(--shadow-md);
+  --ifm-global-shadow-tl: var(--shadow-lg);
+
+  /* chrome */
+  --ifm-navbar-background-color: var(--bg-canvas);
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-link-color: var(--text-muted);
+  --ifm-navbar-link-hover-color: var(--text-strong);
+  --ifm-menu-color: var(--text-muted);
+  --ifm-menu-color-active: var(--text-accent);
+  --ifm-menu-color-background-active: var(--bg-selected);
+  --ifm-menu-color-background-hover: var(--bg-hover);
+  --ifm-breadcrumb-color-active: var(--text-body);
+  --ifm-breadcrumb-item-background-active: transparent;
+  --ifm-breadcrumb-padding-horizontal: 0;
+  --ifm-footer-background-color: var(--bg-sunken);
+  --ifm-footer-color: var(--text-faint);
+  --ifm-footer-link-color: var(--text-muted);
+  --ifm-blockquote-color: var(--text-muted);
+  --ifm-blockquote-border-color: var(--border-default);
+
+  /* code */
+  --ifm-code-background: var(--bg-hover);
+  --ifm-pre-background: var(--bg-code);
+  --ifm-pre-color: var(--stone-200);
+  --docusaurus-highlighted-code-line-bg: rgba(60, 185, 190, 0.12);
+
+  /* admonitions — solid hue on the rule + icon, 13% tint on the panel */
+  --ifm-color-info: var(--status-info);
+  --ifm-color-success: var(--status-success);
+  --ifm-color-warning: var(--status-warning);
+  --ifm-color-danger: var(--status-danger);
+  /* Infima reads the rule from -dark and the panel from -contrast-background;
+     the base hue above reaches neither on its own. */
+  --ifm-color-info-dark: var(--status-info);
+  --ifm-color-success-dark: var(--status-success);
+  --ifm-color-warning-dark: var(--status-warning);
+  --ifm-color-danger-dark: var(--status-danger);
+  --ifm-color-secondary-dark: var(--text-muted);
+  --ifm-color-info-contrast-background: color-mix(in srgb, var(--status-info) 13%, var(--bg-canvas));
+  --ifm-color-success-contrast-background: color-mix(in srgb, var(--status-success) 13%, var(--bg-canvas));
+  --ifm-color-warning-contrast-background: color-mix(in srgb, var(--status-warning) 13%, var(--bg-canvas));
+  --ifm-color-danger-contrast-background: color-mix(in srgb, var(--status-danger) 13%, var(--bg-canvas));
+  --ifm-color-secondary-contrast-background: var(--bg-surface);
+  --ifm-color-primary-contrast-background: var(--bg-surface);
+  --ifm-color-info-contrast-foreground: var(--text-body);
+  --ifm-color-success-contrast-foreground: var(--text-body);
+  --ifm-color-warning-contrast-foreground: var(--text-body);
+  --ifm-color-danger-contrast-foreground: var(--text-body);
+  --ifm-color-secondary-contrast-foreground: var(--text-body);
+  --ifm-color-primary-contrast-foreground: var(--text-body);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: var(--ore-diamond-500);
+  --ifm-color-primary-dark: var(--ore-diamond-600);
+  --ifm-color-primary-darker: var(--ore-diamond-600);
+  --ifm-color-primary-darkest: var(--ore-diamond-700);
+  --ifm-color-primary-light: var(--ore-diamond-400);
+  --ifm-color-primary-lighter: var(--ore-diamond-300);
+  --ifm-color-primary-lightest: var(--ore-diamond-200);
+  --docusaurus-highlighted-code-line-bg: rgba(60, 185, 190, 0.16);
+}
+
+/* ---- the handful of rules Infima variables cannot express ---- */
+
+/* headings sit tighter than Infima's default */
+h1, h2, h3, h4, .markdown h1, .markdown h2 {
+  letter-spacing: var(--tracking-heading);
+}
+.hero__title, h1 {
+  letter-spacing: var(--tracking-display);
+}
+
+/* translucent sticky header, matching the design system */
+.navbar {
+  border-bottom: 1px solid var(--border-subtle);
+  background: color-mix(in srgb, var(--bg-canvas) 82%, transparent);
+  backdrop-filter: var(--blur-overlay);
+  -webkit-backdrop-filter: var(--blur-overlay);
+}
+/* the site name is an identifier, so: mono */
+.navbar__title {
+  font-family: var(--font-mono);
+  font-size: var(--text-body-sm);
+}
+.navbar__title { font-weight: var(--weight-bold); color: var(--text-strong); }
+.navbar__logo img { image-rendering: pixelated; }
+.navbar__brand { margin-right: var(--space-2); }
+
+/* sidebar: top-level groups sans, leaf pages mono (they are file names) */
+.menu { font-size: var(--text-body-sm); }
+.menu__list .menu__list .menu__link {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+}
+.menu__link { border-radius: var(--radius-sm); transition: var(--transition-control); }
+.menu__link--active:not(.menu__link--sublist) { font-weight: var(--weight-semibold); }
+.theme-doc-sidebar-container { border-right: 1px solid var(--border-subtle) !important; }
+
+/* TOC: the rule hugs the list, one indent step, active item takes the accent */
+.table-of-contents {
+  border-left: 1px solid var(--border-subtle);
+  font-size: var(--text-body-sm);
+  padding: 0 0 0 var(--space-3);
+}
+.table-of-contents ul { padding-left: var(--space-3); }
+.table-of-contents li { margin: 0; }
+.table-of-contents__link { padding: 4px 0; line-height: var(--leading-snug); }
+.table-of-contents__link--active {
+  color: var(--text-accent);
+  font-weight: var(--weight-medium);
+}
+.table-of-contents__left-border { border-left-color: var(--border-subtle); }
+
+/* breadcrumbs: mono type, default separator */
+.breadcrumbs__item { font-family: var(--font-mono); font-size: var(--text-caption); }
+.breadcrumbs__link { background: transparent !important; padding-left: 0; padding-right: 0; }
+
+/* admonitions: flat tinted panel with a 2px coloured top rule */
+.theme-admonition {
+  border: 1px solid var(--border-subtle);
+  border-top: 2px solid var(--ifm-alert-border-color);
+  box-shadow: none;
+  border-radius: var(--radius-md);
+}
+.theme-admonition [class*='admonitionIcon'] svg { fill: var(--ifm-alert-border-color); }
+.theme-admonition [class*='admonitionHeading'],
+.theme-admonition .alert__heading {
+  font-family: var(--font-display);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--ifm-alert-border-color);
+}
+
+/* code blocks: dark in both themes, hairline border, no shadow */
+.theme-code-block {
+  box-shadow: none !important;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+.theme-code-block pre { background: var(--bg-code) !important; }
+div[class^='codeBlockTitle'] {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  border-bottom: 1px solid var(--border-subtle);
+}
+/* language badge, top right, uppercase mono like the kit's CodeBlock title bar */
+.theme-code-block { position: relative; }
+.theme-code-block::after {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  pointer-events: none;
+}
+.theme-code-block.language-ts::after { content: 'ts'; }
+.theme-code-block.language-tsx::after { content: 'tsx'; }
+.theme-code-block.language-js::after { content: 'js'; }
+.theme-code-block.language-json::after { content: 'json'; }
+.theme-code-block.language-jsonc::after { content: 'jsonc'; }
+.theme-code-block.language-bash::after { content: 'bash'; }
+.theme-code-block.language-yaml::after { content: 'yaml'; }
+.theme-code-block.language-mdx::after { content: 'mdx'; }
+.theme-code-block:has(div[class^='codeBlockTitle'])::after { top: 8px; }
+.theme-code-block:hover::after { opacity: 0; }
+:not(pre) > code { border: 1px solid var(--border-subtle); }
+
+/* cards, tables, prev/next: flat, bordered, no shadow */
+.card, article > .margin-top--lg .pagination-nav__link {
+  box-shadow: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.pagination-nav__link { transition: var(--transition-control); }
+.pagination-nav__link:hover { border-color: var(--border-accent); background: var(--bg-hover); }
+.pagination-nav__sublabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.pagination-nav__label { font-family: var(--font-display); font-weight: var(--weight-semibold); }
+
+table thead tr { border-bottom: 1px solid var(--border-default); }
+table th {
+  font-family: var(--font-display);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: var(--weight-semibold);
+}
+table td, table th { border: 0; border-bottom: 1px solid var(--border-subtle); }
+/* tables: identifiers in mono without inline-code chrome; the first column is the name */
+table td { vertical-align: top; }
+table td code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: var(--text-caption);
+  color: var(--text-body);
+}
+table td:first-child code { color: var(--text-strong); font-weight: var(--weight-bold); }
+.required { color: var(--status-danger); font-weight: var(--weight-bold); margin-left: 2px; }
+table td a code { color: var(--ifm-link-color); font-weight: var(--weight-semibold); }
+table td a:hover code { color: var(--ifm-link-hover-color); text-decoration: underline; }
+/* the name column wraps only at spaces: a single identifier never breaks, a call signature does */
+table td:first-child { white-space: normal; overflow-wrap: normal; word-break: normal; }
+
+/* Next steps closes a page: one card per link, mono title, description alongside */
+.markdown h2#next-steps ~ ul {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: var(--space-4) 0;
+  padding: 0;
+}
+.markdown h2#next-steps ~ ul > li {
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-relaxed);
+  transition: var(--transition-control);
+}
+.markdown h2#next-steps ~ ul > li:hover,
+.markdown h2#next-steps ~ ul > li:focus-within { border-color: var(--border-accent); }
+/* the whole card follows the first link; any other link in the row stays on top of it */
+.markdown h2#next-steps ~ ul > li > a:first-of-type::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+}
+.markdown h2#next-steps ~ ul > li a:not(:first-of-type) { position: relative; z-index: 1; }
+.markdown h2#next-steps ~ ul > li::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: var(--space-3);
+  background: var(--text-faint);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 10 5 5-5 5'/%3E%3Cpath d='M4 4v7a4 4 0 0 0 4 4h12'/%3E%3C/svg%3E") center / contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 10 5 5-5 5'/%3E%3Cpath d='M4 4v7a4 4 0 0 0 4 4h12'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.markdown h2#next-steps ~ ul > li a:first-of-type {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-semibold);
+}
+
+/* buttons never bounce; they nudge 1px */
+.button { font-weight: var(--weight-semibold); letter-spacing: var(--tracking-label); transition: var(--transition-control); }
+.button:active { transform: translateY(1px); }
+
+/* focus ring */
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* navbar right cluster: room before the theme toggle; the local search input as the kit's SearchInput */
+.navbar__items--right { gap: var(--space-2); }
+.navbar__items--right > * { margin: 0; }
+:root { --ifm-navbar-search-input-color: var(--text-faint); }
+.navbar__search-input {
+  height: 32px;
+  width: 220px;
+  padding: 0 8px 0 30px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-sm);
+  box-shadow: none;
+  transition: var(--transition-control);
+}
+.navbar__search-input::placeholder { color: var(--text-faint); }
+.navbar__search-input:hover, .navbar__search-input:focus {
+  background: var(--bg-surface);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-focus);
+}
+@media (max-width: 768px) { .navbar__search-input { width: 32px; } }
+/* Local search results dropdown, on the same tokens: no card shadow on a hit
+   row, --shadow-md (the kit's popover level) on the dropdown itself. */
+:root {
+  --search-local-modal-background: var(--bg-raised);
+  --search-local-modal-shadow: var(--shadow-md);
+  --search-local-modal-width: 480px;
+  --search-local-spacing: var(--space-3);
+  --search-local-hit-height: 48px;
+  --search-local-hit-background: transparent;
+  --search-local-hit-shadow: none;
+  --search-local-hit-color: var(--text-body);
+  --search-local-hit-active-color: var(--accent-on-solid);
+  --search-local-highlight-color: var(--accent-solid);
+  --search-local-muted-color: var(--text-faint);
+  --search-local-input-active-border-color: var(--border-accent);
+  --search-local-icon-stroke-width: 1.6;
+}
+
+/* the navbar never uses the Docusaurus drawer: below 996px it keeps the desktop
+   layout, the right cluster collapses to icons at 768px and the left one at 600px */
+@media (max-width: 996px) {
+  /* the drawer carries the section's page tree, so its trigger belongs to docs pages */
+  .navbar__toggle { display: none; }
+  html.docs-wrapper .navbar__toggle { display: inline-flex; }
+  html.docs-wrapper .navbar__title { display: none; }
+  .navbar__items .navbar__item { display: inline-block; }
+  .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; }
+  .navbar__items--right [class*='navbarSearchContainer'] { position: static; }
+}
+@media (max-width: 996px) {
+  .navbar__items--right { gap: var(--space-1); }
+  .navbar__items--right > [class*='iconLink'] { order: 1; }
+  .navbar__items--right [class*='colorModeToggle'] { display: inline-flex; order: 2; }
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; }
+  /* where the search becomes a button the drawer takes over these, on the pages that have one */
+  html.docs-wrapper .navbar__items--right > [class*='iconLink'],
+  html.docs-wrapper .navbar__items--right [class*='colorModeToggle'] { display: none; }
+}
+@media (max-width: 600px) {
+  :root { --ifm-navbar-padding-horizontal: var(--space-4); }
+  .navbar__items:not(.navbar__items--right) { gap: 2px; }
+  .navbar__brand { margin-right: 0; }
+  .navbar__title { font-size: var(--text-body-sm); }
+}
+@media (max-width: 420px) {
+  .navbar__title { display: none; }
+}
+
+/* mobile "On this page" collapsible under the breadcrumbs */
+.theme-doc-toc-mobile {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+}
+.theme-doc-toc-mobile > button {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.theme-doc-toc-mobile > button:hover { color: var(--text-strong); }
+.theme-doc-toc-mobile > button::after { filter: var(--ifm-menu-link-sublist-icon-filter); opacity: 0.7; }
+.theme-doc-toc-mobile > div > ul { border-top: 1px solid var(--border-subtle); }
+
+/* the drawer trigger: the same icon box as the header's other icons, docs pages only */
+.navbar__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--ifm-navbar-link-color);
+  cursor: pointer;
+  transition: var(--transition-control);
+}
+.navbar__toggle:hover { color: var(--text-strong); background: var(--bg-hover); }
+
+/* mobile drawer: the section's page tree, on the kit's surfaces */
+.navbar-sidebar--show { background: var(--bg-canvas); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.navbar-sidebar { background: var(--bg-raised); box-shadow: var(--shadow-lg); }
+.navbar-sidebar__brand { border-bottom: 1px solid var(--border-subtle); box-shadow: none; }
+.navbar-sidebar__item { overflow-y: auto; }
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+}

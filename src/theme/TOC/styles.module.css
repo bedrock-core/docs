@@ -1,0 +1,17 @@
+.toc {
+  max-height: calc(100vh - (var(--ifm-navbar-height) + 2rem));
+  overflow-y: auto;
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 1rem);
+}
+.title {
+  padding: 0 0 var(--space-2) calc(var(--space-3) + 1px);
+  font-family: var(--font-display);
+  font-size: var(--text-micro);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+@media (max-width: 996px) {
+  .toc { display: none; }
+}
