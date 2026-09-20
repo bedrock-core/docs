@@ -12,7 +12,7 @@ const GITHUB = 'https://github.com/bedrock-core/';
 const TRUST = [
   { icon: 'shield-check', label: 'Type-safe by design' },
   { icon: 'package', label: 'Zero dependencies at runtime' },
-  { icon: 'store', label: 'Marketplace ready', pending: true },
+  // { icon: 'store', label: 'Marketplace ready' },
 ];
 
 export function Hero(): ReactNode {
@@ -48,7 +48,6 @@ export function Hero(): ReactNode {
             <li key={item.label} className={styles.trustItem}>
               <Icon name={item.icon} size="sm" color="var(--accent-alt)" />
               {item.label}
-              {item.pending ? <Badge>soon</Badge> : null}
             </li>
           ))}
         </ul>
