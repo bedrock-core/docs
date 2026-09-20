@@ -45,8 +45,8 @@ Every component's props type is exported beside it — `ButtonProps`, `TextProps
 
 ## Advanced
 
-- [`withControl(props)`](./withControl.md) — fill a native component's control props with their defaults, for a component that returns a host element directly
-- [Custom native components](../guides/custom-native-components.md) — register your own native component `type` that the runtime serializes and your resource pack's JSON UI decodes
+- [`withControl(props)`](./withControl.md) — low-level control normalization used by framework component packages
+- [Extending components](../guides/custom-native-components.md) — compose public controls and understand the native-control boundary
 - [`@bedrock-core/ui-compiler`](../compiler/api.md) — the build-time library, for tooling rather than for addons
 
 ## Next steps

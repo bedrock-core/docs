@@ -95,4 +95,4 @@ A host is one Minecraft screen the library draws on, and the transport that scre
 
 - [`@bedrock-core/ui-compiler`](./api.md) — the entry points the filter calls
 - [Hosts](../guides/hosts.md) — what each of the three screens can carry
-- [Custom native components](../guides/custom-native-components.md) — adding a component the render pack draws
+- [Extending components](../guides/custom-native-components.md) — composing controls and adding framework-level native behavior

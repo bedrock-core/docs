@@ -24,6 +24,10 @@ If you're adding to an existing project, install the package:
 
 <Install pkg="@bedrock-core/server" />
 
+The settings example below also uses the config app:
+
+<Install pkg="@bedrock-core/config" />
+
 That single dependency pins matching versions of the packages the runtime is built on and re-exports each at its own subpath:
 
 ```ts
@@ -88,6 +92,7 @@ Everything an addon *declares* rides in the one `register()` call. Here is an ec
 
 ```ts title="packs/BP/scripts/main.ts"
 import { core, players, schema } from '@bedrock-core/server';
+import { registerConfig } from '@bedrock-core/config';
 import { world, type Player } from '@minecraft/server';
 
 // The RPC surface other addons call. Publish this interface from a types package so
@@ -129,7 +134,7 @@ const { config } = core.register({
     creatorName: 'DrAv0011',
     version: '1.0.0',
   },
-  config: configDef,
+  config: registerConfig(configDef),
 });
 
 // ─── Serve RPC ───────────────────────────────────────────────────────────────

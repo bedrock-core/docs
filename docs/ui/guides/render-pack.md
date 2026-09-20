@@ -98,7 +98,5 @@ See [`Text`](../components/Text.md) for the component and [i18n](/docs/i18n/api)
 
 For an `Image` cell the component-specific region is just the texture tail. For a `Text` cell it carries the label group: `labelFontType`, `fontScaleFactor`, `labelX` `[1190]`, `labelY` `[1273]`, and the text tail. `labelFontType` stays in the group even though the cell label sources `[606]`, so every sub-element group reads its own slot 1 at the same offset.
 
-:::tip Custom native components are unaffected
-Fields you define in a [custom native component](./custom-native-components.md) start at `[1024]`. Common fields such as `region` and `fontType` are carved from the reserved block so that offset never moves; a resource pack decoding a custom component at a fixed offset from 1024 keeps working across render-pack releases.
-:::
+The framework's component-specific fields begin at `[1024]`. They are part of the shared runtime/compiler/render-pack contract rather than an addon extension point. See [Extending components](./custom-native-components.md) for the supported composition boundary.
 

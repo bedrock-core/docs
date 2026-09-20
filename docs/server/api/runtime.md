@@ -55,7 +55,7 @@ Settings are not a member. They are a package above the runtime, reached through
 register<O extends RegisterOptions>(options: O): Declared<O>
 ```
 
-Declare the addon and bring it online. **Call exactly once, at the top of the entry module, and nothing else runs after it.** It throws on an invalid manifest and on a second call.
+Declare the addon and bring it online. **Call exactly once, near the top of the entry module.** Registration and declaration installation complete synchronously before the next statement. It throws on an invalid manifest and on a second call.
 
 `RegisterOptions` is a `manifest` (the [manifest fields](#manifest-fields)) plus any number of **declarations** beside it. A declaration is a value with an `install(core)` method. `register()` installs each one in the order its key was written, on the already-live runtime, and hands what `install` returned back under the same key. The runtime never knows what a declaration builds, which is what lets a package above it add a field and have its own types come back typed.
 
