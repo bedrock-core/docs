@@ -52,6 +52,8 @@ export interface PackageCardProps {
   icon?: string;
   /** Any CSS colour; carries the 2px top rule, the glyph and the call to action. */
   accent?: string;
+  /** Text-safe accent for readable labels; decorative accents keep `accent`. */
+  accentText?: string;
   /** Short release-state label, e.g. `beta`. `planned` dims the card and disables it. */
   status?: string;
   href?: string;
@@ -62,6 +64,7 @@ export function PackageCard({
   description,
   icon = 'package',
   accent = 'var(--cat-framework)',
+  accentText,
   status,
   href = '#',
 }: PackageCardProps): ReactNode {
@@ -71,7 +74,7 @@ export function PackageCard({
     <Link
       to={planned ? undefined : href}
       className={clsx(styles.card, planned && styles.planned)}
-      style={{ '--card-accent': accent } as CSSProperties}
+      style={{ '--card-accent': accent, '--card-accent-text': accentText ?? accent } as CSSProperties}
       aria-disabled={planned || undefined}
     >
       <span className={styles.rule} />

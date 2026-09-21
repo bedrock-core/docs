@@ -8,8 +8,8 @@ Three things have to be in place: the package, the render pack in the world, and
 
 ## Prerequisites
 
-- Node.js 22.18.0+ and Yarn or npm — https://nodejs.org
-- Regolith — https://regolith-docs.readthedocs.io/en/stable
+- Node.js 22.18+ and Git — [https://nodejs.org/](https://nodejs.org/)
+- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
 
 Regolith is not optional here. A screen is drawn from JSON UI the build writes, so a project with no build has no screens.
 
@@ -61,7 +61,7 @@ The render pack decodes what the build wrote, so it must come from the **same re
   "dependencies": [
     {
       "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
-      "version": [1, 11, 0]
+      "version": "1.12.0"
     }
   ]
 }
@@ -119,7 +119,9 @@ export default function Hello(): JSX.Element {
 }
 ```
 
-<Exec cmd="regolith run" />
+```bash
+regolith run
+```
 
 The filter logs one line per screen it compiled. If `render()` throws `UncompiledScreenError` instead, the build did not see the file or `@bedrock-core/generated/ui` was never imported.
 

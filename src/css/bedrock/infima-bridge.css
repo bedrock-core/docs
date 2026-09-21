@@ -124,6 +124,10 @@
   --docusaurus-highlighted-code-line-bg: rgba(60, 185, 190, 0.16);
 }
 
+[data-theme='light'] {
+  --ifm-tabs-color-active: var(--text-accent);
+}
+
 /* ---- the handful of rules Infima variables cannot express ---- */
 
 /* headings sit tighter than Infima's default */
@@ -195,6 +199,30 @@ h1, h2, h3, h4, .markdown h1, .markdown h2 {
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--ifm-alert-border-color);
+}
+
+/* Warning headings and inline code use a darker light-mode ink than the
+   decorative gold rule and panel tint. */
+[data-theme='light'] .theme-admonition-caution [class*='admonitionHeading'],
+[data-theme='light'] .theme-admonition-caution .alert__heading,
+[data-theme='light'] .theme-admonition-caution [class*='admonitionHeading'] code,
+[data-theme='light'] .theme-admonition-caution .alert__heading code {
+  color: var(--status-warning-text);
+}
+
+[data-theme='light'] kbd {
+  color: var(--text-body);
+  background: var(--bg-sunken);
+  border-color: var(--border-default);
+}
+
+/* Prose links remain visibly identifiable when their hue is close to body
+   text. Navigation and card links sit outside `.markdown` and keep their
+   compact, decoration-free treatment. */
+.markdown a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
 }
 
 /* code blocks: dark in both themes, hairline border, no shadow */

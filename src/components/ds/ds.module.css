@@ -19,7 +19,7 @@
 .accent { color: var(--accent-solid); border-color: var(--accent-soft-border); background: var(--accent-soft); }
 .info { color: var(--status-info); border-color: var(--status-info-soft); background: var(--status-info-soft); }
 .success { color: var(--status-success); border-color: var(--status-success-soft); background: var(--status-success-soft); }
-.warning { color: var(--status-warning); border-color: var(--status-warning-soft); background: var(--status-warning-soft); }
+.warning { color: var(--status-warning-text); border-color: var(--status-warning-soft); background: var(--status-warning-soft); }
 .danger { color: var(--status-danger); border-color: var(--status-danger-soft); background: var(--status-danger-soft); }
 
 /* Tag */
@@ -95,7 +95,7 @@
 .scope { color: var(--text-faint); }
 .spacer { flex: 1; }
 .desc { margin: 0; color: var(--text-muted); font-size: var(--text-body-sm); line-height: var(--leading-relaxed); }
-.cta { display: inline-flex; align-items: center; gap: 6px; color: var(--card-accent); font-size: var(--text-body-sm); font-weight: var(--weight-semibold); }
+.cta { display: inline-flex; align-items: center; gap: 6px; color: var(--card-accent-text, var(--card-accent)); font-size: var(--text-body-sm); font-weight: var(--weight-semibold); }
 .arrow { display: inline-flex; transition: transform var(--duration-fast) var(--ease-standard); }
 
 /* Button */

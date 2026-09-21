@@ -1,5 +1,5 @@
 import MDXComponents from '@theme-original/MDXComponents';
-import { Exec, Install } from '../components/PackageManager';
+import { Exec, Install, PackageCommands } from '../components/PackageManager';
 import { Badge, Icon, Kbd, PackageCard, Req, Tag } from '../components/ds';
 
 // Components every docs page can use without importing them.
@@ -7,6 +7,7 @@ export default {
   ...MDXComponents,
   Install,
   Exec,
+  PackageCommands,
   Badge,
   Tag,
   Kbd,

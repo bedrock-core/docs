@@ -15,6 +15,7 @@ export interface Category {
   label: string;
   /** CSS custom property carrying the category colour, e.g. `--cat-framework`. */
   accent: string;
+  text: string;
 }
 
 export interface Section {
@@ -35,10 +36,10 @@ export interface Section {
 }
 
 export const categories: Category[] = [
-  { id: 'framework', label: 'Framework', accent: '--cat-framework' },
-  { id: 'ui', label: 'UI', accent: '--cat-ui' },
-  { id: 'content', label: 'Content', accent: '--cat-data' },
-  { id: 'tooling', label: 'Tooling', accent: '--cat-tooling' },
+  { id: 'framework', label: 'Framework', accent: '--cat-framework', text: '--cat-framework-text' },
+  { id: 'ui', label: 'UI', accent: '--cat-ui', text: '--cat-ui-text' },
+  { id: 'content', label: 'Content', accent: '--cat-data', text: '--cat-data-text' },
+  { id: 'tooling', label: 'Tooling', accent: '--cat-tooling', text: '--cat-tooling-text' },
 ];
 
 const GH = 'https://github.com/bedrock-core';

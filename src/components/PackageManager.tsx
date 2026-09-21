@@ -35,12 +35,18 @@ function execLine(manager: Manager, cmd: string): string {
   }
 }
 
-function ManagerTabs({ line }: { line: (manager: Manager) => string }): ReactNode {
+function ManagerTabs({
+  line,
+  language = 'bash',
+}: {
+  line: (manager: Manager) => string;
+  language?: string;
+}): ReactNode {
   return (
     <Tabs groupId="package-manager" queryString={false}>
       {managers.map((manager) => (
         <TabItem key={manager.id} value={manager.id} label={manager.label}>
-          <CodeBlock language="bash">{line(manager.id)}</CodeBlock>
+          <CodeBlock language={language}>{line(manager.id)}</CodeBlock>
         </TabItem>
       ))}
     </Tabs>
@@ -67,4 +73,18 @@ export interface ExecProps {
 /** `npx` / `yarn dlx` / `pnpm dlx` for a one-off command. */
 export function Exec({ cmd }: ExecProps): ReactNode {
   return <ManagerTabs line={(manager) => execLine(manager, cmd)} />;
+}
+
+export interface PackageCommandsProps {
+  npm: string;
+  yarn: string;
+  pnpm: string;
+  language?: string;
+}
+
+/** Copyable command or configuration variants synchronized with the other package-manager tabs. */
+export function PackageCommands({ npm, yarn, pnpm, language = 'bash' }: PackageCommandsProps): ReactNode {
+  const commands = { npm, yarn, pnpm };
+
+  return <ManagerTabs language={language} line={(manager) => commands[manager]} />;
 }
