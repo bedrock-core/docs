@@ -14,6 +14,11 @@ description: "@bedrock-core/cli scaffolds a complete Minecraft Bedrock addon pro
 `@bedrock-core/cli` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
 :::
 
+## Prerequisites
+
+- Node.js 22.18+ — [https://nodejs.org/](https://nodejs.org/)
+- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
+
 <Exec cmd="@bedrock-core/cli" />
 
 ## Usage
@@ -28,20 +33,25 @@ description: "@bedrock-core/cli scaffolds a complete Minecraft Bedrock addon pro
 | --- | --- |
 | `-a, --author <name>` | Author name. Skips the author prompt |
 | `-d, --description <text>` | Project description. Skips the description prompt |
+| `-p, --package-manager <manager>` | Install with `yarn`, `npm`, `pnpm`, or `none` to skip |
 | `-V, --version` | Print the CLI version |
 | `-h, --help` | Print usage |
 
-No template switch and no package-manager choice — the template ships a `yarn.lock`.
+There is one complete template. Choose npm, yarn, pnpm, or `none` when you want to install
+later. Yarn and pnpm record their selected version in `package.json`; each manager creates its own lockfile, which should be committed with the project.
 
 ### Prompts
 
-Three text prompts, all with defaults you can accept with Enter. `[project-name]` and `--author`/`--description` each skip their own prompt, so a fully-flagged invocation runs with no prompts at all:
+Three text prompts and a package-manager selection, all with defaults you can accept with Enter.
+`[project-name]`, `--author`, `--description`, and `--package-manager` each skip their own prompt,
+so a fully flagged invocation runs with no prompts at all:
 
 | Prompt | Default | Validation |
 | --- | --- | --- |
 | `Project name:` | `my-addon` | Must be a valid new npm package name (this becomes the directory and `package.json` name) |
 | `Author name:` | `Your Name` | — |
 | `Description:` | `A Minecraft Bedrock addon with custom UI` | — |
+| `Install dependencies with:` | `yarn (recommended)` | yarn, npm, pnpm, or install later |
 
 Ctrl-C prints `✖ Operation cancelled` and exits cleanly. The CLI refuses to write into a directory that already exists and is not empty.
 
@@ -57,7 +67,7 @@ my-addon/
 ├── tsconfig.test.json                extends tsconfig.json; entry is scripts/gametest.ts
 ├── eslint.config.mjs
 ├── .vscode/                          launch.json wired to the Minecraft debugger (port 19144)
-├── core-ui-v*.mcpack                 render pack, downloaded for you
+├── core-ui-<UI version>.mcpack       render pack, downloaded for you
 └── packs/
     ├── BP/
     │   ├── manifest.json
@@ -125,14 +135,14 @@ after scaffolding.
 
 | Profile | Script | Export | Notes |
 | --- | --- | --- | --- |
-| `build` | `yarn build` | read-only, `local` | Minified, `bundler.debug: false` — the release build |
-| `default` | `yarn watch` | writable, `development` | Laid-out JSON, debug bundle, build-stamp HUD, redeploys on change |
-| `test` | `yarn watch:test` | writable, `development` | Same as `default`, resolving `manifest.test.json` and bundling `gametest.ts` |
-| `build-test` | `yarn build:test` | read-only, `./build/test/BP` and `./build/test/RP` | The gametest manifest and entry, for [`bds-runner`](/docs/bds-runner) |
+| `build` | `build` | read-only, `local` | Minified, `bundler.debug: false` — the release build |
+| `default` | `watch` | writable, `development` | Laid-out JSON, debug bundle, build-stamp HUD, redeploys on change |
+| `test` | `watch:test` | writable, `development` | Same as `default`, resolving `manifest.test.json` and bundling `gametest.ts` |
+| `build-test` | `build:test` | writable, `./build/test/BP` and `./build/test/RP` | The gametest manifest and entry, for [`bds-runner`](/docs/bds-runner) |
 
 ### GameTests
 
-`packs/BP/scripts/tests/index.ts` registers one GameTest tagged `example` through `@minecraft/server-gametest`, a beta module only `manifest.test.json` declares. `gametest.ts` — the entry `tsconfig.test.json` names — imports `./main` then `./tests`, so a release build (`main.ts`) never pulls in the test suite or the beta module. `yarn build:test` produces the pack [`bds-runner`](/docs/bds-runner) runs the suite against.
+`packs/BP/scripts/tests/index.ts` registers one GameTest tagged `example` through `@minecraft/server-gametest`, a beta module only `manifest.test.json` declares. `gametest.ts` — the entry `tsconfig.test.json` names — imports `./main` then `./tests`, so a release build (`main.ts`) never pulls in the test suite or the beta module. The `build:test` script produces the pack [`bds-runner`](/docs/bds-runner) runs the suite against.
 
 ### tsconfig
 
@@ -152,7 +162,7 @@ after scaffolding.
 ```
 
 :::caution Build once before the editor is happy
-Both generated files are produced by the filters, so a freshly scaffolded project does not typecheck until `yarn build` has run at least once. This is expected — run the build before hunting for missing modules.
+Both generated files are produced by the filters, so a freshly scaffolded project does not typecheck until the `build` script has run at least once. This is expected — run the build before hunting for missing modules.
 :::
 
 A second tsconfig, `tsconfig.test.json`, extends this one and names `packs/BP/scripts/gametest.ts` as its sole entry — the `test` and `build-test` profiles point the bundler at it. See [GameTests](#gametests).
@@ -198,52 +208,55 @@ A `playerSpawn` handler greets the player with an interpolated translation (gate
 
 ## After scaffolding
 
-The CLI **does not** install anything. It copies the template, substitutes your answers, and downloads the latest render pack `.mcpack` from GitHub releases into the project root (non-fatal if that fails — it prints the download link instead).
+The CLI copies the template, substitutes your answers, downloads the render pack matching UI
+`0.12.1` (`core-ui-0.12.1.mcpack`), then installs dependencies with the package manager you chose.
+If the asset download fails, it prints the matching release link instead. Choosing `none` creates
+the files without running a package manager.
 
-It then prints:
+It prints the commands for your selected manager:
 
-```txt
-✔ Project created successfully!
+<PackageCommands
+  npm={`cd my-addon
+npm run regolith-install
+npm run build
+npm run watch
+npm run lint`}
+  yarn={`cd my-addon
+yarn regolith-install
+yarn build
+yarn watch
+yarn lint`}
+  pnpm={`cd my-addon
+pnpm regolith-install
+pnpm build
+pnpm watch
+pnpm lint`}
+/>
 
-Next steps:
+The output also explains that the first build writes the generated Minecraft types, points to the
+starter screens, and tells you how to import the matching render pack into the client.
 
-  cd my-addon
-  yarn install (or npm install)
-  yarn run regolith-install (or npm run regolith-install)
-  yarn run build (or npm run build)
-  The first build writes the Minecraft document types, so the .ts templates in
-  packs/BP/blocks and packs/BP/entities autocomplete once it has run.
-  See packs/BP/scripts/UI/screens/ to explore the starter screens and navigation.
-
-Render pack:
-
-  Install: open "./core-ui-v<version>.mcpack" (double-click to import into Minecraft)
-
-Development:
-
-  yarn run watch - Watch mode for auto-rebuild
-  yarn run lint - Lint your code
-
-Push a stone button in-game to see the example UI!
-```
-
-When the render pack download fails, the last line under "Render pack:" is replaced with a link to the latest `.mcpack` on GitHub Releases instead of a filename — non-fatal, so scaffolding still finishes.
+When the render pack download fails, the last line under "Render pack:" is replaced with a link to
+the UI `0.12.1` release instead of a filename — non-fatal, so scaffolding still finishes.
 
 | Script | What it runs |
 | --- | --- |
 | `regolith-install` | `regolith install-all` — fetches every filter declared in `config.json` |
 | `build` | `regolith run build` — the read-only local export profile |
-| `build:test` | `regolith run build-test` — the read-only gametest export, for `bds-runner` |
+| `build:test` | `regolith run build-test` — the writable gametest export, for `bds-runner` |
 | `watch` | `regolith watch` — the development profile, redeploying on change |
 | `watch:test` | `regolith watch test` — the development profile, resolving the gametest manifest and entry |
 | `lint` | `eslint .` |
 | `loopback` / `loopback:preview` | Windows loopback exemption for the Minecraft debugger |
 
-No git repository is created and no package manager is detected — the template ships a `yarn.lock`, so `yarn install` is the smoothest path.
-
-:::tip Prerequisites
-Node.js 22.18+ (what the Regolith filters run on), a package manager, and [Regolith](https://regolith-docs.readthedocs.io/en/stable) on your `PATH`. See [Installation](/docs/ui/installation).
-:::
+When Git is available, the generated directory is initialized as a repository without creating a
+commit. Yarn and pnpm choices run `corepack enable` once, then invoke the selected manager without
+a `corepack` prefix. npm runs
+directly. The selected manager creates its own lockfile; commit it and use that manager's frozen/immutable install mode in CI. If Corepack
+cannot write its shims, the generated project is preserved and the CLI prints the manual command.
+Yarn uses `nodeLinker: node-modules`; pnpm uses `nodeLinker: hoisted` in
+`pnpm-workspace.yaml`, so the build sees the conventional `node_modules` layout with either
+manager.
 
 ## Next steps
 

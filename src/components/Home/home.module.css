@@ -105,6 +105,7 @@
 .stepNo { font-family: var(--font-mono); color: var(--text-faint); }
 .stepOn { color: var(--text-strong); }
 .stepOn .stepNo { color: var(--accent-solid); }
+[data-theme='light'] .stepOn .stepNo { color: var(--text-accent); }
 @media (max-width: 996px) {
   .tour { grid-template-columns: 1fr; gap: var(--space-6); }
   .hero { padding: var(--space-12) var(--space-5) var(--space-10); }

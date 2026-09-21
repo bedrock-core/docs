@@ -18,7 +18,7 @@ export default function PackageGrid(): ReactNode {
         <div className={styles.columns}>
           {categories.map((category) => (
             <div key={category.id} className={styles.column}>
-              <h2 className={styles.eyebrow} style={{ color: `var(${category.accent})` }}>
+              <h2 className={styles.eyebrow} style={{ color: `var(${category.text})` }}>
                 {category.label}
               </h2>
               {sectionsOf(category.id).map((section) => (
@@ -28,6 +28,7 @@ export default function PackageGrid(): ReactNode {
                   description={section.description}
                   icon={section.icon}
                   accent={`var(${category.accent})`}
+                  accentText={`var(${category.text})`}
                   status={section.status}
                   href={`/docs/${section.id}`}
                 />

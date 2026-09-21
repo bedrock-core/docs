@@ -15,7 +15,7 @@ The protocol version is a hard gate, not a negotiation. A behavior pack emitting
 
 ## Getting the matching pack
 
-The render pack ships as the `core-ui-v*.mcpack` attached to each `@bedrock-core/ui` release, and the [CLI](/docs/cli) downloads the latest one into new projects automatically. **Take the pack from the same release as the library** — that pairing is the compatibility contract.
+The render pack ships as `core-ui-<UI version>.mcpack`, attached to the matching `@bedrock-core/ui` release. For example, UI `0.12.1` uses `core-ui-0.12.1.mcpack`. The [CLI](/docs/cli) downloads that matching asset into new projects. **Take the pack from the same release as the library** — that pairing is the compatibility contract.
 
 Its UUID never changes — `761ecd37-ad1c-4a64-862a-d6cc38767426` — so the dependency entry in your behavior pack's `manifest.json` stays as it is:
 

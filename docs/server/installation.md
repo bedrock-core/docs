@@ -9,8 +9,8 @@ Get a bedrock-core addon online, then get a second one talking to it.
 
 ## Prerequisites
 
-- Node.js 20+ and Yarn (or npm) — https://nodejs.org/
-- Regolith (recommended) — https://regolith-docs.readthedocs.io/en/stable
+- Node.js 22.18+ and Git — [https://nodejs.org/](https://nodejs.org/)
+- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
 
 ## Quick start with the CLI
 
@@ -33,7 +33,7 @@ That single dependency pins matching versions of the packages the runtime is bui
 ```ts
 import { core } from '@bedrock-core/server';                  // the runtime
 import { computed } from '@bedrock-core/server/observable';   // the reactive primitive
-import { createEngineDb } from '@bedrock-core/server/db';     // documents beyond core.db, rarely needed
+import { schema } from '@bedrock-core/server/db';             // collection schema helpers
 import { createSync } from '@bedrock-core/server/sync';       // the raw transport, rarely needed
 import { createI18n } from '@bedrock-core/server/i18n';       // typed translations
 ```
