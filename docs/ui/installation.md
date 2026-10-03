@@ -54,14 +54,14 @@ import '@bedrock-core/generated/ui';
 
 ### 3. The render pack
 
-The render pack decodes what the build wrote, so it must come from the **same release** as the library. Download it from the [releases page](https://github.com/bedrock-core/ui/releases) and add it as a dependency in your behavior pack's `manifest.json`:
+The shared resource pack supplies the textures used by compiled screens. Use the asset pack supplied with the library release. Download it from the [releases page](https://github.com/bedrock-core/ui/releases) and add it as a dependency in your behavior pack's `manifest.json`:
 
 ```json title="packs/BP/manifest.json"
 {
   "dependencies": [
     {
       "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
-      "version": "1.12.0"
+      "version": "1.12.1"
     }
   ]
 }
@@ -76,7 +76,7 @@ pack.mcaddon
 └── core-ui-vx.y.z.mcpack   (render pack from releases)
 ```
 
-[Render pack](./guides/render-pack.md#getting-the-matching-pack) explains how to check which version a world is running.
+[Shared resource pack](./guides/render-pack.md#install-the-assets) explains how pack versions track UI releases.
 
 ## TypeScript configuration
 

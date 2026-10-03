@@ -34,7 +34,7 @@ Use [`<Embed>`](../components/Embed.md) when one addon owns a compiled area that
 
 ## Native control boundary
 
-Addon code cannot register a new host-element type for the compiled-screen pipeline. A native control needs matching behavior in the runtime tree, the UI compiler, each supported host and the shared render pack. Registering a serializer or adding JSON UI in one addon does not establish that contract for other addons.
+Addon code cannot register a new host-element type for the compiled-screen pipeline. A native control needs matching behavior in the runtime tree, the UI compiler and each supported host, including its compiled helper templates. Registering a serializer or adding JSON UI in one addon does not establish that contract for other addons.
 
 The runtime exports a few low-level descriptor and writer types for framework packages. They are implementation interfaces rather than an addon extension point. Add a new native control to the framework packages and their tests together when composition cannot express the required behavior.
 

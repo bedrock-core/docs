@@ -51,7 +51,7 @@ A native modal draws only its typed fields plus its submit and exit buttons. Mix
 
 ## SerializationError
 
-A value could not be written into the payload the render pack decodes — most often a string holding the pad character, or a field past the width its slot reserves.
+A value could not be written into a UI payload — most often a string holding the pad character, or a field past the width its slot reserves.
 
 ## Notes
 

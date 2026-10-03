@@ -30,13 +30,15 @@ The page is generated only when the addon installs the catalog. An addon that in
 
 ## Where a press goes
 
-The two buttons name the app they open, `config` and `guide`, and the realm routes the press: to the local app when this addon installed it, otherwise to the owning addon's realm over that app's own show method. The catalog never imports either app; it writes a name into a slot and the [realm](/docs/navigation/realm) does the rest.
+The two buttons name the app they open, `config` and `guide`, and the realm routes the press: to the local app when this addon installed it, otherwise to the owning addon's realm over that app's own show method. The page writes a name into a slot and the [realm](/docs/navigation/realm) routes the request.
 
 An entry is drawn live when the owning addon announced that it serves the app, and grayed when it did not, so a press never leads at a request that would be refused.
 
 ## The framework's own page
 
-The framework itself has a row and a page, but no realm: nothing calls `core.register()` on its behalf, so it cannot publish anything. Its page and its guide are baked into the render pack instead, and this package carries the table the render pack's build emits. It offers a guide and has no settings.
+Each Catalog addon compiles the framework's page and introduction guide into its own pack. The page has a named embed marker within that addon's namespace, separate from its default addon page. Its version is the UI library used by the build.
+
+The framework has no registered realm and no settings. Its guide opens from the local compiled reference and its back button returns to the framework row. This works even when the addon does not register a Guides app.
 
 ## The geometry
 
