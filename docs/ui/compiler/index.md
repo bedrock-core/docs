@@ -36,6 +36,8 @@ Which host a screen compiles for is decided by its root element, and there is no
 
 ## Next steps
 
+- [Test metadata](./testing.md) — identities and semantic declarations for external testing tools
+
 - [Writing a screen](./screens.md) — the `*.screen.tsx` file, reserved values, carried visibility and static screens
 - [What the build writes](./output.md) — mounts, routing, host definitions and the text written per language
 - [Faces and hosts](./passes.md) — the two passes, the three layers, and the behaviors a primitive carries

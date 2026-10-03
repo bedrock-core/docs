@@ -39,6 +39,7 @@ It runs after every filter that writes something a screen reads, and before the 
 | --- | --- | --- | --- |
 | `namespace` | `string` | declared | The addon's namespace, lowercase `a-z`, `0-9` and `_`; it prefixes every screen's JSON UI namespace and names the router file and the output folder. Left unset, it is the `creator` and `pack` of the manifest the addon declared |
 | `stamp` | `boolean` | `false` | Draw a build stamp at the HUD's top left — a short hash over everything under `RP/ui` plus the build clock — so what a running client is rendering is never in question |
+| `testMetadata` | `boolean` | `false` | Write semantic control metadata and exact UI file hashes to `RP/bedrock-core/test-metadata.json`; see [Test metadata](/docs/ui/compiler/testing) |
 | `screens` | `string[]` | `[]` | Modules whose default export is a record of screens to compile besides the addon's own, each export key naming one |
 | `pretty` | `false \| { indent?, size? }` | `false` | How generated JSON is laid out. Absent or `false` writes it minified. An object lays it out: `indent` is `"tab"` or `"space"`, `size` the characters per level (2 for spaces, 1 for tabs when omitted). Laid out, each file is headed with the comment saying it is generated; minified, it is headerless too |
 
