@@ -22,6 +22,8 @@ Four steps, each a pure function of the last.
 
 Layout is solved at build, by [`@bedrock-core/flexbox`](/docs/flexbox) against a fixed 320 × 210 canvas. No geometry is measured in game and no layout is sent to the client. A screen with text composed per language — a [`<Trans>`](../components/Trans.md), a [`useComposed`](../hooks/useComposed.md) string — is laid out again at the widths the first layout gave that text.
 
+Contiguous rows and columns can emit native `stack_panel` controls automatically. Panel and Image children retain percentage sizes when they exactly match the solved boxes. Equal growing children with zero basis can use `fill` when their whole-unit shares match the remaining stack space. Constraints, wrapping, gaps, offsets, and unequal growth retain solved geometry where native sizing cannot express that result.
+
 Which host a screen compiles for is decided by its root element, and there is no default — `<Screen>` is an action form, `<Form>` a native modal, `<Container>` a chest screen. What differs between them is in [Hosts](../guides/hosts.md).
 
 ## What you get

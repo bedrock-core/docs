@@ -28,8 +28,12 @@ position its **viewport** in the parent's flex flow, exactly like a `<Panel>`. A
 non-absolute scroll defaults to `flexGrow: 1` so bare `<Scroll>`s share the parent's space;
 `width`/`height` override that, and `position={'absolute'}` + `top`/`left` take it out of the flow.
 
-`visible`, `enabled`, and `background` are accepted (they come with `ControlProps`) but are
-**not** applied to the scroll viewport.
+Padding insets the native viewport and its scrollbar inside the outer layout box. Content
+width, overflow, and percentage sizes use this inner viewport. Percentage padding uses
+the parent's width, like other control padding.
+
+Compiled screens apply `visible` to the viewport. `enabled` and `background` are accepted
+as control props but are not applied to the viewport.
 
 ```tsx
 // Two side-by-side scroll columns — arrangement comes from the parent Panel.

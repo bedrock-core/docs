@@ -15,7 +15,7 @@ The core idea: prefer the client, fall back to the server. The client resolves `
 | `raw()` | `RawMessage` (`translate` + `with`) | client | interpolated text the client should localize |
 | `t()` | plain string | server | layout math, chat, composing strings |
 
-`key()` and `raw()` never spell the namespace — they prepend it at runtime from the bundle's metadata, so renaming your addon's namespace never touches a call site.
+`key()` and `raw()` never spell the namespace — they prepend it at runtime from the bundle's metadata.
 
 ### Every verb, and what it produces
 
