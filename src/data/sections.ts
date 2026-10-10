@@ -72,7 +72,7 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/observable',
     category: 'framework',
     status: 'beta',
-    description: 'Reactive values: observable, computed, effect, batch.',
+    description: 'Reactive values, derived state, batching and debounce with Minecraft tick scheduling.',
     icon: 'activity',
     repo: `${GH}/server`,
   },

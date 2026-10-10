@@ -1,4 +1,5 @@
 ---
+slug: /observable
 sidebar_position: 2
 description: "observable creates a value with get, set and subscribe, delivering synchronously to listeners that are isolated from each other."
 ---

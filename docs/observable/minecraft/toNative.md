@@ -1,5 +1,6 @@
 ---
-sidebar_position: 7
+slug: /toNative
+sidebar_position: 2
 description: "toNative mints a data-driven form's own observable and keeps it in step with one of yours for the form's lifetime."
 ---
 
@@ -61,7 +62,7 @@ While the form is open, a change to `config.player.for(player).volume` from anyw
 
 ### A derived scalar
 
-Scalars only. Derive one with [`computed`](./computed.md) from anything larger:
+Scalars only. Derive one with [`computed`](../api/computed.md) from anything larger:
 
 ```ts
 const label = computed(() => `${shared.event.get().name} (${String(aliveCount.get())})`, [shared.event, aliveCount]);

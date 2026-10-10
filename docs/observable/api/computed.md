@@ -1,4 +1,5 @@
 ---
+slug: /computed
 sidebar_position: 3
 description: "computed derives a read-only value from other observables, recomputing when any of its listed dependencies changes."
 ---

@@ -1,4 +1,5 @@
 ---
+slug: /batch
 sidebar_position: 5
 description: "batch runs several writes and delivers every notification they caused once, afterwards, in order."
 ---
@@ -71,4 +72,4 @@ batch(() => {
 - **Nested batches flush at the outermost.** A `batch` inside a `batch` is part of the outer one.
 - **Order is preserved.** Notifications are delivered in the order the observables were first written.
 - **A flush is itself a batching window.** A listener that sets another observable during delivery queues it behind the current one instead of interleaving, and it is delivered in the same synchronous pass.
-- Outside a batch, delivery is synchronous inside `set`; `batch` is the only thing that defers.
+- Outside a batch, delivery from `set` is synchronous. [`debounce`](./debounce.md) provides a derived value with scheduled delivery.

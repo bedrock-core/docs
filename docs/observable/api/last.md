@@ -1,4 +1,5 @@
 ---
+slug: /last
 sidebar_position: 6
 description: "last turns an event into a value: the most recent payload from any signal with subscribe, undefined before the first."
 ---

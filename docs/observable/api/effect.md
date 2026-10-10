@@ -1,4 +1,5 @@
 ---
+slug: /effect
 sidebar_position: 4
 description: "effect runs a function now and again whenever one of its listed dependencies changes."
 ---
