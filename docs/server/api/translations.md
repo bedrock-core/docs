@@ -36,7 +36,7 @@ core.translations.subscribe((namespace) => { ... });   // an addon re-published
 
 ## What travels
 
-The bundle itself — the module the [i18n filter](/docs/filters/i18n) generates (`@bedrock-core/generated/i18n`), or `createResourceBundle`'s runtime equivalent. Templates stay in `{{var}}` form with their recorded argument order.
+The bundle itself — the module the [i18n stage](/docs/builder/guides/stages#translations) generates (`@bedrock-core/generated/i18n`), or `createResourceBundle`'s runtime equivalent. Templates stay in `{{var}}` form with their recorded argument order.
 
 ```
 <your namespace>  ->  core-i18n/bundle  ->  I18nBundle

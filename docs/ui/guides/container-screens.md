@@ -5,7 +5,7 @@ description: "A container screen is a custom entity's or custom block's containe
 
 # Container screens
 
-A **container screen** is the screen a custom entity or a custom block opens, written in JSX with the same components as a form. The [ui-compiler Regolith filter](/docs/filters/ui-compiler) compiles it into static JSON UI at build time; at runtime `createContainerScreen` serves it to every player who opens that host, and everything alive in it — text, buttons, entities, the items in its slots — travels through the container's own slots.
+A **container screen** is the screen a custom entity or a custom block opens, written in JSX with the same components as a form. The [ui-compiler builder stage](/docs/builder/guides/stages#ui-compilation) compiles it into static JSON UI at build time; at runtime `createContainerScreen` serves it to every player who opens that host, and everything alive in it — text, buttons, entities, the items in its slots — travels through the container's own slots.
 
 It is the second backend of `@bedrock-core/ui`. A form is serialized per player when it is shown. A container screen cannot be: the vanilla container screen has no string channel wide enough to carry a layout, so the layout is baked once and only state moves at runtime. What you get in exchange is what a form cannot give — real item slots the player drags into, a screen that stays open while its values change, and state that belongs to a thing in the world.
 
@@ -63,7 +63,7 @@ export default function Furnace() {
 }
 ```
 
-Three things make it a container screen: the file name ends in `.screen.tsx` (that is how the filter finds it), the module default-exports the component, and the root is a [`<Container>`](../components/Container.md) naming the entity or block it opens from. Everything else is the component set you already know.
+Three things make it a container screen: the file name ends in `.screen.tsx` (that is how the stage finds it), the module default-exports the component, and the root is a [`<Container>`](../components/Container.md) naming the entity or block it opens from. Everything else is the component set you already know.
 
 A screen written once can serve both hosts: put everything above the root in a shared component, and let each `.screen.tsx` name nothing but its host.
 
@@ -193,7 +193,7 @@ A container slot publishes numbers, not strings, so text that changes at runtime
 <Text maxLength={24}>{`holding ${held}`}</Text>  {/* live: 24 cells, one container slot each */}
 ```
 
-`maxLength` is what makes a `Text` live. Each cell is one container slot whose stack size is a character code, decoded through a 64-glyph table the filter writes into your `.lang` files: space, `A–Z`, `a–z`, `0–9` and `.`. Anything outside that table — formatting codes included — draws as a blank, and a string longer than `maxLength` is cut. Text without `maxLength` is baked into the layout and may say anything at all.
+`maxLength` is what makes a `Text` live. Each cell is one container slot whose stack size is a character code, decoded through a 64-glyph table the stage writes into your `.lang` files: space, `A–Z`, `a–z`, `0–9` and `.`. Anything outside that table — formatting codes included — draws as a blank, and a string longer than `maxLength` is cut. Text without `maxLength` is baked into the layout and may say anything at all.
 
 A live `Text` cannot sit inside a `Button` — a button's children are its face. Put it beside the button.
 

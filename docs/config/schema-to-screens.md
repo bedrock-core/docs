@@ -7,7 +7,7 @@ description: "The shape of the schema decides the shape of the UI: which levels 
 
 The shape of the schema decides the shape of the UI, and one platform fact drives all of it: **a native modal form has exactly two controls, its submit and its dismiss.** There is no third control to navigate with, so a form can never offer "open this sub-section" or "edit this list".
 
-The ui-compiler filter reads the definition out of `core.register()` and bakes one screen per section into the addon's pack, shaped for the settings that section has. Nothing about a section travels at runtime; only the values do.
+The ui-compiler stage reads the definition out of `core.register()` and bakes one screen per section into the addon's pack, shaped for the settings that section has. Nothing about a section travels at runtime; only the values do.
 
 ## One rule per level
 

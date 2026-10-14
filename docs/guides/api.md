@@ -21,7 +21,7 @@ The field `core.register()` takes. Also on `@bedrock-core/guides/server`, for a 
 
 ## The screens
 
-What the modules the guides filter generates call, and what your own code uses beside them.
+What the modules the guides stage generates call, and what your own code uses beside them.
 
 | Export | Kind | Description |
 | --- | --- | --- |

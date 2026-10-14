@@ -38,7 +38,7 @@ function render(root: JSX.Element | FunctionComponent, player: Player, options?:
 
 A screen is drawn from its layout in the pack, picked by the title the build registered it under. Without that there is nothing to show, so `render()` throws [`UncompiledScreenError`](./errors.md#uncompiledscreenerror) naming the two things that produce a registration:
 
-- the [`ui-compiler` filter](/docs/filters/ui-compiler) seeing the screen — a `*.screen.tsx` under `BP/scripts`, or one of the screens a build compiles from what the addon declared
+- the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) seeing the screen — a `*.screen.tsx` under `BP/scripts`, or one of the screens a build compiles from what the addon declared
 - `@bedrock-core/generated/ui` being imported once so the build's registrations run
 
 A [`<Container>`](../components/Container.md) is refused too, with `ContainerScreenError`: a container screen belongs to an entity or a block and is served by `createContainerScreen` instead.

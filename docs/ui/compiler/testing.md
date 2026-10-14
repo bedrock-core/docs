@@ -1,4 +1,5 @@
 ---
+sidebar_position: 7
 description: "Build-time identities, semantic declarations and generated-file hashes for external UI testing tools."
 ---
 # Test metadata
@@ -42,14 +43,13 @@ of a field's `name`, a control's `id`, and a slot's `role`.
 
 ## Generate metadata
 
-Enable `testMetadata` in the [ui-compiler filter](/docs/filters/ui-compiler):
+Enable `testMetadata` in the [ui-compiler stage](/docs/builder/guides/stages#ui-compilation):
 
-```json
-{ "filter": "ui-compiler", "settings": { "testMetadata": true } }
+```json title="bedrockCore.profiles.default.stages"
+{ "ui-compiler": { "testMetadata": true } }
 ```
 
-With the combined `core` filter, use `settings["ui-compiler"].testMetadata`.
-The filter writes `RP/bedrock-core/test-metadata.json`. Disabling the option
+The stage writes `bedrock-core/test-metadata.json` in the selected resource pack. Disabling the option
 removes that manifest. The UI documents, shared faces, form response ordering,
 and compiled snapshots are unchanged.
 
@@ -125,4 +125,4 @@ adapters. The compiler contract has no dependency on a particular runner.
 ## Next steps
 
 - [Control props](../components/control-props.md) — shared component properties
-- [ui-compiler filter](/docs/filters/ui-compiler) — settings and generated output
+- [ui-compiler stage](/docs/builder/guides/stages#ui-compilation) — settings and generated output

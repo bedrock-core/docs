@@ -1,14 +1,14 @@
 ---
 sidebar_position: 6
-description: "@bedrock-core/ui-compiler: the entry points the ui-compiler filter calls, and the limits the compiled model imposes."
+description: "@bedrock-core/ui-compiler: the entry points the ui-compiler stage calls, and the limits the compiled model imposes."
 ---
 # @bedrock-core/ui-compiler
 
-The build-time library the [`ui-compiler` filter](/docs/filters/ui-compiler) runs: a screen component goes in, the JSON UI document a host serves comes out.
+The build-time library the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) runs: a screen component goes in, the JSON UI document a host serves comes out.
 
-This page is for tooling. An addon never imports it — the filter does, and it bundles the compiler out of the **project's** `node_modules` rather than its own, so a screen is compiled by the version of the library the addon actually ships. An addon that compiles screens therefore depends on the compiler even though none of it reaches `main.js`.
+This page is for tooling. An addon never imports it — the stage does, and it bundles the compiler out of the **project's** `node_modules` rather than its own, so a screen is compiled by the version of the library the addon actually ships. An addon that compiles screens therefore depends on the compiler even though none of it reaches `main.js`.
 
-The same holds for `@bedrock-core/ui-runtime`: the pipeline runs inside that bundle, so the filter cannot drift from the library. Every value the emitted JSON UI shares with the runtime — the character table, the layout property, the highest layout key — is read off it for the same reason.
+The same holds for `@bedrock-core/ui-runtime`: the pipeline runs inside that bundle, so the stage cannot drift from the library. Every value the emitted JSON UI shares with the runtime — the character table, the layout property, the highest layout key — is read off it for the same reason.
 
 ## Import
 
@@ -29,7 +29,7 @@ compileScreen(Screen, { name, namespace? }): CompiledScreen
 compileFormScreen(Screen, { name, namespace }): CompiledFormScreen
 ```
 
-Both take the **component**, not the result of calling it: the compiler renders it under its own owner, which is what makes the hooks inside it resolve. `compileScreen` serves the chest; `compileFormScreen` serves the action form and the modal, deciding which from the root. Each probes for liveness before anything is baked and returns the served document, face document, compiled entries and allocation data the filter needs.
+Both take the **component**, not the result of calling it: the compiler renders it under its own owner, which is what makes the hooks inside it resolve. `compileScreen` serves the chest; `compileFormScreen` serves the action form and the modal, deciding which from the root. Each probes for liveness before anything is baked and returns the served document, face document, compiled entries and allocation data the stage needs.
 
 ## Compiling an addon
 

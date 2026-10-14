@@ -33,4 +33,4 @@ suffix match the library version. UI `0.12.1`, for example, ships pack `1.12.1`.
 ## Next steps
 
 - [Installation](../installation.md) — install the libraries and shared textures
-- [UI compiler](/docs/filters/ui-compiler) — configure the addon build
+- [UI compiler](/docs/builder/guides/stages#ui-compilation) — configure the addon build

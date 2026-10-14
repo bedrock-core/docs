@@ -7,7 +7,7 @@ description: "@bedrock-core/guides shows an addon's in-game guide: MDX compiled 
 
 # guides
 
-`@bedrock-core/guides` shows an addon's **in-game guide**. You author MDX, the [`guides` Regolith filter](/docs/filters/guides) compiles one screen per page into the addon's pack, and this package shows them: sidebar, pages, prev/next, admonitions and all.
+`@bedrock-core/guides` shows an addon's **in-game guide**. You author MDX, the [`guides` builder stage](/docs/builder/guides/stages#guides) compiles one screen per page into the addon's pack, and this package shows them: sidebar, pages, prev/next, admonitions and all.
 
 ![An in-game guide page rendered MDX](/img/ui/guide-page.png)
 
@@ -28,7 +28,7 @@ const { guides } = core.register({ manifest, guides: registerGuides() });
 guides.open(player);
 ```
 
-`registerGuides()` takes no arguments. The filter already read the MDX under your `guides/` directory and compiled one screen per page into your pack, at a fixed path in a fixed form, so the field's presence is the whole declaration.
+`registerGuides()` takes no arguments. The stage already read the MDX under your `guides/` directory and compiled one screen per page into your pack, at a fixed path in a fixed form, so the field's presence is the whole declaration.
 
 Prose rides `.lang` values, so the client resolves every paragraph in each player's own language and the runtime's raw-text length limits never apply to guide copy.
 
@@ -36,7 +36,7 @@ Prose rides `.lang` values, so the client resolves every paragraph in each playe
 
 <Install pkg="@bedrock-core/guides" />
 
-The package has two halves, both on the root export. The **app** is the declaration, the command and the show method, like the other apps. The **renderer** is the compiled screen factories the filter's generated modules call.
+The package has two halves, both on the root export. The **app** is the declaration, the command and the show method, like the other apps. The **renderer** is the compiled screen factories the stage's generated modules call.
 
 It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 
@@ -61,7 +61,7 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 ## Next steps
 
 - [Authoring a guide](./authoring.md) — frontmatter, categories, what the renderer makes of each block, links, operator-only pages and embedded components
-- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the filter writes
+- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the stage writes
 - [API](./api.md) — every export of both halves
-- [guides Regolith filter](/docs/filters/guides) — installing the filter and its settings
+- [guides builder stage](/docs/builder/guides/stages#guides) — stage configuration and output
 - [catalog](/docs/catalog) — where a guide's entry is drawn for every addon

@@ -59,4 +59,4 @@ Add `.bds/` to `.gitignore`: that is where the cache, server trees and logs live
 
 - [`Commands`](./cli.md) — `run`, `fetch`, `where`, every option, exit codes, uncaught script errors
 - [`Configuration`](./config.md) — `bds-runner.json`, server properties, choosing the build, environment variables
-- [`Running in CI`](/docs/filters/ci) — build with Regolith and test in the same GitHub Actions job
+- [Build in CI](/docs/builder/guides/ci) — build pack exports before running GameTests

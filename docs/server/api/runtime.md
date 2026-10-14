@@ -101,7 +101,7 @@ shared.currency.set('gold');
 events.purchase.emit({ playerId: player.id, gold: 5 });
 ```
 
-A field takes arguments only for what the build cannot know. `registerGuides()` takes none, because the guides filter already compiled the pages. `registerConfig(definition)` takes the definition because the definition *is* the declaration, and the ui-compiler filter reads it out of this very call to shape one screen per section.
+A field takes arguments only for what the build cannot know. `registerGuides()` takes none, because the guides stage already compiled the pages. `registerConfig(definition)` takes the definition because the definition *is* the declaration, and the ui-compiler stage reads it out of this very call to shape one screen per section.
 
 ### What a declaration may do
 

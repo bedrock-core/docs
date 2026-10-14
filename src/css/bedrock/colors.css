@@ -77,7 +77,6 @@
   --pkg-sync:var(--cat-framework);
   --pkg-ui:var(--cat-ui);
   --pkg-ore-styled:var(--cat-ui);
-  --pkg-filters:var(--cat-data);
   --pkg-tools:var(--cat-tooling);
   --pkg-cli:var(--cat-toolchain);
   --pkg-generator:var(--cat-toolchain);

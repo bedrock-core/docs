@@ -78,4 +78,4 @@ export default function FrameworkPage(): JSX.Element {
 
 ## Notes
 
-A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) compiles, and the filename without the suffix is the screen's [key](../guides/navigation.md#screen-keys).
+A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) compiles, and the filename without the suffix is the screen's [key](../guides/navigation.md#screen-keys).

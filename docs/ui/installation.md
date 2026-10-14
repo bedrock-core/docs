@@ -1,21 +1,21 @@
 ---
 sidebar_position: 2
-description: "Install @bedrock-core/ui, the render pack and the filter that compiles your screens."
+description: "Install @bedrock-core/ui, the render pack and the stage that compiles your screens."
 ---
 # Installation
 
-Three things have to be in place: the package, the render pack in the world, and the filter that compiles your screens into the pack.
+Three things have to be in place: the package, the render pack in the world, and the stage that compiles your screens into the pack.
 
 ## Prerequisites
 
 - Node.js 22.18+ and Git — [https://nodejs.org/](https://nodejs.org/)
-- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
+- [builder](/docs/builder) — pack compilation and exports
 
-Regolith is not optional here. A screen is drawn from JSON UI the build writes, so a project with no build has no screens.
+Screens require the JSON UI and runtime registrations produced by the build.
 
 ## Quick start with the CLI
 
-The [CLI](/docs/cli) scaffolds an addon with `@bedrock-core/ui` configured, TypeScript and ESLint, the Regolith filter stack, the render pack and a working example screen.
+The [CLI](/docs/cli) scaffolds an addon with `@bedrock-core/ui` configured, TypeScript and ESLint, builder profiles, the render pack and a working example screen.
 
 <Exec cmd="@bedrock-core/cli" />
 
@@ -33,20 +33,25 @@ Everything an addon writes comes from the one entry point. Two subpaths carry th
 | `@bedrock-core/ui/container` | `createContainerScreen()`, for serving a [container screen](./guides/container-screens.md) |
 | `@bedrock-core/ui-runtime/compile` | the build half the [compiler](./compiler/index.md) reads; no addon reaches for it |
 
-### 2. The filter
+### 2. The builder
 
-Add the [`ui-compiler` filter](/docs/filters/ui-compiler) to the Regolith stack. It has to run **after** `i18n` and **before** `bundler`.
+Install the build tool:
 
-```json title="config.json"
+<Install pkg="@bedrock-core/builder@next" dev />
+
+Configure project metadata, packs and destinations as described in [builder configuration](/docs/builder/guides/configuration). The `ui-compiler` stage discovers screens automatically and runs after translations and before bundling. It uses the project's installed UI compiler and runtime toolkit.
+
+In a project with several packs, select the owner and its linked resource pack in the profile's `stages` map:
+
+```json title="bedrockCore.profiles.default.stages"
 {
-  "filter": "ui-compiler",
-  "settings": { "namespace": "my_addon" }
+  "ui-compiler": { "owner": "gameplay", "resourcePack": "assets" }
 }
 ```
 
-The [`core` filter](/docs/filters/core) runs the whole stack in the right order with the namespace declared once, which is what the CLI scaffolds.
+The owner's manifest must declare the resource pack as a local dependency. [UI stage settings](/docs/builder/guides/stages#ui-compilation) describe discovery and output.
 
-The filter writes `@bedrock-core/generated/ui`. Import it once from your entry module so the registrations run:
+The stage registers `@bedrock-core/generated/ui`. Import it from the script entry to install compiled screen registrations:
 
 ```ts title="packs/BP/scripts/main.ts"
 import '@bedrock-core/generated/ui';
@@ -89,7 +94,7 @@ pack.mcaddon
 }
 ```
 
-If you also run the i18n filter, it needs one more `paths` alias and an `include` entry so the generated bundle typechecks — see [bundler](/docs/filters/bundler#authoring).
+Run a first build to write editor declarations, then include `.bedrock-core/generated/**/*.d.ts` alongside authored sources in tsconfig. Generated runtime imports resolve automatically during [script bundling](/docs/builder/guides/stages#script-bundling).
 
 ## Optional: ore-styled
 
@@ -120,14 +125,14 @@ export default function Hello(): JSX.Element {
 ```
 
 ```bash
-regolith run
+npx bc-builder build config.json
 ```
 
-The filter logs one line per screen it compiled. If `render()` throws `UncompiledScreenError` instead, the build did not see the file or `@bedrock-core/generated/ui` was never imported.
+Run the build before launching Minecraft. If `render()` throws `UncompiledScreenError` instead, the build did not see the file or `@bedrock-core/generated/ui` was never imported.
 
 ## Next steps
 
 - [Hosts](./guides/hosts.md) — which root to write, and what each screen can carry
 - [Components](./components/components.md) — every built-in component
 - [Hooks](./hooks/hooks.md) — state and effects
-- [`ui-compiler` filter](/docs/filters/ui-compiler) — every setting the build takes
+- [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) — every setting the build takes

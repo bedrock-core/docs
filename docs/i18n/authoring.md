@@ -1,18 +1,18 @@
 ---
 sidebar_position: 2
-description: "Locale files, namespacing, argument order, $t() nesting, plurals and the meta branch: authoring the resources the i18n filter compiles."
+description: "Locale files, namespacing, argument order, $t() nesting, plurals and the meta branch: authoring the resources the i18n stage compiles."
 ---
 
 # Authoring resources
 
-Nested TypeScript objects under `packs/data/i18n/` are the source of truth for an addon's text. The [i18n Regolith filter](/docs/filters/i18n) reads them and generates the `.lang` files, the runtime bundle and the types.
+Nested TypeScript objects under `packs/BP/i18n/` are the source of truth for an addon's text. The [i18n builder stage](/docs/builder/guides/stages#translations) reads them and generates the `.lang` files, the runtime bundle and the types.
 
 ## Locale files
 
 One module per locale, each default-exporting a nested object:
 
 ```ts
-// packs/data/i18n/en_US.ts
+// packs/BP/i18n/en_US.ts
 export default {
   shop: {
     title: 'Shop',
@@ -27,9 +27,9 @@ export default {
 It is what lets the compiler infer the key space and the interpolation variables each template requires. Without it every template widens to `string` and you lose typed arguments entirely.
 :::
 
-The default locale (`defaultLocale`, `en_US` unless configured) is the **shape**: every other locale file must carry exactly its key set, checked in both directions — a locale missing a key falls back to the default locale's value, and a key with no default-locale counterpart is dropped.
+The default locale (`defaultLocale`, `en_US` unless configured) defines the key shape and interpolation arguments. Strict mode rejects missing or extra keys and variable drift. With `strict: false`, missing keys use default-locale values and extra keys are dropped with warnings.
 
-Filenames must be `<xx_YY>.ts` and must be a locale code the Bedrock client ships — a locale nobody can select is flagged. `.d.ts` and `.generated.json` files in the same folder are ignored.
+Use one `<xx_YY>.ts`, `.js`, `.mts` or `.mjs` module per locale. Locale names are checked against the supported client catalog. Declaration files are ignored.
 
 Keys are constrained by what has to survive as both a `.lang` key segment and a TypeScript property:
 
@@ -44,14 +44,13 @@ Keys are constrained by what has to survive as both a `.lang` key segment and a 
 
 Every key lands in the `.lang` files prefixed with the addon's namespace: `shop.bought` becomes `drav0011_shop.shop.bought`. The prefix is what keeps addons from colliding everywhere their text meets — Bedrock merges every installed pack's `.lang` into one world-wide table, and the server runtime merges every addon's published translation tables under the same namespace.
 
-The namespace is **derived, not configured**. The filter scans `BP/scripts` for the `core.register({ manifest: { creator: '…', pack: '…' } })` call and joins the two string literals:
+Builder takes the namespace from `config.json`:
 
-```ts
-core.register({ manifest: { creator: 'drav0011', pack: 'shop', /* ... */ } });
-// -> namespace 'drav0011_shop'
+```json title="config.json, project metadata"
+{ "namespace": "drav0011_shop" }
 ```
 
-Only files containing a `.register(` call are considered, so unrelated `creator:`/`pack:` properties elsewhere do not poison the scan. When the scan finds no call, or finds `creator`/`pack` composed at runtime instead of written as literals, the build fails and names the fix: make them literals, or set the filter's `namespace` setting — required only in that case.
+When using the server framework, match the runtime's `creator_pack` identity. The generated bundle carries this namespace; standalone `compileI18n` callers supply it explicitly.
 
 Call sites never spell the namespace. `key()` and `raw()` prepend it at runtime from the bundle's metadata, so renaming the addon's namespace never touches a call site.
 
@@ -76,7 +75,7 @@ demo: {
 },
 ```
 
-Unknown references and cycles are reported and replaced with `''`.
+Strict mode rejects unknown references and cycles. With `strict: false`, they produce warnings and empty strings.
 
 :::caution Format functions are not supported
 `{{price, currency}}` does not work. A format function is JavaScript and cannot travel to the client. Format in code, pass the result as the argument.
@@ -90,7 +89,7 @@ A string drawn with [`<Trans>`](/docs/ui/components/Trans) marks its links and s
 help: { prices: 'See <shop>the shop</shop> for <gold>today</gold>\'s prices.' },
 ```
 
-The tags pass through this filter untouched. A translation may move them, reorder them and wrap them around other words. The string is composed at build, so it cannot also take `{{variables}}`.
+The tags pass through this stage untouched. A translation may move them, reorder them and wrap them around other words. The string is composed at build, so it cannot also take `{{variables}}`.
 
 ## Plurals
 
@@ -99,7 +98,7 @@ Author `_one` / `_other` variants (plus `_zero`, `_two`, `_few`, `_many` where a
 CLDR categories differ per language, so a locale may declare a category the default locale never has. Czech needs `_few`; English does not:
 
 ```ts
-// packs/data/i18n/en_US.ts          // packs/data/i18n/cs_CZ.ts
+// packs/BP/i18n/en_US.ts          // packs/BP/i18n/cs_CZ.ts
 stock_one:   '{{count}} left',       stock_one:   'Zbývá {{count}} kus',
 stock_other: '{{count}} left',       stock_few:   'Zbývají {{count}} kusy',
                                      stock_other: 'Zbývá {{count}} kusů',

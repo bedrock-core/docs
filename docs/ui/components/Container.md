@@ -26,7 +26,7 @@ export default function Furnace() {
 }
 ```
 
-Its presence decides the backend, the way [`<Form>`](./Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler filter](/docs/filters/ui-compiler), baked into JSON UI, and served by `createContainerScreen` to every player who opens the host it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
+Its presence decides the backend, the way [`<Form>`](./Form.md) makes a screen a native modal: a tree rooted in a `Container` is laid out once at build time by the [ui-compiler stage](/docs/builder/guides/stages#ui-compilation), baked into JSON UI, and served by `createContainerScreen` to every player who opens the host it names. `render()` rejects it — a container screen is compiled ahead of time, not serialized per player.
 
 :::caution Experimental: block containers
 A block-hosted screen uses its block's `minecraft:block_entity` container, and block containers are an experimental game feature. Expect rough edges, and expect this to change when the game's feature does. Entity-hosted screens are not affected.

@@ -48,10 +48,10 @@ t('shop.bought',      { item: 'Apple', price: 5 });
 
 An unknown path is a compile error in both forms. Prefer the selector form on projects with the vanilla branch enabled — the dot-string union over ~10k vanilla keys is only instantiated when you actually use a string.
 
-At a call site the tree is rooted at your own keys, with two branches grafted in by the filter:
+At a call site the tree is rooted at your own keys, with two branches grafted in by the stage:
 
 ```ts
-t($ => $.shop.bought, { item, price });   // yours — packs/data/i18n
+t($ => $.shop.bought, { item, price });   // yours — packs/BP/i18n
 t($ => $.core.addons.title);              // a library's strings
 t($ => $.vanilla.item.apple.name);        // vanilla Minecraft
 ```
@@ -83,7 +83,7 @@ raw($ => $.shop.bought, { item: raw($ => $.vanilla.item.apple.name), price: 5 })
 // }
 ```
 
-`raw()` orders its `with` array by the argument order the filter recorded at build time. See [Argument order](./authoring.md#argument-order) for how that order is chosen.
+`raw()` orders its `with` array by the argument order the stage recorded at build time. See [Argument order](./authoring.md#argument-order) for how that order is chosen.
 
 ### Vanilla keys take positional arguments
 
@@ -219,7 +219,7 @@ core.translations.provide(bundle);
 
 The runtime replicates the bundle — objects, templates and recorded argument order intact — and serves two lazy views: `core.translations.of(addonId)` gives verbs over a peer's strings, and `core.translations.forPlayer(player)` gives one resolver chaining every published bundle, later registrations winning collisions. Registry display fields (`packName`, `description`, `creatorName`) are translation keys so that this works.
 
-## Without the filter
+## Without the stage
 
 `createResourceBundle` builds the same bundle shape from nested resource modules at runtime — full typed verbs, no build step:
 
@@ -248,8 +248,8 @@ function createResourceBundle<T extends ResourceTree>(
 
 Two audiences:
 
-- **Libraries.** Their resources ship inside the package, and the consuming addon's filter folds them into its `.lang`; the library still wants typed verbs over its own strings. `@bedrock-core/config` does exactly this.
-- **Addons not running the filter.** Everything works minus what only a build can do: `.lang` emission, the vanilla branch, cross-locale parity checks.
+- **Libraries.** Their resources ship inside the package, and the consuming addon's stage folds them into its `.lang`; the library still wants typed verbs over its own strings. `@bedrock-core/config` does exactly this.
+- **Addons not running the stage.** Everything works minus what only a build can do: `.lang` emission, the vanilla branch, cross-locale parity checks.
 
 :::caution `asDefault: false` for libraries
 A library creating its own instance must pass `{ asDefault: false }` so it never shadows the host addon's bundle as the default translation source. An addon's own `createI18n` call *is* the registration and should keep the default (`true`).
@@ -296,12 +296,12 @@ What `forPlayer` / `forLocale` return, and what `I18n<R>` extends.
 | `templateVars(template)` | function | `{{var}}` names, first-appearance order |
 | `toPositional(template, order)` | function | `{{var}}` → `%N$s` against a recorded order |
 | `LOCALE_PROPERTY` | const | `'bedrock_core:i18n_locale'` |
-| `I18nBundle`, `LangEntries` | types | The bundle shape the filter generates |
+| `I18nBundle`, `LangEntries` | types | The bundle shape the stage generates |
 | `TranslationResolver`, `TranslateFn`, `BoundI18n`, `I18n`, `CreateI18nOptions` | types | Engine types |
 | `Leaf`, `AnyLeaf`, `ArgsOf`, `Interp`, `PathsOf`, `ResolvePath`, `SelectorTree`, `TemplateVars` | types | The compile-time machinery |
 
 ## Limits
 
 - **Compile-time guarantees end where dynamic strings begin.** `t()` on a runtime-assembled key the type system never saw returns the key itself, mirroring how Bedrock renders an unknown `.lang` key literally.
-- **`$t(other.key)` nesting is a build-time feature.** Bedrock `.lang` has no nesting, so the filter flattens references before emitting; nothing resolves them at runtime.
+- **`$t(other.key)` nesting is a build-time feature.** Bedrock `.lang` has no nesting, so the stage flattens references before emitting; nothing resolves them at runtime.
 - **Vanilla `t()` values are partial by design.** Only the vanilla keys your compiled scripts reference as literals or `$.vanilla.` chains ride in the bundle — see [Vanilla strings](./libraries.md#vanilla-strings).

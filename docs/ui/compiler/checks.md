@@ -4,7 +4,7 @@ description: "Every check that stops a compiled screen's build, and what fails i
 ---
 # Build checks
 
-A failed check stops the build with the compiler's own message, which the [`ui-compiler` filter](/docs/filters/ui-compiler) relays unchanged, because those messages already name the fix.
+A failed check stops the build with the compiler's own message, which the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) relays unchanged, because those messages already name the fix.
 
 | Check | What fails |
 | --- | --- |

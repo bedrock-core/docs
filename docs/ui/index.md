@@ -32,7 +32,7 @@ A world also needs the render pack, which must come from the same release as the
 
 ## Your first screen
 
-A screen lives in a `*.screen.tsx` file under `BP/scripts` and default-exports its component. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) looks for.
+A screen lives in a `*.screen.tsx` file under `BP/scripts` and default-exports its component. That is what the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) looks for.
 
 ```tsx title="packs/BP/scripts/welcome.screen.tsx"
 import { Button, Panel, Screen, Text } from '@bedrock-core/ui';

@@ -5,7 +5,7 @@ description: "How a screen's JSX becomes the static JSON UI a host serves, and w
 ---
 # Compiler
 
-Every screen is compiled. `@bedrock-core/ui-compiler` turns a screen component into the static JSON UI that ships in the resource pack, and the [`ui-compiler` filter](/docs/filters/ui-compiler) is what runs it over a project.
+Every screen is compiled. Builder's [UI stage](/docs/builder/guides/stages#ui-compilation) uses the project's installed `@bedrock-core/ui-compiler` to turn screen components into the static JSON UI shipped in the resource pack.
 
 Nothing in the compiler reaches the game. It has no `@minecraft/server` calls and no components of its own: it renders a screen once on the build machine and writes a document the client already holds by the time anybody opens it. What crosses at runtime is the screen's title and the values that changed.
 
@@ -44,6 +44,6 @@ Which host a screen compiles for is decided by its root element, and there is no
 - [What the build writes](./output.md) — mounts, routing, host definitions and the text written per language
 - [Faces and hosts](./passes.md) — the two passes, the three layers, and the behaviors a primitive carries
 - [Build checks](./checks.md) — everything that stops a build, and what fails it
-- [`@bedrock-core/ui-compiler`](./api.md) — the programmatic entry points, for tooling rather than for addons
+- [Build integration](./api.md) — the builder stage and compiler entry
 - [Hosts](../guides/hosts.md) — the three screens the library draws on, and what each can carry
-- [`ui-compiler` filter](/docs/filters/ui-compiler) — installing the filter and its settings
+- [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) — stage configuration and output

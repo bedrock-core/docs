@@ -4,7 +4,7 @@ description: "The *.screen.tsx file and what compiling it asks of the source: na
 ---
 # Writing a screen
 
-A screen is a module ending in `.screen.tsx`, anywhere under `BP/scripts`, that default-exports a component. The [`ui-compiler` filter](/docs/filters/ui-compiler) compiles every one it finds. Ordinary `.tsx` helpers sit beside one untouched — only the suffix marks a screen.
+A screen is a module ending in `.screen.tsx`, anywhere under `BP/scripts`, that default-exports a component. The [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) compiles every one it finds. Ordinary `.tsx` helpers sit beside one untouched — only the suffix marks a screen.
 
 ```tsx title="packs/BP/scripts/screens/counter.screen.tsx"
 /** @jsxImportSource @bedrock-core/ui */
@@ -114,25 +114,25 @@ A modal never qualifies — its fields are built per present — and neither doe
 ## Import time
 
 :::caution A screen module, and everything it imports, must not touch the world at import time
-The filter evaluates the module once, on the build machine, with `@minecraft/server` and `@minecraft/server-ui` replaced by stubs that answer every name the packages declare and do nothing. Hooks are fine: the compiler renders the component with its initial state. What breaks is module-scope code that reaches for the game — `world.afterEvents.*.subscribe(...)`, `system.run(...)`, a dynamic property read next to an `import`. Keep that in the module that opens the screen; a screen's handlers and effects only ever run in game.
+The stage evaluates the module once, on the build machine, with `@minecraft/server` and `@minecraft/server-ui` replaced by stubs that answer every name the packages declare and do nothing. Hooks are fine: the compiler renders the component with its initial state. What breaks is module-scope code that reaches for the game — `world.afterEvents.*.subscribe(...)`, `system.run(...)`, a dynamic property read next to an `import`. Keep that in the module that opens the screen; a screen's handlers and effects only ever run in game.
 :::
 
 ## Library screens
 
-A screen can also come from a module whose default export is a record of components, named by its keys. The filter's `screens` setting lists such modules:
+A screen can also come from a module whose default export is a record of components, named by its keys. The stage's `screens` setting lists such modules:
 
 ```jsonc title="config.json"
-{ "filter": "ui-compiler", "settings": { "screens": ["./BP/scripts/screens/shared.ts"] } }
+{ "stage": "ui-compiler", "settings": { "screens": ["./BP/scripts/screens/shared.ts"] } }
 ```
 
 ## App screens
 
-The bedrock-core apps need no entry in `screens`: declaring is what asks for their screens. The filter reads the register call in `BP/scripts/main.ts` or `BP/scripts/index.ts` and, for each app it finds there, bakes the module the app's declaration names and asks that module for the screens that follow from the declaration. The filter knows no app by name; an app describes itself.
+The bedrock-core apps need no entry in `screens`: declaring is what asks for their screens. The stage reads the register call in `BP/scripts/main.ts` or `BP/scripts/index.ts` and, for each app it finds there, bakes the module the app's declaration names and asks that module for the screens that follow from the declaration. The stage knows no app by name; an app describes itself.
 
 | On the declaration | What it is |
 | --- | --- |
 | `app` | The app's name, `'catalog'`, `'config'`, `'guide'` |
-| `compiled` | The module to bake. Its default export is the app's own screens, like any `screens` module. Absent for an app whose screens another filter writes, as the guides filter does per page |
+| `compiled` | The module to bake. Its default export is the app's own screens, like any `screens` module. Absent for an app whose screens another stage writes, as the guides stage does per page |
 
 A `compiled` module may also export `shape(declared, manifest)`: given the declaration as data, its installer dropped, and the manifest fields, it returns the screens the declaration implies, named. The [catalog](/docs/catalog/page)'s returns the page the manifest becomes; [config](/docs/config)'s returns one screen per section of the declared schema. The generated module calls it at build time to bake those screens and again at runtime, so an app registers there whatever it needs to find them later.
 

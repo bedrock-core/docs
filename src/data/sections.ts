@@ -7,8 +7,8 @@
 
 export type CategoryId = 'framework' | 'ui' | 'content' | 'tooling';
 
-/** `beta` is a 0.x package, `1.0-rc` a release candidate, `1.0` a released package. */
-export type SectionStatus = 'beta' | '1.0-rc' | '1.0' | 'planned';
+/** Release state; deprecated sections remain available for existing projects. */
+export type SectionStatus = 'beta' | '1.0-rc' | '1.0' | 'planned' | 'deprecated';
 
 export interface Category {
   id: CategoryId;
@@ -173,14 +173,14 @@ export const sections: Section[] = [
 
   // Tooling
   {
-    id: 'filters',
-    label: 'filters',
-    pkg: 'bedrock-core/regolith-filters',
+    id: 'builder',
+    label: 'builder',
+    pkg: '@bedrock-core/builder',
     category: 'tooling',
     status: 'beta',
-    description: 'Regolith filters: manifest, generator, guides, i18n, ui-compiler, bundler.',
-    icon: 'funnel',
-    repo: `${GH}/regolith-filters`,
+    description: 'Build Bedrock packs with automatic stages and Node plugins.',
+    icon: 'hammer',
+    repo: `${GH}/builder`,
   },
   {
     id: 'cli',
@@ -188,9 +188,9 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/cli',
     category: 'tooling',
     status: 'beta',
-    description: 'Scaffold an addon with the whole stack wired.',
+    description: 'Scaffold an addon with builder profiles and the runtime stack.',
     icon: 'terminal',
-    repo: `${GH}/ui`,
+    repo: `${GH}/builder`,
   },
   {
     id: 'bds-runner',

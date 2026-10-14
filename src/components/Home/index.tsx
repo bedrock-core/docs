@@ -72,7 +72,7 @@ const FEATURES = [
   { icon: 'database', title: 'Shared state', accent: '--cat-framework', body: 'A declared shape every realm mirrors locally as a typed tree. Reads are synchronous, writes broadcast a delta.' },
   { icon: 'layout-panel-left', title: 'JSX screens', accent: '--cat-ui', body: 'React-like components for forms and containers. Screens compile ahead of time; only state moves at runtime.' },
   { icon: 'sliders-horizontal', title: 'Config, guides and translations', accent: '--cat-data', body: 'Declare a settings schema, ship an MDX guide and a typed translation bundle; the shared UI renders all three for every addon in the world.' },
-  { icon: 'terminal', title: 'One build chain', accent: '--cat-tooling', body: 'Regolith filters compile guides, localization and screens, bundle the scripts, and run your GameTests on a real dedicated server.' },
+  { icon: 'terminal', title: 'One build chain', accent: '--cat-tooling', body: 'Builder compiles guides, localization and screens and bundles scripts. BDS runner executes GameTests on a dedicated server.' },
 ];
 
 export function Features(): ReactNode {

@@ -4,7 +4,7 @@ description: "Where a compiled screen is mounted, how the client picks its layou
 ---
 # What the build writes
 
-A compiled screen reaches the client as JSON UI in the addon's resource pack: one gated definition per screen, an insert that routes it onto the vanilla screen it is drawn on, and for a container screen, a stamp on the entity or block that opens it.
+A compiled screen reaches the client as JSON UI in the addon's resource pack: screen definitions, an addon-owned router mounted on the vanilla screen, and for a container screen, a stamp on the entity or block that opens it.
 
 ## Roots and mounts
 
@@ -21,18 +21,22 @@ A tree that starts with anything else — or a `<Container>` naming neither `ent
 
 ## Routing
 
-Both hosts are reached the same way: one gated definition per screen under a root named for the addon, and one insert putting that root where the screen can see it. A gate compares the whole of what identifies the screen, so two screens can never both match.
+Each addon owns its screen definitions and router. The router selects a screen by its complete routing key, and a hook mounts the router on the native host.
 
-- **Form screens** gate on the form's title, which carries the protocol header and the screen's namespaced name. The library's own container is already gated on that header, so a compiled form needs no vanilla edit: the addon's root is inserted into the mount. The pack that *defines* the mount lists its root in the definition directly; every other pack inserts through `RP/ui/server_form.json`.
+- **Form screens** use one title dictionary and one optional embed dictionary per addon. A lookup supplies the selected cell id to a factory, which creates only that screen, its backdrop, and its cursor. The title carries the protocol header and the screen's namespaced name; the embed marker comes from the host's first button entry. Adding routes increases the dictionaries and shipped definitions without adding live selectors.
 - **Container screens** gate on a layout key. A marker item in the container's first slot carries a protocol key — is this container a compiled screen at all? — as its max durability, and the layout key as its current durability, and the router shows the layout whose key matches. An entity-hosted screen inserts the addon's root into `RP/ui/chest_screen.json`, at vanilla's `chest.small_chest_panel_top_half`; a block-hosted screen inserts the same root into `RP/ui/data_driven_container_screen.json`, at `data_driven_container.panel_top_half`. A vanilla chest or data-driven container has no marker, fails the first check and renders untouched.
 
 A screen's layout key is a hash of `<namespace>_<name>` folded into 1..3969. It depends on nothing but the screen's own name, so a rebuild never moves a key and an entity placed in a world keeps opening the screen it was stamped with; two addons built apart never claim the same key for their first screens. Two screens of one addon hashing alike is a build failure naming both.
 
-Every edit to a vanilla file is one `modifications` entry defining nothing, at vanilla's own path. That is the one kind of edit the engine stacks across packs in whatever order they sit — a definition in a vanilla file would replace vanilla's and every other pack's instead of joining them. The insert target declares its own `controls`, because an insert on a definition that merely inherits the array creates one that shadows it.
+The form hook in `RP/ui/server_form.json` appends an addon-owned factory bridge to `main_screen_content` and preserves the original native form factory. The bridge uses the native `server_form_factory` event for both `long_form` and `custom_form`, so routing controls join the form's binding initialization. The mount fills the viewport so screen cells inherit usable dimensions. All addon builds share the same viewport and vanilla fallback rules. Ordinary form titles keep the native layout. Each addon's selectors, cells, and widget dependencies live in its own namespace and files.
+
+Collection and view bindings in form cells use `binding_condition: "always"` by default so values arriving after cell construction populate the controls and update their visibility. Explicit binding conditions are preserved. Factories limit live construction; every screen definition still ships in the resource pack.
+
+Container hooks use additive `modifications` at vanilla's own path. Their insert targets declare their own `controls`, because inserting into a definition that only inherits the array would create an array that shadows the inherited one.
 
 ## Host definitions
 
-A container screen names the entity or the block it opens from. The filter finds that host's definition under `BP/entities` or `BP/blocks` by its `identifier` — a screen naming a host that is not there fails the build — and stamps the workspace copy.
+A container screen names the entity or the block it opens from. The stage finds that host's definition under `BP/entities` or `BP/blocks` by its `identifier` — a screen naming a host that is not there fails the build — and stamps the workspace copy.
 
 ### An entity (`<Container entity={'core:furnace'}>`)
 
@@ -71,7 +75,7 @@ A container screen names the entity or the block it opens from. The filter finds
 }
 ```
 
-`minecraft:block_entity` cannot vary per permutation and cannot be combined with `minecraft:crafting_table` — the filter refuses a block that declares one, since a compiled screen needs the block entity for its own container. A block container holds 54 slots at most, the whole of a screen's allocation: the routing sentinel, every `<Slot>` and `Button`, and one bank slot per character of every live `<Text maxLength>`. A screen that outgrows it either sheds cells or moves to an entity, whose inventory has no cap.
+`minecraft:block_entity` cannot vary per permutation and cannot be combined with `minecraft:crafting_table` — the stage refuses a block that declares one, since a compiled screen needs the block entity for its own container. A block container holds 54 slots at most, the whole of a screen's allocation: the routing sentinel, every `<Slot>` and `Button`, and one bank slot per character of every live `<Text maxLength>`. A screen that outgrows it either sheds cells or moves to an entity, whose inventory has no cap.
 
 Nobody keeps a container size or a layout key in step with a layout by hand — the failure mode of that is a screen that silently draws cells the container does not have, or a host that opens the wrong screen. Everything else on the entity or block is yours: its geometry, its behavior, whether it can be pushed or hurt.
 
@@ -79,13 +83,13 @@ One host opens one screen: two screens naming the same entity, or the same block
 
 ## Text composed per language
 
-Some text takes its shape from what it says: a baked breadcrumb trail collapses to its room, a [`<Trans>`](../components/Trans.md) breaks into lines. The filter builds every screen with the strings of each language `RP/texts/languages.json` lists, as the filters before it left them, so the build composes that text once per language.
+Some text takes its shape from what it says: a baked breadcrumb trail collapses to its room, a [`<Trans>`](../components/Trans.md) breaks into lines. The stage builds every screen with the strings of each language `RP/texts/languages.json` lists, as the filters before it left them, so the build composes that text once per language.
 
 What the screens composed is written into each `RP/texts/<locale>.lang`, in a marked block, under keys named after what the text says in every language. Two screens composing the same text share one key. A screen that is not static also carries each `<Trans>` as laid out, in the snapshot it is registered with, so a render at runtime draws the same pieces and emits a press among them in the same place.
 
 ## The character table
 
-A container slot publishes no text, so a live string crosses one character per slot: each cell reads its slot's stack size and localizes a key built from it. The table that turns those codes back into glyphs is appended to every `RP/texts/<locale>.lang`, in a marked block, and only when a container screen actually has live text. It comes from the runtime the project ships rather than from the filter, because it is the contract between the compiler and the runtime — they encode against the same list or nothing renders.
+A container slot publishes no text, so a live string crosses one character per slot: each cell reads its slot's stack size and localizes a key built from it. The table that turns those codes back into glyphs is appended to every `RP/texts/<locale>.lang`, in a marked block, and only when a container screen actually has live text. It comes from the runtime the project ships rather than from the stage, because it is the contract between the compiler and the runtime — they encode against the same list or nothing renders.
 
 ## Next steps
 

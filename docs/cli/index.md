@@ -2,269 +2,160 @@
 slug: /
 sidebar_position: 1
 sidebar_label: Overview
-description: "@bedrock-core/cli scaffolds a complete Minecraft Bedrock addon project — Regolith build, TypeScript, ESLint, the full bedrock-core stack, and a working…"
+description: "@bedrock-core/cli scaffolds Minecraft Bedrock addons with builder profiles, TypeScript, translations, guides and example screens."
 ---
 
 # cli
 
-`@bedrock-core/cli` scaffolds a complete Minecraft Bedrock addon project — Regolith build, TypeScript, ESLint, the full bedrock-core stack, and three working example screens — in one command.
-
+`@bedrock-core/cli` scaffolds an addon with the @bedrock-core builder, server
+registration, typed config, translations, MDX guides and three UI screens.
+Its source and templates belong to the [builder repository](https://github.com/bedrock-core/builder).
 
 :::caution Beta
-`@bedrock-core/cli` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
+The builder checkout prepares local archives and keeps its packages private.
+Install those archives in generated projects when the configured builder version
+is unavailable from the registry. The UI stage requires a matching toolkit with
+`buildUiPack`; use compatible local UI
+archives when registry packages do not expose these APIs.
 :::
-
-## Prerequisites
-
-- Node.js 22.18+ — [https://nodejs.org/](https://nodejs.org/)
-- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
-
-<Exec cmd="@bedrock-core/cli" />
 
 ## Usage
 
-<Exec cmd="@bedrock-core/cli [project-name]" />
+Use Node.js 22.18 or newer. From the builder checkout:
 
-| Argument | Required | Description |
-| --- | --- | --- |
-| `[project-name]` | no | The project directory. Passing it skips the first prompt |
+```sh
+corepack yarn install --immutable
+corepack yarn scaffold my-addon --author "Your Name" --description "My addon" --package-manager none
+```
 
-| Flag | Description |
+An installed CLI archive accepts the same arguments through its `cli` binary.
+
+| Argument or flag | Description |
 | --- | --- |
-| `-a, --author <name>` | Author name. Skips the author prompt |
-| `-d, --description <text>` | Project description. Skips the description prompt |
-| `-p, --package-manager <manager>` | Install with `yarn`, `npm`, `pnpm`, or `none` to skip |
+| `[project-name]` | Directory and npm package name; omitted values are prompted |
+| `-a, --author <name>` | Author name |
+| `-d, --description <text>` | Project description |
+| `-p, --package-manager <manager>` | `yarn`, `npm`, `pnpm`, or `none` |
 | `-V, --version` | Print the CLI version |
 | `-h, --help` | Print usage |
 
-There is one complete template. Choose npm, yarn, pnpm, or `none` when you want to install
-later. Yarn and pnpm record their selected version in `package.json`; each manager creates its own lockfile, which should be committed with the project.
+The CLI validates npm package names and refuses nonempty target directories.
+Git initialization creates a repository without a commit. Choose `none` to
+create the files without installing dependencies. Otherwise, the selected
+manager installs the build tools and runtime packages together.
 
-### Prompts
+The Yarn choice creates its lockfile before installation to isolate the generated
+project from any parent Yarn checkout. If you choose `none` and later install
+with Yarn inside another Yarn project, create an empty `yarn.lock` first.
 
-Three text prompts and a package-manager selection, all with defaults you can accept with Enter.
-`[project-name]`, `--author`, `--description`, and `--package-manager` each skip their own prompt,
-so a fully flagged invocation runs with no prompts at all:
+The template pins an exact UI version and downloads its matching
+`core-ui-<version>.mcpack`. If download fails, the CLI prints the matching UI
+release link and preserves the project. Import that resource pack into the
+world where the addon runs.
 
-| Prompt | Default | Validation |
-| --- | --- | --- |
-| `Project name:` | `my-addon` | Must be a valid new npm package name (this becomes the directory and `package.json` name) |
-| `Author name:` | `Your Name` | — |
-| `Description:` | `A Minecraft Bedrock addon with custom UI` | — |
-| `Install dependencies with:` | `yarn (recommended)` | yarn, npm, pnpm, or install later |
+## Project structure
 
-Ctrl-C prints `✖ Operation cancelled` and exits cleanly. The CLI refuses to write into a directory that already exists and is not empty.
-
-## What gets scaffolded
-
-The template scaffolds the **whole bedrock-core stack**, not just a UI: [server runtime](/docs/server/api/runtime) registration, the addon catalog, the shared config UI, typed translations, MDX guides, JSON generation from TypeScript, a GameTest suite, and three themed example screens covering navigation, a navigated param and a native modal form.
-
-```txt
+```text
 my-addon/
-├── config.json                       Regolith: `core` plus six declared stages, four profiles
-├── package.json                      scripts: regolith-install / build / build:test / watch / watch:test / lint
-├── tsconfig.json                     JSX + the two @bedrock-core/generated aliases
-├── tsconfig.test.json                extends tsconfig.json; entry is scripts/gametest.ts
+├── config.json
+├── package.json
+├── tsconfig.json
+├── tsconfig.test.json
 ├── eslint.config.mjs
-├── .vscode/                          launch.json wired to the Minecraft debugger (port 19144)
-├── core-ui-<UI version>.mcpack       render pack, downloaded for you
+├── .vscode/
+├── i18n/en_US.ts
+├── guides/en_US/
 └── packs/
     ├── BP/
     │   ├── manifest.json
-    │   ├── manifest.test.json                extends manifest.json, adds @minecraft/server-gametest
-    │   ├── blocks/tutorial.block.ts          generator sample — one file, many blocks
-    │   ├── entities/training_dummy.entity.ts generator sample — single file
-    │   ├── texts/{en_US.lang, languages.json}
+    │   ├── manifest.test.json
+    │   ├── blocks/tutorial.block.ts
+    │   ├── entities/training_dummy.entity.ts
+    │   ├── structures/example/the_addon_loads.mcstructure
+    │   ├── texts/
     │   └── scripts/
-    │       ├── main.ts                       core.register(...) + events
-    │       ├── gametest.ts                   the test-profile entry: imports ./main and ./tests
-    │       ├── config.ts                     typed config schema
-    │       ├── tests/index.ts                GameTest suite, tagged "example"
+    │       ├── main.ts
+    │       ├── gametest.ts
+    │       ├── config.ts
+    │       ├── tests/index.ts
     │       └── UI/
-    │           ├── screens/
-    │           │   ├── home.screen.tsx           ore-styled screen, navigation and local state
-    │           │   ├── plan.screen.tsx            reads a navigated param, `back` button
-    │           │   └── profile_form.screen.tsx    a native modal form
-    │           └── i18n.ts                   createI18n(bundle)
-    ├── RP/
-    │   ├── manifest.json
-    │   └── texts/{en_US.lang, languages.json}
-    └── data/
-        ├── guides/en_US/                     intro page + a category + an admonition
-        │   ├── intro.mdx
-        │   └── getting-started/
-        │       ├── _category_.json
-        │       └── first-steps.mdx
-        ├── i18n/en_US.ts                     meta.* + interpolation + a plural leaf
-        └── generated/mc/                      Minecraft document types (gitignored, rebuilt)
+    │           ├── i18n.ts
+    │           └── screens/
+    │               ├── home.screen.tsx
+    │               ├── plan.screen.tsx
+    │               └── profile_form.screen.tsx
+    └── RP/
+        ├── manifest.json
+        └── texts/
 ```
 
-### The Regolith pipeline
+The addon namespace combines sanitized author and project identifiers.
+`config.json` declares it once alongside named pack paths and
+`bedrockCore.profiles`. The builder detects and runs manifest, generator,
+guides, i18n, UI compiler and bundler stages in dependency order.
+See [builder configuration](/docs/builder/guides/configuration) for settings.
 
-The template pins `core` and all six stages in `filterDefinitions`. Run `regolith install-all`
-before its first build: Regolith installs only declared filters, and does not automatically
-install the stages that `core` invokes.
-
-`config.json` runs one [`core`](/docs/filters/core) filter in every profile, which chains the six stages in dependency order — manifest, generator, guides, i18n, ui-compiler, bundler — with the namespace declared once as `shared.namespace`:
-
-| Setting | Stage | What it does |
+| Profile | Script | Export |
 | --- | --- | --- |
-| `generator.include` / `exclude` | generator | Widened to every `.ts` under the packs, excluding `BP/scripts` and `data` |
-| `manifest.manifestPath` | manifest | `BP/manifest.test.json` in the `test` and `build-test` profiles only |
-| `ui-compiler.stamp` | ui-compiler | `true` in `default`, drawing the build-stamp HUD hook |
-| `bundler.debug` | bundler | `false` in `build`; `true` everywhere else |
-| `bundler.tsConfigPath` | bundler | `tsconfig.test.json` in `test` and `build-test`, whose entry is `gametest.ts` |
+| `build` | `build` | `build/<project>_bp` and `build/<project>_rp` |
+| `default` | `watch` | Windows Minecraft development folders; debug output and UI build stamp |
+| `test` | `watch:test` | Development folders with the GameTest manifest and entry |
+| `build-test` | `build:test` | `build/test/BP` and `build/test/RP` |
 
-Templates are checked against Mojang's official JSON Schemas. The `generator`
-stage writes document types into `packs/data/generated/mc/`, so a template is a
-plain export with a `satisfies` on the end:
+The watch destinations use
+`%APPDATA%/Minecraft Bedrock/Users/Shared/games/com.mojang/`.
+Change their explicit export paths for another installation or platform.
+Update the VS Code debugger paths to match.
 
-```ts
-export default {
-  'format_version': '1.21.0',
-  'minecraft:entity': { description: { identifier: 'my_addon:training_dummy' } },
-} satisfies Entity;
-```
+## Build and develop
 
-`Block`, `Entity`, `Item`, `LootTable`, `Recipe`, `Particle` and 33 more are
-global, so nothing is imported and nothing reaches the runtime — `satisfies` is
-erased at build time. The generated types are gitignored, so run the build once
-after scaffolding.
-
-### Profiles
-
-| Profile | Script | Export | Notes |
-| --- | --- | --- | --- |
-| `build` | `build` | read-only, `local` | Minified, `bundler.debug: false` — the release build |
-| `default` | `watch` | writable, `development` | Laid-out JSON, debug bundle, build-stamp HUD, redeploys on change |
-| `test` | `watch:test` | writable, `development` | Same as `default`, resolving `manifest.test.json` and bundling `gametest.ts` |
-| `build-test` | `build:test` | writable, `./build/test/BP` and `./build/test/RP` | The gametest manifest and entry, for [`bds-runner`](/docs/bds-runner) |
-
-### GameTests
-
-`packs/BP/scripts/tests/index.ts` registers one GameTest tagged `example` through `@minecraft/server-gametest`, a beta module only `manifest.test.json` declares. `gametest.ts` — the entry `tsconfig.test.json` names — imports `./main` then `./tests`, so a release build (`main.ts`) never pulls in the test suite or the beta module. The `build:test` script produces the pack [`bds-runner`](/docs/bds-runner) runs the suite against.
-
-### tsconfig
-
-```json title="tsconfig.json"
-{
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "@bedrock-core/ui",
-    "moduleResolution": "bundler",
-    "paths": {
-      "@bedrock-core/generated/i18n":   ["./packs/data/i18n/i18n.generated.json"],
-      "@bedrock-core/generated/guides": ["./packs/data/guides/guides.generated.json"]
-    }
-  },
-  "include": ["packs/BP/scripts/**/*", "packs/BP/blocks/**/*", "packs/BP/entities/**/*", "packs/data/**/*"]
-}
-```
-
-:::caution Build once before the editor is happy
-Both generated files are produced by the filters, so a freshly scaffolded project does not typecheck until the `build` script has run at least once. This is expected — run the build before hunting for missing modules.
-:::
-
-A second tsconfig, `tsconfig.test.json`, extends this one and names `packs/BP/scripts/gametest.ts` as its sole entry — the `test` and `build-test` profiles point the bundler at it. See [GameTests](#gametests).
-
-### Manifests
-
-Five UUIDs are generated per project (`crypto.randomUUID()`), one per manifest header and module, plus `BP/manifest.test.json`, which `extends` the BP manifest and adds a dependency on `@minecraft/server-gametest`. Every manifest is `format_version: 3`, so every version field is a SemVer string: both packs use `pack_scope: "world"` and `min_engine_version: "1.26.50"`. Neither bakes its name and description into the manifest: both headers point at `pack.name` / `pack.description` — the only two keys Bedrock resolves for a manifest header — which you author once as `meta.name` / `meta.description` in `packs/data/i18n/<locale>.ts`. The [i18n filter](/docs/i18n/authoring#meta-branch) emits those aliases into each pack's own `texts/<locale>.lang` — a manifest key resolves only from the pack it belongs to — so the pack list reads in the player's language, and the template's `texts/en_US.lang` files hold nothing but a comment pointing back at `packs/data/i18n/`.
-
-The BP also declares a dependency on `@minecraft/server` and `@minecraft/server-ui`, and on the [render pack](/docs/ui/guides/render-pack) by its fixed UUID — already wired in, not something you add later.
-
-### Identifiers
-
-Two of your answers become Minecraft-safe identifiers — lowercased, non-alphanumerics collapsed to `_`:
-
-| Variable | From | Used for |
-| --- | --- | --- |
-| `CREATOR_ID` | Author name | `core.register({ manifest: { creator } })`, the addon namespace |
-| `PACK_ID` | Project name | `core.register({ manifest: { pack } })`, generated identifiers |
-
-Together they form the addon namespace `<creator>_<pack>` that the [i18n filter derives](/docs/i18n/authoring#namespacing) for `.lang` keys and that the `guides` filter takes as its `namespace` setting.
-
-### The generated `main.ts`
-
-```ts
-const { config } = core.register({
-  manifest: {
-    creator: 'your_name',
-    pack: 'my_addon',
-    packName: i18n.key($ => $.meta.name),
-    creatorName: i18n.key($ => $.meta.creator),
-    version: '1.0.0',
-    description: i18n.key($ => $.meta.description),
-  },
-  catalog: registerCatalog(),
-  config: registerConfig(configDef),
-  guides: registerGuides(),
-});
-```
-
-Display fields are **i18n keys**, not literals — that is what lets a catalog render your addon's name in each player's own language. `core.register()` publishes them to the [registry](/docs/server/api/registry) and, on the first tick, the bundle they resolve from. The three app fields register `<ns>:catalog`, `<ns>:config` and `<ns>:guide` under your namespace and serve the show methods another realm asks on; nothing runs after the call.
-
-A `playerSpawn` handler greets the player with an interpolated translation (gated on a config value), and a `buttonPush` handler renders the Home screen — push a stone button in-game to see it, then follow its navigation to the plan screen and the profile form.
-
-## After scaffolding
-
-The CLI copies the template, substitutes your answers, downloads the render pack matching UI
-`0.12.1` (`core-ui-0.12.1.mcpack`), then installs dependencies with the package manager you chose.
-If the asset download fails, it prints the matching release link instead. Choosing `none` creates
-the files without running a package manager.
-
-It prints the commands for your selected manager:
+Use the package manager selected during scaffolding and commit its lockfile.
+Yarn uses a conventional `node_modules` linker; pnpm uses a hoisted layout.
 
 <PackageCommands
   npm={`cd my-addon
-npm run regolith-install
 npm run build
 npm run watch
 npm run lint`}
   yarn={`cd my-addon
-yarn regolith-install
 yarn build
 yarn watch
 yarn lint`}
   pnpm={`cd my-addon
-pnpm regolith-install
 pnpm build
 pnpm watch
 pnpm lint`}
 />
 
-The output also explains that the first build writes the generated Minecraft types, points to the
-starter screens, and tells you how to import the matching render pack into the client.
+Every build command invokes the project's `bc-builder` executable. The
+`plan` script prints the selected pipeline.
 
-When the render pack download fails, the last line under "Render pack:" is replaced with a link to
-the UI `0.12.1` release instead of a filename — non-fatal, so scaffolding still finishes.
+The first build writes editor declarations under
+`.bedrock-core/generated/`. The template's tsconfig includes them.
+Generated imports such as `@bedrock-core/generated/i18n`,
+`@bedrock-core/generated/guides` and `@bedrock-core/generated/ui` are resolved
+by the builder within its staged project.
 
-| Script | What it runs |
-| --- | --- |
-| `regolith-install` | `regolith install-all` — fetches every filter declared in `config.json` |
-| `build` | `regolith run build` — the read-only local export profile |
-| `build:test` | `regolith run build-test` — the writable gametest export, for `bds-runner` |
-| `watch` | `regolith watch` — the development profile, redeploying on change |
-| `watch:test` | `regolith watch test` — the development profile, resolving the gametest manifest and entry |
-| `lint` | `eslint .` |
-| `loopback` / `loopback:preview` | Windows loopback exemption for the Minecraft debugger |
+Translations live in `i18n/`; guides live in `guides/`. Typed JSON templates
+remain under the authored packs. The builder compiles them into staged outputs
+and exports completed packs after validation.
 
-When Git is available, the generated directory is initialized as a repository without creating a
-commit. Yarn and pnpm choices run `corepack enable` once, then invoke the selected manager without
-a `corepack` prefix. npm runs
-directly. The selected manager creates its own lockfile; commit it and use that manager's frozen/immutable install mode in CI. If Corepack
-cannot write its shims, the generated project is preserved and the CLI prints the manual command.
-Yarn uses `nodeLinker: node-modules`; pnpm uses `nodeLinker: hoisted` in
-`pnpm-workspace.yaml`, so the build sees the conventional `node_modules` layout with either
-manager.
+## GameTests
+
+The normal manifest selects `scripts/main.js`. The test manifest extends it,
+adds the beta GameTest module and selects `scripts/gametest.js`. That entry
+imports the addon and its test suite. The `test` and `build-test` profiles
+select this manifest and `tsconfig.test.json`; normal builds omit the beta
+module.
+
+Run `build:test` before using [bds-runner](/docs/bds-runner) against
+`build/test/BP`. The reusable structure and the test tagged `example` are
+included in the starter.
 
 ## Next steps
 
-
-- [Render pack](/docs/ui/guides/render-pack) — what the `.mcpack` is and how versioning works
-- [i18n](/docs/i18n) — the translations the template already wires up
-- [catalog](/docs/catalog) — the addon browser the template installs
-- [config](/docs/config) — the settings app the template installs
-- [guides](/docs/guides) — the in-game guide the template seeds
-- [ore-styled](/docs/ore-styled) — the components the starter screens use
-- [server-runtime](/docs/server/api/runtime) — the `core.register()` half of the generated `main.ts`
+- [Builder](/docs/builder) — stages, plugins, exports and watch behavior
+- [Render pack](/docs/ui/guides/render-pack) — importing the shared textures
+- [i18n](/docs/i18n) — typed translations
+- [Guides](/docs/guides) — MDX content in game
+- [Server runtime](/docs/server/api/runtime) — addon registration

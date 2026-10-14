@@ -35,7 +35,7 @@ config.server.announce.get();
 config.open(player);
 ```
 
-Nothing else runs. The definition installs the scopes, the ui-compiler filter reads it out of this very call to shape one screen per section, and the install registers the commands and serves the show method another realm asks on.
+Nothing else runs. The definition installs the scopes, the ui-compiler stage reads it out of this very call to shape one screen per section, and the install registers the commands and serves the show method another realm asks on.
 
 The subsystem itself, the scopes, the entry types, storage, cross-addon reads and authorization, is documented on [its own page](/docs/config/settings); this section is about what the screens and the commands make of it.
 

@@ -22,7 +22,6 @@ This is a **redesign**, not a recreation. The live site runs Docusaurus v3.10.1 
 
 - **Docs site** (`ui_kits/docs-site/`) — the Docusaurus documentation. Two package sections today: `server` and `ui`. Each has a Get started group, per-module reference pages, and an "On this page" rail.
 - **Marketing site** (`ui_kits/marketing/`) — the homepage: hero, package grid, feature grid, code tour, CTA, footer.
-- **Named-but-unbuilt surfaces** — the user named `filters`, `tools`, `cli` and a future `generator`. Each has a reserved accent token (`--pkg-*`) and appears in the marketing package grid marked *planned*. No docs content exists for them yet.
 
 Package inventory as published today: `@bedrock-core/server` (meta), `@bedrock-core/server-runtime`, `@bedrock-core/sync`, `@bedrock-core/ui`, `@bedrock-core/ui-runtime`, `@bedrock-core/ore-styled`, plus the `flexbox`, `navigation`, `i18n`, `config`, `guides` and CLI docs sections under `ui`.
 

@@ -14,9 +14,9 @@ import { Trans } from '@bedrock-core/ui';
 ## Usage
 
 ```ts
-// packs/data/i18n/en_US.ts
+// packs/BP/i18n/en_US.ts
 help: { prices: 'See <shop>the shop</shop> for <gold>today</gold>\'s prices.' },
-// packs/data/i18n/es_ES.ts
+// packs/BP/i18n/es_ES.ts
 help: { prices: 'Mira los precios <gold>de hoy</gold> en <shop>la tienda</shop>.' },
 ```
 

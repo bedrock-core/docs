@@ -10,11 +10,11 @@ Get a bedrock-core addon online, then get a second one talking to it.
 ## Prerequisites
 
 - Node.js 22.18+ and Git — [https://nodejs.org/](https://nodejs.org/)
-- Regolith — [https://regolith-docs.readthedocs.io/en/stable](https://regolith-docs.readthedocs.io/en/stable)
+- [builder](/docs/builder) — script bundling and pack exports
 
 ## Quick start with the CLI
 
-The [CLI](/docs/cli) scaffolds a full-stack addon: `core.register()` called with your ids, a typed config schema, translations and a guide wired to their filters, `@bedrock-core/ui` screens mounted, and the Regolith build. With a scaffold you can skip the rest of this page.
+The [CLI](/docs/cli) scaffolds a full-stack addon: `core.register()` called with your ids, a typed config schema, translations and guides compiled by builder stages, `@bedrock-core/ui` screens mounted, and named build profiles. With a scaffold you can skip the rest of this page.
 
 <Exec cmd="@bedrock-core/cli" />
 
@@ -39,7 +39,7 @@ import { createI18n } from '@bedrock-core/server/i18n';       // typed translati
 ```
 
 :::info The packages ship TypeScript sources
-Their `exports` map points at `src/*.ts` rather than at compiled JavaScript, so whatever bundles your behavior pack compiles them along with your own code. The [`bundler` filter](/docs/filters/bundler) handles this out of the box; a hand-rolled build needs a bundler that can consume TypeScript from `node_modules`.
+Their `exports` map points at `src/*.ts` rather than at compiled JavaScript, so whatever bundles your behavior pack compiles them along with your own code. The [`bundler` stage](/docs/builder/guides/stages#script-bundling) handles this out of the box; a hand-rolled build needs a bundler that can consume TypeScript from `node_modules`.
 :::
 
 ## Register

@@ -15,7 +15,7 @@ description: "Every export of @bedrock-core/catalog."
 
 ## `@bedrock-core/catalog/compiled`
 
-What the ui-compiler filter bakes: the catalog screen and the page the manifest becomes.
+What the ui-compiler stage bakes: the catalog screen and the page the manifest becomes.
 
 | Export | Kind | Description |
 | --- | --- | --- |
