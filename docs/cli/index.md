@@ -65,7 +65,7 @@ The full and script starters include one headless GameTest:
 
 This builds the test profile and runs the `example` suite on BDS. The test manifest selects `gametest.js` and enables the beta GameTest module; regular builds select `main.js`. Add tests under the behavior pack's `scripts/tests/` directory and update the command's `--expect-registered` count when the suite grows.
 
-Every starter includes pack optimization:
+Every starter includes pack optimization for Windows:
 
 <PackageCommands
   npm="npm run build:optimized"
@@ -73,7 +73,7 @@ Every starter includes pack optimization:
   pnpm="pnpm build:optimized"
 />
 
-Optimized output goes to `dist/`, separately from `build/`. `bds-runner.json` pins the server used for both tests and conversion. Run `bds:fetch` to download it or `bds:where` to inspect the selection. [BDS runner](/docs/bds-runner) explains results and supported inputs.
+Optimized output goes to `dist/`. The `build-optimized` profile exports production packs to `build/production/` for conversion. `bds-runner.json` pins the server used for both tests and conversion. Run `bds:fetch` to download it or `bds:where` to inspect the selection. [BDS runner](/docs/bds-runner) explains results and supported inputs.
 
 Resource-only projects have no GameTest registration; add a behavior pack test harness when testing their resources with GameTests. Client rendering and input need in-game checks.
 

@@ -78,7 +78,7 @@ The selected set must include a behavior pack that registers the GameTests. A re
 bc-bds optimize --packs <dir> --out <dir> [--unpack]
 ```
 
-Runs the server's own pack optimizer over built packs. It minifies their JSON, packs each folder into a `.brarchive` under `__brarchive/`, and stamps `pack_optimization_version` into the manifest so the engine knows to read from there. The server converts and exits; it never serves.
+Runs the server's own pack optimizer over built packs. It minifies their JSON, packs each folder into a `.brarchive` under `__brarchive/`, and stamps `pack_optimization_version` into the manifest so the engine knows to read from there. The server converts and exits; it never serves. Pack optimization requires the [Windows BDS build](https://learn.microsoft.com/en-us/minecraft/creator/documents/bedrockserver/pack-optimization?view=minecraft-bedrock-stable#command-line-usage).
 
 `--packs` is a directory whose immediate subdirectories are built packs, each with its own manifest. Pack folder names are arbitrary, and a collection can contain resource packs, behavior packs or both. Pass the collection directory rather than an individual pack to this command.
 
