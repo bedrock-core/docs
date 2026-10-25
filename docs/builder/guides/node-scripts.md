@@ -1,104 +1,91 @@
 ---
-sidebar_position: 6
-description: "Run standalone Node scripts with temporary pack folders, JSON settings and explicit targets."
+sidebar_position: 9
+description: "Run existing Node filters with BP/RP folder mappings and independent data sources."
 ---
 # Node scripts
 
-Script plugins run a Node entry against real temporary `BP`, `RP` and `data` folders. They can add, modify and delete files in place; successful pack edits return to the staged build before the next operation. [How builds run](./build-process.md) shows where these folders fit into the pipeline.
+Run an existing Regolith-style JavaScript entry against selected packs. Prefer [plugins](./plugins.md) for new processing.
 
-## Define the entry
+## Map its folders
+
+A script sees temporary `BP`, `RP` and `data` folders. Map conventional pack folders to your configured pack IDs:
 
 ```json
 {
   "plugins": {
-    "textures": {
-      "script": "./index.js",
-      "targets": "resource",
-      "filterDir": "./node_modules/example-plugin"
+    "clean": {
+      "script": "./filters/json-cleaner/main.js",
+      "folders": { "BP": "gameplay", "RP": "textures" }
+    }
+  },
+  "profiles": {
+    "build": {
+      "steps": [{
+        "plugin": "clean",
+        "before": "export",
+        "settings": { "minify": true }
+      }]
     }
   }
 }
 ```
 
-`script` resolves relative to `filterDir`. Without `filterDir`, the project root is used. An absolute script path is also accepted.
+These fields belong under `bedrockCore`. `gameplay` supplies the contents of `BP/`; `textures` supplies `RP/`. Authored directory names do not matter. The selected manifests must identify a behavior pack for `BP` and a resource pack for `RP`.
 
-Invoke the plugin by name in `steps`, with optional `settings` and `arguments`. Settings are passed directly to the script; no wrapper plugin is required.
+Omit `folders` only when the project has an unambiguous set: at most one behavior pack and one resource pack. Each step runs once. To process another set, invoke the same script again with a step-level `folders` map. That map replaces the definition's mapping.
+
+An omitted role becomes an empty folder. Writing pack output into an unmapped role fails. Use `folders: {}` for a step that only processes data. Packs remain separate; the adapter does not combine several packs into one conventional folder.
+
+## Supply data
+
+Set `dataPath` to an existing project-relative directory containing the filter's inputs. Omission uses project-root `data/` when present, otherwise an empty working copy. Preserve any subfolders the filter expects, such as `data/simple_blocks/config.json`.
+
+Steps using the same resolved source path share its temporary working copy. Different data sources stay independent, so separate addons can use their own inputs. A step can override `dataPath`. Each build starts from authored data.
+
+Temporary data is omitted from pack exports. Write Minecraft content through the mapped pack folders.
+
+## Persist data explicitly
+
+Set `persistData: true` alongside an explicit `dataPath` to save that source's working data after a successful build:
 
 ```json
 {
-  "plugin": "textures",
-  "before": "export",
-  "settings": { "namespace": "example_assets" },
-  "arguments": ["extra-argument"]
+  "script": "./filters/counter/main.js",
+  "folders": {},
+  "dataPath": "./filter-data/counter",
+  "persistData": true
 }
 ```
 
-## Script options
+The source must be an existing dedicated directory outside packs, export destinations and project internals. Persistent data sources cannot overlap other selected data sources. Persistence applies to the complete working copy shared by steps using that source.
+
+Builder validates pack output before publication, locks opted-in data destinations and restores their previous contents if pack publication fails. Concurrent edits are detected; conflicts during rollback retain a backup for recovery. Watch mode observes authored data edits without rebuilding for its own successful writeback. With `persistData` omitted or false, authored data remains unchanged.
+
+## Install and invoke the script
+
+Install the filter's dependencies beside its entry as its author specifies. The adapter starts Node; it does not download filters, install requirements or execute other filter runtimes.
+
+A nonempty `settings` object is the first JSON-encoded argument. A step's `arguments` follow it. `filterDir` changes the base for the script path and supplies `FILTER_DIR`; `nodeArguments` places Node flags before the entry. `ROOT_DIR` points to the original project.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `script` | `string` | â€” | Required Node entry file relative to filterDir |
-| `filterDir` | `string` | Project root | Definition directory relative to config.json, exposed as FILTER_DIR |
-| `targets` | `"resource" \| "behavior" \| "both" \| PackSelector` | â€” | Invoke separately for every matching pack |
-| `packs` | `{ BP?: string; RP?: string }` | Automatic pair | Configured pack IDs to expose together; mutually exclusive with targets |
-| `dataPath` | `string` | Existing `./data`, otherwise empty | Authored directory copied into the shared temporary data folder |
-| `nodeArguments` | `string[]` | `[]` | Node flags placed before the script entry |
+| `script` | `string` | — | Node entry relative to `filterDir` |
+| `folders` | `{ BP?: string; RP?: string }` | Infer one unambiguous set | Conventional folders mapped to pack IDs |
+| `dataPath` | `string` | `./data` or empty input | Authored data source |
+| `persistData` | `boolean` | `false` | Save this source's working data after successful publication |
+| `filterDir` | `string` | Project root | Definition directory and script path base |
+| `nodeArguments` | `string[]` | `[]` | Node flags before the entry |
 
-Step `settings`, when nonempty, become JSON at `process.argv[2]`. Additional `arguments` follow. With empty or omitted settings, arguments start at `process.argv[2]`.
+`folders`, `dataPath` and `persistData` can also be set on a script step. Native plugin steps use their own pack-selection settings.
 
-## Packs and data
+## Build behavior
 
-With `targets`, each invocation exposes its current pack as `BP` or `RP`; the other folder is empty. Successful edits return to that same staged pack. `"both"` processes packs separately, with one invocation per pack.
+Scripts execute on each build. Pack edits return to staging after successful execution; failures and cancellation preserve previous exports. Registered script directories and data inputs participate in watch rebuilding.
 
-Without targets, manifests select at most one behavior pack and one resource pack. In a project with several packs of either type, use `targets` for separate invocations or select a pair with an explicit `packs` map, such as `{ "BP": "gameplay", "RP": "assets" }`. A script's fixed BP/RP folder names describe this selected view; configured pack IDs and source directories can have any names. Writing pack files into an unselected empty folder fails.
-
-Node scripts share one staged `data` directory for the build. Select `dataPath` on the first invoked definition; later definitions can inherit it or repeat the same path. Data changes reach later scripts, and authored data is preserved.
-
-## Environment and execution
-
-| Variable | Value |
-| --- | --- |
-| `ROOT_DIR` | Authored project directory |
-| `FILTER_DIR` | Definition directory |
-| `PACK_ID` | Current configured ID for targeted invocations |
-| `PACK_TYPE` | `behavior` or `resource` for targeted invocations |
-
-The process working directory contains the temporary folders. Dependencies resolve from the script's location; scripts that need their own files should use `FILTER_DIR`, their module URL or `__dirname`.
-
-Each invocation runs in a separate Node process. A nonzero exit fails the build. Cancellation stops the process before workspace cleanup.
-
-## Example
-
-Run a local script after the temporary project copy is prepared:
-
-```json title="config.json"
-{
-  "targetVersion": "1.26.50",
-  "namespace": "example",
-  "name": "Example",
-  "authors": ["Example"],
-  "packs": { "gameplay": "./packs/BP", "assets": "./packs/RP" },
-  "bedrockCore": {
-    "formatVersion": "1.0.0",
-    "plugins": {
-      "textures": { "script": "./plugins/textures.cjs", "dataPath": "./data" }
-    },
-    "profiles": {
-      "default": {
-        "steps": [{ "plugin": "textures", "after": "prepare", "settings": { "quality": 80 } }],
-        "export": { "gameplay": "./build/BP", "assets": "./build/RP" }
-      }
-    }
-  }
-}
-```
-
-Omitting `targets` and `packs` gives the script an automatically selected BP/RP pair. For several packs of either type, use [per-pack targets](./plugins.md#pack-selection-and-scope) or an explicit pair. Place the step at the boundary where the script's inputs are ready; steps at the same boundary retain array order.
-
-Script code can continue using its folder paths and settings arguments. If it reads `ROOT_DIR/config.json`, supply the project metadata it expects. Temporary data edits are available to later script invocations in the build.
+Filters that read Regolith configuration, assume authored `packs/BP` paths, launch external tools or write through `ROOT_DIR` need individual compatibility checks. Folder mapping preserves the temporary folder convention; it does not rewrite script code or project configuration.
 
 ## Next steps
 
-- [Plugins](./plugins.md) â€” module plugins with builder context
-- [Configuration](./configuration.md) â€” pack IDs and destinations
-- [Watch and cache](./watch.md) â€” register additional script inputs
+- [Plugins](./plugins.md) — write an extension with pack-aware services
+- [Projects and packs](./projects.md) — configure arbitrary pack layouts
+- [Configuration](./configuration.md) — define profiles and exports

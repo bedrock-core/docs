@@ -1,97 +1,91 @@
 ---
-sidebar_position: 2
-description: "navigate, back, replace and reset: the four ways to move a player, and what each does to the stack."
+sidebar_position: 5
+description: "Open compiled hosts by key and return to their callers."
 ---
 # Moving between screens
 
-Four calls, distinguished by what they leave behind the player.
+Open a registered screen by key, including another screen in the same addon. The default resolver uses this bundle's screens; [Core integration](./realm.md) adds published destinations and their owning realms.
+
+## Choose the navigation scope
+
+| Move | Use |
+| --- | --- |
+| Between pages or tabs in a mounted navigator | [Link](./components/Link.md), [useNavigation](./hooks/useNavigation.md), or [route actions](./api/actions.md) |
+| Open another complete screen by its registered key | The `navigate` and `navigateAsync` functions on this page |
+
+For example, `useNavigation().navigate('Details')` selects a route in the mounted tree. The imported `navigate('shop:details', player)` opens the registered screen. Declarative route links can stay on the client; the functions on this page run on the server.
 
 ## Import
 
 ```ts
-import { back, canGoBack, currentKey, historyOf, navigate, replace, reset } from '@bedrock-core/navigation';
+import { navigate, navigateAsync, back, closeUi } from '@bedrock-core/navigation';
 ```
 
 ## Signatures
 
 ```ts
-navigate(key: ScreenKey, player: Player, options?: NavigateOptions): boolean
-replace(key: ScreenKey, player: Player, options?: Omit<NavigateOptions, 'replace'>): boolean
-reset(key: ScreenKey, player: Player, options?: Omit<NavigateOptions, 'replace'>): boolean
-back(player: Player, options?: Omit<NavigateOptions, 'replace'>): boolean
+navigate(key: DestinationKey, player: Player, options?: DestinationOptions): boolean
+navigateAsync(key: DestinationKey, player: Player, options?: DestinationOptions): Promise<boolean>
+back(player: Player, options?: Omit<DestinationOptions, 'replace'>): boolean
+closeUi(player: Player): void
 ```
 
-| Call | The stack afterwards |
+| Call | Result |
 | --- | --- |
-| `navigate` | one deeper — the screen they were on is behind them |
-| `replace` | exactly as deep as it was — a back from the target returns past this screen |
-| `reset` | empty — a back from the target has nowhere to go |
-| `back` | one shallower — the screen behind becomes the current one |
+| `navigate` | Open a destination and retain its caller |
+| `navigateAsync` | Wait for the destination host to accept or reject opening |
+| `back` | Reopen the previous host with its parameters and confirmed navigator state |
+| `closeUi` | Close the current host and clear its history and pending opens |
 
-Each returns whether a screen was shown. A `false` is a key nothing resolved: a screen that did not compile, an addon nobody in this realm is running, or a typo. It is warned about where it is decided, never thrown.
+Synchronous navigation returns `true` for local acceptance or asynchronous dispatch. `navigateAsync()` resolves after host acceptance, without waiting for the player to finish using the screen. A thrown opener can throw synchronously or reject the asynchronous call.
+
+Unknown keys, invalid parameters and rejected destinations preserve the previous state. `back()` returns `false` when no caller remains. Inside a mounted navigator, use its [route actions and hooks](./hooks/useNavigation.md) to navigate pages and tabs.
 
 ## Options
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `params` | `Record<string, unknown>` | — | Props the target screen is rendered with |
-| `replace` | `boolean` | `false` | Show the screen in place of the current one; `replace()` is this with the flag already set |
-| `debug` | `boolean` | `false` | Diff every present against the snapshot the build recorded and warn on drift |
+| `params` | `Readonly<Record<string, unknown>>` | — | Public inputs for the component or registered host |
+| `replace` | `boolean` | `false` | Open the target without adding the current host to history |
+| `debug` | `boolean` | `false` | Compare rendering with the compiled snapshot |
+| `checkpoint` | `NavigationCheckpoint` | — | Confirmed navigator state supplied to the target host |
 
-`params` fill what the layout already reserved. A compiled screen's shape is frozen, so they can never add or drop a cell — a generic screen's labels and values, not its structure. A static screen is shown from its table and takes none.
-
-Params that reach another realm, or a static screen's table, are written as JSON, so they must be plain data: strings, finite numbers, booleans, null, and arrays and objects of those. A realm drops params that are not, with a warning, and still opens the screen.
-
-## Which one to reach for
-
-**`navigate`** is the default: the player is going somewhere they will come back from.
-
-**`replace`** is for screens that are peers, where none is the way back to another — the pages of a guide, the tabs of a set. A redirect is the other case.
-
-**`reset`** is what a menu's root wants. Going back out of the first screen of a flow should end the flow, not walk into whatever the player was looking at before it.
-
-**`back`** needs no key: the player's own stack decides.
-
-## Reading the stack
-
-```ts
-historyOf(player: Player): readonly string[]
-currentKey(player: Player): ScreenKey | undefined
-canGoBack(player: Player): boolean
-```
-
-`historyOf` is the keys behind the player, oldest first. `currentKey` is the screen they are looking at. `canGoBack` is whether there is anything behind it — what a back control's `visible` wants.
+Parameters fill values reserved by the compiled layout. They must be finite, acyclic JSON data. [Runtime parameter contracts](./references.md#declare-accepted-parameters) validate them before the host opens. Data-only compiled references use their baked values and accept no parameters.
 
 ## Examples
 
-### A flow whose first screen ends it
+### Open a parameterized screen
 
 ```ts
-export function openShop(player: Player): void {
-  reset('shop:home', player);
-}
+await navigateAsync('shop:item', player, { params: { itemId: 'diamond', price: 64 } });
 ```
 
-A `back` from `shop:home` now returns `false`, so the control that calls it can be hidden with `canGoBack(player)`.
-
-### Pages that move sideways
+### Replace the current host
 
 ```ts
-export function openPage(player: Player, pageId: string): void {
-  replace(`guide:${pageId}`, player);
-}
+navigate('shop:offers', player, { replace: true });
 ```
 
-The guide's index stays the thing a back returns to, however many pages deep the player reads.
+The existing caller remains available to Back.
 
-### Filling a generic screen
+## Navigator extensions
+
+Advanced navigator and host libraries use the dedicated runtime entry point:
 
 ```ts
-navigate('shop:item', player, { params: { itemId: 'diamond', price: 64 } });
+import { currentLocation, checkpoint } from '@bedrock-core/navigation/runtime';
+
+const location = currentLocation(player);
+checkpoint(player, { navigatorStates: { [rootId]: confirmedState } });
 ```
 
-## Notes
+`currentLocation()` returns an independent copy containing the host key, public parameters and confirmed navigator states. `checkpoint()` merges confirmed states into the current location and does nothing when no destination exists. Ordinary static navigation roots confirm state automatically before server actions and handoffs. These functions read server-confirmed state and do not poll native controls.
 
-Closing what a player is looking at from outside a screen is [`closeUi(player)`](/docs/ui/guides/navigation), from `@bedrock-core/ui` — it clears the stack as well. A screen closing itself is [`useExit()`](/docs/ui/hooks/useExit).
+See [navigator libraries](/docs/navigation/api/createStaticNavigation#navigator-libraries) for the custom factory and host extension contract. [Core transport](./realm.md#cross-realm-transitions) carries caller history and checkpoints between realms.
 
-A container screen has no key, so none of these can open one. A chest is entered by walking up to an entity.
+Native block/entity screens require their real host or a registered opener. A registry key alone does not create a container session.
+
+## Next steps
+
+- [Route actions, hooks and refs](./hooks/useNavigation.md)
+- [Host entry points and Core transport](./realm.md)

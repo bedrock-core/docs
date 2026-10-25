@@ -2,160 +2,112 @@
 slug: /
 sidebar_position: 1
 sidebar_label: Overview
-description: "@bedrock-core/cli scaffolds Minecraft Bedrock addons with builder profiles, TypeScript, translations, guides and example screens."
+description: "Create a Minecraft Bedrock project with build, watch, test and pack optimization commands."
 ---
-
 # cli
 
-`@bedrock-core/cli` scaffolds an addon with the @bedrock-core builder, server
-registration, typed config, translations, MDX guides and three UI screens.
-Its source and templates belong to the [builder repository](https://github.com/bedrock-core/builder).
+Create a JavaScript or TypeScript project with the packs and tools you need.
 
-:::caution Beta
-The builder checkout prepares local archives and keeps its packages private.
-Install those archives in generated projects when the configured builder version
-is unavailable from the registry. The UI stage requires a matching toolkit with
-`buildUiPack`; use compatible local UI
-archives when registry packages do not expose these APIs.
-:::
+## Create a project
 
-## Usage
+Use Node.js 22.18 or newer:
 
-Use Node.js 22.18 or newer. From the builder checkout:
+<Exec cmd="@bedrock-core/cli my-project" />
 
-```sh
-corepack yarn install --immutable
-corepack yarn scaffold my-addon --author "Your Name" --description "My addon" --package-manager none
-```
+The CLI prompts for missing details and your package manager, creates a Git repository without a commit, and installs dependencies. Choose `none` to create files without installing them.
 
-An installed CLI archive accepts the same arguments through its `cli` binary.
+## Choose a starter
 
-| Argument or flag | Description |
-| --- | --- |
-| `[project-name]` | Directory and npm package name; omitted values are prompted |
-| `-a, --author <name>` | Author name |
-| `-d, --description <text>` | Project description |
-| `-p, --package-manager <manager>` | `yarn`, `npm`, `pnpm`, or `none` |
-| `-V, --version` | Print the CLI version |
-| `-h, --help` | Print usage |
-
-The CLI validates npm package names and refuses nonempty target directories.
-Git initialization creates a repository without a commit. Choose `none` to
-create the files without installing dependencies. Otherwise, the selected
-manager installs the build tools and runtime packages together.
-
-The Yarn choice creates its lockfile before installation to isolate the generated
-project from any parent Yarn checkout. If you choose `none` and later install
-with Yarn inside another Yarn project, create an empty `yarn.lock` first.
-
-The template pins an exact UI version and downloads its matching
-`core-ui-<version>.mcpack`. If download fails, the CLI prints the matching UI
-release link and preserves the project. Import that resource pack into the
-world where the addon runs.
-
-## Project structure
-
-```text
-my-addon/
-├── config.json
-├── package.json
-├── tsconfig.json
-├── tsconfig.test.json
-├── eslint.config.mjs
-├── .vscode/
-├── i18n/en_US.ts
-├── guides/en_US/
-└── packs/
-    ├── BP/
-    │   ├── manifest.json
-    │   ├── manifest.test.json
-    │   ├── blocks/tutorial.block.ts
-    │   ├── entities/training_dummy.entity.ts
-    │   ├── structures/example/the_addon_loads.mcstructure
-    │   ├── texts/
-    │   └── scripts/
-    │       ├── main.ts
-    │       ├── gametest.ts
-    │       ├── config.ts
-    │       ├── tests/index.ts
-    │       └── UI/
-    │           ├── i18n.ts
-    │           └── screens/
-    │               ├── home.screen.tsx
-    │               ├── plan.screen.tsx
-    │               └── profile_form.screen.tsx
-    └── RP/
-        ├── manifest.json
-        └── texts/
-```
-
-The addon namespace combines sanitized author and project identifiers.
-`config.json` declares it once alongside named pack paths and
-`bedrockCore.profiles`. The builder detects and runs manifest, generator,
-guides, i18n, UI compiler and bundler stages in dependency order.
-See [builder configuration](/docs/builder/guides/configuration) for settings.
-
-| Profile | Script | Export |
+| Preset | Packs | Included content |
 | --- | --- | --- |
-| `build` | `build` | `build/<project>_bp` and `build/<project>_rp` |
-| `default` | `watch` | Windows Minecraft development folders; debug output and UI build stamp |
-| `test` | `watch:test` | Development folders with the GameTest manifest and entry |
-| `build-test` | `build:test` | `build/test/BP` and `build/test/RP` |
+| `full` (default) | Behavior and resource | Runtime registration, config, translations, guides, JSX screens, JSON templates and a GameTest |
+| `script` | One behavior pack | Plain Minecraft scripting and a GameTest |
+| `resource` | One resource pack | Resource-pack manifest and language files |
 
-The watch destinations use
-`%APPDATA%/Minecraft Bedrock/Users/Shared/games/com.mojang/`.
-Change their explicit export paths for another installation or platform.
-Update the VS Code debugger paths to match.
+<PackageCommands
+  npm={`npx @bedrock-core/cli my-script --preset script
+npx @bedrock-core/cli my-textures --preset resource`}
+  yarn={`yarn dlx @bedrock-core/cli my-script --preset script
+yarn dlx @bedrock-core/cli my-textures --preset resource`}
+  pnpm={`pnpm dlx @bedrock-core/cli my-script --preset script
+pnpm dlx @bedrock-core/cli my-textures --preset resource`}
+/>
+
+These are starting layouts. A [project can contain any number of packs](/docs/builder/guides/projects), including independent addons.
 
 ## Build and develop
 
-Use the package manager selected during scaffolding and commit its lockfile.
-Yarn uses a conventional `node_modules` linker; pnpm uses a hoisted layout.
-
 <PackageCommands
-  npm={`cd my-addon
+  npm={`cd my-project
 npm run build
-npm run watch
-npm run lint`}
-  yarn={`cd my-addon
+npm run watch`}
+  yarn={`cd my-project
 yarn build
-yarn watch
-yarn lint`}
-  pnpm={`cd my-addon
+yarn watch`}
+  pnpm={`cd my-project
 pnpm build
-pnpm watch
-pnpm lint`}
+pnpm watch`}
 />
 
-Every build command invokes the project's `bc-builder` executable. The
-`plan` script prints the selected pipeline.
+`build` exports the completed packs to `build/`. `watch` rebuilds into Minecraft's development folders after changes. Edit the `default` profile's export paths for your installation; the generated defaults use Windows Minecraft development folders.
 
-The first build writes editor declarations under
-`.bedrock-core/generated/`. The template's tsconfig includes them.
-Generated imports such as `@bedrock-core/generated/i18n`,
-`@bedrock-core/generated/guides` and `@bedrock-core/generated/ui` are resolved
-by the builder within its staged project.
+The full starter downloads the shared UI resource pack matching its pinned UI version. Import that `.mcpack` into the world for client testing. If the download fails, the CLI prints the exact release link and preserves the project.
 
-Translations live in `i18n/`; guides live in `guides/`. Typed JSON templates
-remain under the authored packs. The builder compiles them into staged outputs
-and exports completed packs after validation.
+## Test and optimize
 
-## GameTests
+The full and script starters include one headless GameTest:
 
-The normal manifest selects `scripts/main.js`. The test manifest extends it,
-adds the beta GameTest module and selects `scripts/gametest.js`. That entry
-imports the addon and its test suite. The `test` and `build-test` profiles
-select this manifest and `tsconfig.test.json`; normal builds omit the beta
-module.
+<PackageCommands
+  npm="npm run test:mc"
+  yarn="yarn test:mc"
+  pnpm="pnpm test:mc"
+/>
 
-Run `build:test` before using [bds-runner](/docs/bds-runner) against
-`build/test/BP`. The reusable structure and the test tagged `example` are
-included in the starter.
+This builds the test profile and runs the `example` suite on BDS. The test manifest selects `gametest.js` and enables the beta GameTest module; regular builds select `main.js`. Add tests under the behavior pack's `scripts/tests/` directory and update the command's `--expect-registered` count when the suite grows.
+
+Every starter includes pack optimization:
+
+<PackageCommands
+  npm="npm run build:optimized"
+  yarn="yarn build:optimized"
+  pnpm="pnpm build:optimized"
+/>
+
+Optimized output goes to `dist/`, separately from `build/`. `bds-runner.json` pins the server used for both tests and conversion. Run `bds:fetch` to download it or `bds:where` to inspect the selection. [BDS runner](/docs/bds-runner) explains results and supported inputs.
+
+Resource-only projects have no GameTest registration; add a behavior pack test harness when testing their resources with GameTests. Client rendering and input need in-game checks.
+
+## Project files
+
+| File or directory | Purpose |
+| --- | --- |
+| `config.json` | Project metadata, pack paths, profiles and exports |
+| `package.json` | Dependencies, project version and commands |
+| `packs/` | Authored packs; each has its own manifest |
+| `bds-runner.json` | Pinned headless server |
+| `.bedrock-core/` | Generated editor declarations and local build cache |
+
+The full starter demonstrates [JSON generation](/docs/builder/guides/generating-json), [translations](/docs/i18n/authoring), [guides](/docs/guides/authoring) and [navigation](/docs/navigation/guides/getting-started). Keep the features your project needs.
+
+## Command options
+
+| Option | Purpose |
+| --- | --- |
+| `[project-name]` | Directory and npm package name |
+| `--preset <preset>` | `full`, `script` or `resource` |
+| `-a, --author <name>` | Author display name |
+| `-d, --description <text>` | Project description |
+| `-p, --package-manager <manager>` | `npm`, `yarn`, `pnpm` or `none` |
+| `--display-name <name>` | Human-readable project name |
+| `--creator-id <id>` / `--pack-id <id>` | Stable runtime identifiers, independent of display names |
+
+Show the full command reference:
+
+<Exec cmd="@bedrock-core/cli --help" />
 
 ## Next steps
 
-- [Builder](/docs/builder) — stages, plugins, exports and watch behavior
-- [Render pack](/docs/ui/guides/render-pack) — importing the shared textures
-- [i18n](/docs/i18n) — typed translations
-- [Guides](/docs/guides) — MDX content in game
-- [Server runtime](/docs/server/api/runtime) — addon registration
+- [Projects and packs](/docs/introduction/projects) — understand the project model
+- [Builder configuration](/docs/builder/guides/configuration) — edit profiles and exports
+- [Generate JSON](/docs/builder/guides/generating-json) — author typed content
+- [BDS commands](/docs/bds-runner/cli) — run suites and optimize packs

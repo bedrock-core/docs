@@ -8,7 +8,15 @@ Watch mode builds immediately and coalesces authored input changes into sequenti
 
 ## Watch inputs
 
-Run `bc-builder watch config.json development` to select a profile. The watcher observes project sources, configuration, detected compiler inputs and plugin-registered dependencies. Add extra project-relative files or directories through `watch.paths`.
+Select a profile:
+
+<PackageCommands
+  npm="npx bc-builder watch config.json development"
+  yarn="yarn bc-builder watch config.json development"
+  pnpm="pnpm exec bc-builder watch config.json development"
+/>
+
+The watcher observes project sources, configuration, detected compiler inputs and plugin-registered dependencies. Add extra project-relative files or directories through `watch.paths`.
 
 ```json
 {

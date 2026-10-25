@@ -21,7 +21,7 @@ export default function PackageGrid(): ReactNode {
               <h2 className={styles.eyebrow} style={{ color: `var(${category.text})` }}>
                 {category.label}
               </h2>
-              {sectionsOf(category.id).map((section) => (
+              {sectionsOf(category.id).filter((section) => section.status !== undefined).map((section) => (
                 <PackageCard
                   key={section.id}
                   name={section.label}

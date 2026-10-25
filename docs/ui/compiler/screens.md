@@ -92,14 +92,15 @@ A screen is **static** when every string it shows is baked and every press is a 
 
 ```tsx title="packs/BP/scripts/screens/menu.screen.tsx"
 /** @jsxImportSource @bedrock-core/ui */
-import { Link, Panel, Screen, Text, type JSX } from '@bedrock-core/ui';
+import { Panel, Screen, Text, type JSX } from '@bedrock-core/ui';
+import { Link } from '@bedrock-core/ui/navigation';
 
 export default function Menu(): JSX.Element {
   return (
     <Screen static>
       <Panel flexDirection={'column'} padding={6} gap={4}>
         <Text>{'Menu'}</Text>
-        <Link to={'shop'}><Text>{'Shop'}</Text></Link>
+        <Link to={'example_addon:shop'}><Text>{'Shop'}</Text></Link>
         <Link to={'drav0011_economy:balance'}><Text>{'Balance'}</Text></Link>
       </Panel>
     </Screen>
@@ -107,9 +108,15 @@ export default function Menu(): JSX.Element {
 }
 ```
 
-A key with no `<addon>:` in front of it is one of this bundle's own, named as its file is; a key that names another addon resolves through the reference that addon published.
+Published destination keys include their configured UI namespace. A local key resolves this bundle's compiled entry; Core integration adds published references and owning-realm transport.
 
-A modal never qualifies — its fields are built per present — and neither does anything with a live value, a handler of its own, or a link whose params are not plain data. [Navigation](../guides/navigation.md#static-screens) covers publishing the table so other realms can show the screen.
+A modal never qualifies — its fields are built per present — and neither does anything with a live value, a handler of its own, or a link whose params are not plain data. [Navigation](/docs/navigation/references#compiled-references) covers publishing the table so other realms can show the screen.
+
+## Local navigation pages
+
+A `*.screen.tsx` file is a compiled host entry. A static navigator's local pages are ordinary content components, which can live in imported `.tsx` files. Mount the complete navigator inside one `Screen`; a modal form or native container remains a separate host.
+
+To expose shared content independently, wrap it in another compiled host. Route hooks and links still need a mounted navigator. [Build a navigator](/docs/navigation/guides/getting-started) shows the complete file structure.
 
 ## Import time
 

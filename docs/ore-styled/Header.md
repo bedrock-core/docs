@@ -11,20 +11,21 @@ Ore-styled header bar: icon-only back button, a breadcrumb trail, and a close bu
 
 ```tsx
 import { Header } from '@bedrock-core/ore-styled';
+import { closeUi, useNavigation } from '@bedrock-core/ui/navigation';
 ```
 
 ## Usage
 
 ```tsx
 function Settings(): JSX.Element {
-  const { back } = useNavigation();
+  const { goBack } = useNavigation();
 
   return (
     <Header
       title={'Settings'}
       breadcrumbs={['Server', 'Pricing']}
-      onBack={() => back()}
-      onClose={() => closeUi(player)}
+      onBack={() => goBack()}
+      onClose={({ player }) => closeUi(player)}
     />
   );
 }
@@ -57,7 +58,7 @@ Three ways out, and which one you can use depends on what the screen knows about
 | `backTo` | a link to a named screen | the destination is fixed, and the screen should be backable out of even when another addon shows it |
 | `back` | a link to the player's stack | the screen is reachable from several places, or opened by another addon entirely |
 
-`backTo` and `back` are data the build reads, so a screen shown from its [reference](/docs/ui/guides/navigation#static-screens) can still be left. An `onBack` handler cannot be described, so it does nothing in a foreign realm.
+`backTo` and `back` are data the build reads, so a screen shown from its [reference](/docs/navigation/references#compiled-references) can still be left. An `onBack` handler cannot be described, so it does nothing in a foreign realm.
 
 ## Inside a modal
 
@@ -76,7 +77,7 @@ The labeled dismiss is wider than the icon back, so a header wearing one leaves 
 ```tsx
 <Header
   trail={trailText([addonName, scopeLabel, entityName], core.translations.forPlayer(player))}
-  onBack={() => back()}
+  onBack={() => goBack()}
   onClose={() => close()}
 />
 ```
@@ -93,7 +94,7 @@ const { key, raw } = useTranslation(i18n);
 <Header
   title={key($ => $.settings.title)}
   breadcrumbs={[raw($ => $.settings.forPlayer, { name: player.name })]}
-  onBack={() => back()}
+  onBack={() => goBack()}
 />
 ```
 
@@ -115,7 +116,7 @@ Omit `onBack` on the first screen of a stack. The slot still reserves its width,
 <Header
   title={'Config'}
   breadcrumbs={['Server', 'Economy', 'Tax rate']}
-  onBack={() => back()}
+  onBack={() => goBack()}
   onClose={() => close()}
 />
 ```
@@ -126,7 +127,7 @@ Pair it with a [`Scroll`](/docs/ui/components/Scroll) so the header stays put wh
 
 ```tsx
 <Panel flexDirection={'column'} width={'100%'} height={'100%'}>
-  <Header title={'Shop'} onBack={() => back()} />
+  <Header title={'Shop'} onBack={() => goBack()} />
   <Scroll flexGrow={1} gap={4} padding={8}>
     {items.map(item => (
       <MenuRow title={item.name} subtitle={item.price} onPress={() => buy(item)} />

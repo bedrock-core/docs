@@ -1,59 +1,76 @@
 ---
 sidebar_position: 2
-description: "The page every addon publishes for its row in the catalog: drawn from its manifest, baked in its own pack, answered by its own realm."
+description: "What the default addon page shows and how to replace it with a custom layout."
 ---
 
-# The addon page
+# Addon page
 
-Every addon that installs the catalog has a page in it. The page follows from the manifest, so the build compiles it and the realm publishes it; nothing about it is written by hand.
+The addon page fills the area beside the Catalog's addon list.
 
-## What is on it
+## The default page
 
-The page fills the area beside the addon list: the addon's icon, its display name, its version, two buttons, its description in a card, and its authors. An addon that ships a `thumbnail` gets it as a banner behind the top of the page.
+Installing `registerCatalog()` generates a page from the addon metadata passed to `core.register({ manifest })`. It shows:
 
-Every string on it is a localization key the client resolves from the addon's own `.lang`, and every texture is the addon's own, so the realm drawing the catalog carries none of it. That is what makes the page the addon's to bake and the catalog's to place.
+- The addon's name, version and icon, with an optional thumbnail banner.
+- Its description and author name.
+- Config and Guide buttons, enabled when that addon registers the corresponding entry point.
 
-| Manifest field | On the page |
-| --- | --- |
-| `packName` | the name, large |
-| `version` | under the name |
-| `icon` | the square icon above the name |
-| `thumbnail` | the 16:6 banner, when set |
-| `description` | the card |
-| `creatorName`, or `creator` | after "Author(s):" |
+Edit `packName`, `version`, `icon`, `thumbnail`, `description` and `creatorName` to update the content. When `creatorName` is omitted, the page displays `creator`.
 
-## Where it comes from
+## Replace the page
 
-The ui-compiler stage reads the manifest out of `core.register()` and writes a module that asks this package's `shape` for the page; that builds it and registers it, beside the addon's other compiled screens. The realm reads it back on the first tick and publishes its **reference**: per reserved entry, the value it is shown with and where a press leads. That is all another realm needs to draw the page out of the pack every client already holds.
+![Custom Economy addon page](/img/catalog/custom-addon-page.png)
 
-The page is generated only when the addon installs the catalog. An addon that installs another app without the catalog publishes no page yet, and its row shows the fallback area, the name and version alone.
+Keep the Catalog browser and supply a module containing your own `addon_page`:
 
-## Where a press goes
+1. Create `catalog-pages.tsx` beside `config.json`:
 
-The two buttons name the app they open, `config` and `guide`, and the realm routes the press: to the local app when this addon installed it, otherwise to the owning addon's realm over that app's own show method. The page writes a name into a slot and the [realm](/docs/navigation/realm) routes the request.
+```tsx title="catalog-pages.tsx"
+import { Screen, Embed, Panel, Text, type JSX } from '@bedrock-core/ui';
+import { Button, FRAME } from '@bedrock-core/ore-styled';
+import screens from '@bedrock-core/catalog/compiled';
+import { CATALOG_PAGE_AREA, pageTargeted, registerCatalogPage } from '@bedrock-core/catalog/integration';
 
-An entry is drawn live when the owning addon announced that it serves the app, and grayed when it did not, so a press never leads at a request that would be refused.
+const Page = (): JSX.Element => (
+  <Screen>
+    <Embed frame={FRAME} area={CATALOG_PAGE_AREA}>
+      <Panel flexDirection={'column'} gap={8} padding={8}>
+        <Text>{'Welcome to my addon'}</Text>
+        <Button onPress={pageTargeted('config')}>{'Settings'}</Button>
+      </Panel>
+    </Embed>
+  </Screen>
+);
 
-## The framework's own page
+export default { ...screens, addon_page: Page };
+export function shape(): Record<string, never> {
+  registerCatalogPage(Page);
+  return {};
+}
+```
 
-Each Catalog addon compiles the framework's page and introduction guide into its own pack. The page has a named embed marker within that addon's namespace, separate from its default addon page. Its version is the UI library used by the build.
+The imported `screens` keep the browser and framework pages. `addon_page` supplies your replacement; `shape()` publishes it. Use `CATALOG_PAGE_AREA` for the `Embed` area: it follows the host layout, while Catalog provides the outer frame and sidebar. Page buttons use `pageTargeted()` to open registered entry points such as `config` or `guide`.
 
-The framework has no registered realm and no settings. Its guide opens from the local compiled reference and its back button returns to the framework row. This works even when the addon does not register a Guides app.
+2. Point the Catalog declaration at that module in your existing registration. Keep your manifest and other app declarations:
 
-## The geometry
+```ts title="Behavior pack script entry"
+import { core } from '@bedrock-core/server';
+import { registerCatalog } from '@bedrock-core/catalog';
 
-The catalog draws the frame and the addon's page draws into an area of it. Both packs have to agree on where that area is and how many entries the page may take, and neither can ask the other at runtime. These are that agreement:
+core.register({
+  manifest,
+  catalog: {
+    ...registerCatalog(),
+    compiled: './catalog-pages.tsx',
+  },
+});
+```
 
-| Constant | Value | What it fixes |
-| --- | --- | --- |
-| `MAIN` | `{ x, y, width, height }` | The area beside the addon list the page draws into |
-| `PAGE_SLOTS` | `8` | Entries reserved for the page: the marker, then its own presses |
-| `SIDEBAR_WIDTH` | `120` | The addon list's width |
-| `ADDONS_MAX` | `12` | Rows the addon list is baked with; a world with more addons shows the first |
+The `compiled` path is relative to `config.json`. The module is discovered through this declaration, so keep its `.tsx` filename as shown.
 
-The card around everything, its border and header, is [`@bedrock-core/ore-styled`](/docs/ore-styled)'s, shared with every other screen in the family. Changing one of these changes what every page built against it draws into.
+3. Run your normal build and deploy both the behavior and resource packs.
 
 ## Next steps
 
-- [API](./api.md) — `AddonPage`, `AddonPageInfo`, and the rest
-- [References](/docs/navigation/references) — the feed a page's reference travels on
+- [API](./api.md) — page publishing functions and types
+- [Embed](/docs/ui/components/Embed) — the embedded page and host contract

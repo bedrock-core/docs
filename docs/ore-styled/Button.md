@@ -30,7 +30,7 @@ When `children` is a string the button automatically wraps it in a `Text` styled
 | `variant` | `'hero' \| 'primary' \| 'secondary' \| 'contrast' \| 'danger' \| 'realm' \| 'transparent'` | `'primary'`, or `'secondary'` for `action={'exit'}` | The texture set and text style. `hero` is the primary texture with the `minecraftTen` heading font; `transparent` has no shell, for icon-only or inline actions |
 | `children` | `string \| JSX.Node` | — | A string is auto-wrapped in a themed `Text`; any other node is rendered as-is |
 | `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Runs on the press, with the player who pressed. A form's submit and exit are `Form.Button`; use `to` when the press opens another screen |
-| `to` | `ScreenKey` | — | The screen this button opens, `<addon>:<name>`. A button with one is a [`<Link>`](/docs/ui/components/Link) |
+| `to` | `ScreenKey` | — | The screen this button opens, `<addon>:<name>`. A button with one is a [`<Link>`](/docs/navigation/components/Link) |
 | `replace` | `boolean` | `false` | With `to`: take the place of the screen this button is on rather than stacking over it |
 | `back` | `boolean` | `false` | The way back, in place of `to` — the player's own stack decides where |
 | `enabled` | `boolean` | `true` | `false` draws the disabled texture, ignores the press, and applies the disabled text color to string children |
@@ -52,7 +52,7 @@ Keep the default variants — primary for the submit, secondary for the exit —
 
 ## A press or a destination
 
-`onPress` is script: only this realm can run it. `to` and `back` are **data** the build reads off the element, which is what lets a screen of buttons be [described to another addon](/docs/ui/guides/navigation#static-screens) and shown by a realm running none of your script.
+`onPress` is script: only this realm can run it. `to` and `back` are **data** the build reads off the element, which is what lets a screen of buttons be [described to another addon](/docs/navigation/references#compiled-references) and shown by a realm running none of your script.
 
 Reach for `to` whenever the press simply opens a screen, and keep a handler for the presses that do something.
 

@@ -9,10 +9,6 @@ description: "@bedrock-core/observable provides reactive values, computed state,
 
 `@bedrock-core/observable` is the reactive primitive the stack notifies through: a value with three verbs — `get` / `set` / `subscribe` — the same three a config leaf has, a shared key has, a db document has, and Minecraft's own data-driven UI observables have.
 
-:::caution Beta
-`@bedrock-core/observable` is in beta: the API can change between releases. Pin exact versions and read the changelog before upgrading.
-:::
-
 ## What is @bedrock-core/observable?
 
 Every accessor in the server stack *is* one of these, so what you learn here applies to `config.server.taxRate`, `shared.price` and `balances.for(player)` alike, and the derived forms — `computed`, `effect`, `last`, `debounce` — compose with all of them.

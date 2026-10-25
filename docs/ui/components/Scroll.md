@@ -51,6 +51,8 @@ as control props but are not applied to the viewport.
 
 ## Notes
 
+Compiled scroll regions enable content dragging on touch input when the client's gesture setting permits it. Dropdown popups use the same gesture policy.
+
 - Scrolls cost engine time on big screens. Use one only where you genuinely need an
   independent scrolling region; reach for a plain `<Panel>` when the single root scroll
   will do.

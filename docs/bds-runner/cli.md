@@ -17,7 +17,7 @@ bc-bds where                                     show which build will be used, 
 
 | Option | Effect |
 | --- | --- |
-| `--packs <dir>` | A build directory. Repeatable. Required |
+| `--packs <dir>` | One pack or a directory containing built packs. Repeatable. Required |
 | `--tag <tag>` | The gametest tag to run. Required |
 | `--expect-registered <n>` | Fail unless the engine announces exactly `n` tests. Catches a suite that silently failed to register |
 | `--known-failure <id>` | A test that is expected to fail. Repeatable. It is reported but does not make the run red |
@@ -44,9 +44,33 @@ Accepted by every command. See [Choosing the server build](./config.md#choosing-
 
 ### What `--packs` accepts
 
-Either a directory containing `BP/` and optionally `RP/`, which is what Regolith exports, or a directory that is itself a single pack. A pack is treated as a behavior pack when its manifest declares a `script` or `data` module, and as a resource pack otherwise.
+Pass either a pack directory containing `manifest.json`, or a build directory whose immediate subdirectories are packs. Folder names are arbitrary; manifest module types identify behavior and resource packs.
 
-Passing `--packs` more than once installs several addons into the same world. That is how a test which asserts that *another* addon is present can pass. Each pack is copied into the world under a folder named after the addon it came from, so two addons that both export `BP/` do not collide.
+```text
+build/
+  gameplay/manifest.json
+  shop/manifest.json
+  textures/manifest.json
+  interface/manifest.json
+```
+
+<PackageCommands
+  npm="npx bc-bds run --packs ./build --tag example"
+  yarn="yarn bc-bds run --packs ./build --tag example"
+  pnpm="pnpm exec bc-bds run --packs ./build --tag example"
+/>
+
+One directory can contain several behavior packs and several resource packs. Discovery does not recurse into nested build directories. A directory with its own manifest is treated as one pack.
+
+Repeat `--packs` to combine outputs from different projects or add an external pack:
+
+<PackageCommands
+  npm="npx bc-bds run --packs ./gameplay/build --packs ./shop/build --tag integration"
+  yarn="yarn bc-bds run --packs ./gameplay/build --packs ./shop/build --tag integration"
+  pnpm="pnpm exec bc-bds run --packs ./gameplay/build --packs ./shop/build --tag integration"
+/>
+
+The selected set must include a behavior pack that registers the GameTests. A resource-only project can be optimized on its own; testing it with GameTests requires a behavior pack test harness. Packs receive distinct deployment directories, and repeated UUIDs are installed once.
 
 ## `optimize` options
 
@@ -56,7 +80,7 @@ bc-bds optimize --packs <dir> --out <dir> [--unpack]
 
 Runs the server's own pack optimizer over built packs. It minifies their JSON, packs each folder into a `.brarchive` under `__brarchive/`, and stamps `pack_optimization_version` into the manifest so the engine knows to read from there. The server converts and exits; it never serves.
 
-`--packs` is a directory whose *subdirectories* are each one pack. Regolith's `build/` already has that shape — one folder per pack, each with its own manifest — so the export needs no rearranging.
+`--packs` is a directory whose immediate subdirectories are built packs, each with its own manifest. Pack folder names are arbitrary, and a collection can contain resource packs, behavior packs or both. Pass the collection directory rather than an individual pack to this command.
 
 | Option | Effect |
 | --- | --- |
@@ -95,7 +119,7 @@ It restores the file tree, not the sources: JSON comes back minified and without
 1. Resolves the server build and downloads it into the cache if it is not there. See [Choosing the server build](./config.md#choosing-the-server-build).
 2. Copies the cached build into a server tree, one per version, and writes `server.properties` and `config/default/permissions.json` into it. See [Server properties](./config.md#server-properties).
 3. On the first run for that tree, boots the server once to generate the world, then turns Beta APIs and the flat generator on in `level.dat`. Every later run is a single boot.
-4. Deletes the world's chunks so the tests start on unmodified terrain, copies the packs into the world's `behavior_packs/` and `resource_packs/`, and writes the world pack references.
+4. Deletes the world's chunks so tests start on unmodified terrain, replaces the isolated server's development packs with the selected packs, and writes the world pack references. World-local pack copies are removed so they cannot shadow this deployment.
 5. Boots the server, adds a ticking area around the origin so the playerless world simulates, and runs `gametest runset <tag>`.
 6. Waits until every announced test has a verdict, the server has been quiet for `--idle` seconds, or `--timeout` elapses. Then stops the server and prints the verdicts.
 
@@ -105,9 +129,11 @@ The full console transcript of every run is written to `.bds/logs/<timestamp>-<t
 
 A failure message says what the assertion was, not what the world looked like. `--keep-alive` keeps the server up after the results are printed so you can connect a client and see for yourself:
 
-```bash
-bc-bds run --packs ./build --tag my-suite --keep-alive
-```
+<PackageCommands
+  npm="npx bc-bds run --packs ./build --tag my-suite --keep-alive"
+  yarn="yarn bc-bds run --packs ./build --tag my-suite --keep-alive"
+  pnpm="pnpm exec bc-bds run --packs ./build --tag my-suite --keep-alive"
+/>
 
 ```text
 ✗ 5 passed, 1 failed   (my-suite, BDS 1.26.45.1, 7.1s)

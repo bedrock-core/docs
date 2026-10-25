@@ -25,6 +25,7 @@ import type { BuildContext } from '@bedrock-core/builder-plugin';
 | `generatedDir` | `string` | Temporary generated-intermediate directory |
 | `packs` | `Readonly<Record<string, string>>` | Selected pack IDs and staged paths |
 | `allPacks` | `Readonly<Record<string, string>> \| undefined` | All configured staged pack paths |
+| `linkedPacks` | `LinkedPacks \| undefined` | Declared related packs grouped by requirement name |
 | `pack` | `PackInfo \| undefined` | Current pack for an invocation with pack scope |
 | `outputPaths` | `Readonly<Record<string, string>>` | Selected pack IDs and absolute export destinations |
 | `profile` | `string` | Selected profile name |
@@ -35,7 +36,7 @@ import type { BuildContext } from '@bedrock-core/builder-plugin';
 | `logger` | `Pick<Console, 'info' \| 'warn' \| 'error'>` | Build diagnostic sink |
 | `signal` | `AbortSignal \| undefined` | Cooperative cancellation |
 
-Pack-scoped invocations expose one pack through `packs`, `outputPaths` and `pack`. Project-scoped invocations expose the selected set and have no current `pack`. `allPacks` and `inspectPacks()` retain access to the complete configured graph. [Plugins](../guides/plugins.md#pack-selection-and-scope) describes selectors and scope.
+Pack-scoped invocations expose the owner through `pack`; `packs` and `outputPaths` include the owner and declared related packs. Project-scoped invocations expose their union and have no current `pack`. `allPacks` and `inspectPacks()` retain access to the complete configured graph. [Plugins](../guides/plugins.md#choose-packs) describes selectors and scope.
 
 `PackInfo` includes `id`, `path`, `kind`, `moduleTypes`, optional `outputPath`, resolved manifest, header UUID, version and dependencies. Dependencies distinguish local pack IDs, external pack UUIDs and scripting API modules.
 
@@ -81,7 +82,7 @@ export async function run(context: BuildContext) {
 
 `reuse` accepts `inputs`, an optional JSON-compatible `key`, an optional `cache` flag and an async `run` callback. Include implementation and settings changes in the key. The callback returns `{ value, inputs?, files?, cache? }`; values must be JSON serializable and emitted files must remain inside staging roots.
 
-Hits restore declared files into fresh staging and retain dependency tracking. The result contains `value`, `cached`, `inputs` and `files`. `profile.cache: false` forces execution. [Watch and cache](../guides/watch.md) describes automatic stage reuse.
+Hits restore declared files into fresh staging and retain dependency tracking. Native pack-plugin cache keys include requirements, manifests and resolved links, so changing destinations invalidates reuse. The result contains `value`, `cached`, `inputs` and `files`. `profile.cache: false` forces execution. [Watch and cache](../guides/watch.md) describes automatic stage reuse.
 
 ## Notes
 

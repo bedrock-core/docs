@@ -51,11 +51,7 @@ In a project with several packs, select the owner and its linked resource pack i
 
 The owner's manifest must declare the resource pack as a local dependency. [UI stage settings](/docs/builder/guides/stages#ui-compilation) describe discovery and output.
 
-The stage registers `@bedrock-core/generated/ui`. Import it from the script entry to install compiled screen registrations:
-
-```ts title="packs/BP/scripts/main.ts"
-import '@bedrock-core/generated/ui';
-```
+Builder automatically loads the generated screen registrations from the built script entry.
 
 ### 3. The render pack
 
@@ -124,11 +120,13 @@ export default function Hello(): JSX.Element {
 }
 ```
 
-```bash
-npx bc-builder build config.json
-```
+<PackageCommands
+  npm="npx bc-builder build config.json"
+  yarn="yarn bc-builder build config.json"
+  pnpm="pnpm exec bc-builder build config.json"
+/>
 
-Run the build before launching Minecraft. If `render()` throws `UncompiledScreenError` instead, the build did not see the file or `@bedrock-core/generated/ui` was never imported.
+Run the build before launching Minecraft. If `render()` throws `UncompiledScreenError`, check that the `ui-compiler` stage includes the screen and that the world uses the built behavior pack.
 
 ## Next steps
 

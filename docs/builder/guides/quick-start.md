@@ -60,7 +60,13 @@ After [installing builder](../index.md#install), add the project command:
 { "scripts": { "build": "bc-builder build config.json" } }
 ```
 
-Run `npm run build`, `yarn build` or `pnpm build`. Builder copies the project into a temporary folder, transforms and validates the copied pack, then exports it to `build/RP`. The temporary folder is removed after the build; a failed validation retains the previous export. [How builds run](./build-process.md) explains the full sequence.
+<PackageCommands
+  npm="npm run build"
+  yarn="yarn build"
+  pnpm="pnpm build"
+/>
+
+Builder copies the project into a temporary folder, transforms and validates the copied pack, then exports it to `build/RP`. The temporary folder is removed after the build; a failed validation retains the previous export. [How builds run](./build-process.md) explains the full sequence.
 
 Ignore `build/` and `.bedrock-core/` in version control. The latter contains generated editor declarations and local cache records.
 

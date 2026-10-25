@@ -5,7 +5,7 @@ description: "Where guide pages live, the frontmatter and categories that shape 
 
 # Authoring a guide
 
-Guide content lives in `packs/BP/guides/<locale>/**`, one tree per locale, and the [`guides` stage](/docs/builder/guides/stages#guides) compiles the default locale's tree into one screen per page:
+Guide content lives in `packs/BP/guides/<locale>/**`, one tree per locale, and the [`guides` stage](/docs/builder/guides/stages#guides) compiles the default locale's tree into resident guide entries:
 
 ```txt
 packs/BP/guides/
@@ -90,13 +90,15 @@ Inline styling is baked into the text as `§` codes: `**bold**` is `§l`, `*ital
 
 ## Links
 
-A page **is** a screen, so an internal link is a `<Link>` to that page's screen: where every press leads is data on the tree, and that is what lets a realm show a guide it never compiled.
+An internal link selects a page in the guide's static navigator. It stays on the client when the transition fits the prepared context graph; otherwise a server checkpoint confirms the current route and opens the next local window.
 
 An internal link is written relative, `./page.mdx` or `../intro`, or absolute, `/abs/page`. Every one is checked at build time, and a broken link is a build error.
 
 A paragraph or list item with links is drawn as a [`Trans`](/docs/ui/components/Trans), each link a numbered tag. The build breaks it into lines in every language, and each link is pressable only over its own text, in whichever language the player reads. Text after a link carries on along the same line.
 
-Pages replace one another rather than stacking, so the index is always the screen under a page. With a home page, the index's back returns to it and the home page's back leaves the guide; without one, the index's back leaves.
+Page visits enter the navigator's history, including visits to hidden pages. Back retraces that history. At the root, an entry with caller-return behavior reopens its caller or closes; an ordinary direct entry closes. Server checkpoints retain the confirmed visited stack.
+
+Index is a separate action. It appears on pages in the readable index, the declared home, and category landing pages. Other hidden pages omit it. Its footer control keeps the same size and alignment with or without Previous and Next.
 
 External `http(s)` links and anchors on the same page render as `§3` text only. Nothing can open a browser from a server form.
 
@@ -121,6 +123,8 @@ A guide with anything operator-only is compiled twice, because a compiled screen
 | --- | --- | --- |
 | Everyone | `guide_home`, `guide_home_back`, `guide_index`, `guide_<page>` | the pages everyone may read |
 | Operators | `guideop_home`, `guideop_home_back`, `guideop_index`, `guideop_<page>` | every page |
+
+Each entry mounts its set's readable pages in one form. The generator also emits `guideback_page_<page>` and `guideback_index` caller-return entries, with `guideopback_` equivalents for operators, so restoration preserves the root Back control.
 
 Every press leads within its own set, so the choice is made once, on entry. `guides.open`, `<ns>:guide`, the catalog's guide button and `openGuide` open an operator on the operators' set and everyone else on theirs. A `<Link>` to `guide_home` is the same press for every viewer, so it always opens the everyone set: open a guide with `openGuide` or `guides.open` instead. An operator who loses the role mid-read keeps the set they entered.
 

@@ -2,6 +2,20 @@
 
 House rules for every page under `docs/`. They extend the "Content fundamentals" in `design/DESIGN-GUIDE.md`; where the two differ, this file wins.
 
+## Repository READMEs
+
+Package READMEs contain only the exact package name as an H1, one short description,
+and one documentation URL. Use a blank line between each item.
+
+Repository root READMEs use a concise introduction that explains what the project
+does and why a developer would use it, then link to documentation. They may also
+include contributing and license information.
+
+Internal documentation indexes and development instructions can retain the detail
+needed for their directory. Package and repository root READMEs link to detailed
+documentation instead of repeating API references, installation commands, or usage
+examples.
+
 ## Sections
 
 One section = one folder under `docs/` = one route = one sidebar. `src/data/sections.ts` is the registry: id, category, status, description. Add a section there first; `docusaurus.config.ts` creates the docs-plugin instance from it.
@@ -70,22 +84,6 @@ One sentence.
 ## Notes
 ```
 
-**Filter** (`filters/*.md`)
-
-```md
-# i18n
-One sentence: what goes in, what comes out.
-
-## Install                         ← config.json snippet, place in the stack
-## Authoring
-## What it generates
-| Output | Where | Commit it? |
-## Settings
-| Setting | Type | Default | Description |
-## Checks
-| Check | What fails |
-```
-
 Reference pages end when the content ends: no `Next steps`, no `Best practices`. Overviews and guides always end with `## Next steps`.
 
 ## Tables
@@ -95,7 +93,7 @@ Reference pages end when the content ends: no `Next steps`, no `Best practices`.
 | Component props | `\| Prop \| Type \| Default \| Description \|` |
 | Function parameters | `\| Parameter \| Type \| Default \| Description \|` |
 | Options objects | `\| Option \| Type \| Default \| Description \|` |
-| Filter settings | `\| Setting \| Type \| Default \| Description \|` |
+| Stage settings | `\| Setting \| Type \| Default \| Description \|` |
 | Export index | `\| Export \| Kind \| Description \|` |
 | Section index | `\| Page \| Description \|` |
 
@@ -126,6 +124,16 @@ Cell rules: types in backticks, `\|` inside unions; Default is `—` when none; 
 - Examples take a `Player` parameter. The `world.afterEvents.buttonPush` + `isPlayer` boilerplate appears once, on the ui overview.
 - JSX attribute values in braces: `flexDirection={'row'}`.
 - One idea per example, at most 25 lines.
+
+## Package-manager commands
+
+Use the shared package-manager tabs for runnable commands. Each example provides npm, Yarn and pnpm variants; the reader's selection stays synchronized across the site.
+
+- `<Install pkg="@bedrock-core/ui" />` adds dependencies; use `dev` for build tools.
+- `<Exec cmd="@bedrock-core/cli my-project" />` runs a package without adding it to the project.
+- `<PackageCommands npm="npm run test:mc" yarn="yarn test:mc" pnpm="pnpm test:mc" />` runs project scripts. Use the same component for installed executables, CI commands and multiline examples.
+
+For installed executables, use `npx bc-builder`, `yarn bc-builder` and `pnpm exec bc-builder`. Keep bare executable syntax in command-reference signatures and `package.json` script values. Shell commands that do not depend on the package manager use ordinary code fences.
 
 ## Checks
 

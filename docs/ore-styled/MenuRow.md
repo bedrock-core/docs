@@ -11,6 +11,7 @@ The browse-screen row: leading thumbnail, title, one-line subtitle, and a traili
 
 ```tsx
 import { MenuRow } from '@bedrock-core/ore-styled';
+import { useNavigation } from '@bedrock-core/ui/navigation';
 ```
 
 ## Usage
@@ -24,7 +25,7 @@ function Row(): JSX.Element {
       icon={'textures/items/diamond'}
       title={'Diamond'}
       subtitle={'A rare gem'}
-      onPress={() => navigate('shop:details', { params: { id: 'diamond' } })}
+      onPress={() => navigate('Details', { id: 'diamond' })}
     />
   );
 }
@@ -42,7 +43,7 @@ function Row(): JSX.Element {
 | `selected` | `boolean` | `false` | Whether this row is the list's current selection. For a selecting list, where one row stands after the press |
 | `depth` | `number` | `0` | Indent level for nested index rows. Each step insets the row's whole box, not its contents, so a child row is visibly narrower than its section header |
 | `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Press handler. Use `to` instead when the press opens another screen |
-| `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/ui/components/Link) |
+| `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/navigation/components/Link) |
 | `replace` | `boolean` | `false` | With `to`: take the place of the screen this row is on rather than stacking over it |
 | `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
 | `subtitleMaxLength` | `number` | — | Characters the subtitle reserves. Setting it also keeps the subtitle line when the subtitle is empty, so the row has one shape |

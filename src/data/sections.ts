@@ -26,7 +26,7 @@ export interface Section {
   /** Published package or repository name. */
   pkg: string;
   category: CategoryId;
-  status: SectionStatus;
+  status?: SectionStatus;
   /** One line for menu rows and package cards. */
   description: string;
   /** Lucide icon name. */
@@ -45,6 +45,15 @@ export const categories: Category[] = [
 const GH = 'https://github.com/bedrock-core';
 
 export const sections: Section[] = [
+  {
+    id: 'introduction',
+    label: 'introduction',
+    pkg: '@bedrock-core',
+    category: 'framework',
+    description: 'Projects, packs and the tools and libraries that connect them.',
+    icon: 'book-open',
+    repo: `${GH}/docs`,
+  },
   // Framework
   {
     id: 'server',
@@ -71,8 +80,8 @@ export const sections: Section[] = [
     label: 'observable',
     pkg: '@bedrock-core/observable',
     category: 'framework',
-    status: 'beta',
-    description: 'Reactive values, derived state, batching and debounce with Minecraft tick scheduling.',
+    status: '1.0',
+    description: 'Reactive values, derived state, batching and debounce.',
     icon: 'activity',
     repo: `${GH}/server`,
   },
@@ -81,7 +90,7 @@ export const sections: Section[] = [
     label: 'sync',
     pkg: '@bedrock-core/sync',
     category: 'framework',
-    status: 'beta',
+    status: '1.0',
     description: 'The script-event transport: bus, discovery, RPC, replicated state.',
     icon: 'radio',
     repo: `${GH}/server`,
@@ -114,7 +123,7 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/navigation',
     category: 'ui',
     status: 'beta',
-    description: 'Stack navigation between screens.',
+    description: 'Static stacks, top tabs and cross-addon screen navigation.',
     icon: 'navigation',
     repo: `${GH}/ui`,
   },

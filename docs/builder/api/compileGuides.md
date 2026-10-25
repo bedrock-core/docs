@@ -43,3 +43,5 @@ const result = await compileGuides({
 ## Notes
 
 Screen generation needs a behavior pack. compileScreens: false emits guide content without generated screen modules.
+
+Generated modules use `guideNavigationScreen` for resident client navigation. Home, index, page and caller-return entries compile separately for each audience, and every entry preloads that audience's readable pages.

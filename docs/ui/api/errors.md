@@ -22,7 +22,7 @@ import {
 
 `render()` was handed a screen the build never compiled, so nothing in the pack answers to its title.
 
-Two things produce a registration: the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) seeing the screen, and `@bedrock-core/generated/ui` being imported once so the registrations run. Check both.
+Builder registers compiled screens automatically. Check that the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) includes the screen and that the world uses the built behavior pack.
 
 ## ScreenRootError
 

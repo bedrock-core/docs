@@ -32,7 +32,7 @@ import { Button, Card, Checkbox, Divider, Dropdown, Form, Header, Input, MenuRow
 
 ## Layout and chrome
 
-- [**`<Button>`**](./Button.md) — a button in seven variants, or a themed [`<Link>`](/docs/ui/components/Link) when given `to`
+- [**`<Button>`**](./Button.md) — a button in seven variants, or a themed [`<Link>`](/docs/navigation/components/Link) when given `to`
 - [**`<Card>`**](./Card.md) — the standard panel background, padding and gap, in six variants
 - [**`<Divider>`**](./Divider.md) — a horizontal or vertical rule in three variants
 - [**`<Header>`**](./Header.md) — a screen header bar: back control, breadcrumb trail, close control

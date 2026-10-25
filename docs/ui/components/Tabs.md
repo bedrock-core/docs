@@ -52,7 +52,7 @@ What you pay instead is pack size. Every tab's content is in the tree at once, s
 
 ## When it is a screen instead
 
-What you give up is exactly what "the server never hears it" means: no handler runs on a switch, and nothing outside the group can know which tab is open. A tab whose content depends on the switch is a screen change, not a tab — use [`<Link>`](./Link.md) or `navigate()`.
+What you give up is exactly what "the server never hears it" means: no handler runs on a switch, and nothing outside the group can know which tab is open. A tab whose content depends on the switch is a screen change, not a tab — use [`<Link>`](/docs/navigation/components/Link) or `navigate()`.
 
 ## Notes
 

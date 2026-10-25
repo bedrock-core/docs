@@ -28,7 +28,7 @@ const { catalog } = core.register({ manifest, catalog: registerCatalog() });
 catalog.open(player);
 ```
 
-`registerCatalog()` takes no arguments: the list is the [registry](/docs/server/api/registry), and each page is what its addon published.
+`registerCatalog()` uses the [registry](/docs/server/api/registry) for its list; each page comes from the addon that published it.
 
 ## Install
 
@@ -40,11 +40,11 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 
 - **A command.** `<namespace>:catalog` opens the list with this addon selected. `registerCatalog({ commands: false })` leaves the command out, so you can open it from an item or a block instead.
 - **Every addon in the world.** Each addon that called `core.register()`, in the same order everywhere, with the framework last.
-- **Each catalog addon's page, drawn from its own pack.** The [page](./page.md) is built from the addon's manifest. Other registered addons remain visible in the list and use the fallback area until shared pages move below the catalog app.
+- **Each addon's page, drawn from its own pack.** The [default page](./page.md) uses the addon's metadata and can be replaced with a custom layout. Addons without a published page use the name-and-version fallback.
 
 ## Next steps
 
-- [The addon page](./page.md) — what is on it, where it comes from, and where its presses go
+- [Addon page](./page.md) — the default content and how to replace it
 - [API](./api.md) — every export
 - [`core.registry`](/docs/server/api/registry) — the addons the catalog lists
 - [The realm](/docs/navigation/realm) — how a press reaches the realm that answers it

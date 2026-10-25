@@ -10,10 +10,14 @@ Convert a Regolith project's configuration into builder profiles, built-in stage
 
 Use Node 22.18 or newer and install the builder as described in the [overview](../index.md#install). Run the command from the project containing `config.json`:
 
-```sh
-bc-builder migrate config.json
-bc-builder migrate config.json --json
-```
+<PackageCommands
+  npm={`npx bc-builder migrate config.json
+npx bc-builder migrate config.json --json`}
+  yarn={`yarn bc-builder migrate config.json
+yarn bc-builder migrate config.json --json`}
+  pnpm={`pnpm exec bc-builder migrate config.json
+pnpm exec bc-builder migrate config.json --json`}
+/>
 
 Preview is the default and leaves files intact. The command reads JSON, pack manifests and file paths; it does not import project modules, execute filters or shell commands, evaluate expressions, or download dependencies.
 
@@ -46,11 +50,17 @@ All profiles are selected by default. Repeat `--profile` to select a subset. A s
 
 Every configured pack needs a destination. Development, world, no-export, expression-based and multiple-target export policies require explicit replacements. This preview selects one profile and dedicated local folders for two configured pack IDs:
 
-```sh
-bc-builder migrate config.json --profile default \
-  --export default:behaviorPack=./build/migrated/BP \
-  --export default:resourcePack=./build/migrated/RP
-```
+<PackageCommands
+  npm={`npx bc-builder migrate config.json --profile default \\
+  --export default:behaviorPack=./build/migrated/BP \\
+  --export default:resourcePack=./build/migrated/RP`}
+  yarn={`yarn bc-builder migrate config.json --profile default \\
+  --export default:behaviorPack=./build/migrated/BP \\
+  --export default:resourcePack=./build/migrated/RP`}
+  pnpm={`pnpm exec bc-builder migrate config.json --profile default \\
+  --export default:behaviorPack=./build/migrated/BP \\
+  --export default:resourcePack=./build/migrated/RP`}
+/>
 
 Use the actual IDs from the project's `packs` map. `--export` replaces the selected profile's entire export map, so repeat it for every pack in that profile. Replacement also replaces read-only and multiple-target policies and produces a warning. Use separate builder profiles when several destinations are needed.
 
@@ -72,17 +82,21 @@ Destinations cannot overlap source packs, one another, the project root or prote
 
 Use the same profile, metadata, filter and destination options from the reviewed preview when adding `--write`.
 
-```sh
-bc-builder migrate config.json --write --output config.builder.json
-```
+<PackageCommands
+  npm="npx bc-builder migrate config.json --write --output config.builder.json"
+  yarn="yarn bc-builder migrate config.json --write --output config.builder.json"
+  pnpm="pnpm exec bc-builder migrate config.json --write --output config.builder.json"
+/>
 
 The output must sit beside the original configuration so relative project paths keep their meaning. Relative `--output` values resolve from the input configuration's directory. Existing output files are not overwritten, and `--output` requires `--write`.
 
 To update the input configuration in place:
 
-```sh
-bc-builder migrate config.json --write
-```
+<PackageCommands
+  npm="npx bc-builder migrate config.json --write"
+  yarn="yarn bc-builder migrate config.json --write"
+  pnpm="pnpm exec bc-builder migrate config.json --write"
+/>
 
 In-place writes retain the original content in `config.json.regolith.bak`. Existing backups are not overwritten. The writer checks the inspected source again before replacement and rejects intervening edits. Errors prevent writes; warnings remain part of the conversion result and require review.
 
@@ -113,10 +127,14 @@ Standalone Node programs can be configured as named script plugins with profile 
 
 Inspect the selected profile before building:
 
-```sh
-bc-builder plan config.builder.json default
-bc-builder build config.builder.json default
-```
+<PackageCommands
+  npm={`npx bc-builder plan config.builder.json default
+npx bc-builder build config.builder.json default`}
+  yarn={`yarn bc-builder plan config.builder.json default
+yarn bc-builder build config.builder.json default`}
+  pnpm={`pnpm exec bc-builder plan config.builder.json default
+pnpm exec bc-builder build config.builder.json default`}
+/>
 
 Use the profile name present in the converted configuration and isolated export folders. Compare manifests, scripts, generated UI, translations and other pack artifacts against the corresponding Regolith build. Review diagnostics and perform the project's Minecraft runtime checks before adopting the builder profile. A ready migration preview does not validate complete pack content or prove output parity.
 

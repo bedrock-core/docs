@@ -10,12 +10,16 @@ Run the project's builder profile after installing its locked dependencies.
 
 Use Node.js 22.18 or newer and the package manager recorded by the project:
 
-```sh
-npm ci
-npx bc-builder build config.json build
-```
+<PackageCommands
+  npm={`npm ci
+npx bc-builder build config.json build`}
+  yarn={`yarn install --immutable
+yarn bc-builder build config.json build`}
+  pnpm={`pnpm install --frozen-lockfile
+pnpm exec bc-builder build config.json build`}
+/>
 
-For Yarn, install with `yarn install --immutable`; for pnpm, use `pnpm install --frozen-lockfile`. Replace `build` with the project's profile name. Export destinations should point to dedicated directories inside the CI workspace.
+Replace `build` with the project's profile name. Export destinations should point to dedicated directories inside the CI workspace.
 
 Commit authored sources and the lockfile. Builder generates editor declarations and local caches under `.bedrock-core/`; generated declarations are available after the first build. Run the project's typecheck and lint commands alongside the build.
 

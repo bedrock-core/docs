@@ -91,7 +91,7 @@ type TranslationResolver = (key: string) => string | undefined;
 ```ts
 const resolve = core.translations.forLocale('en_US');
 
-resolve('drav0011_shop.meta.name');   // string | undefined
+resolve('drav0011_shop.pack.name');   // string | undefined
 ```
 
 :::caution It returns a resolver function, not a map

@@ -202,9 +202,9 @@ core.register({
   manifest: {
     creator: 'drav0011',
     pack: 'economy',
-    packName: i18n.key($ => $.meta.name),
-    creatorName: i18n.key($ => $.meta.creator),
-    description: i18n.key($ => $.meta.description),
+    packName: i18n.key($ => $.pack.name),
+    creatorName: i18n.key($ => $.pack.creator),
+    description: i18n.key($ => $.pack.description),
     version: '1.0.0',
   },
 });

@@ -44,7 +44,7 @@ The packages underneath are strictly layered and installable on their own if you
 - **[Events](./api/events.md)** — a broadcast delivered and forgotten, typed by its payload, so a peer hears that something happened without polling for it.
 - **[Db](./api/db.md)** — persisted documents keyed by target, on whatever dynamic properties the target itself can hold, with versions and lazy migrations. Local: a peer reaches one only through a method you wrote.
 - **[Features](./api/features.md)** — behavior that auto-enables when a condition over the registry becomes true, and auto-disables when it stops being true.
-- **[Translations](./api/translations.md)** — announce your i18n bundle so any addon's UI can resolve and measure your strings. Your screens and your list page are announced by [`@bedrock-core/navigation`](/docs/navigation/references).
+- **[Translations](./api/translations.md)** — announce your i18n bundle so any addon's UI can resolve and measure your strings.
 - **[Host election](./api/host.md)** — a deterministic rule for "which realm does the work only one realm may do".
 
 ## Next steps

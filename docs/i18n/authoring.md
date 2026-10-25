@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: "Locale files, namespacing, argument order, $t() nesting, plurals and the meta branch: authoring the resources the i18n stage compiles."
+description: "Locale files, namespacing, argument order, $t() nesting, plurals and pack display text: authoring the resources the i18n stage compiles."
 ---
 
 # Authoring resources
@@ -106,21 +106,22 @@ stock_other: '{{count}} left',       stock_few:   'Zbývají {{count}} kusy',
 
 `cs_CZ.stock_few` is **not** flagged as an extra key: it rides into the bundle, checks its variables against the group's `_other`, and picks up its recorded argument order from the locale that defines it. What parity still requires is that the default locale declares the group (`stock_other`). See [Plurals](./api.md#plurals) for how a plural leaf resolves at runtime.
 
-## Meta branch
+## Pack display text
 
-A `meta` branch names the addon for the pack list:
+Use a `pack` branch for the name and description shown in the pack list:
 
 ```ts
 export default {
-  meta: {
+  pack: {
     name: 'Shop',
     description: 'Sells items to players',
+    creator: 'DrAv0011',
   },
   shop: { title: 'Shop' },
 } as const;
 ```
 
-`meta.name` and `meta.description` are copied onto the two literal keys Bedrock resolves a manifest header from — `pack.name` and `pack.description` — written into **both** packs' generated `.lang` sections, since each manifest resolves from its own pack's texts:
+These fields use the same names as vanilla manifests. Builder writes their values to the owning pack's language files when its manifest references the literal keys:
 
 ```jsonc title="packs/BP/manifest.json and packs/RP/manifest.json"
 {
@@ -131,4 +132,12 @@ export default {
 }
 ```
 
-The resource pack's `.lang` carries everything: the namespaced `<namespace>.meta.name` / `<namespace>.meta.description` keys (what `key()` resolves and what rides in the runtime bundle) plus the two `pack.name` / `pack.description` aliases. The behavior pack's `.lang` carries only the two aliases — nothing else, since a manifest looks up nothing but those literal keys. Other `meta.*` keys, such as `meta.creator`, are ordinary namespaced strings with no alias.
+A linked resource pack inherits these display translations when it has one behavior-pack owner and no locale modules of its own. A shared resource pack, or one with its own locale modules, keeps its own display metadata.
+
+`config.json` supplies display defaults. Locale `pack` values override those defaults; pack-specific `texts/<locale>.lang` aliases take precedence when they differ from the project defaults. Each generated display key is emitted once. The manifest stage also registers `en_US` in `texts/languages.json` for fallback display text, including builds without the i18n stage.
+
+The resource pack receives namespaced translations such as `<namespace>.pack.name` alongside the manifest aliases it owns. The behavior pack receives its manifest aliases; authored language entries are preserved. `pack.creator` remains a namespaced translation with no manifest alias.
+
+## Next steps
+
+- [`API`](./api.md) — Translate keys and format arguments at runtime

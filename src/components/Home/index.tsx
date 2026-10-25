@@ -11,7 +11,7 @@ const GITHUB = 'https://github.com/bedrock-core/';
 
 const TRUST = [
   { icon: 'shield-check', label: 'Type-safe by design' },
-  { icon: 'package', label: 'Zero dependencies at runtime' },
+  { icon: 'package', label: 'Zero runtime dependencies' },
   // { icon: 'store', label: 'Marketplace ready' },
 ];
 
@@ -26,11 +26,10 @@ export function Hero(): ReactNode {
         </div>
         <h1 className={styles.headline}>Addons Better Connected</h1>
         <p className={styles.lede}>
-          Addons run in isolated realms. <code>@bedrock-core</code> lets yours find each other, call each other,
-          share state, and draw custom UI the whole world can use.
+          Addons run in isolated realms. <code>@bedrock-core</code> lets yours find each other, work together, and draw custom UI the whole world can use.
         </p>
         <div className={styles.actions}>
-          <Button size="lg" iconRight="arrow-right" href="/docs/server">
+          <Button size="lg" iconRight="arrow-right" href="/docs/introduction">
             Get started
           </Button>
           <Button size="lg" variant="secondary" iconLeft="github" href={GITHUB}>
@@ -226,7 +225,7 @@ export function Cta(): ReactNode {
         <h2 className={styles.ctaTitle}>Start with one package.</h2>
         <p className={styles.ctaSub}>Pin an exact version, and read the changelog before you upgrade.</p>
         <div className={styles.actions}>
-          <Button size="lg" iconRight="arrow-right" href="/docs/server">
+          <Button size="lg" iconRight="arrow-right" href="/docs/introduction">
             Read the docs
           </Button>
           <Button size="lg" variant="secondary" iconLeft="discord" href={DISCORD}>

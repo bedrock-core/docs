@@ -13,7 +13,13 @@ description: "Use bc-builder to build, watch, inspect plans and preview Regolith
 | `bc-builder plan [config.json] [profile]` | Validate configuration and print the execution plan without loading plugins |
 | `bc-builder migrate [config.json] [options]` | Preview supported Regolith configuration conversion without executing filters |
 
-The config defaults to `config.json`; build, watch and plan default to profile `default`. `bc-builder --help` lists commands. Ctrl+C stops watch mode and cancels its active build.
+The config defaults to `config.json`; build, watch and plan default to profile `default`. Ctrl+C stops watch mode and cancels its active build. List available commands:
+
+<PackageCommands
+  npm="npx bc-builder --help"
+  yarn="yarn bc-builder --help"
+  pnpm="pnpm exec bc-builder --help"
+/>
 
 ```json title="package.json"
 {

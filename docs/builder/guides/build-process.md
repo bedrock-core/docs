@@ -8,9 +8,11 @@ A build runs an ordered pipeline over temporary files on disk.
 
 ## Run a profile
 
-```sh
-bc-builder build config.json development
-```
+<PackageCommands
+  npm="npx bc-builder build config.json development"
+  yarn="yarn bc-builder build config.json development"
+  pnpm="pnpm exec bc-builder build config.json development"
+/>
 
 Builder reads `config.json` and selects the named profile. The profile supplies stage settings, plugin steps and each pack's export destination. Omitting the profile name selects `default`.
 
@@ -51,7 +53,7 @@ Automatic stage detection reads the current staged files after that stage's befo
 
 A script's working directory is inside the build workspace. Before an invocation, builder copies the selected staged packs into its `BP` and `RP` folders. After a successful invocation, those folders replace the corresponding staged packs, including file additions, modifications and deletions. Later stages, scripts and module plugins see the result.
 
-Scripts use this folder-based view of the selected packs. Script plugins can use `targets` to run separately for every matching pack or `packs` to select a BP/RP pair in a project with several packs. The temporary `data` folder is shared by script invocations in the same build. [Node scripts](./node-scripts.md) describes mapping and arguments.
+Scripts use `folders` to map one selected pack set into this conventional view. Steps using the same data source share its temporary working copy; distinct data sources stay separate. Opted-in persistent data is published with the successful pack output. [Node scripts](./node-scripts.md) describes mapping and arguments.
 
 ## Rebuilds
 

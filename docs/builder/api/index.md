@@ -6,7 +6,22 @@ description: "Public builder entry points, plugin context and independently usab
 ---
 # API
 
-Import the runner or a standalone package to use builder functionality from Node.
+Most projects use the CLI and need no Builder API imports. This reference is for plugin authors and tools that run builds programmatically.
+
+For content authoring, start with [Generate JSON](../guides/generating-json.md). For extension configuration, start with [Plugins](../guides/plugins.md).
+
+## Start here
+
+| Task | Entry point |
+| --- | --- |
+| Write a plugin | [`BuildPlugin`](./BuildPlugin.md) and [`BuildContext`](./BuildContext.md) from `@bedrock-core/builder-plugin` |
+| Run a build from Node | [`runBuild`](./runBuild.md) from `@bedrock-core/builder/runner` |
+| Watch from Node | [`watchBuild`](./watchBuild.md) from `@bedrock-core/builder/watch` |
+
+The remaining reference covers specialized build integrations and standalone compiler packages.
+
+<details>
+<summary>Specialized API reference</summary>
 
 ## Build and configuration
 
@@ -82,3 +97,5 @@ Use the [UI stage](../guides/stages.md#ui-compilation) to build `@bedrock-core` 
 | [`writeMigration`](./writeMigration.md) | Function | Write a ready preview with source-change guards |
 
 Conversion types are exported from `@bedrock-core/builder/migrate`. These APIs convert configuration and leave authored project code and pack manifests intact.
+
+</details>

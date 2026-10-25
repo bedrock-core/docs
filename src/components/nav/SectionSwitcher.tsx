@@ -55,7 +55,7 @@ export default function SectionSwitcher(): ReactNode {
         <span className={styles.dot} style={{ background: `var(${accent})` }} />
         <span className={styles.name}>{current.label}</span>
         <span className={styles.spacer} />
-        {current.status !== 'planned' ? <Badge tone={current.status === 'deprecated' ? 'neutral' : current.status === '1.0' ? 'success' : current.status === '1.0-rc' ? 'info' : 'warning'}>{current.status}</Badge> : null}
+        {current.status && current.status !== 'planned' ? <Badge tone={current.status === 'deprecated' ? 'neutral' : current.status === '1.0' ? 'success' : current.status === '1.0-rc' ? 'info' : 'warning'}>{current.status}</Badge> : null}
         <Icon name="chevrons-up-down" size="sm" color="var(--text-faint)" />
       </button>
       {open ? (

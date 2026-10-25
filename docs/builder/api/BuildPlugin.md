@@ -16,6 +16,7 @@ import type { BuildPlugin } from '@bedrock-core/builder-plugin';
 
 | Property | Type | Description |
 | --- | --- | --- |
+| `requirements` | `PluginRequirements` | Optional owner module types and named direct pack dependencies |
 | `run` | `BuildStep` | Required operation receiving context and settings |
 | `detect` | `(context, settings) => BuildDetection \| Promise<BuildDetection>` | Optional input probe used in automatic mode |
 | `inputDirectories` | `(context, settings) => readonly string[] \| Promise<readonly string[]>` | Optional non-template source directories reserved before generation |
@@ -27,6 +28,8 @@ import type { BuildPlugin } from '@bedrock-core/builder-plugin';
 ```ts
 import type { BuildPlugin } from '@bedrock-core/builder-plugin';
 
+export const requirements = { modules: ['script'] };
+
 export const detect: BuildPlugin['detect'] = (context) => ({
   needed: Object.keys(context.packs).length > 0,
   reason: 'configured packs',
@@ -37,6 +40,12 @@ export const run: BuildPlugin['run'] = async (context) => {
   context.registerDependency('config.json');
 };
 ```
+
+## Pack requirements
+
+`requirements.modules` is a nonempty array of manifest module types. Each pack matching any type receives one invocation. `requirements.dependencies` maps role names to `{ modules, optional?, multiple? }`; the host resolves each role through direct local manifest dependencies. A role requires exactly one match unless its flags say otherwise.
+
+The SDK exports `PluginRequirements`, `PackRequirement`, `PackLinkOverrides` and `LinkedPacks` for typed plugins. Pack matching and dependency resolution are managed by Builder. [Plugins](../guides/plugins.md) covers pack restrictions, link overrides and project scope. Omitting `requirements` declares a project-wide tool.
 
 ## Notes
 

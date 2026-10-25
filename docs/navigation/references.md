@@ -1,90 +1,116 @@
 ---
-sidebar_position: 4
-description: "Publishing this addon's screens and page, and resolving a key it never compiled."
+sidebar_position: 6
+description: "Discover screens, their host kinds and their public parameter contracts."
 ---
+# Screen registry
 
-# References
-
-A key for a screen nobody in this realm compiled still resolves, because every client already holds the pack that draws it. What has to travel is small: per screen the compiled title, the value each entry carries and where each press leads.
-
-An addon that installs any app gets all of this done for it by [`uiOf(core)`](./realm.md). Reach for these directly in a bundle that wants its screens navigable without mounting an app.
+The builder registers metadata for every compiled screen, including static action screens, modals and native block/entity screens. [`navigation(core)`](./realm.md) publishes this metadata with the current realm as owner and includes drawable static references.
 
 ## Import
 
 ```ts
-import { addonPageReference, pages, pageTargeted, provideReferences, screens } from '@bedrock-core/navigation';
+import { navigation, type ScreenDescriptor, type ScreenParameters, type OwnedScreen, type ScreensRegistry } from '@bedrock-core/navigation/core';
 ```
 
-## provideReferences
+## Lookup
 
 ```ts
-provideReferences(lookup: (key: string) => ScreenReference | undefined, crossRealm?: CrossRealm): void
+const { screens } = navigation(core);
+
+screens.all();                       // All published screens and their owners.
+screens.all('shop');                 // Screens published by this realm.
+screens.get('shop_ui:detail');        // Exact key; undefined if absent or ambiguous.
+screens.find('shop', 'detail');       // Owner and screen name; UI namespace may differ.
+screens.reference('shop_ui:guide');   // A static reference, when one exists.
 ```
 
-Installs what resolves a key this bundle did not compile. Called once:
-
-```ts
-provideReferences(key => screens(core).find(key));
-```
-
-Until it is called, a foreign key warns and shows nothing. A key this bundle **did** compile never reaches the lookup; its own component is rendered.
-
-A screen shown from a reference is **shown, not rendered**: there is no component in this realm, so the walk drives the client directly, title, values and the key and params each press leads to, for as long as the presses are links. A press that ran the owner's own handler cannot be described, so such a screen needs its owner's script. Pass `crossRealm` to reach it: `ask(owner, key, player, params)` sends the player there, and `sendBack(address, rest, player)` returns them. Without one, such a key warns exactly as an unknown key does.
-
-## screens
-
-```ts
-screens(core: Runtime): ScreensRegistry
-```
-
-One registry per runtime, created on the first call and kept, so every caller in a realm reads and writes the same feed. It announces under `ui/reference`.
-
-| Member | Description |
+| Method | Result |
 | --- | --- |
-| `provide(reference)` | Publish this addon's screens, from `uiReference()` in `@bedrock-core/generated/ui` |
-| `find(key)` | The reference for one key, from whichever addon published it |
-| `of(namespace)` | Everything one addon published |
-| `namespaces()` | Every addon that has published screens |
+| `all(owner?)` | Metadata for all known screens, optionally limited to a publishing realm |
+| `get(key)` | One exact-key match, or `undefined` if absent or ambiguous |
+| `find(owner, name)` | One screen whose final key segment matches `name` in that realm, or `undefined` |
+| `reference(key)` | The screen's portable static data, or `undefined` if it needs its owner's code |
+
+`OwnedScreen` extends `ScreenDescriptor` with an `owner`:
 
 ```ts
-import { screens } from '@bedrock-core/navigation';
-import { uiReference } from '@bedrock-core/generated/ui';
+interface ScreenDescriptor {
+  readonly key: string;
+  readonly kind: 'action' | 'modal' | 'block' | 'entity' | 'custom';
+  readonly parameters?: ScreenParameters;
+}
 
-screens(core).provide(uiReference());
+interface OwnedScreen extends ScreenDescriptor {
+  readonly owner: string;
+}
 ```
 
-`find` searches rather than parsing the key. A key's first half is the owner's UI namespace, which an addon may set apart from the namespace it syncs under, so the published records are the only reliable answer.
+The owner is the publishing Core realm. The UI namespace in a key can differ from that realm's id. Use `find(owner, name)` to discover its actual key instead of constructing one from the owner id.
 
-## pages
+Local metadata is available immediately after the generated registrations run. Foreign metadata is read synchronously from Core's replicated mirror, so a peer can be absent until its announcement arrives. Lookups return copies of their data. Duplicate keys are ambiguous even when the publishers have different realm ids.
+
+A registry entry describes a destination; it does not make a native container programmatically openable. Use [`register()`](./realm.md#register-a-host-entry-point) to add an entry point with an opener. Catalog manifest-page publishing belongs to [`@bedrock-core/catalog/integration`](/docs/catalog/page).
+
+## Local metadata without Core
 
 ```ts
-pages(core: Runtime): PagesRegistry
+import { screenMetadata, screenMetadataFor } from '@bedrock-core/ui-runtime';
+
+screenMetadata();                   // This bundle's registered metadata.
+screenMetadataFor('shop_ui:detail'); // Exact key.
+screenMetadataFor('detail');         // Unambiguous local bare name.
 ```
 
-The same shape for an addon's page in the [catalog](/docs/catalog/page), announced under `addon/page`. Every addon publishes one, whether or not it installed a catalog: the page follows from the manifest, the build compiles it, and the realm announces it on the first tick.
+These functions read build registrations only. They do not discover another realm.
 
-| Member | Description |
+## Declare accepted parameters
+
+A screen module can export a portable runtime contract:
+
+```tsx title="detail.screen.tsx"
+import { Panel, Screen, Text, type JSX } from '@bedrock-core/ui';
+import type { ScreenParameters } from '@bedrock-core/ui-runtime';
+
+export const parameters = {
+  itemId: { type: 'string' },
+  section: { type: 'string', enum: ['info', 'offers'], optional: true },
+} as const satisfies ScreenParameters;
+
+interface DetailProps {
+  itemId: string;
+  section?: 'info' | 'offers';
+}
+
+export default function Detail({ itemId = 'diamond', section = 'info' }: DetailProps): JSX.Element {
+  return (
+    <Screen>
+      <Panel gap={8}>
+        <Text maxLength={64}>{itemId}</Text>
+        <Text maxLength={16}>{section}</Text>
+      </Panel>
+    </Screen>
+  );
+}
+```
+
+Open it with `navigate('shop_ui:detail', player, { params: { itemId: 'diamond', section: 'offers' } })`, using the namespace configured for that build.
+
+For a module whose default export is a record of screens, `parameters` is a record of contracts keyed by the same screen names. Parameterized screens retain their component even when their default rendering could be described as static.
+
+| Parameter type | Contract fields |
 | --- | --- |
-| `provide(reference)` | Publish this addon's page |
-| `of(addonId)` | What another addon published |
+| `string`, `number` | Optional `enum` of values of that type |
+| `boolean` | Boolean value |
+| `data` | Any JSON-safe value |
+| `array` | Required `items` contract |
+| `object` | Required `properties` record of contracts |
 
-Where a press on the page leads is the **name of an app**, `config` or `guide`, not a screen: the page is drawn in one realm and answered in another, and only the owning realm knows what its config screen looks like.
+Every parameter is required unless `optional: true` is specified. An optional parameter may be omitted; defaults are supplied by the component or host, not by the contract. Objects reject undeclared properties, including inside nested object contracts. All values must be plain JSON data, including finite numbers. Invalid inputs reject the transition rather than being dropped.
 
-```ts
-addonPageReference(Page: FunctionComponent): AddonPageReference   // the reference of a page screen
-pageTargeted(app: string): TargetedPress                          // a press that names the app it opens
-```
+An empty contract accepts no parameters. An absent contract accepts plain-data parameters without a named-property restriction; TypeScript props alone do not create runtime metadata. Static references accept no parameters.
 
-`addonPageReference` builds a page's reference the way the compile built the screen, reading each entry's value off the tree and each press's target off its handler. `pageTargeted` marks a press with the app it opens; its body is empty on purpose, because the page's own script never runs.
+## Compiled references
 
-## Types
+A data-only screen record contains its compiled title, entry values and declarative press actions. The builder registers these records through the renderer's `registerStaticScreens()` API. `navigate()` can open them without a component or a Core runtime.
 
-```ts
-import type { AddonPageReference, AddonScreens, PageTarget, TargetedPress } from '@bedrock-core/navigation';
-```
-
-`AddonScreens` is an envelope: the version, the owner's UI namespace, and the screens as `unknown`. The renderer owns the real shape and narrows it at the point of use, which is what keeps this package free of the screen format. `AddonPageReference` is `{ v: 1, values: string[], targets: (PageTarget | null)[] }`. `isAddonScreens` and `isAddonPageReference` are the envelope checks.
-
-## Notes
-
-Both registries extend `Announcement` from `@bedrock-core/server-runtime`, so they behave like every other cross-addon feed: published once at startup, readable by every realm, and re-read when an addon joins.
+Core publishes drawable records alongside screen metadata. It presents a reference locally when possible and contacts the owning realm when a destination needs its code. Caller history remains owned by the navigation library.

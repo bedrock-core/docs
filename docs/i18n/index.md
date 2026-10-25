@@ -63,7 +63,7 @@ That is the whole setup. Key paths, interpolation variables and plural forms are
 
 ## Next steps
 
-- [Authoring resources](./authoring.md) — locale files, namespacing, interpolation, plurals and the meta branch
+- [Authoring resources](./authoring.md) — locale files, namespacing, interpolation, plurals and pack display text
 - [Libraries and overrides](./libraries.md) — folding a dependency's strings into your bundle, overriding library and vanilla strings
 - [API reference](./api.md) — the three verbs, locale resolution, `createI18n` and every export
 - [i18n builder stage](/docs/builder/guides/stages#translations) — generating `.lang` files and the runtime bundle from your resources
