@@ -41,7 +41,7 @@ A screen's root names its [host](../guides/hosts.md), and there is no default. `
 
 ## static
 
-A screen is static when every string it shows is baked and every press is a [`<Link>`](./Link.md) or the way out. Such a screen needs nothing at runtime — the build already knows its title, the value each entry is shown with, and where each press leads — so the addon ships that table instead of the component, and any realm can show it. See [static screens](../guides/navigation.md#static-screens).
+A screen is static when every string it shows is baked and every press is a [`<Link>`](/docs/navigation/components/Link) or the way out. Such a screen needs nothing at runtime — the build already knows its title, the value each entry is shown with, and where each press leads — so the addon ships that table instead of the component, and any realm can show it. See [static screens](/docs/navigation/references#compiled-references).
 
 Setting `static` both asks for that and **proves** it. A qualifying screen is detected either way; declaring it fails the build the moment the screen starts carrying live text, a carried `visible`, or a handler the build cannot read.
 
@@ -78,4 +78,4 @@ export default function FrameworkPage(): JSX.Element {
 
 ## Notes
 
-A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) compiles, and the filename without the suffix is the screen's [key](../guides/navigation.md#screen-keys).
+A screen file is a `*.screen.tsx` under `BP/scripts` with a default export. That is what the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) compiles, and the filename without the suffix is the screen's [key](/docs/navigation/references).

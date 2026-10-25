@@ -9,14 +9,15 @@ A translated text whose tags are components, drawn exactly where their text fall
 
 ```tsx
 import { Trans } from '@bedrock-core/ui';
+import { Link } from '@bedrock-core/ui/navigation';
 ```
 
 ## Usage
 
 ```ts
-// packs/data/i18n/en_US.ts
+// packs/BP/i18n/en_US.ts
 help: { prices: 'See <shop>the shop</shop> for <gold>today</gold>\'s prices.' },
-// packs/data/i18n/es_ES.ts
+// packs/BP/i18n/es_ES.ts
 help: { prices: 'Mira los precios <gold>de hoy</gold> en <shop>la tienda</shop>.' },
 ```
 
@@ -58,6 +59,8 @@ Inherits [control props](./control-props.md).
 | `<br/>` | on a new line |
 
 Tags nest, so a style inside a press is part of that press. A `<` followed by a name `components` does not have is text.
+
+[A route Link](/docs/navigation/components/Link) can also be a tagged component inside a static navigation root. Its localized caption determines the clickable bounds, and a prepared local transition selects its resident page without submitting the form.
 
 ## How it is drawn
 

@@ -35,7 +35,7 @@ config.server.announce.get();
 config.open(player);
 ```
 
-Nothing else runs. The definition installs the scopes, the ui-compiler filter reads it out of this very call to shape one screen per section, and the install registers the commands and serves the show method another realm asks on.
+Nothing else runs. The definition installs the scopes, the ui-compiler stage reads it out of this very call to shape one screen per section, and the install registers the commands and serves the show method another realm asks on.
 
 The subsystem itself, the scopes, the entry types, storage, cross-addon reads and authorization, is documented on [its own page](/docs/config/settings); this section is about what the screens and the commands make of it.
 
@@ -48,6 +48,7 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 ## What you get
 
 - **Screens shaped for your schema.** One compiled form per section with fields, baked into your own pack at build. A level is either a form or a screen of buttons, so every button names a real child section or list. Nothing about a section travels at runtime; only the values do.
+- **Client navigation between menus.** Section menus, pagination, and Back run on the client where possible. Modal editors, live player and dimension lists, list contents, and reset actions use the server.
 - **Two commands under your own namespace.** `<ns>:config` for a player's own settings and `<ns>:configat` for an operator reaching any scope, with generated autocomplete for every verb and every setting. Turn them off with `registerConfig(definition, { commands: false })`.
 - **Each addon draws its own settings.** A command or `config.open()` naming another addon hands the screens to that addon's realm, which draws them from its own pack and values, and the player comes back.
 - **Strings you can override.** Every label, hint and command reply is a `core.*` key folded into your bundle, so a rename or a locale you ship reaches every screen.

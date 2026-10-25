@@ -1,4 +1,5 @@
 ---
+sidebar_position: 20
 description: "A screen one pack draws into another pack's screen, over an area the host reserves."
 ---
 # Embed
@@ -33,6 +34,7 @@ Neither side renders the other. The one contract is the host's frame, the area's
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `frame`<Req /> | `{ width: number; height: number }` | — | The canvas the host bakes its own screen against |
+| `name` | `string` | — | Distinguishes embedded pages within one addon; letters, digits, underscores and hyphens |
 | `area`<Req /> | `{ x: number; y: number; width: number; height: number }` | — | The area of that frame this component fills |
 
 Inherits [control props](./control-props.md) except `width` and `height`, which come from `area`.
@@ -60,10 +62,10 @@ Inherits [control props](./control-props.md) except `width` and `height`, which 
 ## embedMarker
 
 ```ts
-embedMarker(namespace: string): string
+embedMarker(namespace: string, name?: string): string
 ```
 
-The value slot 0 carries for one addon's screen: `core_addon:<namespace>`, which is also the namespace that addon's compiled screens are emitted under.
+The value slot 0 carries for an embedded page: `core_addon:<namespace>` for the default page, or `core_addon:<namespace>:<name>` for a named page. Pass the same name used by `<Embed name={'framework'}>` to `embedMarker(namespace, 'framework')`. The compiler rejects duplicate markers within one pack.
 
 ## Notes
 

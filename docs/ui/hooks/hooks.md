@@ -30,6 +30,8 @@ State and effects for your components, plus the few that reach outside them.
 ## Hosts
 
 - [`useMechanism`](./useMechanism.md) — what this kind of component becomes on the screen it is drawn on
+- [`useRenderOwner`](../guides/render-extensions.md#read-render-ownership) — the build, player, entity or block owning a library render
+- [`useCompiledData`](../guides/render-extensions.md#retain-compilation-data) — portable library data retained in the host's snapshot
 
 ## Localization
 

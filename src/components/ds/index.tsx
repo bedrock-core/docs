@@ -69,7 +69,7 @@ export function PackageCard({
   href = '#',
 }: PackageCardProps): ReactNode {
   const planned = status === 'planned';
-  const tone = planned ? 'neutral' : status === '1.0' ? 'success' : status === '1.0-rc' ? 'info' : 'warning';
+  const tone = planned || status === 'deprecated' ? 'neutral' : status === '1.0' ? 'success' : status === '1.0-rc' ? 'info' : 'warning';
   return (
     <Link
       to={planned ? undefined : href}

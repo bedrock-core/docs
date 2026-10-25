@@ -107,7 +107,7 @@ These affect how **children** are laid out inside this node.
 | `alignItems` | `'flex-start' \| 'flex-end' \| 'center' \| 'stretch'` | `'stretch'` | Alignment of children along the cross axis. `'stretch'` makes children fill the cross dimension |
 | `alignContent` | `'flex-start' \| 'flex-end' \| 'center' \| 'stretch' \| 'space-between' \| 'space-around'` | `'stretch'` | Alignment of flex lines when `wrap` is enabled and there are multiple lines |
 | `gap` | `number \| Percent` | — | Space between children on both axes. Use `rowGap` / `columnGap` to set axes independently |
-| `rowGap` / `columnGap` | `number \| Percent` | — | Space between rows / columns when `wrap` is enabled. `rowGap` also applies between children in a `column` container |
+| `rowGap` / `columnGap` | `number \| Percent` | — | Horizontal and vertical gaps, respectively. Each overrides `gap` on its own axis: horizontal gaps separate row items and wrapped columns; vertical gaps separate column items and wrapped rows |
 | `padding` | `number \| Percent` | — | Inner spacing on all four sides. Use `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` for per-side control. Percentage values resolve against the **parent's content-box width** for all sides |
 
 ### Flex item props

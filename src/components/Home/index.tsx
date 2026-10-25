@@ -11,7 +11,7 @@ const GITHUB = 'https://github.com/bedrock-core/';
 
 const TRUST = [
   { icon: 'shield-check', label: 'Type-safe by design' },
-  { icon: 'package', label: 'Zero dependencies at runtime' },
+  { icon: 'package', label: 'Zero runtime dependencies' },
   // { icon: 'store', label: 'Marketplace ready' },
 ];
 
@@ -26,11 +26,10 @@ export function Hero(): ReactNode {
         </div>
         <h1 className={styles.headline}>Addons Better Connected</h1>
         <p className={styles.lede}>
-          Addons run in isolated realms. <code>@bedrock-core</code> lets yours find each other, call each other,
-          share state, and draw custom UI the whole world can use.
+          Addons run in isolated realms. <code>@bedrock-core</code> lets yours find each other, work together, and draw custom UI the whole world can use.
         </p>
         <div className={styles.actions}>
-          <Button size="lg" iconRight="arrow-right" href="/docs/server">
+          <Button size="lg" iconRight="arrow-right" href="/docs/introduction">
             Get started
           </Button>
           <Button size="lg" variant="secondary" iconLeft="github" href={GITHUB}>
@@ -72,7 +71,7 @@ const FEATURES = [
   { icon: 'database', title: 'Shared state', accent: '--cat-framework', body: 'A declared shape every realm mirrors locally as a typed tree. Reads are synchronous, writes broadcast a delta.' },
   { icon: 'layout-panel-left', title: 'JSX screens', accent: '--cat-ui', body: 'React-like components for forms and containers. Screens compile ahead of time; only state moves at runtime.' },
   { icon: 'sliders-horizontal', title: 'Config, guides and translations', accent: '--cat-data', body: 'Declare a settings schema, ship an MDX guide and a typed translation bundle; the shared UI renders all three for every addon in the world.' },
-  { icon: 'terminal', title: 'One build chain', accent: '--cat-tooling', body: 'Regolith filters compile guides, localization and screens, bundle the scripts, and run your GameTests on a real dedicated server.' },
+  { icon: 'terminal', title: 'One build chain', accent: '--cat-tooling', body: 'Builder compiles guides, localization and screens and bundles scripts. BDS runner executes GameTests on a dedicated server.' },
 ];
 
 export function Features(): ReactNode {
@@ -226,7 +225,7 @@ export function Cta(): ReactNode {
         <h2 className={styles.ctaTitle}>Start with one package.</h2>
         <p className={styles.ctaSub}>Pin an exact version, and read the changelog before you upgrade.</p>
         <div className={styles.actions}>
-          <Button size="lg" iconRight="arrow-right" href="/docs/server">
+          <Button size="lg" iconRight="arrow-right" href="/docs/introduction">
             Read the docs
           </Button>
           <Button size="lg" variant="secondary" iconLeft="discord" href={DISCORD}>

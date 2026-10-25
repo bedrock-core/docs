@@ -1,121 +1,134 @@
 ---
-sidebar_position: 5
-description: "uiOf(core) is the UI a realm has once, whichever apps are installed: the show methods, the navigator, the way back, and where each player is."
+sidebar_position: 7
+description: "Connect the static route tree to Core discovery, host entry points and cross-addon transport."
 ---
+# Core integration
 
-# The realm
-
-A screen is drawn by the addon whose pack holds it. Most of the shared UI is in every pack, so whichever realm a command is typed into draws it; what one addon *declared* exists in exactly one bundle, and reaching it means asking that addon's realm. `uiOf(core)` is the part of that every app needs exactly once, however many apps an addon installs.
+`createCoreNavigationAdapter(core)` connects the normal static route tree to Core discovery and cross-addon transport.
 
 ## Import
 
 ```ts
-import { uiOf, methodFor, isUiTarget, isUiReturn, registerDeclared } from '@bedrock-core/navigation';
-import type { UiPresence, UiTarget, ScreenTarget, UiReturn, TargetOpener } from '@bedrock-core/navigation';
+import { createCoreNavigationAdapter, navigation } from '@bedrock-core/navigation/core';
 ```
 
-## uiOf
+## Root integration
 
-```ts
-uiOf(core: Runtime): UiPresence
+Create the adapter after registering the Core runtime. Import generated UI registrations once during startup.
+
+```tsx
+const adapter = createCoreNavigationAdapter(core);
+const RootStack = createStackNavigator({
+  screens: {
+    Home,
+    Settings: 'shop:settings',
+    Published: createScreenReference(),
+  },
+});
+const Navigation = createStaticNavigation(RootStack, { adapter });
 ```
 
-The realm's one UI presence, built on the first call and kept in the runtime's `core:ui` slot. Every app calls it and gets the same object, so the show methods, the navigator and the way back are installed once. An app registers what it draws and reads the rest back:
+Local pages and published aliases use the same Link, hooks and player-scoped refs. For example, `navigation.navigate('Settings')` opens the alias; `navigation.navigate('Published', { screen: key, params })` opens a discovered key. Published transitions run on the server.
+
+The adapter exposes read-only `screens.all(owner?)`, `screens.get(key)` and `screens.find(owner, name)`. Repeated adapter creation for one Core runtime shares the connection. Without the adapter, aliases resolve this bundle's compiled entries.
+
+## Host registration
+
+The advanced `navigation(core)` service publishes compiled descriptors and registers application-owned host entry points. Catalog, config and Guides use it for their private model loading. One service is stored per runtime.
 
 ```ts
-const realm = uiOf(core);
-
-realm.serve('config', (player, target) => openConfig(core, player, target));
-realm.offers('config');
+interface ServerNavigation {
+  readonly screens: ScreensRegistry;
+  register(screen: ScreenDescriptor, open?: ScreenOpener): () => void;
+}
+type ScreenOpener = (
+  player: Player, options: ScreenOpenOptions,
+) => boolean | void | Promise<boolean | void>;
 ```
 
-## Targets
+An opener's options contain public `params`, render debug settings and the complete destination `location`.
 
-A place in the UI, as data. What travels when one realm asks another to draw a screen, and what comes back the other way when the player leaves it:
+## Register a host entry point
 
-```ts
-interface UiTarget {
-  readonly kind: string;
-  readonly addonId?: string;
-  readonly [field: string]: unknown;
+This example uses a compiled `Settings` screen and the app's local `buildSettingsModel()` function:
+
+```tsx title="settings-navigation.tsx"
+import type { Runtime } from '@bedrock-core/server-runtime';
+import { navigation } from '@bedrock-core/navigation/core';
+import { render } from '@bedrock-core/ui';
+import Settings from './settings.screen';
+import { buildSettingsModel } from './settings-model';
+
+export function registerSettings(core: Runtime): () => void {
+  return navigation(core).register({
+    key: `${core.id}:settings`,
+    kind: 'custom',
+    parameters: {
+      section: { type: 'string', enum: ['general', 'audio'], optional: true },
+    },
+  }, (player, { params }) => {
+    const section = params?.section === 'audio' ? 'audio' : 'general';
+    const model = buildSettingsModel(player, section);
+
+    render(<Settings model={model} />, player);
+
+    return true;
+  });
 }
 ```
 
-The `kind` is open. This package serves one of them itself, `screen`, because a key and its params are the whole of what a cross-realm `navigate()` carries; every other kind belongs to the app that serves it, and an app narrows the fields of its own kind with its own guard. `addonId` is the one field the realm reads for itself: a kind nothing here serves is sent to that addon's realm, which may have installed the app this one did not.
+An opener receives validated public parameters and `ScreenOpenOptions.location`, including confirmed client selections. It rebuilds private models, checks player permissions and opens the appropriate host. Synchronous renders inherit the navigation driver's logical destination; a render after `await` uses [`renderDestination()`](#async-host-renders) to supply it explicitly. Runtime instances, players, callbacks and JSX do not travel as parameters.
 
-`isUiTarget` checks the envelope off the wire: a string `kind`, and for `screen` a string `key` and, when present, an object `params`. `isUiReturn` does the same for one hop of a way back, `{ realm, target }`. A realm running an older or newer copy of an app may have sent either, so a path with anything unreadable in it is dropped rather than half-walked.
+Return `false` to reject the transition. `void` or `true` accepts it. A promise resolves when the opener has accepted or rejected the transition; it should not wait for the player to finish using the screen. The returned disposer removes this entry point and its opener; calling it again has no effect. Registering the same entry-point key twice on the service throws.
 
-## One method per kind
+A logical entry can choose among several compiled action or modal screens. The navigation library keeps that logical destination while the selected physical host renders a private model.
 
-```ts
-methodFor(kind: string): string   // 'core:config.show', or 'core:ui.show' for a screen
+`register(descriptor)` without an opener publishes metadata and uses the normal compiled-screen resolver when available. A `custom` destination needs an opener or a corresponding compiled screen to be usable. Registering a host does not compile its layout.
+
+## Async host renders
+
+`renderDestination(root, player, location, options?)` renders under a library-owned logical destination. Use it when an opener awaits private model loading before rendering. Its `options` are the renderer's optional debug settings; routing stays in `location`.
+
+```tsx
+import { renderDestination } from '@bedrock-core/navigation/runtime';
+import type { ScreenOpenOptions } from '@bedrock-core/navigation/core';
+import type { Player } from '@minecraft/server';
+import Settings from './settings.screen';
+import { loadSettingsModel } from './settings-model';
+
+export async function openSettings(player: Player, options: ScreenOpenOptions): Promise<boolean> {
+  const model = await loadSettingsModel(player, options.params);
+
+  renderDestination(<Settings model={model} />, player, options.location, { debug: options.debug });
+
+  return true;
+}
 ```
 
-The method a realm is asked on is derived from the kind, not registered, so a caller maps one to the other with nothing to probe. An addon that did not install an app does not serve its method, and the request is refused with `unknown method`: a visible failure the caller falls back from, instead of a target kind silently opening the wrong screen.
+Pass this opener to `navigation(core).register()`. Return after the destination accepts or rejects opening, without waiting for the player to close its form. Plain `render()` remains available for standalone screens and synchronous host renders.
 
-## Serving a kind
+## Cross-realm transitions
 
-| Member | Description |
-| --- | --- |
-| `serve(kind, opener)` | Register what draws that kind here, and start answering its method. One opener per kind; a second throws |
-| `serves(kind)` | Whether an app mounted in this realm draws that kind |
-| `show(player, target)` | Draw a target: the local opener, or the owning realm when nothing here serves the kind, or the owner of a screen key this bundle did not compile |
+Static references can be shown locally from the client's installed pack. A dynamic destination is sent to its published owner through `core:navigation.open`. The request carries the destination and the complete navigation history, including parameters and confirmed page/tab context.
 
-`show` is the funnel. A command, a press on a page, a request from another realm and an app's own `open` all end here, which is where a target is routed once.
+Back consumes that same destination history. When a previous screen belongs to another realm, the adapter resolves its registered owner and transfers the remaining snapshot to it. An empty history makes `back()` return `false`.
 
-## Asking another realm
+The receiving realm checks the request, finds the connected player, validates the target contract and invokes its opener. A rejection retains the source state. An accepted request retires the source render session without closing the destination form. An older response cannot retire a newer local navigation.
 
-| Member | Description |
-| --- | --- |
-| `ask(owner, player, target, from?)` | Ask `owner`'s realm to show a target, carrying the way back. Never rejects; resolves whether that realm took the player |
-| `returnTo(player)` | The way back a request from here carries: the realms the player crossed, with this one appended when it has a place to name |
-| `showing(player, target)` | Record what this realm is showing a player, as the target that put them there |
+For example, after `shop:home` opens a guide and that guide opens another realm's settings, Back reopens the guide with its public parameters and confirmed page context. The next Back returns to `shop:home`. All three destinations belong to the same transferred history, even though their hosts can run in different realms.
 
-When the other realm takes the player, this one drops its component tree and input lock but leaves the forms on screen: closing them would close the one that realm just opened.
+Ownership comes from the publishing realm, not from the key's UI namespace. Ambiguous keys are rejected. Native block/entity screens are registered for discovery but need their real host or an explicitly registered opener.
 
-`showing` matters for one kind of screen. A screen drawn from a *model*, a catalog or a roster, cannot be returned to by its key, because rendering its component with no model draws the empty shape of it. The target that opened it is what can be sent back across a realm, so every such screen records it.
+## Restore confirmed client context
 
-## Resolving keys
+A static navigation root confirms the active local route and bounded history before an ordinary button handler or server link runs. Before a published handoff, it stores the logical tree in `location.navigatorStates`, keyed by the root navigator id.
 
-| Member | Description |
-| --- | --- |
-| `reference(key)` | The reference for one screen key: the sources this realm added first, then whatever an addon published. `undefined` is a key nothing in this world can draw |
-| `resolve(source)` | Add a source of references tried before the published ones, for screens baked into a pack that no addon announces |
-| `alias(addonId, ns)` | Say which UI namespace a row belongs to when that row is not an addon that publishes |
-| `screenKey(addonId, name)` | The key of one of an addon's screens by the name its build gave it, read off what that addon published or off an alias |
+Back returns to the source host with that checkpoint. The same root restores its confirmed stacks, selected tabs and nested state. Private component hook state belongs to the current render session and is rebuilt after returning from another host.
 
-The framework is the one row that needs the last three: it has a page and a guide but no realm, so it announces nothing. The catalog hands the realm its table and its namespace.
+Generated Guides use the same static root and restore their logical route history from `location.navigatorStates`. The free `checkpoint()` function records state known to an advanced host; it does not poll native controls.
 
-## The first tick
+## Custom runtime resolvers
 
-```ts
-realm.onReady(() => { /* publish something read off the build */ });
-```
+An independent host can install `setNavigator(resolver)` from `@bedrock-core/navigation/runtime`. The resolver receives `(key, player, options)` and returns `true`, `false` or a promise of those values. Acceptance records the destination; rejection restores the previous state. Delegate ordinary compiled screens to `openScreen(key, player, options)` from the same entry point. `setNavigator(undefined)` restores the local resolver.
 
-Runs on the first tick, when every module the entry imports has been evaluated and the build's declarations are in hand; immediately if that tick has passed. Every publisher runs in a try/catch that warns rather than throws, so an addon shipping an older runtime than the UI it mounts loses one announcement rather than failing to start.
-
-The realm publishes two things itself: this addon's [screen references](./references.md), and its page in the catalog when the build declared one.
-
-## What an addon offers
-
-| Member | Description |
-| --- | --- |
-| `offers(app)` | Declare that this addon serves an app, by the name its target kind is known by |
-| `offered(addonId)` | What an addon announced it serves. Empty for one that announced nothing |
-
-Announced as one list on the first tick, after every app has installed, so any realm can tell what a peer answers before asking it. A catalog uses it to draw an entry for an app an addon does not serve as unreachable, rather than leading a player at a request that would be refused. An app that only learns during its own tick whether it has anything to serve, a guide with no pages, still counts: the list goes out last.
-
-## What the build declared
-
-```ts
-registerDeclared({ page });
-declaredParts(): DeclaredParts
-```
-
-The channel the build uses to hand the runtime something the addon author never wrote. The ui-compiler filter generates a module that asks each installed app for the screens its declaration implies; the catalog's builds the addon's page from the manifest and calls `registerDeclared` with it, and the realm reads it back on the first tick and publishes the reference. The generated module is imported for its side effect at the top of the entry, which is what makes it evaluate before anything reads it.
-
-## Notes
-
-`uiOf` serves `core:ui.show` for `screen` targets, installs [`provideReferences`](./references.md) with `ask` and `sendBack` wired to the transport, and forgets a player's place when they leave. An app never installs a navigator, serves that method or keeps its own return path.
-
-A realm running an older copy of an app understands as much of a target as it knows and falls back for the rest. Nothing about a target's fields reaches the runtime.
+Core installs its own resolver. The advanced `'handed-off'` result is for a resolver that has already transferred the full snapshot and released the source session, so the source runtime must not record the destination locally. Most registered host openers should use the boolean/void acceptance contract above.

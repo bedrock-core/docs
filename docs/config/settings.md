@@ -52,7 +52,7 @@ registerConfig<I extends ConfigDefinition>(definition: I): ConfigDeclaration<I>
 
 The field `core.register()` takes. Installing builds the registry on the runtime's node, namespace and db, fills the `core:config` slot with it, and hands back the typed scope accessors under the `config` key. Declare it once: the slot is filled once, and a second fill throws.
 
-The declaration carries the definition as written, which is how the ui-compiler filter reads it out of the register call to shape the screens.
+The declaration carries the definition as written, which is how the ui-compiler stage reads it out of the register call to shape the screens.
 
 ```ts
 const configDef = {
@@ -342,7 +342,7 @@ function flattenSchema(schema: SchemaGroup, prefix?: string): FlatSchema
 function flattenGroups(schema: SchemaGroup, prefix?: string): FlatGroups
 ```
 
-Turns a `SchemaGroup` into dot-path keys: every setting in `flattenSchema`, every group that names a `$label` or `$description` in `flattenGroups`. This is what an addon's **build** needs: the ui-compiler filter reads the definition out of `core.register()` and calls these to get the keys the compiled screens are shaped and keyed by, without a runtime in hand.
+Turns a `SchemaGroup` into dot-path keys: every setting in `flattenSchema`, every group that names a `$label` or `$description` in `flattenGroups`. This is what an addon's **build** needs: the ui-compiler stage reads the definition out of `core.register()` and calls these to get the keys the compiled screens are shaped and keyed by, without a runtime in hand.
 
 ## `configOf(core).local`
 

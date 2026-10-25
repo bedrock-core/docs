@@ -5,20 +5,20 @@ description: "Every string the config app draws is a typed i18n resource under t
 
 # Localization
 
-Every string in this package is a typed i18n resource under the `core` namespace, shipped inside the package and declared for the [i18n Regolith filter](/docs/filters/i18n):
+Every string in this package is a typed i18n resource under the `core` namespace, shipped inside the package and declared for the [i18n builder stage](/docs/builder/guides/stages#translations):
 
 ```jsonc
 "bedrockCore": { "i18n": { "dir": "./src/i18n", "namespace": "core" } }
 ```
 
-The filter folds them into **your** bundle and generated `.lang`, so they paint, measure and translate exactly like your own keys. The three apps share the namespace with disjoint keys: this package's are `core.config.*`, `core.scope.*`, `core.roster.*`, `core.reset.*`, `core.action.*`, `core.field.*`, `core.list.*`, `core.command.*` and `core.errors.*`.
+The stage folds them into **your** bundle and generated `.lang`, so they paint, measure and translate exactly like your own keys. The three apps share the namespace with disjoint keys: this package's are `core.config.*`, `core.scope.*`, `core.roster.*`, `core.reset.*`, `core.action.*`, `core.field.*`, `core.list.*`, `core.command.*` and `core.errors.*`.
 
 ## Overriding a string
 
 Merge is last-write-wins per key, so you [override any of them](/docs/i18n/libraries#overriding-a-library-string) by authoring the same path in your own resources:
 
 ```ts
-// packs/data/i18n/en_US.ts
+// packs/BP/i18n/en_US.ts
 export default {
   core: { action: { save: 'Apply' } },   // renames the save button for your pack
 } as const;
@@ -47,5 +47,5 @@ Its `resolve` is the *world* resolver, `core.translations.forPlayer(player)` cha
 
 ## Next steps
 
-- [i18n filter](/docs/filters/i18n) — how library resources fold into your bundle
+- [i18n stage](/docs/builder/guides/stages#translations) — how library resources fold into your bundle
 - [`core.translations`](/docs/server/api/translations) — the published bundles the resolver chains

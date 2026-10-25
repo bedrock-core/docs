@@ -10,21 +10,10 @@ The registry the build writes into and `render()` reads out of.
 
 ```ts
 import {
-  addonReference,
-  compiledKeyOf,
-  compiledScreens,
-  compiledSnapshotOf,
-  compiledTitleOf,
-  compiledValuesOf,
-  FLAG_OFF,
-  FLAG_ON,
-  isAddonReference,
-  isScreenReference,
-  presentReference,
-  registerCompiledScreen,
-  registerStaticScreens,
-  screenForKey,
-  showCompiledTitle,
+  compiledKeyOf, compiledScreens, compiledSnapshotOf, compiledTitleOf,
+  compiledValuesOf, FLAG_OFF, FLAG_ON, registerCompiledScreen,
+  registerScreenMetadata, registerStaticScreens, screenForKey,
+  screenMetadata, screenMetadataFor, showCompiledTitle,
 } from '@bedrock-core/ui';
 ```
 
@@ -34,7 +23,7 @@ Most of this is called by the module the build generates, not by hand. It is doc
 
 The build knows a screen by its file; the runtime knows it by the function `render()` was handed. Nothing carries a name between the two on its own, and the alternatives are all worse: a function's `.name` does not survive a bundler faithfully, a string the author repeats at the call site is a second place for the truth to live, and stamping a name into the author's module is a build editing source it does not own.
 
-So the build generates one module that imports each screen and registers it — the same shape as the i18n and guides bundles — and the addon imports that module once. The association is by component identity, which is what `render()` already has in hand.
+Builder generates a module that imports each screen and registers it, then loads that module from the built script entry. The association is by component identity, which is what `render()` already has in hand.
 
 ## Registration
 
@@ -42,6 +31,7 @@ So the build generates one module that imports each screen and registers it — 
 | --- | --- | --- |
 | `registerCompiledScreen` | function | Records that a screen was compiled, with the key it is navigated by and the title it is drawn by |
 | `registerStaticScreens` | function | Records the screens the build described in full, which ship as data rather than as components |
+| `registerScreenMetadata` | function | Records the public key, host kind and optional runtime parameter contract for every compiled host |
 
 Registering one component twice with different titles throws: one component is one compiled screen, so render it twice rather than compiling it twice.
 
@@ -53,7 +43,9 @@ Registering one component twice with different titles throws: one component is o
 | `compiledKeyOf` | function | The `<addon>:<name>` key a screen is navigated by |
 | `compiledSnapshotOf` | function | What the build baked: the shape fingerprint, the baked strings, and the carried-visible ordinals |
 | `screenForKey` | function | The component a key names in this bundle, or `undefined` |
-| `compiledScreens` | function | Every compiled screen this bundle registered, in registration order |
+| `compiledScreens` | function | Registered component-backed form screens, in registration order |
+| `screenMetadata` | function | Metadata for all registered screens, including static forms and native containers |
+| `screenMetadataFor` | function | Metadata by exact key, or an unambiguous local bare name |
 
 Both `compiledTitleOf` and `compiledKeyOf` accept a component or an element rendering one, because a compiled screen takes props that way — a generic screen filled per present, whose shape does not depend on them.
 
@@ -71,7 +63,7 @@ interface CompiledSnapshot {
 
 ## Showing a screen by title
 
-What `render()` and [`presentReference`](#references) are both built from underneath: a title picks the layout, and a list of entry values is the whole of what fills it.
+A title picks the layout, and a list of entry values fills it. Both `render()` and the navigation library's reference walker use this rendering operation.
 
 | Export | Kind | Description |
 | --- | --- | --- |
@@ -93,18 +85,8 @@ A carried `visible` and a press's `enabled` both write through the same two-lett
 
 Letters rather than digits: a compiled control reads its entry with string arithmetic, and the engine types a `'0'` that arithmetic produces as a number — never equal to the `'0'` a gate compares it against.
 
-## References
+## Static layouts and action metadata
 
-| Export | Kind | Description |
-| --- | --- | --- |
-| `addonReference` | function | Every static screen this bundle carries, as the record an addon publishes |
-| `presentReference` | function | Shows a foreign screen and follows its links until a press leads nowhere |
-| `isAddonReference` | function | Narrows a reference that arrived over the wire: the envelope |
-| `isScreenReference` | function | Narrows one screen's reference |
-| `whyNotPlainData` | function | Why a value would not come back unchanged from JSON, naming the first part that would not, or `undefined` when it would |
+`registerStaticScreens()` stores each static layout's `key`, `title`, `values` and `actions`. Action metadata is opaque to the renderer: the library that authored a control interprets its entries. The rendering registry does not resolve destinations or maintain history.
 
-A reference is the title, the value each entry is shown with, and where each press leads, with the params it opens its target with. That is all a realm needs to show a screen it did not build, because the prose, the textures and the layout are already in the pack every client holds.
-
-Only a [static](../guides/navigation.md#static-screens) screen has one. A press running the owner's own handler cannot be described, so its target is `null` and it does nothing in a foreign realm — the screen still shows, and the presses that are links still work.
-
-`presentReference` returns `'back'` when the player pressed back out of the first screen of the walk, and `'done'` when the walk simply ended. That is how whoever opened it knows whether to show what the player came from.
+The navigation library converts its static action metadata into portable references and follows their destinations. See [screen references](/docs/navigation/references) for reference lookup and [navigation](/docs/navigation/references#compiled-references) for static screen behavior.

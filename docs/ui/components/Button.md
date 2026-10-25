@@ -46,7 +46,7 @@ A press is one of three things, and each is its own component.
 
 A handler is **script**: only this realm can run it, so the build cannot describe where the press leads. The form's two controls are routed by the engine itself, so nothing reaches script for them at all.
 
-When the press simply opens another screen, reach for [`<Link>`](./Link.md) instead — its destination is data the build reads off the tree, which is what lets a screen of presses be [described to another addon](../guides/navigation.md#static-screens).
+When the press simply opens another screen, reach for [`<Link>`](/docs/navigation/components/Link) instead — its destination is data the build reads off the tree, which is what lets a screen of presses be [described to another addon](/docs/navigation/references#compiled-references).
 
 ## What a press costs
 

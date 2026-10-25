@@ -35,6 +35,8 @@ When the handoff goes through an async opener, **return the promise from `onPres
 
 A container screen has no such limit: a handler renders and the slots settle in the same tick.
 
+An explicit [`refreshRender(player)`](../api/render.md#refresh-an-open-form) closes and re-presents an open form with its existing hook state. It is available to libraries or server events that need an immediate new presentation.
+
 ## A container screen's state belongs to its entity or block
 
 One layout serves every viewer of a container screen. Its state is written to the host after each render and read back at the next open, so it outlives every viewer — and effects run exactly while somebody is looking, because the fibers exist exactly then.

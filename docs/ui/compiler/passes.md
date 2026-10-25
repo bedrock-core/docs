@@ -86,13 +86,13 @@ A host is one Minecraft screen the library draws on, and the transport that scre
 1. Measure the screen — which vanilla file, which collection or string it publishes, what a control can read there, what an input looks like from script, how it is opened and closed.
 2. Fill in the capability row: root element, owner, update model, routing key, carriers, inputs, native controls, cost unit. A column with nothing in it means the host offers nothing there, and components needing it are refused. That is correct, not a gap to paper over.
 3. Write the contract shared with the runtime — carriers, inputs, routing, `allocate` — then the build half and the runtime half. No component changes. No IR changes unless the screen has a primitive nothing else has, and then as a host-agnostic node kind the host serves.
-4. Add the vocabulary it needs to the render pack under `core_ui_<host>`.
+4. Add the helper templates it needs to the compiler support library; the pack builder emits each required definition under the addon namespace.
 5. Add a screen to the reference addon.
 
 `allocate` is the one walk that runs at build and at runtime both, and it must produce the same placement position for position. Everything else in the build half runs only at build.
 
 ## Next steps
 
-- [`@bedrock-core/ui-compiler`](./api.md) — the entry points the filter calls
+- [Build integration](./api.md) — compiling and linking through builder
 - [Hosts](../guides/hosts.md) — what each of the three screens can carry
 - [Extending components](../guides/custom-native-components.md) — composing controls and adding framework-level native behavior

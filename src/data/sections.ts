@@ -7,8 +7,8 @@
 
 export type CategoryId = 'framework' | 'ui' | 'content' | 'tooling';
 
-/** `beta` is a 0.x package, `1.0-rc` a release candidate, `1.0` a released package. */
-export type SectionStatus = 'beta' | '1.0-rc' | '1.0' | 'planned';
+/** Release state; deprecated sections remain available for existing projects. */
+export type SectionStatus = 'beta' | '1.0-rc' | '1.0' | 'planned' | 'deprecated';
 
 export interface Category {
   id: CategoryId;
@@ -26,7 +26,7 @@ export interface Section {
   /** Published package or repository name. */
   pkg: string;
   category: CategoryId;
-  status: SectionStatus;
+  status?: SectionStatus;
   /** One line for menu rows and package cards. */
   description: string;
   /** Lucide icon name. */
@@ -45,6 +45,15 @@ export const categories: Category[] = [
 const GH = 'https://github.com/bedrock-core';
 
 export const sections: Section[] = [
+  {
+    id: 'introduction',
+    label: 'introduction',
+    pkg: '@bedrock-core',
+    category: 'framework',
+    description: 'Projects, packs and the tools and libraries that connect them.',
+    icon: 'book-open',
+    repo: `${GH}/docs`,
+  },
   // Framework
   {
     id: 'server',
@@ -71,8 +80,8 @@ export const sections: Section[] = [
     label: 'observable',
     pkg: '@bedrock-core/observable',
     category: 'framework',
-    status: 'beta',
-    description: 'Reactive values: observable, computed, effect, batch.',
+    status: '1.0',
+    description: 'Reactive values, derived state, batching and debounce.',
     icon: 'activity',
     repo: `${GH}/server`,
   },
@@ -81,7 +90,7 @@ export const sections: Section[] = [
     label: 'sync',
     pkg: '@bedrock-core/sync',
     category: 'framework',
-    status: 'beta',
+    status: '1.0',
     description: 'The script-event transport: bus, discovery, RPC, replicated state.',
     icon: 'radio',
     repo: `${GH}/server`,
@@ -114,7 +123,7 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/navigation',
     category: 'ui',
     status: 'beta',
-    description: 'Stack navigation between screens.',
+    description: 'Static stacks, top tabs and cross-addon screen navigation.',
     icon: 'navigation',
     repo: `${GH}/ui`,
   },
@@ -173,14 +182,14 @@ export const sections: Section[] = [
 
   // Tooling
   {
-    id: 'filters',
-    label: 'filters',
-    pkg: 'bedrock-core/regolith-filters',
+    id: 'builder',
+    label: 'builder',
+    pkg: '@bedrock-core/builder',
     category: 'tooling',
     status: 'beta',
-    description: 'Regolith filters: manifest, generator, guides, i18n, ui-compiler, bundler.',
-    icon: 'funnel',
-    repo: `${GH}/regolith-filters`,
+    description: 'Build Bedrock packs with automatic stages and Node plugins.',
+    icon: 'hammer',
+    repo: `${GH}/builder`,
   },
   {
     id: 'cli',
@@ -188,9 +197,9 @@ export const sections: Section[] = [
     pkg: '@bedrock-core/cli',
     category: 'tooling',
     status: 'beta',
-    description: 'Scaffold an addon with the whole stack wired.',
+    description: 'Scaffold an addon with builder profiles and the runtime stack.',
     icon: 'terminal',
-    repo: `${GH}/ui`,
+    repo: `${GH}/builder`,
   },
   {
     id: 'bds-runner',

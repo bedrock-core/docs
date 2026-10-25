@@ -1,18 +1,18 @@
 ---
 sidebar_position: 2
-description: "Locale files, namespacing, argument order, $t() nesting, plurals and the meta branch: authoring the resources the i18n filter compiles."
+description: "Locale files, namespacing, argument order, $t() nesting, plurals and pack display text: authoring the resources the i18n stage compiles."
 ---
 
 # Authoring resources
 
-Nested TypeScript objects under `packs/data/i18n/` are the source of truth for an addon's text. The [i18n Regolith filter](/docs/filters/i18n) reads them and generates the `.lang` files, the runtime bundle and the types.
+Nested TypeScript objects under `packs/BP/i18n/` are the source of truth for an addon's text. The [i18n builder stage](/docs/builder/guides/stages#translations) reads them and generates the `.lang` files, the runtime bundle and the types.
 
 ## Locale files
 
 One module per locale, each default-exporting a nested object:
 
 ```ts
-// packs/data/i18n/en_US.ts
+// packs/BP/i18n/en_US.ts
 export default {
   shop: {
     title: 'Shop',
@@ -27,9 +27,9 @@ export default {
 It is what lets the compiler infer the key space and the interpolation variables each template requires. Without it every template widens to `string` and you lose typed arguments entirely.
 :::
 
-The default locale (`defaultLocale`, `en_US` unless configured) is the **shape**: every other locale file must carry exactly its key set, checked in both directions — a locale missing a key falls back to the default locale's value, and a key with no default-locale counterpart is dropped.
+The default locale (`defaultLocale`, `en_US` unless configured) defines the key shape and interpolation arguments. Strict mode rejects missing or extra keys and variable drift. With `strict: false`, missing keys use default-locale values and extra keys are dropped with warnings.
 
-Filenames must be `<xx_YY>.ts` and must be a locale code the Bedrock client ships — a locale nobody can select is flagged. `.d.ts` and `.generated.json` files in the same folder are ignored.
+Use one `<xx_YY>.ts`, `.js`, `.mts` or `.mjs` module per locale. Locale names are checked against the supported client catalog. Declaration files are ignored.
 
 Keys are constrained by what has to survive as both a `.lang` key segment and a TypeScript property:
 
@@ -44,14 +44,13 @@ Keys are constrained by what has to survive as both a `.lang` key segment and a 
 
 Every key lands in the `.lang` files prefixed with the addon's namespace: `shop.bought` becomes `drav0011_shop.shop.bought`. The prefix is what keeps addons from colliding everywhere their text meets — Bedrock merges every installed pack's `.lang` into one world-wide table, and the server runtime merges every addon's published translation tables under the same namespace.
 
-The namespace is **derived, not configured**. The filter scans `BP/scripts` for the `core.register({ manifest: { creator: '…', pack: '…' } })` call and joins the two string literals:
+Builder takes the namespace from `config.json`:
 
-```ts
-core.register({ manifest: { creator: 'drav0011', pack: 'shop', /* ... */ } });
-// -> namespace 'drav0011_shop'
+```json title="config.json, project metadata"
+{ "namespace": "drav0011_shop" }
 ```
 
-Only files containing a `.register(` call are considered, so unrelated `creator:`/`pack:` properties elsewhere do not poison the scan. When the scan finds no call, or finds `creator`/`pack` composed at runtime instead of written as literals, the build fails and names the fix: make them literals, or set the filter's `namespace` setting — required only in that case.
+When using the server framework, match the runtime's `creator_pack` identity. The generated bundle carries this namespace; standalone `compileI18n` callers supply it explicitly.
 
 Call sites never spell the namespace. `key()` and `raw()` prepend it at runtime from the bundle's metadata, so renaming the addon's namespace never touches a call site.
 
@@ -76,7 +75,7 @@ demo: {
 },
 ```
 
-Unknown references and cycles are reported and replaced with `''`.
+Strict mode rejects unknown references and cycles. With `strict: false`, they produce warnings and empty strings.
 
 :::caution Format functions are not supported
 `{{price, currency}}` does not work. A format function is JavaScript and cannot travel to the client. Format in code, pass the result as the argument.
@@ -90,7 +89,7 @@ A string drawn with [`<Trans>`](/docs/ui/components/Trans) marks its links and s
 help: { prices: 'See <shop>the shop</shop> for <gold>today</gold>\'s prices.' },
 ```
 
-The tags pass through this filter untouched. A translation may move them, reorder them and wrap them around other words. The string is composed at build, so it cannot also take `{{variables}}`.
+The tags pass through this stage untouched. A translation may move them, reorder them and wrap them around other words. The string is composed at build, so it cannot also take `{{variables}}`.
 
 ## Plurals
 
@@ -99,7 +98,7 @@ Author `_one` / `_other` variants (plus `_zero`, `_two`, `_few`, `_many` where a
 CLDR categories differ per language, so a locale may declare a category the default locale never has. Czech needs `_few`; English does not:
 
 ```ts
-// packs/data/i18n/en_US.ts          // packs/data/i18n/cs_CZ.ts
+// packs/BP/i18n/en_US.ts          // packs/BP/i18n/cs_CZ.ts
 stock_one:   '{{count}} left',       stock_one:   'Zbývá {{count}} kus',
 stock_other: '{{count}} left',       stock_few:   'Zbývají {{count}} kusy',
                                      stock_other: 'Zbývá {{count}} kusů',
@@ -107,21 +106,22 @@ stock_other: '{{count}} left',       stock_few:   'Zbývají {{count}} kusy',
 
 `cs_CZ.stock_few` is **not** flagged as an extra key: it rides into the bundle, checks its variables against the group's `_other`, and picks up its recorded argument order from the locale that defines it. What parity still requires is that the default locale declares the group (`stock_other`). See [Plurals](./api.md#plurals) for how a plural leaf resolves at runtime.
 
-## Meta branch
+## Pack display text
 
-A `meta` branch names the addon for the pack list:
+Use a `pack` branch for the name and description shown in the pack list:
 
 ```ts
 export default {
-  meta: {
+  pack: {
     name: 'Shop',
     description: 'Sells items to players',
+    creator: 'DrAv0011',
   },
   shop: { title: 'Shop' },
 } as const;
 ```
 
-`meta.name` and `meta.description` are copied onto the two literal keys Bedrock resolves a manifest header from — `pack.name` and `pack.description` — written into **both** packs' generated `.lang` sections, since each manifest resolves from its own pack's texts:
+These fields use the same names as vanilla manifests. Builder writes their values to the owning pack's language files when its manifest references the literal keys:
 
 ```jsonc title="packs/BP/manifest.json and packs/RP/manifest.json"
 {
@@ -132,4 +132,12 @@ export default {
 }
 ```
 
-The resource pack's `.lang` carries everything: the namespaced `<namespace>.meta.name` / `<namespace>.meta.description` keys (what `key()` resolves and what rides in the runtime bundle) plus the two `pack.name` / `pack.description` aliases. The behavior pack's `.lang` carries only the two aliases — nothing else, since a manifest looks up nothing but those literal keys. Other `meta.*` keys, such as `meta.creator`, are ordinary namespaced strings with no alias.
+A linked resource pack inherits these display translations when it has one behavior-pack owner and no locale modules of its own. A shared resource pack, or one with its own locale modules, keeps its own display metadata.
+
+`config.json` supplies display defaults. Locale `pack` values override those defaults; pack-specific `texts/<locale>.lang` aliases take precedence when they differ from the project defaults. Each generated display key is emitted once. The manifest stage also registers `en_US` in `texts/languages.json` for fallback display text, including builds without the i18n stage.
+
+The resource pack receives namespaced translations such as `<namespace>.pack.name` alongside the manifest aliases it owns. The behavior pack receives its manifest aliases; authored language entries are preserved. `pack.creator` remains a namespaced translation with no manifest alias.
+
+## Next steps
+
+- [`API`](./api.md) — Translate keys and format arguments at runtime

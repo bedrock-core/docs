@@ -22,4 +22,4 @@ The settings subsystem: `registerConfig(definition)`, `configOf(core)` to reach 
 
 ## `@bedrock-core/config/compiled`
 
-What the ui-compiler filter bakes: the screens every config draws, and one screen per section of the definition.
+What the ui-compiler stage bakes: the screens every config draws, and one screen per section of the definition.

@@ -120,7 +120,7 @@ const balance = await economy.getBalance({ player: 'Steve' });   // Promise<numb
 `TypedClient<T>` maps each `(params: P) => R` to `(params: P) => Promise<Awaited<R>>`.
 
 :::tip Publish your RPC interface
-Export the interface from a types package (`@drav0011/economy-types`) and let consumers install it as a devDependency. They get compile-time safety over a wire protocol neither side can otherwise check.
+Export the interface into a types package and let consumers install it as a devDependency. They get compile-time safety over a wire protocol neither side can otherwise check.
 :::
 
 ## Calling yourself

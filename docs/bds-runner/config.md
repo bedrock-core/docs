@@ -61,10 +61,14 @@ Before every run the world's chunks are deleted and `level.dat` is kept, so each
 
 By default the runner uses the newest stable build. For one run:
 
-```bash
-bc-bds run --packs ./build --tag my-suite --bds-version 1.26.45.1
-bc-bds where --bds-channel preview
-```
+<PackageCommands
+  npm={`npx bc-bds run --packs ./build --tag my-suite --bds-version 1.26.45.1
+npx bc-bds where --bds-channel preview`}
+  yarn={`yarn bc-bds run --packs ./build --tag my-suite --bds-version 1.26.45.1
+yarn bc-bds where --bds-channel preview`}
+  pnpm={`pnpm exec bc-bds run --packs ./build --tag my-suite --bds-version 1.26.45.1
+pnpm exec bc-bds where --bds-channel preview`}
+/>
 
 Precedence, highest first:
 

@@ -5,7 +5,7 @@ description: "How a screen's JSX becomes the static JSON UI a host serves, and w
 ---
 # Compiler
 
-Every screen is compiled. `@bedrock-core/ui-compiler` turns a screen component into the static JSON UI that ships in the resource pack, and the [`ui-compiler` filter](/docs/filters/ui-compiler) is what runs it over a project.
+Every screen is compiled. Builder's [UI stage](/docs/builder/guides/stages#ui-compilation) uses the project's installed `@bedrock-core/ui-compiler` to turn screen components into the static JSON UI shipped in the resource pack.
 
 Nothing in the compiler reaches the game. It has no `@minecraft/server` calls and no components of its own: it renders a screen once on the build machine and writes a document the client already holds by the time anybody opens it. What crosses at runtime is the screen's title and the values that changed.
 
@@ -22,6 +22,8 @@ Four steps, each a pure function of the last.
 
 Layout is solved at build, by [`@bedrock-core/flexbox`](/docs/flexbox) against a fixed 320 × 210 canvas. No geometry is measured in game and no layout is sent to the client. A screen with text composed per language — a [`<Trans>`](../components/Trans.md), a [`useComposed`](../hooks/useComposed.md) string — is laid out again at the widths the first layout gave that text.
 
+Contiguous rows and columns can emit native `stack_panel` controls automatically. Panel and Image children retain percentage sizes when they exactly match the solved boxes. Equal growing children with zero basis can use `fill` when their whole-unit shares match the remaining stack space. Constraints, wrapping, gaps, offsets, and unequal growth retain solved geometry where native sizing cannot express that result.
+
 Which host a screen compiles for is decided by its root element, and there is no default — `<Screen>` is an action form, `<Form>` a native modal, `<Container>` a chest screen. What differs between them is in [Hosts](../guides/hosts.md).
 
 ## What you get
@@ -36,10 +38,12 @@ Which host a screen compiles for is decided by its root element, and there is no
 
 ## Next steps
 
+- [Test metadata](./testing.md) — identities and semantic declarations for external testing tools
+
 - [Writing a screen](./screens.md) — the `*.screen.tsx` file, reserved values, carried visibility and static screens
 - [What the build writes](./output.md) — mounts, routing, host definitions and the text written per language
 - [Faces and hosts](./passes.md) — the two passes, the three layers, and the behaviors a primitive carries
 - [Build checks](./checks.md) — everything that stops a build, and what fails it
-- [`@bedrock-core/ui-compiler`](./api.md) — the programmatic entry points, for tooling rather than for addons
+- [Build integration](./api.md) — the builder stage and compiler entry
 - [Hosts](../guides/hosts.md) — the three screens the library draws on, and what each can carry
-- [`ui-compiler` filter](/docs/filters/ui-compiler) — installing the filter and its settings
+- [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) — stage configuration and output

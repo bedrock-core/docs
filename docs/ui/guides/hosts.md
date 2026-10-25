@@ -78,7 +78,7 @@ A container screen has no such limit. A handler renders and the slots settle in 
 
 ## Next steps
 
-- [Navigation](./navigation.md) — opening another screen by key, and what a press can be described as
+- [Navigation](/docs/navigation/guides/getting-started) — opening another screen by key, and what a press can be described as
 - [State](./state.md) — where a screen's hook state lives, and how long it lasts
 - [Container screens](./container-screens.md) — serving a screen an entity or a block owns
 - [Compiler](../compiler/index.md) — how the screen in the pack was produced

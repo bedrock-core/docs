@@ -38,7 +38,6 @@ What a screen shows. Also free on every host.
 Each of these works on more than one host, and draws differently on each — a `<Toggle>` is a native field on a modal, a press that flips on a screen, and a cell on a container.
 
 - [`<Button>`](./Button.md) — a press: a handler, the form's `'submit'`, or the way `'exit'`
-- [`<Link>`](./Link.md) — a press whose destination is data, so the build can read where it leads
 - [`<Toggle>`](./Toggle.md) — a boolean
 - [`<Select>`](./Select.md) — one choice out of several, every option visible
 - [`<Option>`](./Option.md) — one entry for a `<Select>` or a `<Dropdown>`
@@ -50,6 +49,15 @@ What only exists because the screen is compiled. The two switches are client-sid
 - [`<Tabs>`](./Tabs.md) — several panes on one screen, switched by a header row
 - [`<Disclosure>`](./Disclosure.md) — a header that folds the rows under it and reflows what is below
 - [`<List>`](./List.md) — `max` compiled rows and a carried count, for a variable row count on a frozen shape
+
+## Navigation
+
+Use [`@bedrock-core/navigation`](/docs/navigation) for static stacks, top tabs, route links and cross-addon destinations; `@bedrock-core/ui/navigation` exposes the same API.
+
+## Library composition
+
+- [`TreeBoundary`](./TreeBoundary.md) — compose expanded children before layout
+- [`SelectionPanel`](./SelectionPanel.md) — retain content under native selection gates
 
 ## Container cells
 

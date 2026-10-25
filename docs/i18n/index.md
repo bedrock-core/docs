@@ -15,7 +15,7 @@ description: "@bedrock-core/i18n is the localization layer for Minecraft Bedrock
 
 ## What is @bedrock-core/i18n?
 
-It is the runtime half of a two-part system. The build half is the [`i18n` Regolith filter](/docs/filters/i18n), which turns `packs/data/i18n/<locale>.ts` modules into `.lang` files, a runtime bundle and the types this package's API infers from.
+It is the runtime half of a two-part system. The build half is the [`i18n` builder stage](/docs/builder/guides/stages#translations), which turns `packs/BP/i18n/<locale>.ts` modules into `.lang` files, a runtime bundle and the types this package's API infers from.
 
 The conventions are i18next's — `{{var}}` interpolation, `_one`/`_other` plural suffixes, the selector call shape — so existing knowledge transfers. Nothing from i18next ships in the script bundle: every locale rides statically in one generated bundle.
 
@@ -39,17 +39,17 @@ Both entries export exactly the same surface — `@bedrock-core/server/i18n` is 
 
 ## Setup
 
-One instance per addon, built from the bundle the Regolith filter generates:
+Create an instance from the owning pack's generated bundle:
 
 ```ts
 // BP/scripts/i18n.ts
-import bundle from '@bedrock-core/generated/i18n';
+import bundle from '@bedrock-core/generated/i18n/gameplay';
 import { createI18n } from '@bedrock-core/i18n';
 
 export const i18n = createI18n(bundle);
 ```
 
-That is the whole setup. Key paths, interpolation variables and plural forms are all inferred from the bundle's type — no module augmentation, no manual type imports. See [bundler](/docs/filters/bundler) for the `@bedrock-core/generated/i18n` path alias this import needs.
+That is the whole setup. Key paths, interpolation variables and plural forms are all inferred from the bundle's type — no module augmentation, no manual type imports. Replace `gameplay` with the owning pack ID. Include `.bedrock-core/generated/i18n/**/*.d.ts` in tsconfig after the first build; the [bundler stage](/docs/builder/guides/stages#script-bundling) resolves generated imports automatically.
 
 `createI18n` also registers this instance as the addon's default translation source, which is what lets [`Text`](/docs/ui/components/Text) measure localized children with no further wiring.
 
@@ -63,9 +63,9 @@ That is the whole setup. Key paths, interpolation variables and plural forms are
 
 ## Next steps
 
-- [Authoring resources](./authoring.md) — locale files, namespacing, interpolation, plurals and the meta branch
+- [Authoring resources](./authoring.md) — locale files, namespacing, interpolation, plurals and pack display text
 - [Libraries and overrides](./libraries.md) — folding a dependency's strings into your bundle, overriding library and vanilla strings
 - [API reference](./api.md) — the three verbs, locale resolution, `createI18n` and every export
-- [i18n Regolith filter](/docs/filters/i18n) — generating `.lang` files and the runtime bundle from your resources
+- [i18n builder stage](/docs/builder/guides/stages#translations) — generating `.lang` files and the runtime bundle from your resources
 - [useTranslation](/docs/ui/hooks/useTranslation) — binding the typed verbs to the viewing player inside a component
 - [TranslationContext](/docs/ui/api/TranslationContext) — overriding which resolver a subtree sees

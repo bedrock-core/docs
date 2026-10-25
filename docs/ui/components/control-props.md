@@ -180,13 +180,25 @@ function ConditionalUI({ showButton }: { showButton: boolean }) {
 | Children executed | Yes | No |
 | Use case | Hide visually | Remove from layout |
 
+## Testing declarations
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `testId` | `string` | absent | Stable, case-sensitive identity in opt-in compiler metadata |
+| `testRole` | `TestRole` | inferred | Semantic role for testing tools; does not change native behavior |
+| `testName` | `string` | inferred | Declared name for testing tools; does not change rendered text |
+
+These declarations are captured at build time and do not change generated UI
+or form responses. See [Test metadata](../compiler/testing.md) for generation
+settings and the public contract.
+
 ## TypeScript
 
 ```tsx
 import type { ControlProps, LayoutProps } from '@bedrock-core/ui';
 ```
 
-`LayoutProps` carries the flex layout properties; `ControlProps` extends it with `visible`, `enabled`, and `background`. Every built-in component's props type extends `ControlProps`. Individual types are also exported:
+`LayoutProps` carries the flex layout properties; `ControlProps` extends it with `visible`, `enabled`, `background`, and the testing declarations from `TestProps`. Every built-in component's props type extends `ControlProps`. Individual types are also exported:
 
 ```tsx
 import type {

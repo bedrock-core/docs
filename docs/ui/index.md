@@ -32,7 +32,7 @@ A world also needs the render pack, which must come from the same release as the
 
 ## Your first screen
 
-A screen lives in a `*.screen.tsx` file under `BP/scripts` and default-exports its component. That is what the [`ui-compiler` filter](/docs/filters/ui-compiler) looks for.
+A screen lives in a `*.screen.tsx` file under `BP/scripts` and default-exports its component. That is what the [`ui-compiler` stage](/docs/builder/guides/stages#ui-compilation) looks for.
 
 ```tsx title="packs/BP/scripts/welcome.screen.tsx"
 import { Button, Panel, Screen, Text } from '@bedrock-core/ui';
@@ -56,7 +56,6 @@ Show it to a player with [`render()`](./api/render.md):
 
 ```ts title="packs/BP/scripts/main.ts"
 import { render } from '@bedrock-core/ui';
-import '@bedrock-core/generated/ui';
 import Welcome from './welcome.screen';
 import { world, type Entity, type Player, type ButtonPushAfterEvent } from '@minecraft/server';
 import { MinecraftEntityTypes } from '@minecraft/vanilla-data';
@@ -70,7 +69,7 @@ world.afterEvents.buttonPush.subscribe(({ source }: ButtonPushAfterEvent): void 
 });
 ```
 
-The `@bedrock-core/generated/ui` import is what runs the build's registrations. Without it `render()` throws `UncompiledScreenError`, because nothing in the pack answers to the screen's title.
+Builder registers compiled screens automatically. [Installation](./installation.md) covers the build and required resource packs.
 
 ## What you get
 
@@ -78,7 +77,7 @@ The `@bedrock-core/generated/ui` import is what runs the build's registrations. 
 
 **Refusals with names** — each host declares what every kind of component becomes on it. A `<Slider>` outside a `<Form>` or a `<Slot>` outside a container screen fails the build, in that host's own words, instead of drawing something inert.
 
-**Screens other addons can show** — a [static](./guides/navigation.md#static-screens) screen is described by its title, its entry values and one target per press. Publish that table and a realm running none of your script still shows your screens, because the layout is in the pack every client holds.
+**Screens other addons can show** — a [static](/docs/navigation/references#compiled-references) screen is described by its title, its entry values and one target per press. Publish that table and a realm running none of your script still shows your screens, because the layout is in the pack every client holds.
 
 **Switches that cost nothing** — [`<Tabs>`](./components/Tabs.md) and [`<Disclosure>`](./components/Disclosure.md) change what is drawn entirely on the client. No press, no re-present, no payload.
 

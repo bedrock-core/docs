@@ -7,7 +7,9 @@ description: "@bedrock-core/guides shows an addon's in-game guide: MDX compiled 
 
 # guides
 
-`@bedrock-core/guides` shows an addon's **in-game guide**. You author MDX, the [`guides` Regolith filter](/docs/filters/guides) compiles one screen per page into the addon's pack, and this package shows them: sidebar, pages, prev/next, admonitions and all.
+`@bedrock-core/guides` shows an addon's **in-game guide**. You author MDX, and the [`guides` builder stage](/docs/builder/guides/stages#guides) compiles each audience's readable pages into resident forms. Sidebar rows, previous/next controls and inline links switch prepared pages on the client. Repeated pages collapse loops, and visits beyond five Back destinations discard the oldest history without refreshing the form.
+
+Generated entries use [`guideNavigationScreen`](./api.md#resident-screen-runtime), with initial pages for direct entry and shared stack checkpoints for restoration.
 
 ![An in-game guide page rendered MDX](/img/ui/guide-page.png)
 
@@ -28,7 +30,7 @@ const { guides } = core.register({ manifest, guides: registerGuides() });
 guides.open(player);
 ```
 
-`registerGuides()` takes no arguments. The filter already read the MDX under your `guides/` directory and compiled one screen per page into your pack, at a fixed path in a fixed form, so the field's presence is the whole declaration.
+`registerGuides()` discovers the guide's compiled entries and registers its public navigation destination. Its optional `{ commands: false }` setting disables the command while keeping `guides.open()` available.
 
 Prose rides `.lang` values, so the client resolves every paragraph in each player's own language and the runtime's raw-text length limits never apply to guide copy.
 
@@ -36,15 +38,15 @@ Prose rides `.lang` values, so the client resolves every paragraph in each playe
 
 <Install pkg="@bedrock-core/guides" />
 
-The package has two halves, both on the root export. The **app** is the declaration, the command and the show method, like the other apps. The **renderer** is the compiled screen factories the filter's generated modules call.
+The package has two halves, both on the root export. The **app** is the declaration, the command and the show method, like the other apps. The **renderer** is the compiled screen factories the stage's generated modules call.
 
 It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 
 ## What you get
 
 - **A command under your own namespace.** `<ns>:guide` opens this addon's guide at its entry, in the set the player may read. Pass `registerGuides({ commands: false })` to keep the name out of the command list and open it from a book or a block instead.
-- **A guide any realm can show.** A guide is compiled screens whose every press is a link, so a realm shows one from the references its owner published, with none of that addon's script involved. `guides.open(player, addonId)` opens another addon's guide the same way it opens your own.
-- **A way back.** The index a player reaches from somewhere carries a back control. Backing out returns to the addon's page in the [catalog](/docs/catalog) when this realm has one, and closes the UI when it does not.
+- **A guide any realm can open.** `guides.open(player, addonId)` reaches the owning addon's registered guide destination through server navigation. Static page layouts can also be shown from published references; resident layouts run in their owning realm.
+- **Linked-page Back.** Links open a deeper page; Previous/Next replaces the page at that level. Back returns through the retained visits, then to the caller or closes. Index returns to the guide index at the root. Server checkpoints retain the confirmed stack.
 - **An entry in the catalog, only when there is a guide.** The app announces itself on the first tick after checking the build actually compiled pages, so an addon with the app installed and no guide written gets a grayed entry rather than an empty index.
 
 ## Where a guide opens
@@ -61,7 +63,7 @@ It runs beside `@bedrock-core/server` and `@bedrock-core/ui`.
 ## Next steps
 
 - [Authoring a guide](./authoring.md) — frontmatter, categories, what the renderer makes of each block, links, operator-only pages and embedded components
-- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the filter writes
+- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the stage writes
 - [API](./api.md) — every export of both halves
-- [guides Regolith filter](/docs/filters/guides) — installing the filter and its settings
+- [guides builder stage](/docs/builder/guides/stages#guides) — stage configuration and output
 - [catalog](/docs/catalog) — where a guide's entry is drawn for every addon

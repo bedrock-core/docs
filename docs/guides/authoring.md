@@ -5,11 +5,10 @@ description: "Where guide pages live, the frontmatter and categories that shape 
 
 # Authoring a guide
 
-Guide content lives in `packs/data/guides/<locale>/**`, one tree per locale, and the [`guides` filter](/docs/filters/guides) compiles the default locale's tree into one screen per page:
+Guide content lives in `packs/BP/guides/<locale>/**`, one tree per locale, and the [`guides` stage](/docs/builder/guides/stages#guides) compiles the default locale's tree into resident guide entries:
 
 ```txt
-packs/data/guides/
-├── guides.generated.d.ts       <- seeded by `regolith install`; commit it
+packs/BP/guides/
 ├── en_US/                      <- the default locale: structure, keys, sidebar, fallbacks
 │   ├── intro.mdx
 │   └── getting-started/
@@ -20,7 +19,7 @@ packs/data/guides/
     └── intro.mdx
 ```
 
-Only **directories** directly under the content root are read as locales, so the generated files beside them are never mistaken for content. A page's id is its extension-less path relative to the locale root: `getting-started/installation`.
+Only **directories** directly under the content root are read as locales. Builder writes editor declarations to `.bedrock-core/generated/guides/<packId>/`; include `.bedrock-core/generated/guides/**/*.d.ts` in tsconfig after the first build. A page's id is its extension-less path relative to the locale root: `getting-started/installation`.
 
 ## Frontmatter
 
@@ -29,17 +28,17 @@ Only **directories** directly under the content root are read as locales, so the
 title: Installation
 sidebar_position: 1
 icon: textures/ui/config/config
-description: "Add the pack and wire the filters."
+description: "Add the pack and configure its build."
 ---
 
-Install the render pack, then add the filters to `config.json`.
+Install the render pack, then configure builder pack exports in `config.json`.
 
 :::tip
 Run `guides` before `i18n` — the ordering matters.
 :::
 
 - Import the `.mcpack`
-- Add the filter entries
+- Configure the build profile
 - Rebuild
 ```
 
@@ -83,7 +82,7 @@ Both `.md` and `.mdx` go through the same MDX-enabled pipeline (remark, GFM, dir
 | `ul` / `ol` | `-` / `1.`, one nesting level | Bulleted or numbered rows, nested rows indented |
 | `img` | `![alt](textures/ui/x.png)` alone in a paragraph; the extension is stripped | An `Image`, aspect ratio from the sniffed PNG size |
 | `adm` | `:::note`, `:::tip`, `:::info`, `:::warning` or `:::danger`, optionally with `[Custom Title]`; `:::caution` is a `warning`, a blockquote a `note` | A dark `Card` with a colored title and nested blocks |
-| `code` | a fenced block, raw and never localized | A dark `Card`, one dim line per source line, hard-wrapped at the filter's `maxCodeLineBytes` |
+| `code` | a fenced block, raw and never localized | A dark `Card`, one dim line per source line, hard-wrapped at the stage's `maxCodeLineBytes` |
 | `hr` | a horizontal rule, `---` | A `Divider` |
 | `cmp` | `<Name prop="x" n={1} flag />` | Your registered component, or an "unsupported content" placeholder |
 
@@ -91,13 +90,15 @@ Inline styling is baked into the text as `§` codes: `**bold**` is `§l`, `*ital
 
 ## Links
 
-A page **is** a screen, so an internal link is a `<Link>` to that page's screen: where every press leads is data on the tree, and that is what lets a realm show a guide it never compiled.
+An internal link selects a page in the guide's static navigator. It stays on the client when the transition fits the prepared context graph; otherwise a server checkpoint confirms the current route and opens the next local window.
 
 An internal link is written relative, `./page.mdx` or `../intro`, or absolute, `/abs/page`. Every one is checked at build time, and a broken link is a build error.
 
 A paragraph or list item with links is drawn as a [`Trans`](/docs/ui/components/Trans), each link a numbered tag. The build breaks it into lines in every language, and each link is pressable only over its own text, in whichever language the player reads. Text after a link carries on along the same line.
 
-Pages replace one another rather than stacking, so the index is always the screen under a page. With a home page, the index's back returns to it and the home page's back leaves the guide; without one, the index's back leaves.
+Page visits enter the navigator's history, including visits to hidden pages. Back retraces that history. At the root, an entry with caller-return behavior reopens its caller or closes; an ordinary direct entry closes. Server checkpoints retain the confirmed visited stack.
+
+Index is a separate action. It appears on pages in the readable index, the declared home, and category landing pages. Other hidden pages omit it. Its footer control keeps the same size and alignment with or without Previous and Next.
 
 External `http(s)` links and anchors on the same page render as `§3` text only. Nothing can open a browser from a server form.
 
@@ -123,21 +124,25 @@ A guide with anything operator-only is compiled twice, because a compiled screen
 | Everyone | `guide_home`, `guide_home_back`, `guide_index`, `guide_<page>` | the pages everyone may read |
 | Operators | `guideop_home`, `guideop_home_back`, `guideop_index`, `guideop_<page>` | every page |
 
+Each entry mounts its set's readable pages in one form. The generator also emits `guideback_page_<page>` and `guideback_index` caller-return entries, with `guideopback_` equivalents for operators, so restoration preserves the root Back control.
+
 Every press leads within its own set, so the choice is made once, on entry. `guides.open`, `<ns>:guide`, the catalog's guide button and `openGuide` open an operator on the operators' set and everyone else on theirs. A `<Link>` to `guide_home` is the same press for every viewer, so it always opens the everyone set: open a guide with `openGuide` or `guides.open` instead. An operator who loses the role mid-read keeps the set they entered.
 
 Access decides what a player is shown, not what they can read: an operator-only page's text ships in the resource pack every player holds, like the rest of the guide, and the operators' screens are published to every addon like any other. Keep anything secret out of guides.
 
-The filter carries the *effective* access on every page and sidebar node, inheritance already applied, so the renderer gates a node by reading one field rather than walking its parents. [The manifest](#the-manifest) lists the fields.
+The stage carries the *effective* access on every page and sidebar node, inheritance already applied, so the renderer gates a node by reading one field rather than walking its parents. [The manifest](#the-manifest) lists the fields.
 
 ## Custom components
 
-An MDX `cmp` block embeds a real component. Point the filter at a module exporting a registry, and name the component in a page:
+An MDX `cmp` block embeds a real component. Point the stage at a module exporting a registry, and name the component in a page:
 
-```jsonc title="config.json"
-{ "filter": "guides", "settings": { "componentsModule": "BP/scripts/guides/components.tsx" } }
+```jsonc title="bedrockCore.profiles.default.stages"
+{
+  "guides": { "componentsModule": "scripts/guides/components.tsx" }
+}
 ```
 
-```tsx title="BP/scripts/guides/components.tsx"
+```tsx title="packs/BP/scripts/guides/components.tsx"
 import { Panel } from '@bedrock-core/ui';
 import type { GuideComponents } from '@bedrock-core/guides';
 
@@ -150,11 +155,11 @@ Here is a live component embedded in the page:
 <Panel height={40} />
 ```
 
-Props are literal-only, strings, numbers and booleans, validated by the filter rather than at render time. An unregistered name renders a placeholder rather than crashing the screen.
+Props are literal-only, strings, numbers and booleans, validated by the stage rather than at render time. An unregistered name renders a placeholder rather than crashing the screen.
 
 ## The manifest
 
-What the filter compiles a guide into, and what the screen factories read: the sidebar tree, the pages, the prev/next chain, the blocks, and every paragraph with links as a tagged string in every locale. It is written into Regolith's temp workspace, never synced back to the project, and reaches scripts as `@bedrock-core/generated/guides`.
+What the stage compiles a guide into, and what the screen factories read: the sidebar tree, the pages, the prev/next chain, the blocks, and every paragraph with links as a tagged string in every locale. It is written into builder's temporary workspace and registered as a pack-owned module. Scripts use `@bedrock-core/generated/guides/<packId>`; the unqualified name resolves to the consuming pack's manifest.
 
 ```ts
 interface GuideManifest {
@@ -214,6 +219,6 @@ A guide with nothing operator-only carries none of them: no flag, no `a`, no sec
 
 ## Next steps
 
-- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the filter writes
+- [Localizing a guide](./localization.md) — structural keys, translated pages and the `.lang` section the stage writes
 - [API](./api.md) — every export
-- [`guides` filter](/docs/filters/guides) — installing the filter and its settings
+- [`guides` stage](/docs/builder/guides/stages#guides) — stage configuration and output

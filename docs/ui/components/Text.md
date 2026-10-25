@@ -197,5 +197,5 @@ export const i18n = createI18n(bundle);
 
 Inside components, bind [the typed verbs](/docs/i18n/api#the-three-verbs) with [`useTranslation(i18n)`](../hooks/useTranslation.md); outside them, use `i18n.forPlayer(player)` / `i18n.forLocale(locale)`.
 
-The bundle comes from the [i18n filter](/docs/filters/i18n); a [CLI](/docs/cli) scaffold has both wired.
+The bundle comes from the [i18n stage](/docs/builder/guides/stages#translations); a [CLI](/docs/cli) scaffold has both wired.
 :::
