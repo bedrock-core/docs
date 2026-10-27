@@ -37,7 +37,7 @@ export default function Settings(): JSX.Element {
 import { Button, Dropdown, Form, Input, Option, Select, Slider, Text, Toggle } from '@bedrock-core/ui';
 ```
 
-[`<Toggle>`](./Toggle.md), [`<Select>`](./Select.md) and [`<Option>`](./Option.md) work on all three hosts and draw differently on each. [`<Input>`](./Input.md), [`<Slider>`](./Slider.md) and [`<Dropdown>`](./Dropdown.md) only work here, because the engine draws no text field, slider or popup anywhere else. See [Hosts](../guides/hosts.md) for the whole table.
+[`<Toggle>`](./Toggle.md), [`<Select>`](./Select.md) and [`<Option>`](./Option.md) work on the supported hosts through their own mechanisms. [`<Input>`](./Input.md), [`<Slider>`](./Slider.md) and [`<Dropdown>`](./Dropdown.md) report submitted values here and support live edits on [`<Experimental_OreUI>`](./Experimental_OreUI.md). Action forms and container screens refuse those fields. See [Hosts](../guides/hosts.md).
 
 ## Props
 
@@ -61,7 +61,7 @@ The native modal is atomic: nothing reaches script while it is open, and every v
 }}>
 ```
 
-`FormValues` is `Record<string, ModalValue>`, where `ModalValue` is `string | number | boolean | undefined`. That is why a control here has a `name` and no `onChange` — there is nothing to call one from.
+`FormValues` is `Record<string, ModalValue>`, where `ModalValue` is `string | number | boolean | undefined`. Controls inside `Form` use `name` and `defaultValue`; their results arrive on submit. Live `value` and `onChange` behavior belongs to the hosts that provide change callbacks.
 
 A heading is a `<Text>`: the modal has no `title` or `body` prop of its own.
 

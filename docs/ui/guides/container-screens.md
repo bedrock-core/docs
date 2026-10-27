@@ -175,7 +175,7 @@ The same set as a form, with four additions and a few container-specific behavio
 | [`Slot`](../components/Slot.md) | A container cell of the screen's own container. `role` is `both` (storage), `input` (in only) or `output` (out only), enforced server-side; `interactive={false}` locks it inert. `name` is what addon logic calls the cell — see [Reaching the cells](#reaching-the-cells). `onInsert(event)` and `onRemove(event)` fire after a move, with `event.stack`, `event.player`, `event.host` and `event.container`. Given a `collection`, it instead reads a foreign cell — see [Rendering other containers](#rendering-other-containers). |
 | [`SlotGrid`](../components/SlotGrid.md) | A grid of cells over a foreign collection — any collection the engine exposes. Not part of the screen's own container. |
 | [`PlayerInventory`](../components/PlayerInventory.md), [`Hotbar`](../components/Hotbar.md) | The player's own grids — thin `SlotGrid` wrappers over `inventory_items` / `hotbar_items`. Placed by the layout engine. Not free: a screen owns the whole vanilla screen, so leave them out and they are gone. |
-| [`Text`](../components/Text.md) | Baked, unless it has `maxLength` — see [Live text](#live-text). |
+| [`Text`](../components/Text.md) | Static text is baked; detected state-driven values use one slot each. See [Dynamic text](#dynamic-text). |
 | [`Image`](../components/Image.md) | A texture, baked into the layout. |
 | [`Scroll`](../components/Scroll.md) | A region laid out at its own height that the client scrolls. Not inside another scroll. |
 | [`Button`](../components/Button.md) | A container slot with the item hidden: a press drops that item, which is how it reaches script and names the player who pressed, and the face is ordinary JSON UI. `enabled={false}` draws `backgroundLocked` and ignores presses. Its children are baked into the face, so they are static text or images — including their color, which is why an [ore-styled](/docs/ore-styled) button's caption keeps its enabled color while its background swaps to the disabled one. |
@@ -184,18 +184,19 @@ The same set as a form, with four additions and a few container-specific behavio
 
 [ore-styled](/docs/ore-styled) components compose the same way: the `Button` above is ore-styled's, with `enabled` driving its disabled look.
 
-### Live text
+### Dynamic text
 
-A container slot publishes numbers, not strings, so text that changes at runtime has to reserve its cells before the build knows what it will say:
+The compiler probes component state and assigns transport only to text whose value changes. No live-text property is required:
 
 ```tsx
-<Text>{'§fBEDROCK CORE'}</Text>                  {/* baked: any character, any formatting code */}
-<Text maxLength={24}>{`holding ${held}`}</Text>  {/* live: 24 cells, one container slot each */}
+<Text>{'BEDROCK CORE'}</Text>
+<Text>{`holding ${held}`}</Text>
+<Text maxLength={24}>{`holding ${held}`}</Text>
 ```
 
-`maxLength` is what makes a `Text` live. Each cell is one container slot whose stack size is a character code, decoded through a 64-glyph table the stage writes into your `.lang` files: space, `A–Z`, `a–z`, `0–9` and `.`. Anything outside that table — formatting codes included — draws as a blank, and a string longer than `maxLength` is cut. Text without `maxLength` is baked into the layout and may say anything at all.
+The constant label is baked into the layout. The state-driven label uses one occupied item slot and one label, carrying up to 128 UTF-16 code units through the item's custom name while the container stays open. `maxLength` only shortens literal text; it does not select transport or reserve extra width. Static text is not subject to the container transport limit.
 
-A live `Text` cannot sit inside a `Button` — a button's children are its face. Put it beside the button.
+Detection covers state changes exercised by the build probes. A value changed only by a code path the probes do not reach remains baked. Keep data-driven text outside a button's shared face; a `MenuRow` already separates its caption from its input surface.
 
 ### Rendering other containers
 
@@ -252,10 +253,11 @@ Every slot index on the host's container has to be paid for, and the build sizes
 | --- | --- |
 | `Slot` (own) | 1 |
 | `Button` | 1 |
-| `Text maxLength={n}` | `n` |
+| Detected dynamic `Text` | 1 |
+| Static `Text` | 0 |
 | `Slot collection`, `SlotGrid`, `PlayerInventory`, `Hotbar` | 0 — reads a foreign collection |
 
-Plus two for the marker slots the router reads. A screen with three slots, two buttons and a 24-character label is a 31-slot container — within a block's 54, which an entity has no limit on.
+Plus one for the routing sentinel. A screen with three slots, two buttons and a detected dynamic label is a seven-slot container — within a block's 54, which an entity has no limit on.
 
 ## Not supported
 

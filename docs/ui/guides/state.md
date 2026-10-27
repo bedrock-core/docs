@@ -61,12 +61,12 @@ A compiled screen's shape is frozen, so anything that varies has to reserve room
 
 | Varies | Declared as | Reserves |
 | --- | --- | --- |
-| A string | [`maxLength`](../components/Text.md) on a `<Text>` | its width, and on the chest one slot per character |
+| A string | Automatically detected during state probes | One form entry or one container slot; `maxLength` only truncates literal text |
 | A row count | [`max`](../components/List.md) on a `<List>` | `max` copies of the row, plus one int |
 | A branch | `visible` on the control | a carried bool |
 | A texture | [`live`](../components/Image.md) on an `<Image>` | one entry on a form |
 
-Everything else is baked. A baked string fed from data that changes is silently wrong, which is what `render(screen, player, { debug: true })` reports.
+Values the probes never observe changing remain baked. Debug mode reports structural drift that would invalidate compiled addresses.
 
 ## Next steps
 

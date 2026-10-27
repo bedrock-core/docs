@@ -1,5 +1,5 @@
 ---
-description: "A themed numeric slider for a modal form."
+description: "A themed numeric slider for modal forms and live Ore screens."
 ---
 # Slider
 
@@ -15,7 +15,7 @@ import { Slider } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+Inside [`<Form>`](/docs/ui/components/Form), the value arrives on submit under `name`. Inside [`<Experimental_OreUI>`](/docs/ui/components/Experimental_OreUI), use `value` and `onChange` for live edits.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.volume)}>
@@ -24,13 +24,13 @@ Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in th
 </Form>
 ```
 
-It is [`Slider`](/docs/ui/components/Slider) with the [theme](./theme.md)'s track, progress fill and thumb textures applied, plus a caption above it. The widget is the engine's: the player drags it while the form is open, and the value comes back with every other field on submit.
+It is [`Slider`](/docs/ui/components/Slider) with the [theme](./theme.md)'s track, progress fill and thumb textures applied, plus a caption above it. Modal fields report on submit; Ore fields deliver live edits.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name` | `string` | ? | Required result key inside `Form`; optional on an Ore screen |
 | `label` | `string` | — | Caption rendered above the slider |
 | `min`<Req /> | `number` | — | Minimum selectable value; the left end of the track |
 | `max`<Req /> | `number` | — | Maximum selectable value; the right end of the track |
@@ -59,10 +59,10 @@ Inherits every prop of [`Slider`](/docs/ui/components/Slider) — the track, pro
 
 ## Notes
 
-The interactive hitbox of the thumb is a fixed 16 × 16, so keep the visual thumb at its default size unless a mismatch is acceptable — a larger one looks draggable in places it is not.
+On `Form`, the native thumb hitbox is fixed at 16 ? 16. The Ore host uses its own live-control presentation.
 
-There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open.
+A modal reports its values together on submit. An Ore screen supports controlled `value` and live `onChange`; see the [experimental host guide](/docs/ui/guides/experimental-ore).
 
 ## Limits
 
-Modal-only. The engine draws no slider on an action form or a container screen, so [`useMechanism('Slider')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse this field at build time.

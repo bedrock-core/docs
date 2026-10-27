@@ -1,5 +1,5 @@
 ---
-description: "A themed single-line text field for a modal form."
+description: "A themed single-line text field for modal forms and live Ore screens."
 ---
 # Input
 
@@ -15,7 +15,7 @@ import { Input } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in the form's `onSubmit`, keyed by `name`.
+Inside [`<Form>`](/docs/ui/components/Form), the value arrives on submit under `name`. Inside [`<Experimental_OreUI>`](/docs/ui/components/Experimental_OreUI), use `value` and `onChange` for live edits.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.nickname)}>
@@ -24,13 +24,13 @@ Render it inside a [`<Form>`](/docs/ui/components/Form). The value arrives in th
 </Form>
 ```
 
-It is [`Input`](/docs/ui/components/Input) with the [theme](./theme.md)'s field textures and font applied, plus a caption above the box. The widget itself is the engine's — it is owned by the client while the form is open, and every field's value comes back at once on submit.
+It is [`Input`](/docs/ui/components/Input) with the [theme](./theme.md)'s field textures and font applied, plus a caption above the box. Modal fields report on submit; Ore fields deliver live edits.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name` | `string` | ? | Required result key inside `Form`; optional on an Ore screen |
 | `label` | `string` | — | Caption rendered above the field |
 | `placeholder` | `string` | — | Text shown inside the field when it is empty |
 | `defaultValue` | `string` | `''` | Initial text |
@@ -59,8 +59,8 @@ Inherits every prop of [`Input`](/docs/ui/components/Input) — the font, the sc
 
 Give the field a `width`, or let it stretch in a column, so the framed box reads as a field even when empty. A `placeholder` keeps an empty one reading as editable.
 
-There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open. For a value the screen reacts to immediately, use a press — [`Checkbox`](./Checkbox.md) and [`Toggle`](./Toggle.md) do that on the hosts where a press reaches script.
+A modal reports its values together on submit. An Ore screen supports controlled `value` and live `onChange`; see the [experimental host guide](/docs/ui/guides/experimental-ore).
 
 ## Limits
 
-Modal-only. The engine draws no text field on an action form or a container screen, so [`useMechanism('Input')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse this field at build time.

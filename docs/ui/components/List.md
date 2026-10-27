@@ -48,7 +48,7 @@ row={(item) => <Text maxLength={20}>{item?.label ?? ''}</Text>}
 
 That is what makes the shape independent of the data by construction. A row that renders different elements for `undefined` than for an item is a shape change, which the build refuses.
 
-Values that differ per item travel like any other live value — `maxLength` text, a carried `visible`. A baked string fed from item data stays the build's value, which `render(screen, player, { debug: true })` reports.
+The compiler detects state-driven row text and carries it in ordinary text entries. Row counts use the list count entry, and changing visibility uses a carried boolean.
 
 ## Notes
 

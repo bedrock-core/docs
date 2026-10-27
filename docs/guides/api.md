@@ -26,7 +26,7 @@ What the modules the guides stage generates call, and what your own code uses be
 | Export | Kind | Description |
 | --- | --- | --- |
 | `guideNavigationScreen(manifest, options?)` | function | The generated guide layout with shared page content and bounded local visited-page history |
-| `GuideNavigationOptions` | type | Canvas, title, components and audience, plus `entry?: 'home' \| 'index' \| { page: string }` and `back?: boolean` |
+| `GuideNavigationOptions` | type | Canvas, title, components and audience, plus `entry?: 'home' \| 'index' \| { page: string }`, `back?: boolean` and an optional `screenRoot` component |
 | `openGuide(ns, player, options?)` | function | Navigate to a guide's entry by its namespace, from either realm: the operators' entry for an operator when the guide has one. `{ back: true }` opens the entry with a back control, which returns to the screen it was opened from |
 | `GuideComponents` | type | `Record<string, FunctionComponent>`, what a `componentsModule` default-exports for `cmp` blocks |
 | `GuideManifest` | type | Compiled localized page content and its navigation tree |
@@ -35,8 +35,9 @@ Each screen factory takes `audience: 'op'` to build the operators' set of a guid
 
 ## Resident screen runtime
 
+`screenRoot` defaults to `Screen`. Set it to `Experimental_OreUI` to use the same guide views and navigation graph on the [experimental Ore host](/docs/ui/guides/experimental-ore), with that host's client requirements.
+
 `guideNavigationScreen` keeps reading inside one client form. Previous/Next replaces the current page; index rows and inline links add a visit. Revisiting a retained page removes the loop, including through pagination. The stack keeps up to five Back destinations and discards older visits. Page content mounts once, and category folding stays on the client. Compilation rejects a guide whose complete bounded history exceeds the native state budget.
-ww
 ```tsx
 import { guideNavigationScreen } from '@bedrock-core/guides';
 import manifest from './manifest.json';

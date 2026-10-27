@@ -56,5 +56,3 @@ A value could not be written into a UI payload — most often a string holding t
 ## Notes
 
 Every one of these is thrown at **build** time where it can be: the compiler renders each screen once, so a refusal reaches you as a failed build with the control and the host named, rather than as a screen drawn inert in game.
-
-`TranslationKeysError` is exported and never thrown: a key missing from the resolver measures as the literal key string, mirroring how Bedrock paints an unmatched key.

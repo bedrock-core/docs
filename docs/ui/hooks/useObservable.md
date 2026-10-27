@@ -82,7 +82,7 @@ A change from the observable is a state change, so when the player sees it depen
 | Screen | A change |
 | --- | --- |
 | Form | Is kept, and shows on the next screen the player's press brings up: an open form cannot change |
-| Container screen | Updates the screen's live values at once: a `maxLength` text, a `<List>` count, a carried `visible` |
+| Container screen | Updates the screen's live values at once: detected dynamic text, a `<List>` count, a carried `visible` |
 
 What the build baked stays as the build drew it on both. See [State](../guides/state.md#a-form-change-is-a-new-present).
 

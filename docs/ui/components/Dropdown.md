@@ -1,9 +1,9 @@
 ---
-description: "Select field with a popup, for use inside a Form."
+description: "Popup selection with submitted modal indexes or live Ore option values."
 ---
 # Dropdown
 
-Select field with a popup, for use inside a [`Form`](./Form.md). Pressing it opens a scrollable list of [`Option`](./Option.md) children to choose from.
+Select field with a popup inside a [`Form`](./Form.md) or [`Experimental_OreUI`](./Experimental_OreUI.md) screen. Pressing it opens a scrollable list of [`Option`](./Option.md) children.
 
 ## Import
 
@@ -24,15 +24,17 @@ import { Dropdown, Form, Option } from '@bedrock-core/ui';
 </Form>
 ```
 
-:::caution Result is an index, not a value
-`Dropdown` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string — this is the native modal dropdown's behavior. If you need the string back, map the index into your own options array yourself.
+:::caution Modal and live results
+Inside `Form`, `Dropdown` reports the selected option's **index** at `values[name]` on submit. Inside `Experimental_OreUI`, `onChange` receives the selected option's **string value**.
 :::
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `name` | `string` | — | Required result key inside `Form`; optional on an Ore screen |
+| `value` | `string` | internal state | Controlled option value on an Ore screen |
+| `onChange` | `(value: string, event: UiEvent) => void \| Promise<void>` | — | Receives the selected Ore option value and the owning player's event |
 | `defaultValue` | `string` | the first option | Initial selection, matched against a [`Option`](./Option.md)'s `value` |
 | `children` | `JSX.Node` | — | The selectable options, authored as [`Option`](./Option.md) elements. Popup rows flow at a fixed row height, so an option's own layout props are ignored here — only its `value`/`label`/style are read |
 | `popupBackground` | `string` | the unstyled placeholder texture | Background texture for the popup surface behind the option list |
@@ -88,11 +90,11 @@ const options = ['Easy', 'Normal', 'Hard'];
 
 ## Notes
 
-- Keep `Option` children order stable across renders — the result is an index, so reordering shifts what a saved index means.
-- Read `values[name]` as an index and map it back to your own array if you need the string; don't assume it's the `value` you passed in.
+- Inside `Form`, keep `Option` children order stable across renders; the submitted result is an index.
+- Read `Form`'s `values[name]` as an index and map it back to your own array when you need the option value. Ore's live `onChange` receives the option value directly.
 - Prefer [`Select`](./Select.md) instead when you want every option visible without an extra tap (e.g. a short radio-style choice).
 - For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Dropdown)'s `Dropdown` over styling this primitive by hand.
 
 ## Limits
 
-Modal-only. The engine draws no popup on an action form or a container screen, so writing one there is a build error naming the fix rather than a control drawn inert. [`<Toggle>`](./Toggle.md) and [`<Select>`](./Select.md) are the controls that serve all three hosts.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse dropdown fields at build time. Keep option values and the compiled option structure stable on an Ore screen.

@@ -26,7 +26,7 @@ Renders as `Economy > Server > Pricing`, the separators in the trail's lighter c
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `text` | [`DisplayText`](/docs/i18n/api#displaytext) | — | The whole trail as one value, drawn by one label. `trailText` composes one |
-| `maxLength` | `number` | — | Characters `text` reserves, which is what makes the label live |
+| `maxLength` | `number` | — | Literal text length limit; transport is detected independently |
 | `segments` | `readonly DisplayText[]` | — | A trail known at build time, in place of `text`: composed by the build in every language, collapsed to the room the row is laid out with |
 
 Inherits [control props](/docs/ui/components/control-props).
@@ -45,7 +45,7 @@ const trail = trailText(
 <Trail text={trail} maxLength={trailMaxLength()} />
 ```
 
-A form entry's text is resolved by the **client** before the binding sees it, so every segment reaches the player in their own language off one entry. `maxLength` is what makes the label live: the compiled screen keeps one entry for the trail and shows whatever it is sent.
+A form entry's text is resolved by the **client** before the binding sees it, so every segment reaches the player in their own language off one entry. The compiler detects a changing trail and assigns its entry automatically. `maxLength` only limits literal display text.
 
 ## Collapsing from the middle
 

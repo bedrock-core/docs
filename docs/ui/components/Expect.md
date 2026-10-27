@@ -26,7 +26,7 @@ export const AccountFields = (): JSX.Element => (
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `host`<Req /> | `'form-action' \| 'form-modal' \| 'chest'` | — | The screen this fragment is written for |
+| `host`<Req /> | `'form-action' \| 'form-modal' \| 'chest' \| 'experimental-ore-ui'` | — | The screen this fragment is written for |
 
 Draws nothing and takes no layout space: its children are laid out as though it were not there.
 

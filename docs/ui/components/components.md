@@ -13,12 +13,13 @@ A screen's root names its [host](../guides/hosts.md), and there is no default: a
 - [`<Screen>`](./Screen.md) — an action form: presses, decoration, lists and scrolls, shown with `render()`
 - [`<Form>`](./Form.md) — a native modal form, shown with `render()`
 - [`<Container>`](./Container.md) — a container screen an entity or a block owns, served with `createContainerScreen()`
+- [`<Experimental_OreUI>`](./Experimental_OreUI.md) — an experimental player-owned Ore presentation with live controls
 
-A root is **only** a host. None of them has members: every control below is a top-level component, and which hosts it works on is its own capability.
+A root selects a host. Controls are top-level components with their own capabilities; `Form.Button` declares a modal form action.
 
 ## Layout
 
-Boxes and flow. Each draws on all three hosts and asks for nothing.
+Boxes and flow. Each draws on the supported hosts and asks for nothing.
 
 - [`<Panel>`](./Panel.md) — a box with an optional background and flexbox layout, or a stack that reflows hidden children
 - [`<Scroll>`](./Scroll.md) — an independent vertical scroll region
@@ -28,7 +29,7 @@ Boxes and flow. Each draws on all three hosts and asks for nothing.
 
 What a screen shows. Also free on every host.
 
-- [`<Text>`](./Text.md) — a label, literal or localized, baked or live with `maxLength`
+- [`<Text>`](./Text.md) — a label, literal or localized, static or automatically detected as dynamic
 - [`<Trans>`](./Trans.md) — a translated text whose tags are presses and styles, drawn where their text falls in every language
 - [`<Image>`](./Image.md) — a texture from a resource pack, baked or carried with `live`
 - [`<Background>`](./Background.md) — a full-screen texture drawn behind the screen
@@ -68,9 +69,9 @@ Only on a container screen. See [Container screens](../guides/container-screens.
 - [`<PlayerInventory>`](./PlayerInventory.md) — the player's 9 × 3 inventory grid
 - [`<Hotbar>`](./Hotbar.md) — the player's hotbar
 
-## Modal fields
+## Live and modal fields
 
-The three the engine only draws inside a [`<Form>`](./Form.md). Anywhere else they are refused at build, by name.
+These fields report one submitted result inside [`<Form>`](./Form.md), or live changes inside [`<Experimental_OreUI>`](./Experimental_OreUI.md). Action forms and container screens refuse them at build.
 
 - [`<Input>`](./Input.md) — a single-line text field
 - [`<Slider>`](./Slider.md) — a number within a range

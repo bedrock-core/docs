@@ -15,7 +15,7 @@ import { Dropdown } from '@bedrock-core/ore-styled';
 
 ## Usage
 
-Render it inside a [`<Form>`](/docs/ui/components/Form). The selection arrives in the form's `onSubmit`, keyed by `name`.
+Inside [`<Form>`](/docs/ui/components/Form), the selected index arrives on submit under `name`. Inside [`<Experimental_OreUI>`](/docs/ui/components/Experimental_OreUI), `onChange` receives the selected option value.
 
 ```tsx
 <Form onSubmit={({ values }) => console.warn(values.difficulty)}>
@@ -31,15 +31,15 @@ Render it inside a [`<Form>`](/docs/ui/components/Form). The selection arrives i
 
 It is [`Dropdown`](/docs/ui/components/Dropdown) with the [theme](./theme.md)'s closed-box, popup and option-row textures applied, plus a caption above the box. The ore layer owns the option children: it maps each entry of `options` to a `Option` whose value and label are both that string, which is why `children` is not accepted here.
 
-:::caution The result is an index
-Like the primitive, the submitted value is the selected option's **index** (a `number`), not the string — that is the native modal dropdown's behavior. Read it back as `options[values[name]]`.
+:::caution Modal results use indexes
+Like the primitive, the submitted value is the selected option's **index** (a `number`), not the string — that is the native modal dropdown's behavior. Read it back as `options[values[name]]`. On an Ore screen, `onChange` receives the option string instead.
 :::
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name`<Req /> | `string` | — | Result key — the selected index appears at `values[name]` in the form's `onSubmit` |
+| `name` | `string` | ? | Required result key inside `Form`; optional on an Ore screen |
 | `options`<Req /> | `string[]` | — | The selectable options; each becomes a `Option` with its value and label set to the string |
 | `label` | `string` | — | Caption rendered above the closed box |
 | `defaultValue` | `string` | the first option | Initial selection, matched against one of `options` |
@@ -69,10 +69,10 @@ const MODES = ['Peaceful', 'Easy', 'Normal', 'Hard'];
 
 ## Notes
 
-There is no `onChange`: a native modal is atomic, so nothing reaches script while the form is open.
+A modal reports its values together on submit. An Ore screen supports controlled `value` and live `onChange`; see the [experimental host guide](/docs/ui/guides/experimental-ore).
 
 For the same selection model drawn inline, with no popup, use [`Select`](/docs/ui/components/Select) — or [`Radio`](./Radio.md) and [`ToggleButtons`](./ToggleButtons.md) for its themed forms.
 
 ## Limits
 
-Modal-only. The engine draws no dropdown on an action form or a container screen, so [`useMechanism('Dropdown')`](/docs/ui/hooks/useMechanism) refuses it there at build, naming the fix.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse this field at build time.

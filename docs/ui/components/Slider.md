@@ -1,9 +1,9 @@
 ---
-description: "Numeric field drawn as a track + thumb, for use inside a Form."
+description: "Numeric slider with submitted modal results or live Ore changes."
 ---
 # Slider
 
-Numeric field drawn as a track + thumb, for use inside a [`Form`](./Form.md).
+Numeric field drawn as a track and thumb inside a [`Form`](./Form.md) or [`Experimental_OreUI`](./Experimental_OreUI.md) screen.
 
 ## Import
 
@@ -22,12 +22,15 @@ import { Form, Slider } from '@bedrock-core/ui';
 
 ## How it works
 
-`Slider` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.slider` control; the result (`number`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
+Inside `Form`, the native slider reports a number at `values[name]` on submit. Inside `Experimental_OreUI`, `value` controls the number and `onChange` receives live changes. Without `value`, internal state starts at `defaultValue` or `min`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
+| `name` | `string` | — | Required result key inside `Form`; optional on an Ore screen |
+| `value` | `number` | internal state | Controlled value on an Ore screen |
+| `onChange` | `(value: number, event: UiEvent) => void \| Promise<void>` | — | Receives live Ore changes and the owning player's event |
 | `min`<Req /> | `number` | — | Minimum selectable value |
 | `max`<Req /> | `number` | — | Maximum selectable value |
 | `step` | `number` | `1` (native default) | Increment between selectable values |
@@ -37,7 +40,7 @@ import { Form, Slider } from '@bedrock-core/ui';
 | `thumb` | `string` | the resolved track base texture | Draggable handle texture |
 | `thumbHover` / `thumbPressed` / `thumbLocked` | `string` | the resolved `thumb` texture | Thumb texture for hover, pressed/dragged, and disabled (`enabled={false}`) states |
 | `trackHeight` | `number` | `10` | Height (px) of the track + progress fill. The track always spans the full control width and is vertically centered |
-| `thumbWidth` / `thumbHeight` | `number` | `16` | Size (px) of the draggable thumb. The interactive hitbox is a fixed 16×16, so keep the visual thumb at the default size unless you've confirmed the mismatch is acceptable |
+| `thumbWidth` / `thumbHeight` | `number` | `16` | Size (px) of the draggable thumb; `Form` uses a fixed 16×16 interactive hitbox |
 
 The track uses `background`/`backgroundHover`/`backgroundPressed`/`backgroundLocked` for per-state texturing — the same shape as [`Button`](./Button.md).
 
@@ -60,9 +63,9 @@ Inherits [control props](./control-props.md). Defaults to `width: '100%'` when n
 ## Notes
 
 - Keep `step` a clean divisor of `max - min` so every reachable value looks intentional on the track.
-- Don't resize `thumbWidth`/`thumbHeight` far from the 16×16 default — the interactive hitbox stays fixed at 16×16 regardless, so a larger visual thumb can look pressable in places it isn't.
+- Inside `Form`, keep `thumbWidth`/`thumbHeight` close to the 16×16 hitbox so the visual thumb matches the pressable area.
 - For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Slider)'s `Slider` over styling this primitive by hand.
 
 ## Limits
 
-Modal-only. The engine draws no slider on an action form or a container screen, so writing one there is a build error naming the fix rather than a control drawn inert. [`<Toggle>`](./Toggle.md) and [`<Select>`](./Select.md) are the controls that serve all three hosts.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse sliders at build time. The fixed 16 × 16 native thumb hitbox applies to `Form`; Ore uses its own live-control presentation.

@@ -29,7 +29,7 @@ import { Text } from '@bedrock-core/ui';
 | `wordBreak` | `'normal' \| 'break-word'` | — | When set to `'break-word'`, text automatically wraps at word boundaries (with hyphens for mid-word breaks). Width comes from the container — no explicit `maxWidth` needed |
 | `overflow` | `'ellipsis'` | — | When set, text that overflows its container is truncated with `...` |
 | `maxLines` | `number` | — | Limit rendered text to N lines. The last line is always ellipsized when content overflows |
-| `maxLength` | `number` | — | The most characters the text will ever need. In a [container screen](../guides/container-screens.md) this is what makes the text **live**: a compiled layout cannot grow, so a string that changes at runtime reserves its cells before the build knows what it will say — one container slot per character, decoded through a 64-glyph table (space, `A–Z`, `a–z`, `0–9`, `.`; anything else, formatting codes included, draws as a blank). Leave it off for text that never changes, which is baked and may use any character at all. In a server form the text is live anyway; a literal string is cut to this length so the two backends agree on what fits, while keys and `RawMessage`s the client resolves are left whole |
+| `maxLength` | `number` | — | Truncates literal text to this many UTF-16 code units without splitting a surrogate pair. The compiler detects changing text independently of this limit. A detected container value uses one slot and carries at most 128 code units; static text needs no slot. Translation keys and client-resolved messages stay whole |
 | `shadow` | `boolean` | `false` | Draw a drop shadow behind the glyphs. Purely visual — it does not affect layout or text metrics |
 | `color` | `[number, number, number]` | — | Glyph color as RGB in `0..1`. For text a `§` code cannot color: a localization key, whose value the client resolves. Compiled screens only |
 | `textAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Where the glyphs sit in the label's box. Only shows when the box is wider than the text: give the text a `width`, or let it grow. Compiled screens only |
@@ -165,6 +165,10 @@ function Furnace() {
 ```
 
 ## Notes
+
+Dynamic container values use the host's translation context because one container state is shared by its viewers. Static translation keys and form messages retain client-side localization.
+
+
 
 - Don't hardcode `width`/`height` — let `Text` size to its content and rely on the parent panel's `gap`/`padding`.
 - Prefer `key()` / `raw()` over `t()` for player-facing copy: the client resolves them, so one screen serves every language at once.

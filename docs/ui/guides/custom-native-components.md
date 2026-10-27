@@ -21,7 +21,7 @@ interface RatingProps {
 const Rating: FunctionComponent<RatingProps> = ({ value }): JSX.Element => (
   <Panel flexDirection={'row'} gap={2}>
     <Text>{'Rating'}</Text>
-    <Text maxLength={5}>{`${value}/5`}</Text>
+    <Text>{`${value}/5`}</Text>
   </Panel>
 );
 ```

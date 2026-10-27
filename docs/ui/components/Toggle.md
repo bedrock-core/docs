@@ -35,8 +35,8 @@ So `name` is what the modal reports under, and `on` / `onChange` are what the tw
 | --- | --- | --- | --- |
 | `name` | `string` | — | Result key on a modal, where it is required; ignored where the press is the answer |
 | `defaultValue` | `boolean` | `false` | Which way it starts |
-| `on` | `boolean` | — | Held by the caller instead of by the control. Only where a press reaches script |
-| `onChange` | `(on: boolean) => void` | — | Called with the new state, on the hosts where a press reaches script |
+| `on` | `boolean` | — | Held by the caller instead of by the control. On press-based and Ore screens |
+| `onChange` | `(on: boolean, event: UiEvent) => void \| Promise<void>` | — | Called with the new state, on press-based and Ore screens |
 | `background` | `string` | the blank-canvas placeholder | The unchecked face |
 | `backgroundHover` / `backgroundPressed` / `backgroundLocked` | `string` | `background` | The unchecked face per state |
 | `checkedBackground` | `string` | the resolved `background` | The checked face |

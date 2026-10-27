@@ -5,7 +5,7 @@ description: "Choices with every option visible inline (no popup): one, or any n
 
 Choices out of several, with every option visible: one, or any number with `multiple`.
 
-`Select` works on all three hosts and draws differently on each: a native field inside a [`<Form>`](./Form.md), a press per option on a [`<Screen>`](./Screen.md), and a cell per option on a [`<Container>`](./Container.md). [`<Dropdown>`](./Dropdown.md) is the same selection model behind a popup, and only a modal can draw one.
+`Select` reports submitted indexes inside [`<Form>`](./Form.md), presses on [`<Screen>`](./Screen.md), container-cell interactions on [`<Container>`](./Container.md), and live option values on [`<Experimental_OreUI>`](./Experimental_OreUI.md). [`<Dropdown>`](./Dropdown.md) presents a popup on modal and Ore hosts.
 
 ## Import
 
@@ -25,8 +25,8 @@ import { Form, Option, Select } from '@bedrock-core/ui';
 </Form>
 ```
 
-:::caution Result is an index, not a value
-Just like [`Dropdown`](./Dropdown.md), `Select` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. With `multiple` it reports the **indices** that are on (a `number[]`, in option order, `[]` when none are). Map them back to your own options array if you need the strings.
+:::caution Modal results use indexes
+Inside `Form`, `Select` reports the selected option's **index** (a `number`) at `values[name]`, not its `value` string. With `multiple` it reports the **indices** that are on (a `number[]`, in option order, `[]` when none are). Map them back to your own options array if you need the strings.
 :::
 
 ## Props
@@ -35,8 +35,8 @@ Just like [`Dropdown`](./Dropdown.md), `Select` reports the selected option's **
 | --- | --- | --- | --- |
 | `name`<Req /> | `string` | — | Result key — the selected index, or the indices with `multiple`, appear at `values[name]` in the form's `onSubmit` |
 | `multiple` | `boolean` | `false` | Any number of options may be on at once. On a modal each option is a native toggle of its own, all answering under `name` |
-| `value` | `string`, or `string[]` with `multiple` | — | The chosen options' values, held by the caller instead of by the control. Only where a press reaches script |
-| `onChange` | `(value: string) => void`, or `(values: string[]) => void` with `multiple` | — | Called with the chosen option's `value`, or every chosen value in option order, on the hosts where a press reaches script |
+| `value` | `string`, or `string[]` with `multiple` | — | The chosen options' values, held by the caller instead of by the control. On press-based and Ore screens |
+| `onChange` | `(value: string) => void`, or `(values: string[]) => void` with `multiple` | — | Called with the chosen option's `value`, or every chosen value in option order, on press-based and Ore screens |
 | `defaultValue` | `string`, or `string[]` with `multiple` | the first option, or none with `multiple` | Initial selection, matched against an [`Option`](./Option.md)'s `value` |
 | `children` | `JSX.Node` | — | The selectable options, authored as [`Option`](./Option.md) elements. Unlike `Dropdown`'s popup rows, each option here is laid out by the normal flex engine — position it with ordinary layout props (`flex`, `gap`, `width`, …) |
 | `optionBackground` / `optionHover` / `optionSelected` | `string` | — | Group-level default row textures for idle/hover/selected states. Any `Option` can override its own |

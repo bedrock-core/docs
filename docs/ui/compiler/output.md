@@ -8,7 +8,9 @@ A compiled screen reaches the client as JSON UI in the addon's resource pack: sc
 
 ## Roots and mounts
 
-The root the author writes names the host, and there is no default: `<Screen>` for an action form, `<Form>` for a native modal, `<Container>` for a container screen — naming either `entity` or `block`. One file naming convention, one component set, three roots:
+The root names the host: `<Screen>` for an action form, `<Form>` for a native modal, `<Container>` for an entity or block container screen, and `<Experimental_OreUI>` for an experimental player-owned Ore presentation. The file naming convention and component set are shared.
+
+The JSON UI hosts emit the documents described below. The [experimental Ore host](../guides/experimental-ore.md) emits pack-local layouts and client resources under `hbui/`.
 
 | Root | Screen | Where the layout is mounted | Opened with |
 | --- | --- | --- | --- |
@@ -75,7 +77,7 @@ A container screen names the entity or the block it opens from. The stage finds 
 }
 ```
 
-`minecraft:block_entity` cannot vary per permutation and cannot be combined with `minecraft:crafting_table` — the stage refuses a block that declares one, since a compiled screen needs the block entity for its own container. A block container holds 54 slots at most, the whole of a screen's allocation: the routing sentinel, every `<Slot>` and `Button`, and one bank slot per character of every live `<Text maxLength>`. A screen that outgrows it either sheds cells or moves to an entity, whose inventory has no cap.
+`minecraft:block_entity` cannot vary per permutation and cannot be combined with `minecraft:crafting_table` — the stage refuses a block that declares one, since a compiled screen needs the block entity for its own container. A block container holds 54 slots at most, the whole of a screen's allocation: the routing sentinel, every `<Slot>` and `Button`, and one bank slot for each detected dynamic `Text`. A screen that outgrows it either sheds cells or moves to an entity, whose inventory has no cap.
 
 Nobody keeps a container size or a layout key in step with a layout by hand — the failure mode of that is a screen that silently draws cells the container does not have, or a host that opens the wrong screen. Everything else on the entity or block is yours: its geometry, its behavior, whether it can be pushed or hurt.
 

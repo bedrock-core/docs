@@ -18,7 +18,7 @@ description: "@bedrock-core/ui writes Minecraft Bedrock screens in JSX and compi
 
 A screen is a component. You write it with JSX, flexbox props and hooks, and the build [compiles](./compiler/index.md) it once into the JSON UI that ships in the pack. At runtime nothing sends a layout: showing a screen sends its title and the values that changed, and the client draws it from the pack it already holds.
 
-Three screens can be drawn on, and the root element picks one — [`<Screen>`](./components/Screen.md) is an action form, [`<Form>`](./components/Form.md) a native modal, [`<Container>`](./components/Container.md) a custom entity's or block's chest screen. One component set serves all three: a toggle is a native field on a modal and a pressed button on a screen of buttons, and it does not know which screen it is on. See [Hosts](./guides/hosts.md).
+The root selects the host: [`<Screen>`](./components/Screen.md) is an action form, [`<Form>`](./components/Form.md) a native modal, and [`<Container>`](./components/Container.md) an entity or block container screen. [`<Experimental_OreUI>`](./components/Experimental_OreUI.md) adds a player-owned Ore presentation with live controls and version-matched Windows client resources. Components use the interaction mechanism their host provides. See [Hosts](./guides/hosts.md).
 
 For a pre-themed component set matching vanilla Minecraft's look, see [`@bedrock-core/ore-styled`](/docs/ore-styled). It is optional — pick it up for batteries-included visuals, skip it to style every primitive yourself.
 

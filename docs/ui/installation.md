@@ -37,7 +37,7 @@ Everything an addon writes comes from the one entry point. Two subpaths carry th
 
 Install the build tool:
 
-<Install pkg="@bedrock-core/builder@next" dev />
+<Install pkg="@bedrock-core/builder" dev />
 
 Configure project metadata, packs and destinations as described in [builder configuration](/docs/builder/guides/configuration). The `ui-compiler` stage discovers screens automatically and runs after translations and before bundling. It uses the project's installed UI compiler and runtime toolkit.
 
@@ -62,7 +62,7 @@ The shared resource pack supplies the textures used by compiled screens. Use the
   "dependencies": [
     {
       "uuid": "761ecd37-ad1c-4a64-862a-d6cc38767426",
-      "version": "1.12.1"
+      "version": "1.14.0"
     }
   ]
 }

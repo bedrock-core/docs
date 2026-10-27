@@ -16,7 +16,7 @@ export default function Counter(): JSX.Element {
   return (
     <Screen>
       <Panel padding={8} gap={6}>
-        <Text maxLength={16}>{`count ${count}`}</Text>
+        <Text>{`count ${count}`}</Text>
         <Button enabled={count < 9} onPress={() => setCount(value => value + 1)}>{'+'}</Button>
       </Panel>
     </Screen>
@@ -37,7 +37,7 @@ export default function CraftingTable(): JSX.Element {
 
   return (
     <Container entity={'drav0011_shop:crafting_table'} padding={8} gap={6}>
-      <Text maxLength={12}>{`planks ${planks}`}</Text>
+      <Text>{`planks ${planks}`}</Text>
       <Panel background={'textures/ui/slot_enabled'}>
         <Slot
           role={'both'}
@@ -61,10 +61,10 @@ A screen's **name** is its file name without the suffix: `counter.screen.tsx` is
 A compiled screen is baked, so a string that changes has to say how much room to reserve for it:
 
 ```tsx
-<Text maxLength={16}>{`count ${count}`}</Text>
+<Text>{`count ${count}`}</Text>
 ```
 
-The build renders the component with each state slot perturbed and fails on anything that moved without a reservation, naming the strings it saw and the `maxLength` each needs. The same probe fails a screen whose **shape** moved — a cell added, dropped or reordered — because the cells are numbered once, at build time.
+The build probes component state and carries only text values that change. `maxLength` limits literal display text; it is not an opt-in. Static values remain baked. The same probe rejects a screen whose shape changes because cell addresses are assigned once at build time.
 
 ## Looks are discovered
 

@@ -50,6 +50,10 @@ Place locale modules under the owning pack's `i18n/` directory. Set `client: fal
 
 UI, guides and client translation output use manifest dependencies to find the owner's resource pack. Set `owner` and `resourcePack` when a project has several possible destinations. A resource pack is required only for features that emit client resources.
 
+Screens rooted at `Experimental_OreUI` also package version-matched client resources. The `experimentalOre` object accepts `clientRoot` for the Windows Minecraft Content directory, `resourceRoots` for fallback resource packs and `dynamicTextures` for PNGs selected by live image values. The selected output RP takes priority over fallback roots. These settings are used only when the build contains an Ore screen.
+
+See [Experimental Ore screens](/docs/ui/guides/experimental-ore) for project configuration, the supported client target and runtime limits.
+
 ## Script bundling
 
 Each manifest script module supplies its entry, such as `scripts/main.js`. Builder finds the corresponding authored TypeScript or JavaScript source and emits the declared JavaScript file. Source TypeScript is omitted from the exported pack.

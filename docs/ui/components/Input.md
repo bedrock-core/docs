@@ -1,9 +1,9 @@
 ---
-description: "Single-line text field, for use inside a Form."
+description: "Single-line text field with submitted modal results or live Ore edits."
 ---
 # Input
 
-Single-line text field, for use inside a [`Form`](./Form.md).
+Single-line text field for a [`Form`](./Form.md) or [`Experimental_OreUI`](./Experimental_OreUI.md) screen.
 
 ## Import
 
@@ -22,13 +22,15 @@ import { Form, Input } from '@bedrock-core/ui';
 
 ## How it works
 
-`Input` is a pure field declaration — no `onChange` / controlled value. It renders to the native `ModalFormData.textField` control; the result (`string`) arrives at `values[name]` in the form's `onSubmit`, once, on submit.
+Inside `Form`, the native text field reports a string at `values[name]` on submit. Inside `Experimental_OreUI`, `value` controls the text and `onChange` receives live edits. Without `value`, the live field retains internal state initialized by `defaultValue`.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name`<Req /> | `string` | — | Result key — the value appears at `values[name]` in the form's `onSubmit` |
+| `name` | `string` | — | Required result key inside `Form`; optional on an Ore screen |
+| `value` | `string` | internal state | Controlled text on an Ore screen; modal forms use `defaultValue` |
+| `onChange` | `(value: string, event: UiEvent) => void \| Promise<void>` | — | Receives live Ore edits and the owning player's event |
 | `placeholder` | `string` | — | Text shown inside the native field when empty |
 | `defaultValue` | `string` | `''` | Initial text |
 | `font` | `TextFont` | `'mojangles'` | Font family for the typed value and placeholder |
@@ -60,9 +62,9 @@ Inherits [control props](./control-props.md).
 ## Notes
 
 - Always provide a `placeholder` — it's the only hint the player gets about what to type.
-- Keep `name` stable across renders; it's the only key you get back on submit.
+- Inside `Form`, keep `name` stable across renders; it identifies the submitted value.
 - For themed screens, prefer [`@bedrock-core/ore-styled`](/docs/ore-styled/Input)'s `Input` over styling this primitive by hand.
 
 ## Limits
 
-Modal-only. The engine draws no text field on an action form or a container screen, so writing one there is a build error naming the fix rather than a control drawn inert. [`<Toggle>`](./Toggle.md) and [`<Select>`](./Select.md) are the controls that serve all three hosts.
+Supported inside `Form` and `Experimental_OreUI`. Action forms and container screens refuse text fields at build time. The Ore host requires [version-matched client resources](../guides/experimental-ore.md).

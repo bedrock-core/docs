@@ -45,8 +45,8 @@ function Row(): JSX.Element {
 | `onPress` | `(event: PressEvent) => unknown \| Promise<unknown>` | — | Press handler. Use `to` instead when the press opens another screen |
 | `to` | `ScreenKey` | — | The screen this row opens, `<addon>:<name>`. A row with one is a [`<Link>`](/docs/navigation/components/Link) |
 | `replace` | `boolean` | `false` | With `to`: take the place of the screen this row is on rather than stacking over it |
-| `titleMaxLength` | `number` | — | Characters the title reserves, for a title only known when the screen is shown |
-| `subtitleMaxLength` | `number` | — | Characters the subtitle reserves. Setting it also keeps the subtitle line when the subtitle is empty, so the row has one shape |
+| `titleMaxLength` | `number` | — | Literal title length limit; transport is detected independently |
+| `subtitleMaxLength` | `number` | — | Literal subtitle length limit. A supplied subtitle, including an empty string, keeps its line in the row |
 | `enabled` | `boolean` | `true` | A disabled row keeps its face and greys its text |
 
 Inherits [control props](/docs/ui/components/control-props). It sets `alignSelf: 'stretch'` rather than an explicit width, so do not hard-code a `width` alongside `depth`.
@@ -59,9 +59,9 @@ A row with `to` is a link, so where it leads is data rather than a handler — w
 <MenuRow icon={'textures/items/diamond'} title={'Diamond'} subtitle={'A rare gem'} to={'shop:diamond'} />
 ```
 
-## Reserving room for live text
+## Data-driven captions
 
-A compiled screen bakes a row's text unless told how long a live one may be. Give `titleMaxLength` — and `subtitleMaxLength` where there is a second line — for a row whose text comes from data:
+The compiler detects state-driven captions automatically. The row always keeps captions outside its input surface, so length limits do not change its structure. Use `titleMaxLength` and `subtitleMaxLength` only to truncate literal display text:
 
 ```tsx
 <MenuRow title={addon.name} titleMaxLength={24} subtitle={addon.version} subtitleMaxLength={12} to={key} />

@@ -10,7 +10,6 @@ A failed check stops the build with the compiler's own message, which the [`ui-c
 | --- | --- |
 | Root | A tree that starts with something other than `<Screen>`, `<Form>` or `<Container>`; more than one element at a form's root; a `<Container>` naming neither `entity` nor `block`, or naming both |
 | Shape | A screen that adds, drops or reorders a cell when its state changes |
-| Live text | A `<Text>` whose string changes with no `maxLength`; the message names each string it saw and the length it needs |
 | Carried visibility | A `visible` that moves on a container screen, which bakes it |
 | Looks | A prop that changes with state on an element the host draws itself — a press, a slot, a live string, a live image or a list — naming each prop and the values it saw; or an element taking more than 63 looks on a container screen |
 | Static | `<Screen static>` on a screen that carries a live value or runs a handler of its own, naming which |
